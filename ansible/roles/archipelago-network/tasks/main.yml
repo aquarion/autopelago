@@ -1,0 +1,16 @@
+
+- name: Set hostname
+  hostname: name={{ hostname }}
+
+- name: Resovle to gkhs.net
+  lineinfile: dest=/etc/resolv.conf line="domain water.gkhs.net"
+
+- name: Search to gkhs.net
+  lineinfile: dest=/etc/resolv.conf line="search water.gkhs.net gkhs.net"
+
+- name: hostfile for ipv4
+  lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
+
+- name: hostfile for ipv6
+  lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv6.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
+

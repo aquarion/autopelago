@@ -1,0 +1,9 @@
+--- 
+
+- include: aquarionics.yml
+- include: aqxs.yml
+- include: camlarp.yml
+- include: cleartext.yml
+- include: factionfiction.yml
+- include: foipme.yml
+- include: warehouse.yml

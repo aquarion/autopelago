@@ -1,0 +1,25 @@
+---
+
+- name: Create Aquarion User
+  user: name=aquarion groups=docker,adm
+
+- name: Create ccooke User
+  user: name=ccooke groups=docker,adm
+
+- name: Add Aquarion key
+  authorized_key: user=aquarion key=https://github.com/aquarion.keys
+
+- name: Add ccooke key
+  authorized_key: user=ccooke key="{{ lookup('file', 'files/ccooke.keys') }}"
+
+- name: add sudo
+  template: 
+    dest=/etc/sudoers.d/{{ item }}
+    src=sudo.tpl 
+    owner=root
+    group=root
+    mode=440
+    force=yes
+    validate='visudo -cf %s'
+  with_items:
+    - aquarion

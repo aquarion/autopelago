@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  vars:
+    hostname: archipelago.water.gkhs.net
+  roles:
+    - archipelago-packages
+    - archipelago-network
+    - ansible-docker
+    - archipelago-users
+    - larpme
+    - aws-aqcom-dns

@@ -1,0 +1,84 @@
+---
+
+- name: foip.me. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "foip.me."
+      type: "A"
+      ttl: "86400"
+      value: '69.58.188.49'
+
+
+
+- name: foip.me. - NS
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "foip.me."
+      type: "NS"
+      ttl: "172800"
+      value: ['ns-1164.awsdns-17.org.','ns-1794.awsdns-32.co.uk.','ns-76.awsdns-09.com.','ns-979.awsdns-58.net.']
+
+
+
+- name: foip.me. - SOA
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "foip.me."
+      type: "SOA"
+      ttl: "900"
+      value: 'ns-1164.awsdns-17.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+
+
+
+- name: fourrivers.foip.me. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "fourrivers.foip.me."
+      type: "A"
+      ttl: "300"
+      value: '109.74.192.161'
+
+
+
+- name: herodiaries.foip.me. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "herodiaries.foip.me."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+
+
+
+- name: idlespeculation.foip.me. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "idlespeculation.foip.me."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+
+
+
+- name: obviouslyfakeurl.foip.me. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "obviouslyfakeurl.foip.me."
+      type: "A"
+      ttl: "300"
+      value: '109.74.192.161'
+

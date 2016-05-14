@@ -1,0 +1,125 @@
+- name: Larpme DNS - larpme root
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "larp.me"
+      type: "A"
+      ttl: "300"
+      value: '5.9.98.12'
+
+- name: Larpme DNS - MX
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "larp.me"
+      type: "MX"
+      ttl: "300"
+      value: '10 cenote.gkhs.net'
+
+- name: Larpme DNS - NS
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "larp.me"
+      type: "NS"
+      ttl: "172800"
+      value: [
+        'ns-377.awsdns-47.com.',
+        'ns-1181.awsdns-19.org.',
+        'ns-1976.awsdns-55.co.uk.',
+        'ns-527.awsdns-01.net.'
+        ]
+
+
+- name: Larpme DNS - SOA
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "larp.me"
+      type: "SOA"
+      ttl: "300"
+      value: "ns-377.awsdns-47.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
+
+- name: Larpme DNS - SPF
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "larp.me"
+      type: "SPF"
+      ttl: "300"
+      value: '"v=spf1 a mx include:smtp1.uservoice.com include:_spf.google.com include:spf.mtasv.net ~all"'
+
+- name: Larpme DNS - Prod API
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "api.larp.me"
+      type: "CNAME"
+      ttl: "300"
+      value: 'www.larp.me'
+
+- name: Larpme DNS - Blog
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "blog.larp.me"
+      type: "CNAME"
+      ttl: "300"
+      value: 'domains.tumblr.com'
+
+- name: Larpme DNS - Dev
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "dev.larp.me"
+      type: "A"
+      ttl: "300"
+      value: '127.0.0.1'
+
+- name: Larpme DNS - Prod WWW
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "www.larp.me"
+      type: "A"
+      ttl: "300"
+      value: '5.9.98.12'
+
+- name: Larpme DNS - Staging
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "staging.larp.me"
+      type: "A"
+      ttl: "300"
+      value: '5.9.98.12'
+
+- name: Larpme DNS - Staging API
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "api.staging.larp.me"
+      type: "CNAME"
+      ttl: "300"
+      value: 'staging.larp.me'
+
+- name: Larpme DNS - WIKI
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "wiki.larp.me"
+      type: "A"
+      ttl: "300"
+      value: '5.9.98.12'

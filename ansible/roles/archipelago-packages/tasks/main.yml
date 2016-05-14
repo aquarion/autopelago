@@ -1,0 +1,29 @@
+---
+
+- name: Install System Packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - python
+    - python-pip
+    - build-essential
+    - linux-headers-amd64
+    - libffi-dev
+    - libssl-dev
+    - apt-transport-https
+    - ca-certificates
+
+- name: Install Utility Packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+      - git
+      - sudo
+      - ruby
+      - gpw
+
+- name: Install Application Packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - mysql-server
+    - nginx
+    - irssi
+ 

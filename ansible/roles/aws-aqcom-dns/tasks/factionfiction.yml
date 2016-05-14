@@ -1,0 +1,48 @@
+---
+
+- name: factionfiction.net. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "factionfiction.net"
+      record: "factionfiction.net."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+
+
+
+- name: factionfiction.net. - NS
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "factionfiction.net"
+      record: "factionfiction.net."
+      type: "NS"
+      ttl: "172800"
+      value: ['ns-1302.awsdns-34.org.','ns-1969.awsdns-54.co.uk.','ns-147.awsdns-18.com.','ns-614.awsdns-12.net.']
+
+
+
+- name: factionfiction.net. - SOA
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "factionfiction.net"
+      record: "factionfiction.net."
+      type: "SOA"
+      ttl: "900"
+      value: 'ns-1302.awsdns-34.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+
+
+
+- name: www.factionfiction.net. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "factionfiction.net"
+      record: "www.factionfiction.net."
+      type: "CNAME"
+      ttl: "300"
+      value: 'factionfiction.net'
+

@@ -1,0 +1,48 @@
+---
+
+- name: warehousebasement.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "warehousebasement.com"
+      record: "warehousebasement.com."
+      type: "A"
+      ttl: "300"
+      value: '5.9.98.12'
+
+
+
+- name: warehousebasement.com. - NS
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "warehousebasement.com"
+      record: "warehousebasement.com."
+      type: "NS"
+      ttl: "172800"
+      value: ['ns-983.awsdns-58.net.','ns-1661.awsdns-15.co.uk.','ns-1161.awsdns-17.org.','ns-271.awsdns-33.com.']
+
+
+
+- name: warehousebasement.com. - SOA
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "warehousebasement.com"
+      record: "warehousebasement.com."
+      type: "SOA"
+      ttl: "900"
+      value: 'ns-983.awsdns-58.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+
+
+
+- name: www.warehousebasement.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "warehousebasement.com"
+      record: "www.warehousebasement.com."
+      type: "CNAME"
+      ttl: "300"
+      value: 'warehousebasement.com'
+
