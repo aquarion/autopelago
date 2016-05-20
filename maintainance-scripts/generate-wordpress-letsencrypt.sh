@@ -9,5 +9,8 @@ omnyom.blogs.water.gkhs.net,omnyom.com,\
 herodiaries.blogs.water.gkhs.net,herodiaries.foip.me,\
 istic.blogs.water.gkhs.net,istic.net,\
 monthlymoon.blogs.water.gkhs.net,themonthlymoon.com,\
-blogs.water.gkhs.net
+blogs.water.gkhs.net,\
+imperial.istic.net,altru.istic.net,ark.ludo.istic.net,\
+live.art.istic.net,imperial.istic.net,material.istic.net
+
 sudo service nginx start
