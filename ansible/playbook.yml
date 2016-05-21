@@ -1,11 +1,34 @@
 ---
-- hosts: localhost
+
+- hosts: all
+  become: yes
+  roles:
+   - water-gkhs-packages
+   - water-gkhs-update
+
+- hosts: archipelago.water.gkhs.net
   vars:
     hostname: archipelago.water.gkhs.net
+  become: yes
   roles:
     - archipelago-packages
     - archipelago-network
-    - ansible-docker
-    - archipelago-users
+    - water-gkhs-users
     - larpme
     - aws-aqcom-dns
+    - ansible-docker
+  tasks:
+    - user: name={{ item }} groups=docker append=yes
+      with_items:
+       - aquarion
+       - ccooke
+
+- hosts: millpond.water.gkhs.net
+  vars:
+    hostname: millpond.water.gkhs.net
+  become: yes
+  roles:
+    - millpond-packages
+    - archipelago-network
+    - water-gkhs-users
+

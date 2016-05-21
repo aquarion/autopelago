@@ -6,7 +6,6 @@
     - python
     - python-pip
     - build-essential
-    - linux-headers-amd64
     - libffi-dev
     - libssl-dev
     - apt-transport-https
@@ -15,15 +14,13 @@
 - name: Install Utility Packages
   apt: pkg={{ item }} state=installed
   with_items:
+      - vim
+      - screen
       - git
       - sudo
       - ruby
       - gpw
+      - aptitude
+      - apticron
+      
 
-- name: Install Application Packages
-  apt: pkg={{ item }} state=installed
-  with_items:
-    - mysql-server
-    - nginx
-    - irssi
- 

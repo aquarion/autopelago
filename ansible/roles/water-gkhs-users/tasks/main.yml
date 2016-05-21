@@ -1,10 +1,10 @@
 ---
 
-- name: Create Aquarion User
-  user: name=aquarion groups=docker,adm
-
-- name: Create ccooke User
-  user: name=ccooke groups=docker,adm
+- name: Create Admin Users
+  user: name={{ item }} groups=adm append=yes
+  with_items:
+   - aquarion
+   - ccooke
 
 - name: Add Aquarion key
   authorized_key: user=aquarion key=https://github.com/aquarion.keys

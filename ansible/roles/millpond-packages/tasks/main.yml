@@ -1,0 +1,15 @@
+---
+
+- name: Remove some packages
+  apt: pkg={{ item }} state=removed
+  with_items:
+    - nginx-full
+
+- name: Install Application Packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - mysql-server
+    - irssi
+    - avahi-daemon
+    - apache2
+ 
