@@ -36,15 +36,15 @@
 
 
 
-- name: cleartextcontent.co.uk. - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "cleartextcontent.co.uk"
-      record: "cleartextcontent.co.uk."
-      type: "SOA"
-      ttl: "900"
-      value: 'ns-797.awsdns-35.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+#- name: cleartextcontent.co.uk. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "cleartextcontent.co.uk"
+#      record: "cleartextcontent.co.uk."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-797.awsdns-35.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
 

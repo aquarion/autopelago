@@ -1,3 +1,5 @@
 --- 
 
 - include: dns.yml
+  tags:
+    - aws

@@ -24,15 +24,15 @@
 
 
 
-- name: aqxs.net. - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "aqxs.net"
-      record: "aqxs.net."
-      type: "SOA"
-      ttl: "900"
-      value: 'ns-1408.awsdns-48.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+#- name: aqxs.net. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "aqxs.net"
+#      record: "aqxs.net."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-1408.awsdns-48.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
 

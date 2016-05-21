@@ -24,15 +24,15 @@
 
 
 
-- name: foip.me. - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "foip.me."
-      type: "SOA"
-      ttl: "900"
-      value: 'ns-1164.awsdns-17.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+#- name: foip.me. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "foip.me"
+#      record: "foip.me."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-1164.awsdns-17.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
 

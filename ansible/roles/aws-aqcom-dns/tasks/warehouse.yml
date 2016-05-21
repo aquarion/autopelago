@@ -24,15 +24,15 @@
 
 
 
-- name: warehousebasement.com. - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "warehousebasement.com"
-      record: "warehousebasement.com."
-      type: "SOA"
-      ttl: "900"
-      value: 'ns-983.awsdns-58.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+#- name: warehousebasement.com. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "warehousebasement.com"
+#      record: "warehousebasement.com."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-983.awsdns-58.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
 

@@ -57,15 +57,15 @@
 
 
 
-- name: aquarionics.com. - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "aquarionics.com"
-      record: "aquarionics.com."
-      type: "SOA"
-      ttl: "900"
-      value: 'ns-1103.awsdns-09.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+#- name: aquarionics.com. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "aquarionics.com"
+#      record: "aquarionics.com."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-1103.awsdns-09.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
 

@@ -22,15 +22,15 @@
       value: ['ns-422.awsdns-52.com.','ns-617.awsdns-13.net.','ns-1181.awsdns-19.org.','ns-1809.awsdns-34.co.uk.']
 
 
-- name: camlarp.co.uk. - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "camlarp.co.uk"
-      record: "camlarp.co.uk."
-      type: "SOA"
-      ttl: "900"
-      value: 'ns-422.awsdns-52.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+#- name: camlarp.co.uk. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "camlarp.co.uk"
+#      record: "camlarp.co.uk."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-422.awsdns-52.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
 

@@ -24,15 +24,15 @@
 
 
 
-- name: factionfiction.net. - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "factionfiction.net"
-      record: "factionfiction.net."
-      type: "SOA"
-      ttl: "900"
-      value: 'ns-1302.awsdns-34.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+#- name: factionfiction.net. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "factionfiction.net"
+#      record: "factionfiction.net."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-1302.awsdns-34.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
 

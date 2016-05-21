@@ -34,16 +34,16 @@
         ]
 
 
-- name: Larpme DNS - SOA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "larp.me"
-      type: "SOA"
-      ttl: "300"
-      value: "ns-377.awsdns-47.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
-
+#- name: Larpme DNS - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "larp.me"
+#      record: "larp.me"
+#      type: "SOA"
+#      ttl: "300"
+#      value: "ns-377.awsdns-47.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
+#
 - name: Larpme DNS - SPF
   route53:
       overwrite: true

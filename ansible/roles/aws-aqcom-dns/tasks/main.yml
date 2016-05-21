@@ -1,9 +1,31 @@
 --- 
 
-- include: aquarionics.yml
+- name: Aquarionics DNS
+  include: aquarionics.yml
+  tags:
+    - aws
+
 - include: aqxs.yml
+  tags:
+    - aws
+
 - include: camlarp.yml
+  tags:
+    - aws
+    
 - include: cleartext.yml
+  tags:
+    - aws
+
 - include: factionfiction.yml
+  tags:
+    - aws
+
 - include: foipme.yml
+  tags:
+    - aws
+
 - include: warehouse.yml
+  tags:
+    - aws
+
