@@ -1,0 +1,15 @@
+
+- name: Install plexupdate
+  git: repo=https://github.com/mrworf/plexupdate.git dest=/root/plexupdate
+
+- name: Install plex
+  command: /root/plexupdate/plexupdate.sh -p -a chdir=/tmp creates=/etc/init/plexmediaserver.conf
+
+- name: Schedule cron for plex update
+  cron: name="plexupdate" cron_file=plexupdate user=root hour=4 job="cd /tmp;/root/plexupdate/plexupdate.sh"
+
+- name: Mount library directory
+  mount: name=/var/lib/plexmediaserver src=/dev/sdc1 state=mounted fstype=ext4
+
+- name: Mount other library directory
+  mount: name=/var/lib/plexmediaserver/SpareDrive  src=/dev/sdb1 state=mounted fstype=ext4

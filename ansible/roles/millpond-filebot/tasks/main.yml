@@ -1,0 +1,11 @@
+
+- name: Make sure plex has a bin
+  file: path=/var/lib/plexmediaserver/bin state=directory owner=plex
+
+- name: Add sortitaaht script to bin
+  template: src=sortitaaht.sh dest=/var/lib/plexmediaserver/bin/sortitaaht.sh mode=0755 owner=plex
+
+- name: Add sortitaaht cron job
+  cron: name="filebot" weekday="2" minute=0 hour=12
+        user="plex" job="/var/lib/plexmediaserver/bin/sortitaaht.sh"
+        cron_file=filebot

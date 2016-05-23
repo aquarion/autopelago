@@ -1,0 +1,11 @@
+
+# Package configuration
+filebot_version: 4.7
+filebot_mirror: "http://downloads.sourceforge.net/project/filebot/filebot/FileBot_{{ filebot_version }}"
+
+filebot_deb:
+  i386: "filebot_{{ filebot_version }}_i386.deb"
+  x86_64: "filebot_{{ filebot_version }}_amd64.deb"
+filebot_deb_url: "{{ filebot_mirror }}/{{ filebot_deb[ansible_architecture] }}"
+filebot_deb_bin: /usr/bin/filebot
+filebot_deb_tmp: "/tmp/{{ filebot_deb[ansible_architecture] }}"

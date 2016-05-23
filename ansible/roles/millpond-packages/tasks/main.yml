@@ -12,4 +12,5 @@
     - irssi
     - avahi-daemon
     - apache2
- 
+    - virtualenv
+    - virtualenvwrapper

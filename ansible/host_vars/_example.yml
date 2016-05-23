@@ -1,0 +1,6 @@
+
+flexget_tasks:
+  - { name: "an_rss_feed", rss: "http://a_url"}
+
+millpond_transmission_user: something
+millpond_transmission_pass: redacted
