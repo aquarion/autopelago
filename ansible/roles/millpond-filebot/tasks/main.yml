@@ -1,4 +1,7 @@
 
+- name: Install filebot
+  include: filebot.yml
+
 - name: Make sure plex has a bin
   file: path=/var/lib/plexmediaserver/bin state=directory owner=plex
 
@@ -9,3 +12,7 @@
   cron: name="filebot" minute="2,32"
         user="plex" job="/var/lib/plexmediaserver/bin/sortitaaht.sh"
         cron_file=filebot
+
+- name: Disable protected hardlinks (makes filebot hardlink work)
+  lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
+  notify: sysctl
