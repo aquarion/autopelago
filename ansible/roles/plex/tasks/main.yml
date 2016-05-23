@@ -8,6 +8,9 @@
 - name: Schedule cron for plex update
   cron: name="plexupdate" cron_file=plexupdate user=root hour=4 job="cd /tmp;/root/plexupdate/plexupdate.sh"
 
+- name: Set public plexupdate preferences
+  template: src=plexupdaterc dest=/root/.plexupdate
+
 - name: Mount library directory
   mount: name=/var/lib/plexmediaserver src=/dev/sdc1 state=mounted fstype=ext4
 

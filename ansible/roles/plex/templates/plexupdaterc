@@ -1,0 +1,10 @@
+{% if plex_email is defined and plex_password is defined %}
+EMAIL="{{ plex_email }}"
+PASS="{{ plex_password }}"
+{% else %}
+PUBLIC=yes
+{% endif %}
+DOWNLOADDIR=/tmp
+AUTOUPDATE=yes
+AUTOINSTALL=yes
+AUTODELETE=yes
