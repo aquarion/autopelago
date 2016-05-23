@@ -35,6 +35,14 @@
     #- millpond-kiosk
 
 
+
+- hosts: millpond.water.gkhs.net
+  tasks:
+    - name: "Transmission: check for installation"
+      register: transmission_bin
+      stat: path="/usr/bin/transmission-cli"
+
+
 - hosts: millpond.water.gkhs.net
   become: yes
   tasks:
@@ -42,14 +50,10 @@
       apt_repository: repo='ppa:openjdk-r/ppa'
   roles:
     - role: geerlingguy.java
-      when: "ansible_os_family == 'Debian'"
       java_packages:
         - openjdk-8-jdk
-
-- hosts: millpond.water.gkhs.net
-  become: yes
-  roles:
     - role: elboletaire.transmission
+      when: not transmission_bin.stat.exists
       become: yes
       transmission_user: "{{ millpond_transmission_user }}"
       transmission_password: "{{ millpond_transmission_pass }}"
