@@ -1,0 +1,8 @@
+
+- include: plex-tasks.yml
+  become: yes
+  become_user: plex
+
+- cron: name="flexget" weekday="2" minute=0 hour=12
+        user="plex" job=".virtualenvs/flexget/bin/python .virtualenvs/flexget/bin/flexget --cron execute"
+        cron_file=flexget

@@ -1,2 +1,4 @@
 - src: https://github.com/cspicer/ansible-docker
 - src: https://github.com/cspicer/ansible-apt
+- src: geerlingguy.java
+- src: elboletaire.transmission
