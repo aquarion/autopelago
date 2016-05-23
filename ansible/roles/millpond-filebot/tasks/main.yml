@@ -6,6 +6,6 @@
   template: src=sortitaaht.sh dest=/var/lib/plexmediaserver/bin/sortitaaht.sh mode=0755 owner=plex
 
 - name: Add sortitaaht cron job
-  cron: name="filebot" weekday="2" minute=0 hour=12
+  cron: name="filebot" minute="2,32"
         user="plex" job="/var/lib/plexmediaserver/bin/sortitaaht.sh"
         cron_file=filebot
