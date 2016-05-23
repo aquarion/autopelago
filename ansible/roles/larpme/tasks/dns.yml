@@ -6,7 +6,7 @@
       record: "larp.me"
       type: "A"
       ttl: "300"
-      value: '5.9.98.12'
+      value: '138.201.60.152'
 
 - name: Larpme DNS - MX
   route53:
@@ -92,7 +92,7 @@
       record: "www.larp.me"
       type: "A"
       ttl: "300"
-      value: '5.9.98.12'
+      value: '138.201.60.152'
 
 - name: Larpme DNS - Staging
   route53:
@@ -102,7 +102,7 @@
       record: "staging.larp.me"
       type: "A"
       ttl: "300"
-      value: '5.9.98.12'
+      value: '138.201.60.152'
 
 - name: Larpme DNS - Staging API
   route53:
@@ -122,4 +122,4 @@
       record: "wiki.larp.me"
       type: "A"
       ttl: "300"
-      value: '5.9.98.12'
+      value: '138.201.60.152'
