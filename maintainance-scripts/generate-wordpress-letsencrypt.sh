@@ -10,7 +10,9 @@ herodiaries.blogs.water.gkhs.net,herodiaries.foip.me,\
 istic.blogs.water.gkhs.net,istic.net,\
 monthlymoon.blogs.water.gkhs.net,themonthlymoon.com,\
 blogs.water.gkhs.net,\
-imperial.istic.net,altru.istic.net,ark.ludo.istic.net,\
+skute.me,alpha.skute.me,\
+forums.profounddecisions.co.uk,\
+imperial.istic.net,altru.istic.net,\
 live.art.istic.net,imperial.istic.net,material.istic.net
 
 sudo service nginx start
