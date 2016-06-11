@@ -1,9 +1,9 @@
-upstream container-wordpress { server 127.0.0.1:2080; }
+upstream container-skute { server 127.0.0.1:5080; }
 server {
   listen      80;
-  server_name www.aquarionics.com aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net;
+  server_name skute.me alpha.skute.me;
   location    / {
-    proxy_pass  http://container-wordpress;
+    proxy_pass  http://container-skute;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -14,12 +14,12 @@ server {
 
 server {
     listen              443 ssl;
-    server_name www.aquarionics.com aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net;
+  server_name skute.me alpha.skute.me;
     ssl_certificate /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/privkey.pem;
 
   location    / {
-    proxy_pass  http://container-wordpress;
+    proxy_pass  http://container-skute;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";

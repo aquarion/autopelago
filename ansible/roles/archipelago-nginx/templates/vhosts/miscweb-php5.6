@@ -15,8 +15,8 @@ server {
 server {
     listen              443 ssl;
     server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net;
-    ssl_certificate /etc/letsencrypt/live/www.aquarionics.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/www.aquarionics.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/privkey.pem;
 
   location    / {
     proxy_pass  http://container-php5;
