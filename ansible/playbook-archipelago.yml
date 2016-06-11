@@ -11,6 +11,7 @@
     - larpme
     - aws-aqcom-dns
     - ansible-docker
+    - archipelago-nginx
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:
