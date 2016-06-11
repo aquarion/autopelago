@@ -1,0 +1,19 @@
+---
+
+- hosts: archipelago.water.gkhs.net
+  vars:
+   - hostname: archipelago.water.gkhs.net
+  become: yes
+  roles:
+    - archipelago-packages
+    - water-gkhs-network
+    - water-gkhs-users
+    - larpme
+    - aws-aqcom-dns
+    - ansible-docker
+  tasks:
+    - user: name={{ item }} groups=docker append=yes
+      with_items:
+       - aquarion
+       - ccooke
+
