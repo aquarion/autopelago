@@ -1,0 +1,36 @@
+<VirtualHost *:80>
+
+ServerName {{ retort_server_name }}
+{% if retort_server_alias is defined %}
+ServerAlias {{ retort_server_alias }}
+{% endif %}
+
+ProxyPass / http://127.0.0.1:8000/
+ProxyPassReverse / http://127.0.0.1:8000/
+
+<Location />
+{% if retort_allow_ip is defined %}
+<RequireAny>
+    {% for range in retort_allow_ip %}
+<RequireAll>
+        Require ip {{ range }}
+    </RequireAll>
+    {% endfor %}
+{% endif %}
+
+{% if retort_htaccess is defined %}
+    <RequireAll>
+        <RequireAny>
+	AuthType Basic
+	AuthName "Restricted Resource"
+	AuthBasicProvider file
+	AuthUserFile "{{ retort_htaccess }}"
+
+            Require valid-user
+        </RequireAny>
+    </RequireAll>
+{% endif %}
+</RequireAny>
+</Location>
+
+</VirtualHost>

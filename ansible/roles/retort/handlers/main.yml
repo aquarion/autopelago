@@ -1,0 +1,11 @@
+---
+
+- name: restart retort
+  service: name=retort state=restarted
+
+- name: restart apache2
+  service: name=apache2 state=restarted
+
+- name: reload systemd daemon
+  become: yes
+  command: systemctl daemon-reload

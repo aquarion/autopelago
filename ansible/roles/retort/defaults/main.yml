@@ -1,0 +1,14 @@
+retort_run_user: www-data
+retort_run_group: www-data
+retort_install_location: /opt/retort
+
+retort_server_name: kettle.local
+
+# Optional
+#retort_server_alias: kettle.local
+
+# To restrict access, use these variables
+#retort_htaccess: /etc/apache2/users
+#retort_allow_ip: 
+# - "192.168"
+# - "82.6.184.52"
