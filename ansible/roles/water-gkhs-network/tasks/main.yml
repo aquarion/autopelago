@@ -12,5 +12,6 @@
   lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
 
 - name: hostfile for ipv6
+  when: ansible_default_ipv6.address is not undefined
   lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv6.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
 
