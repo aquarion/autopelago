@@ -4,6 +4,5 @@
   apt: pkg={{ item }} state=installed
   with_items:
     - mysql-server
-    - nginx
     - irssi
  
