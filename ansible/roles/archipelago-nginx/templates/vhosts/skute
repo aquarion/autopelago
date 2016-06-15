@@ -17,6 +17,8 @@ server {
   server_name skute.me alpha.skute.me;
     ssl_certificate /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/privkey.pem;
+    ssl_session_cache    shared:SSL:1m;
+    ssl_session_timeout  10m;
 
   location    / {
     proxy_pass  http://container-skute;

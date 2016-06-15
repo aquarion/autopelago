@@ -17,6 +17,8 @@ server {
     server_name forums.profounddecisions.co.uk pdforums.larp.me.uk;
     ssl_certificate /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/aquarionics.blogs.water.gkhs.net/privkey.pem;
+    ssl_session_cache    shared:SSL:1m;
+    ssl_session_timeout  10m;
 
   location    / {
     proxy_pass  http://container-pdforum;
