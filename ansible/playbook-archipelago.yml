@@ -8,6 +8,7 @@
     - archipelago-packages
     - water-gkhs-network
     - water-gkhs-users
+    - archipelago-users
     - larpme
     - aws-aqcom-dns
     - ansible-docker

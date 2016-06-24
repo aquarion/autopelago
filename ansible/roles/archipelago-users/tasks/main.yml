@@ -1,0 +1,9 @@
+---
+
+- name: Create normal users
+  user: name={{ item }}
+  with_items:
+   - arkserver
+
+- name: Add Aquarion key to arkserver
+  authorized_key: user=arkserver key=https://github.com/aquarion.keys
