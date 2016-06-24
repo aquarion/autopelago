@@ -1,3 +1,4 @@
 ansible/playbook.retry
 ansible/galaxy-roles
 ansible/host_vars/millpond.water.gkhs.net.yml
+ansible/host_vars/archipelago.water.gkhs.net.yml
