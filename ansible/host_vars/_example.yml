@@ -4,3 +4,5 @@ flexget_tasks:
 
 millpond_transmission_user: something
 millpond_transmission_pass: redacted
+
+letsencrypt_dir: /etc/letsencrypt/live/istic.net
