@@ -248,29 +248,37 @@
       value: 'domains.tumblr.com'
 
 
-
 - name: wiki.aquarionics.com. - A
   route53:
-      overwrite: true
-      command: "create"
-      zone: "aquarionics.com"
-      record: "wiki.aquarionics.com."
       type: "A"
       ttl: "86400"
-      value: '{{ ansible_default_ipv4.address }}'
+      zone: "aquarionics.com"
+      record: "wiki.aquarionics.com."
+      value: '138.201.60.152'
+      command: "delete"
 
 
 
 - name: wiki.aquarionics.com. - AAAA
   route53:
       overwrite: true
-      command: "create"
+      command: "delete"
       zone: "aquarionics.com"
       record: "wiki.aquarionics.com."
       type: "AAAA"
       ttl: "300"
       value: '{{ ansible_default_ipv6.address }}'
 
+
+- name: wiki.aquarionics.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "wiki.aquarionics.com."
+      type: "CNAME"
+      ttl: "86400"
+      value: 'aquarion.github.io'
 
 
 - name: www.aquarionics.com. - A
