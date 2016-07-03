@@ -5,9 +5,13 @@
   template: src={{item}} dest=/etc/nginx/sites-available/{{ item | basename }}
   with_fileglob:
    - templates/vhosts/*
+  notify:
+   - restart nginx
 
 - name: Configure nginx sites as enabled
   file: path=/etc/nginx/sites-enabled/{{ item | basename }} src=../sites-available/{{ item | basename }} state=link
   with_fileglob:
    - templates/vhosts/*
+  notify:
+   - restart nginx
 
