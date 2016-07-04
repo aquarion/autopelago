@@ -11,6 +11,7 @@ server {
     proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-For $remote_addr;
   }
+  include /etc/nginx/snippets/errors.conf;
 }
 
 server {
@@ -32,4 +33,5 @@ server {
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
   }
+  include /etc/nginx/snippets/errors.conf;
 }
