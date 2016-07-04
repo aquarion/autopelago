@@ -1,4 +1,4 @@
-upstream container-pddiscourse { server 127.0.0.1:4080; }
+upstream container-pddiscourse { server 127.0.0.1:7080; }
 
 server {
   listen      80;
