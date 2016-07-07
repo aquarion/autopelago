@@ -13,6 +13,7 @@
     - aws-aqcom-dns
     - ansible-docker
     - archipelago-nginx
+    - water-gkhs-nginx-errors
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:
