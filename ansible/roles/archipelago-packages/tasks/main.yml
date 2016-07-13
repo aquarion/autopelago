@@ -5,4 +5,5 @@
   with_items:
     - mysql-server
     - irssi
+    - exim4
  
