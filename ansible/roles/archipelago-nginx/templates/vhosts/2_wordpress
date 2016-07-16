@@ -12,7 +12,7 @@ server {
 #    proxy_set_header X-Forwarded-For $remote_addr;
 #  }
    include /etc/nginx/snippets/errors.conf;
-#  client_max_body_size 32M;
+   client_max_body_size 32M;
 }
 
 server {
@@ -38,4 +38,5 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
   include /etc/nginx/snippets/errors.conf;
+   client_max_body_size 32M;
 }
