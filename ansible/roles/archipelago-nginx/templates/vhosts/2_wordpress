@@ -22,7 +22,7 @@ server {
 
 server {
     listen              443 ssl;
-    server_name www.aquarionics.com aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net;
+    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net;
     ssl_certificate {{ letsencrypt_dir }}/fullchain.pem;
     ssl_certificate_key {{ letsencrypt_dir }}/privkey.pem;
     ssl_session_cache    shared:SSL:1m;
