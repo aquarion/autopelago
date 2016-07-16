@@ -23,5 +23,7 @@
       - gpw
       - aptitude
       - apticron
+      - etckeeper
+      - rzip
       
 
