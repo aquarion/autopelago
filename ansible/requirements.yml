@@ -2,3 +2,4 @@
 - src: https://github.com/cspicer/ansible-apt
 - src: geerlingguy.java
 - src: elboletaire.transmission
+- src: pablocrivella.heroku-toolbelt
