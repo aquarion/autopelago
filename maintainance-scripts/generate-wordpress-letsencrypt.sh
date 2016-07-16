@@ -3,7 +3,8 @@ sudo service nginx stop
 sudo letsencrypt certonly --standalone --domains \
 istic.net,\
 archipelago.water.gkhs.net,\
-aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,wywo.aquarionics.com,\
+aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,\
+wywo.blogs.water.gkhs.net,wywo.aquarionics.com,\
 factionfiction.net,www.factionfiction.net,factionfiction.blogs.water.gkhs.net,\
 cleartextcontent.blogs.water.gkhs.net,www.cleartextcontent.co.uk,cleartextcontent.co.uk,\
 idlespeculation.blogs.water.gkhs.net,idlespeculation.foip.me,\
