@@ -291,3 +291,13 @@
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
 
+- name: wywo.aquarionics.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "wywo.aquarionics.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+

@@ -5,4 +5,9 @@
   with_items:
     - mysql-server
     - irssi
- 
+    - exim4
+
+- name: Install backported packages
+  apt: pkg={{ item }} state=installed default_release=jessie-backports
+  with_items:
+    - certbot

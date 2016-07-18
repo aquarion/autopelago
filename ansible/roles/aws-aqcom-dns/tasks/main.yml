@@ -29,3 +29,7 @@
   tags:
     - aws
 
+- include: monthlymoon.yml
+  tags:
+    - aws
+    - monthlymoon
