@@ -8,7 +8,7 @@ wywo.blogs.water.gkhs.net,wywo.aquarionics.com,\
 factionfiction.net,www.factionfiction.net,factionfiction.blogs.water.gkhs.net,\
 cleartextcontent.blogs.water.gkhs.net,www.cleartextcontent.co.uk,cleartextcontent.co.uk,\
 idlespeculation.blogs.water.gkhs.net,idlespeculation.foip.me,\
-omnyom.blogs.water.gkhs.net,omnyom.com,\
+omnyom.blogs.water.gkhs.net,omnyom.com,www.omnyom.com\
 herodiaries.blogs.water.gkhs.net,herodiaries.foip.me,\
 istic.blogs.water.gkhs.net,istic.co,istic.systems,istic.network\
 monthlymoon.blogs.water.gkhs.net,themonthlymoon.com,\

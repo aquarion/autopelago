@@ -1,7 +1,7 @@
 upstream container-wordpress { server 127.0.0.1:2080; }
 server {
   listen      80;
-  server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net;
+  server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com;
   return 301 https://$host$request_uri;
 #  location    / {
 #    proxy_pass  http://container-wordpress;
@@ -21,8 +21,13 @@ server {
 }
 
 server {
+    server_name www.omnyom.com;
+    return 301 $scheme://omnyom.com$request_uri;
+}
+
+server {
     listen              443 ssl;
-    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net;
+    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com;
     ssl_certificate {{ letsencrypt_dir }}/fullchain.pem;
     ssl_certificate_key {{ letsencrypt_dir }}/privkey.pem;
     ssl_session_cache    shared:SSL:1m;
