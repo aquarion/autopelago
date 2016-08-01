@@ -1,6 +1,6 @@
 #!/bin/bash
 #sudo service nginx stop
-sudo certbot -v -t certonly --standalone --pre-hook "service nginx stop" --post-hook "service nginx start" --domains \
+sudo certbot -v -t certonly --expand --standalone --pre-hook "service nginx stop" --post-hook "service nginx start" --domains \
 istic.net,\
 archipelago.water.gkhs.net,\
 aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,\
