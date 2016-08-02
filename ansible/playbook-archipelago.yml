@@ -13,6 +13,7 @@
     - aws-aqcom-dns
     - ansible-docker
     - archipelago-nginx
+    - { role: archipelago-nginx, tags: nginx }
     #- pablocrivella.heroku-toolbelt # This needs to suck less
     - { role: water-gkhs-mysql-backup, tags: mysql }
   tasks:
