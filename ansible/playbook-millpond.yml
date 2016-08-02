@@ -11,7 +11,7 @@
     - plex
     - millpond-filebot
     - retort
-    - pablocrivella.heroku-toolbelt
+    #- pablocrivella.heroku-toolbelt # This needs to suck less
     #- millpond-kiosk
 
 
