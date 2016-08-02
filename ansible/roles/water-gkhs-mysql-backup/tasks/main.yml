@@ -16,9 +16,9 @@
 - template: src=mysql_backup.sh dest=/usr/local/bin/mysql_backup.sh mode=0755
 
 - cron: name="mysql_backup_daily" minute="16" hour="3"
-        user="root" job="/usr/local/bin/mysql_backup.sh `date +%A`"
+        user="root" job="chronic /usr/local/bin/mysql_backup.sh `date +\%A`"
         cron_file=mysql_backup_daily
 
 - cron: name="mysql_backup_monthly" minute="16" hour="0" day="1"
-        user="root" job="/usr/local/bin/mysql_backup.sh `date +%B`"
+        user="root" job="chronic /usr/local/bin/mysql_backup.sh `date +\%B`"
         cron_file=mysql_backup_monthly
