@@ -1,0 +1,24 @@
+
+# Install Mysql
+
+- apt: name=python-mysqldb state=present
+- apt: name=mysql-server state=present
+
+# Set root password
+- mysql_user: name=root password={{mysql_root_password}} check_implicit_admin=yes
+# Setup backups
+
+- file: path={{ mysql_backup_location }} state=directory mode=0755
+
+- ini_file: dest=/root/.my.cnf section=client option=user value=root mode=0600 backup=yes
+- ini_file: dest=/root/.my.cnf section=client option=password value={{mysql_root_password}} mode=0600 backup=yes
+
+- template: src=mysql_backup.sh dest=/usr/local/bin/mysql_backup.sh mode=0755
+
+- cron: name="mysql_backup_daily" minute="16" hour="3"
+        user="root" job="/usr/local/bin/mysql_backup.sh `date +%A`"
+        cron_file=mysql_backup_daily
+
+- cron: name="mysql_backup_monthly" minute="16" hour="0" day="1"
+        user="root" job="/usr/local/bin/mysql_backup.sh `date +%B`"
+        cron_file=mysql_backup_monthly
