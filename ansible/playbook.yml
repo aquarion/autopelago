@@ -7,5 +7,5 @@
    - water-gkhs-update
 
 - include: playbook-archipelago.yml
-
 - include: playbook-millpond.yml
+- include: playbook-cenote.yml
