@@ -12,6 +12,7 @@
     - millpond-filebot
     - retort
     #- pablocrivella.heroku-toolbelt # This needs to suck less
+    - water-gkhs-nginx-errors
     #- millpond-kiosk
 
 

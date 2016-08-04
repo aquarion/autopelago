@@ -17,6 +17,7 @@
     - { role: torian.filebeat, tags: logging }
     #- pablocrivella.heroku-toolbelt # This needs to suck less
     - { role: water-gkhs-mysql-backup, tags: mysql }
+    - water-gkhs-nginx-errors
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:
