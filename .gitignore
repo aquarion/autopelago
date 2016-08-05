@@ -1,4 +1,3 @@
 ansible/playbook.retry
 ansible/galaxy-roles
 certbot.log
-vaultkey.key
