@@ -9,3 +9,4 @@
 - include: playbook-archipelago.yml
 - include: playbook-millpond.yml
 - include: playbook-cenote.yml
+- include: playbook-droplet.yml

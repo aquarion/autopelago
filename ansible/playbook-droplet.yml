@@ -1,0 +1,17 @@
+---
+
+- hosts: droplet.water.gkhs.net
+  vars:
+   - hostname: droplet.water.gkhs.net
+  become: yes
+#  tasks:
+#    - apt_key: url=http://bintray.com/user/downloadSubjectPublicKey?username=bintray state=present
+#    - apt_repository: repo='deb http://dl.bintray.com/kusti8/chromium-rpi jessie main' state=present
+  roles:
+    #- droplet-packages
+    - water-gkhs-network
+    - water-gkhs-users
+    #- droplet-users
+    #- droplet-nginx
+    #- water-gkhs-nginx-errors
+    - raspi-information-radiator
