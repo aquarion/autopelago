@@ -1,7 +1,7 @@
 upstream container-php5 { server 127.0.0.1:4080; }
 server {
   listen      80;
-  server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church archipelago.water.gkhs.net;
+  server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church archipelago.water.gkhs.net;
   location    / {
     proxy_pass  http://container-php5;
     proxy_http_version 1.1;
@@ -19,8 +19,13 @@ server {
 }
 
 server {
+    server_name www.istic.net;
+    return 301 $scheme://istic.net$request_uri;
+}
+
+server {
     listen              443 ssl;
-    server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church archipelago.water.gkhs.net;
+    server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church archipelago.water.gkhs.net;
     ssl_certificate {{ letsencrypt_dir }}/fullchain.pem;
     ssl_certificate_key {{ letsencrypt_dir }}/privkey.pem;
     ssl_session_cache    shared:SSL:1m;

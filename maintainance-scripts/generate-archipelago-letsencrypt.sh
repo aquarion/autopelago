@@ -18,6 +18,6 @@ forums.profounddecisions.co.uk,\
 imperial.istic.net,altru.istic.net,log.istic.net,\
 live.art.istic.net,imperial.istic.net,material.istic.net,\
 warehousebasement.com,www.warehousebasement.com,\
-dagon.church
+dagon.church,live.dagon.church
 
 #sudo service nginx start
