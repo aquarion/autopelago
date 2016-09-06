@@ -1,4 +1,4 @@
 millpond.water.gkhs.net ansible_host=millpond.treacle.mine.nu
-droplet.water.gkhs.net ansible_host=192.168.0.23 # ansible_user=pi
+;droplet.water.gkhs.net ansible_host=192.168.0.23 # ansible_user=pi
 archipelago.water.gkhs.net
 cenote.water.gkhs.net
