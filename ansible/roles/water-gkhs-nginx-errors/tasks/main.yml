@@ -1,5 +1,5 @@
-- name: install nginx
-  apt: pkg=nginx state=installed
+#- name: install nginx
+#  apt: pkg=nginx state=installed
 
 - name: Create www errors directory
   file: path=/var/www/errors state=directory
@@ -14,5 +14,5 @@
 
 - name: configure nginx error pages
   template: src=config/errors.conf dest=/etc/nginx/snippets/errors.conf
-  notify:
-   - restart nginx
+#  notify:
+#   - restart nginx
