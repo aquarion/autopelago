@@ -1,0 +1,7 @@
+- name: Create www errors directory
+  file: path=/var/www/millpond-default state=directory
+
+- name: configure apache default pages
+  template: src=config/apache.conf dest=/etc/apache2/sites-enabled/001-millpond.conf
+  notify:
+   - restart apache
