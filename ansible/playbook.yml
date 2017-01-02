@@ -5,8 +5,13 @@
   roles:
    - water-gkhs-packages
    - water-gkhs-update
-
+   - { role: "azavea.papertrail" }
 - include: playbook-archipelago.yml
 - include: playbook-millpond.yml
 - include: playbook-cenote.yml
 #- include: playbook-droplet.yml
+
+# Non-authenticated tasks
+#- hosts: all
+#  roles:
+#   - aquarion-bootstrap

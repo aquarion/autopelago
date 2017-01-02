@@ -4,4 +4,5 @@
 - src: elboletaire.transmission
 - src: pablocrivella.heroku-toolbelt
 - src: torian.filebeat
+- src: azavea.papertrail
 #- src: charleskorn.raspi-information-radiator

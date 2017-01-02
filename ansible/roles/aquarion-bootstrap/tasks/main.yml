@@ -1,0 +1,13 @@
+---
+
+- name: Add Github Host Key
+  known_hosts:
+    path: /home/aquarion/.ssh/known_hosts
+    name: github.com
+    key: "{{ lookup('file', 'pubkeys/github.com') }}"
+
+- name: Update Aquarion Dotfiles
+  git:
+    repo: git@github.com:aquarion/dotfiles.git
+    dest: /home/aquarion/code/dotfiles
+    update: yes
