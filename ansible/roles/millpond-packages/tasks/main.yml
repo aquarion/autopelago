@@ -14,3 +14,4 @@
     - apache2
     - virtualenv
     - virtualenvwrapper
+    - python-letsencrypt-apache
