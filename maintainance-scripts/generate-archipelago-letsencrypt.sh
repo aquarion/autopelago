@@ -11,6 +11,7 @@ idlespeculation.blogs.water.gkhs.net,idlespeculation.foip.me,\
 omnyom.blogs.water.gkhs.net,omnyom.com,www.omnyom.com,\
 herodiaries.blogs.water.gkhs.net,herodiaries.foip.me,\
 istic.blogs.water.gkhs.net,istic.co,istic.systems,istic.network,\
+casu.istic.net wildfeathers.casu.istic.net,\
 monthlymoon.blogs.water.gkhs.net,themonthlymoon.com,\
 blogs.water.gkhs.net,\
 skute.me,alpha.skute.me,\
