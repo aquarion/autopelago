@@ -9,7 +9,7 @@
     - water-gkhs-network
     - water-gkhs-users
     - archipelago-users
-    - larpme
+    - { role: larpme, tags: larpme }
     - aws-aqcom-dns
     - ansible-docker
     - archipelago-nginx
