@@ -149,7 +149,7 @@
     overwrite: true
     command: "create"
     zone: "larp.me"
-    record: "pdforums.larp.me"
+    record: "postmark.pdforums.larp.me"
     value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
     type: "SPF"
     ttl: 300
