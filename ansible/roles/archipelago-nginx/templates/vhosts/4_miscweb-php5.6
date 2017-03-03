@@ -26,10 +26,7 @@ server {
 server {
     listen              443 ssl;
     server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net;
-    ssl_certificate {{ letsencrypt_dir }}/fullchain.pem;
-    ssl_certificate_key {{ letsencrypt_dir }}/privkey.pem;
-    ssl_session_cache    shared:SSL:1m;
-    ssl_session_timeout  10m;
+    include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {
     proxy_pass  http://container-php5;

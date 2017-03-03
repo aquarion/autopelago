@@ -1,6 +1,9 @@
 - name: install nginx
   apt: pkg=nginx state=installed
 
+- name: configure letsencrypt config
+  template: src=config/letsencrypt.conf dest=/etc/nginx/snippets/letsencrypt.conf
+
 - name: configure nginx sites as available
   template: src={{item}} dest=/etc/nginx/sites-available/{{ item | basename }}
   with_fileglob:
