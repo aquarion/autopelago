@@ -2,7 +2,7 @@ upstream container-pddiscourse { server 127.0.0.1:7080; }
 
 server {
   listen      80;
-  server_name pdforums.casu.istic.net;
+  server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
   location    / {
     proxy_pass  http://container-pddiscourse;
     proxy_http_version 1.1;
@@ -17,7 +17,7 @@ server {
 # SSL
 server {
     listen              443 ssl;
-    server_name pdforums.casu.istic.net;
+    server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {
