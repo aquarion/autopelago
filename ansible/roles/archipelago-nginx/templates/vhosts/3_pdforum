@@ -1,7 +1,7 @@
 upstream container-pdforum { server 127.0.0.1:3080; }
 server {
   listen      80;
-  server_name oldpdforum.pdforums.larp.me.uk;
+  server_name old.pdforums.larp.me;
   location    / {
     proxy_pass  http://container-pdforum;
     proxy_http_version 1.1;
@@ -15,7 +15,7 @@ server {
 
 server {
     listen              443 ssl;
-    server_name oldpdforum.pdforums.larp.me.uk;
+    server_name old.pdforums.larp.me;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {
