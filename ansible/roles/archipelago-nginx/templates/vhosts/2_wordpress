@@ -1,7 +1,7 @@
 upstream container-wordpress { server 127.0.0.1:2080; }
 server {
   listen      80;
-  server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me;
+  server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com;
   return 301 https://$host$request_uri;
 #  location    / {
 #    proxy_pass  http://container-wordpress;
@@ -32,7 +32,7 @@ server {
 
 server {
     listen              443 ssl;
-    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk;
+    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {
