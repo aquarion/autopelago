@@ -1,0 +1,1 @@
+ansible/host_vars/*net.yml diff=ansible-vault merge=binary
