@@ -1,0 +1,9 @@
+--- 
+
+- include: dns.yml
+  tags:
+    - aws
+
+- include: iam.yml
+  tags:
+    - aws

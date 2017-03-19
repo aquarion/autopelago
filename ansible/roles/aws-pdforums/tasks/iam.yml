@@ -1,0 +1,16 @@
+- name: Create discourse IAM users
+  iam:
+    iam_type: user
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pdforums-discourse
+
+
+- name: Attach all-access S3 policy to discourse user
+  iam_policy:
+    iam_type: user
+    iam_name: "pdforums-discourse"
+    policy_name: discourse-bucket-access
+    state: present
+    policy_json: "{{ lookup( 'file', 'discourse-bucket-access.json') }}"

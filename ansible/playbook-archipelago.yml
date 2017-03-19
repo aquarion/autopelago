@@ -11,6 +11,7 @@
     - archipelago-users
     - { role: larpme, tags: larpme }
     - aws-aqcom-dns
+    - { role: aws-pdforums , tags: pdforum }
     - ansible-docker
     - { role: archipelago-nginx, tags: nginx }
     - { role: torian.filebeat, tags: logging }
