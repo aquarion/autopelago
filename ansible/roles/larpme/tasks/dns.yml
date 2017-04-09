@@ -104,6 +104,16 @@
       ttl: "300"
       value: '138.201.60.152'
 
+- name: Larpme DNS - Local Dev
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "local.larp.me"
+      type: "A"
+      ttl: "300"
+      value: '138.201.60.152'
+
 - name: Larpme DNS - Staging
   route53:
       overwrite: true
