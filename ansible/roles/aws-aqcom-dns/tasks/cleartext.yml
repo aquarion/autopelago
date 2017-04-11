@@ -10,8 +10,6 @@
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
 
-
-
 - name: cleartextcontent.co.uk. - MX
   route53:
       overwrite: true
@@ -21,8 +19,6 @@
       type: "MX"
       ttl: "300"
       value: '10 cenote.gkhs.net'
-
-
 
 - name: cleartextcontent.co.uk. - NS
   route53:

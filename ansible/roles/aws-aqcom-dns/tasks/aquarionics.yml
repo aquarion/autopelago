@@ -20,8 +20,6 @@
       ttl: "300"
       value: '{{ ansible_default_ipv6.address }}'
 
-
-
 - name: aquarionics.com. - MX
   route53:
       overwrite: true
@@ -30,15 +28,7 @@
       record: "aquarionics.com."
       type: "MX"
       ttl: "300"
-      value: [
-        '10 ASPMX.L.GOOGLE.COM.',
-        '10 ALT1.ASPMX.L.GOOGLE.COM.',
-        '20 ALT2.ASPMX.L.GOOGLE.COM.',
-        '20 ASPMX2.GOOGLEMAIL.COM.',
-        '30 ASPMX3.GOOGLEMAIL.COM.'
-        ]
-
-
+      value: "10 ASPMX.L.GOOGLE.COM.,10 ALT1.ASPMX.L.GOOGLE.COM.,20 ALT2.ASPMX.L.GOOGLE.COM.,20 ASPMX2.GOOGLEMAIL.COM.,30 ASPMX3.GOOGLEMAIL.COM."
 
 - name: aquarionics.com. - NS
   route53:
@@ -49,10 +39,10 @@
       type: "NS"
       ttl: "172800"
       value: [
-        'ns-1103.awsdns-09.org.',
-        'ns-1667.awsdns-16.co.uk.',
-        'ns-275.awsdns-34.com.',
-        'ns-1004.awsdns-61.net.'
+        "ns-1103.awsdns-09.org.",
+        "ns-1667.awsdns-16.co.uk.",
+        "ns-275.awsdns-34.com.",
+        "ns-1004.awsdns-61.net."
         ]
 
 

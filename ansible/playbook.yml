@@ -12,6 +12,6 @@
 #- include: playbook-droplet.yml
 
 # Non-authenticated tasks
-#- hosts: all
-#  roles:
-#   - aquarion-bootstrap
+- hosts: all
+  roles:
+   - aquarion-bootstrap
