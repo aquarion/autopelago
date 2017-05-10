@@ -13,7 +13,12 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
   }
-  include /etc/nginx/snippets/errors.conf;
+
+  error_page 502 /502_empire.html;
+  location = /502_empire.html {
+  	root /var/www/errors/;
+  	internal;
+  }
 
   gzip on;
   gzip_min_length 1000;
@@ -39,7 +44,12 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
   }
-  include /etc/nginx/snippets/errors.conf;
+
+  error_page 502 /502_empire.html;
+  location = /502_empire.html {
+  	root /var/www/errors/;
+  	internal;
+  }
 
   gzip on;
   gzip_min_length 1000;
