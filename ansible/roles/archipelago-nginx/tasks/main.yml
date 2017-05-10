@@ -18,5 +18,19 @@
   notify:
    - restart nginx
 
+- name: Configure dead nginx sites as disabled
+  file: path=/etc/nginx/sites-enabled/{{ item | basename }} state=absent
+  with_fileglob:
+   - templates/deleted_vhosts/*
+  notify:
+   - restart nginx
+
+- name: Configure dead nginx sites as unavailable
+  file: path=/etc/nginx/sites-available/{{ item | basename }} state=absent
+  with_fileglob:
+   - templates/deleted_vhosts/*
+  notify:
+   - restart nginx
+
 - name: Fix diffie-hellman insecurites
   include: diffie-hellman.yml
