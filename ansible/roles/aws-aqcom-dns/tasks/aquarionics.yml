@@ -38,12 +38,7 @@
       record: "aquarionics.com."
       type: "NS"
       ttl: "172800"
-      value: [
-        "ns-1103.awsdns-09.org.",
-        "ns-1667.awsdns-16.co.uk.",
-        "ns-275.awsdns-34.com.",
-        "ns-1004.awsdns-61.net."
-        ]
+      value: ns-1103.awsdns-09.org.,ns-1667.awsdns-16.co.uk.,ns-275.awsdns-34.com.,ns-1004.awsdns-61.net.
 
 
 

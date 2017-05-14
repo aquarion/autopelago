@@ -20,7 +20,7 @@
       record: "factionfiction.net."
       type: "NS"
       ttl: "172800"
-      value: ['ns-1302.awsdns-34.org.','ns-1969.awsdns-54.co.uk.','ns-147.awsdns-18.com.','ns-614.awsdns-12.net.']
+      value: ns-1302.awsdns-34.org., ns-1969.awsdns-54.co.uk., ns-147.awsdns-18.com., ns-614.awsdns-12.net.
 
 
 

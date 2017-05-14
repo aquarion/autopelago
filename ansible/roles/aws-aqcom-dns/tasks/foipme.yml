@@ -20,7 +20,7 @@
       record: "foip.me."
       type: "NS"
       ttl: "172800"
-      value: ['ns-1164.awsdns-17.org.','ns-1794.awsdns-32.co.uk.','ns-76.awsdns-09.com.','ns-979.awsdns-58.net.']
+      value: ns-1164.awsdns-17.org., ns-1794.awsdns-32.co.uk., ns-76.awsdns-09.com., ns-979.awsdns-58.net.
 
 
 

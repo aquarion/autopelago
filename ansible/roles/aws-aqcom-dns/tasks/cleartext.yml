@@ -28,7 +28,7 @@
       record: "cleartextcontent.co.uk."
       type: "NS"
       ttl: "172800"
-      value: ['ns-797.awsdns-35.net.','ns-39.awsdns-04.com.','ns-2024.awsdns-61.co.uk.','ns-1219.awsdns-24.org.']
+      value: ns-797.awsdns-35.net., ns-39.awsdns-04.com., ns-2024.awsdns-61.co.uk., ns-1219.awsdns-24.org.
 
 
 
