@@ -1,3 +1,10 @@
+
+- name: Install Required Application Packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - python-dev
+    - libsystemd-dev
+
 - name: "Create directories {{ retort_install_location }}"
   file: path={{ retort_install_location }} state=directory mode=0755 owner={{ retort_run_user }} group={{ retort_run_group }}
 
