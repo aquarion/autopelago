@@ -47,6 +47,15 @@
       value: '109.74.192.161'
 
 
+- name: diaspora.foip.me. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "foip.me"
+      record: "diaspora.foip.me."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
 
 - name: herodiaries.foip.me. - A
   route53:
