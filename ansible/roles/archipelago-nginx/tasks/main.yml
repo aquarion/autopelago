@@ -32,5 +32,18 @@
   notify:
    - restart nginx
 
+- name: Configure nginx redirects
+  template: src=config/redirects.nginx.j2 dest=/etc/nginx/conf.d/www_redirects.conf
+  vars:
+    add_www:
+    - aquarionics.com
+    - cleartextcontent.co.uk
+    remove_www:
+    - omnyom.com
+    - factionfiction.net
+    - warehousebasement.com
+  notify:
+   - restart nginx
+
 - name: Fix diffie-hellman insecurites
   include: diffie-hellman.yml

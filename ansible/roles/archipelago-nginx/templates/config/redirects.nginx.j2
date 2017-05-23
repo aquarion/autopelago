@@ -1,0 +1,27 @@
+
+
+{% for domain in remove_www %}
+server {
+    listen 80;
+    listen [::]:80;
+    charset UTF-8;
+
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.{{domain}};
+    return 301 $scheme://{{domain}}$request_uri;
+}
+{% endfor %}
+
+{% for domain in add_www %}
+server {
+    listen 80;
+    listen [::]:80;
+    charset UTF-8;
+
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {{domain}};
+    return 301 $scheme://www.{{domain}}$request_uri;
+}
+{% endfor %}
