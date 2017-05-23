@@ -2,6 +2,7 @@ upstream container-larpme { server 127.0.0.1:6080; }
 upstream container-larpme-ssl { server 127.0.0.1:6443; }
 server {
   listen      80;
+  listen [::]:80;
   server_name www.larp.me larp.me api.larp.me;
   return 301 https://$host$request_uri;
   include /etc/nginx/snippets/errors.conf;
@@ -9,7 +10,8 @@ server {
 
 
 server {
-    listen              443 ssl;
+    listen 443 ssl;
+    listen [::]:443 ssl;
     server_name www.larp.me larp.me api.larp.me;
     include /etc/nginx/snippets/letsencrypt.conf;
 

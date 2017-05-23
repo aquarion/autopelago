@@ -1,20 +1,11 @@
 upstream container-wordpress { server 127.0.0.1:2080; }
 server {
     listen      80;
-    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com;
-   return 301 https://$host$request_uri;
-   include /etc/nginx/snippets/errors.conf;
-   client_max_body_size 32M;
-}
-
-server {
-    server_name aquarionics.com;
-    return 301 $scheme://www.aquarionics.com$request_uri;
-}
-
-server {
-    server_name www.omnyom.com;
-    return 301 $scheme://omnyom.com$request_uri;
+    listen [::]:80;
+    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com;
+    return 301 https://$host$request_uri;
+    include /etc/nginx/snippets/errors.conf;
+    client_max_body_size 32M;
 }
 
 server {
@@ -24,14 +15,11 @@ server {
     return 301 $scheme://istic.net;
 }
 
-server {
-    server_name cleartextcontent.co.uk;
-    return 301 $scheme://www.cleartextcontent.co.uk$request_uri;
-}
 
 server {
-    listen              443 ssl;
-    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net www.factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {
