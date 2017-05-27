@@ -17,7 +17,7 @@ www.gkhs.net,\
 aqxs.net,www.aqxs.net,\
 live.dailyphoto.aquarionics.com,\
 empireproxy.aqxs.net,fourrivers.foip.me,larp.me.uk,www.larp.me.uk,ornithocracy.aqxs.net,\
-mosaiclarp.info,ref.mosaiclarp.info,www.mosaiclarp.info
+mosaiclarp.info,ref.mosaiclarp.info,www.mosaiclarp.info,\
 gossip.ankhmorporktimes.com,quotes.afphrid.org.uk,\
 maelfroth.org,lampstand.aqxs.net,lampstand.maelfroth.org,obviouslyfakeurl.foip.me,rickroll.maelfroth.org,wiki.maelfroth.org,www.maelfroth.com,www.maelfroth.org,maelfroth.com,\
 lottery.aqxs.net,snakesandladders.aqxs.net,spycattes.aqxs.net,unhelpfulclue.aqxs.net,\
