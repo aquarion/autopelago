@@ -1,0 +1,16 @@
+
+
+- name: Install System Packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - apt-listchanges
+  tags:
+    - listchanges
+
+- name: Config list-changes
+  lineinfile:
+    path: /etc/apt/listchanges.conf
+    regexp: '^email_address'
+    line: "email_address='nicholas+{{ ansible_hostname }}cron@aquarionics.com'"
+  tags:
+    - listchanges

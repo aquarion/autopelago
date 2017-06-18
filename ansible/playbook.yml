@@ -4,6 +4,7 @@
   become: yes
   roles:
    - water-gkhs-packages
+   - water-gkhs-listchanges
    - water-gkhs-update
    - { role: "azavea.papertrail" }
 - include: playbook-archipelago.yml
