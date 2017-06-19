@@ -15,6 +15,7 @@
     - apt-transport-https
     - ca-certificates
     - etckeeper
+    - fail2ban
 
 - name: Install Utility Packages
   apt: pkg={{ item }} state=installed

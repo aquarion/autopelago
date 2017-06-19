@@ -5,6 +5,8 @@
     path: /home/aquarion/.ssh/known_hosts
     name: github.com
     key: "{{ lookup('file', 'pubkeys/github.com') }}"
+  tags:
+    - github
 
 - name: Update Aquarion Dotfiles
   git:
