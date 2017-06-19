@@ -6,7 +6,7 @@
    - water-gkhs-packages
    - water-gkhs-listchanges
    - water-gkhs-update
-   - { role: "azavea.papertrail" }
+   - { role: "azavea.papertrail", tags: papertrail }
 - include: playbook-archipelago.yml
 - include: playbook-millpond.yml
 - include: playbook-cenote.yml
