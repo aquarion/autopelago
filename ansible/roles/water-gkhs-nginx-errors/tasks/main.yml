@@ -18,7 +18,17 @@
   stat: path="/etc/nginx/nginx.conf"
 
 - name: configure nginx error pages
-  template: src=config/errors.conf dest=/etc/nginx/snippets/errors.conf
+  template: src=config/errors_nginx.conf dest=/etc/nginx/snippets/errors.conf
   when: nginx_installed.stat.exists
+  notify:
+   - restart nginx
+
+- name: "Apache: check for installation"
+  register: apache_installed
+  stat: path="/etc/apache2/apache2.conf"
+
+- name: configure apache error pages
+  template: src=config/errors_apache.conf dest=/etc/apache2/conf-enabled/errors.conf
+  when: apache_installed.stat.exists
   notify:
    - restart nginx
