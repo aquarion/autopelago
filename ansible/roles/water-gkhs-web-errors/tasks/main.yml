@@ -9,9 +9,8 @@
   with_fileglob:
    - templates/errors/*
 
-- name: configure nginx base page
+- name: configure web base page
   template: src=host_not_found.html dest=/var/www/html/index.html
-
 
 - name: "Nginx: check for installation"
   register: nginx_installed
@@ -31,4 +30,4 @@
   template: src=config/errors_apache.conf dest=/etc/apache2/conf-enabled/errors.conf
   when: apache_installed.stat.exists
   notify:
-   - restart nginx
+   - restart apache
