@@ -17,6 +17,14 @@
     - etckeeper
     - fail2ban
 
+- name: config fail2ban
+  lineinfile:
+    path: /etc/fail2ban/fail2ban.conf
+    regexp: '^logtarget'
+    line: "logtarget = SYSLOG"
+  notify:
+    restart fail2ban
+
 - name: Install Utility Packages
   apt: pkg={{ item }} state=installed
   with_items:

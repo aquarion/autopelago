@@ -6,11 +6,85 @@
    - water-gkhs-packages
    - water-gkhs-listchanges
    - water-gkhs-update
+   - water-gkhs-network
+   - water-gkhs-users
    - { role: "azavea.papertrail", tags: papertrail }
-- include: playbook-archipelago.yml
-- include: playbook-millpond.yml
-- include: playbook-cenote.yml
-#- include: playbook-droplet.yml
+
+- hosts: archipelago_cenote
+  become: yes
+  roles:
+    - { role: water-gkhs-mysql-backup, tags: mysql }
+    # - { role: torian.filebeat, tags: logging }
+
+- hosts: nginx_hosts
+  become: yes
+  roles:
+    - { role: water-gkhs-nginx, tags: nginx }
+    - { role: water-gkhs-nginx-errors, tags: nginx }
+
+- hosts: archipelago.water.gkhs.net
+  become: yes
+  roles:
+    - archipelago-packages
+    - archipelago-users
+    - { role: larpme, tags: larpme }
+    - aws-aqcom-dns
+    - { role: aws-pdforums , tags: pdforum }
+    - ansible-docker
+    - { role: archipelago-nginx, tags: nginx }
+  tasks:
+    - user: name={{ item }} groups=docker append=yes
+      with_items:
+       - aquarion
+       - ccooke
+
+
+- hosts: millpond.water.gkhs.net
+  vars:
+    hostname: millpond.water.gkhs.net
+  become: yes
+  roles:
+    - millpond-packages
+    - plex
+    - millpond-filebot
+    - retort
+    - water-gkhs-nginx-errors
+
+- hosts: millpond.water.gkhs.net
+  become: yes
+  tasks:
+    - name: "Transmission: check for installation"
+      register: transmission_bin
+      stat: path="/usr/bin/transmission-cli"
+    - name: installing repo for Java 8 in Ubuntu
+      apt_repository: repo='ppa:openjdk-r/ppa'
+
+- hosts: millpond.water.gkhs.net
+  become: yes
+  roles:
+    - role: geerlingguy.java
+      java_packages:
+        - openjdk-8-jdk
+    - role: elboletaire.transmission
+      when: not transmission_bin.stat.exists
+      become: yes
+      transmission_user: "{{ millpond_transmission_user }}"
+      transmission_password: "{{ millpond_transmission_pass }}"
+      transmission_rpc_auth_required: true
+      transmission_rpc_whitelist_enabled: true
+      transmission_umask: "002"
+      transmission_rpc_whitelist: "127.0.0.1,192.168.100.*"
+      transmission_incomplete_dir: /var/lib/plexmediaserver/Torrential/Progress
+      transmission_incomplete_dir_enabled: true
+      transmission_download_dir: /var/lib/plexmediaserver/Torrential/Completed
+    - role: millpond-flexget
+  tasks:
+   # Clear up Transmission permissions
+   - file: group=debian-transmission mode=g+wx path=/var/lib/plexserver/Torrential/Progress
+   - file: group=debian-transmission mode=g+wx path=/var/lib/plexserver/Torrential/Complete
+   - user: name=debian-tranmission groups=plex append=yes
+   - user: name=plex groups=debian-tranmission append=yes
+
 
 # Non-authenticated tasks
 - hosts: all

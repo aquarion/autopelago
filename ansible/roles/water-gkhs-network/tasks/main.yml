@@ -2,11 +2,13 @@
 - name: Set hostname
   hostname: name={{ hostname }}
 
-- name: Resovle to gkhs.net
-  lineinfile: dest=/etc/resolv.conf line="domain water.gkhs.net"
+- name: Resolve to gkhs.net
+  lineinfile: dest=/etc/dhcp/dhclient.conf  line='supersede domain-name "water.gkhs.net";'
+  notify: renew dhcp
 
 - name: Search to gkhs.net
-  lineinfile: dest=/etc/resolv.conf line="search water.gkhs.net gkhs.net"
+  lineinfile: dest=/etc/dhcp/dhclient.conf  line='supersede domain-search "water.gkhs.net gkhs.net";'
+  notify: renew dhcp
 
 - name: hostfile for ipv4
   lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
@@ -14,4 +16,3 @@
 - name: hostfile for ipv6
   when: ansible_default_ipv6.address is not undefined
   lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv6.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
-

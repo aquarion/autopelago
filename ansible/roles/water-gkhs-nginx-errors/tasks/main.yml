@@ -4,7 +4,7 @@
 - name: Create www errors directory
   file: path=/var/www/errors state=directory
 
-- name: configure nginx error pages
+- name: configure istic error pages
   template: src={{item}} dest=/var/www/errors/{{ item | basename }}
   with_fileglob:
    - templates/errors/*
@@ -12,7 +12,13 @@
 - name: configure nginx base page
   template: src=host_not_found.html dest=/var/www/html/index.html
 
+
+- name: "Nginx: check for installation"
+  register: nginx_installed
+  stat: path="/etc/nginx/nginx.conf"
+
 - name: configure nginx error pages
   template: src=config/errors.conf dest=/etc/nginx/snippets/errors.conf
-#  notify:
-#   - restart nginx
+  when: nginx_installed.stat.exists
+  notify:
+   - restart nginx
