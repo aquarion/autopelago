@@ -88,6 +88,15 @@
       ttl: "300"
       value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
 
+- name: live.aquarionics.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "live.aquarionics.com."
+      type: "CNAME"
+      ttl: "300"
+      value: 'www.aquarionics.com'
 
 
 - name: cdn.aquarionics.com. - CNAME
