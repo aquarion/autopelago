@@ -19,7 +19,7 @@ forums.profounddecisions.co.uk,\
 imperial.istic.net,altru.istic.net,log.istic.net,\
 live.art.istic.net,imperial.istic.net,material.istic.net,\
 warehousebasement.com,www.warehousebasement.com,\
-dagon.church,live.dagon.church,\
+dagon.church,live.dagon.church,wiki.dagon.church,\
 mechan.istic.net,\
 larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,\
 diaspora.foip.me
