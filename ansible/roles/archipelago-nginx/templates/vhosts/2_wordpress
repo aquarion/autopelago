@@ -1,4 +1,19 @@
 upstream container-wordpress { server 127.0.0.1:2080; }
+
+server {
+    listen              443 ssl;
+    listen              80;
+    server_name herodiaries.blogs.water.gkhs.net
+    return 301 $scheme://herodiaries.foip.me;
+}
+
+server {
+    listen              443 ssl;
+    listen              80;
+    server_name istic.co istic.network www.istic.co www.istic.network www.istic.net;
+    return 301 $scheme://istic.net;
+}
+
 server {
     listen      80;
     listen [::]:80;
@@ -11,8 +26,8 @@ server {
 server {
     listen              443 ssl;
     listen              80;
-    server_name istic.co istic.network www.istic.co www.istic.network www.istic.net;
-    return 301 $scheme://istic.net;
+    server_name herodiaries.blogs.water.gkhs.net
+    return 301 $scheme://herodiaries.foip.me;
 }
 
 server {
