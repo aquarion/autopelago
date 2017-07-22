@@ -7,7 +7,7 @@
     - irssi
     - exim4
 
-- name: Install backported packages
-  apt: pkg={{ item }} state=installed default_release=jessie-backports
-  with_items:
-    - certbot
+#- name: Install backported packages
+#  apt: pkg={{ item }} state=installed default_release=jessie-backports
+#  with_items:
+#    - certbot
