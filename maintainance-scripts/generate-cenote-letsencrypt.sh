@@ -23,13 +23,13 @@ maelfroth.org,lampstand.aqxs.net,lampstand.maelfroth.org,obviouslyfakeurl.foip.m
 lottery.aqxs.net,snakesandladders.aqxs.net,spycattes.aqxs.net,unhelpfulclue.aqxs.net,\
 ludo.istic.net,\
 mc.aqxs.net,mcwp.aqxs.net,www.contrarythoughts.com,contrarythoughts.com,\
-moth.aqxs.net,\
 duckgoose.aqxs.net,\
 nicholasavenell.com,www.nicholasavenell.com,\
 voicemail.aqxs.net,\
 www.deadbadgerdesigns.co.uk,deadbadgerdesigns.co.uk,\
 www.grantabruggehamstery.aqxs.net,www.grantabruggehamstery.co.uk,grantabruggehamstery.co.uk,\
-www.pinsandneedlescostume.co.uk,pinsandneedlescostume.co.uk
+www.pinsandneedlescostume.co.uk,pinsandneedlescostume.co.uk,\
+thomwillis.uk,thomwillis.uk,moth.aqxs.net
 
  #mothinabutterfly.net,www.mothinabutterfly.net,\
  #swatt.treasuretrap.co.uk,
