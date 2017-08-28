@@ -9,7 +9,7 @@
   template: src=plexupdate.cron.conf dest=/etc/plexupdate.cron.conf
 
 - name: Set public plexupdate preferences
-  template: src=plexupdaterc dest=/etc/plexupdate.conf
+  template: src=plexupdate.conf dest=/etc/plexupdate.conf
 
 - name: Install plex
   command: /root/plexupdate/plexupdate.sh -p -a chdir=/tmp creates=/etc/init/plexmediaserver.conf
