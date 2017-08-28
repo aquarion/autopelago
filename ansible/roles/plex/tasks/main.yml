@@ -1,15 +1,5 @@
-
-- name: Install plexupdate
-  git: repo=https://github.com/mrworf/plexupdate.git dest=/root/plexupdate
-
-- name: Install plex
-  command: /root/plexupdate/plexupdate.sh -p -a chdir=/tmp creates=/etc/init/plexmediaserver.conf
-
-- name: Schedule cron for plex update
-  cron: name="plexupdate" cron_file=plexupdate user=root hour=4 minute=47 job="cd /tmp;/root/plexupdate/plexupdate.sh"
-
-- name: Set public plexupdate preferences
-  template: src=plexupdaterc dest=/root/.plexupdate
+- name: Install Plexupdate
+  include: plexupdate.yml
 
 - name: Mount library directory
   mount: name=/var/lib/plexmediaserver src=/dev/mapper/oceanus--vg-media state=mounted fstype=ext4
