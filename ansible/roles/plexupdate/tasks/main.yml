@@ -1,0 +1,28 @@
+
+- name: Fetch plexupdate
+  git: repo=https://github.com/mrworf/plexupdate.git dest=/root/plexupdate
+
+- name: Install plexupdate
+  git: repo=https://github.com/mrworf/plexupdate.git dest=/root/plexupdate
+
+- name: Set cron plexupdate preferences
+  template: src=plexupdate.cron.conf dest=/etc/plexupdate.cron.conf
+
+- name: Set public plexupdate preferences
+  template: src=plexupdate.conf dest=/etc/plexupdate.conf
+
+- name: Install plex
+  command: /root/plexupdate/plexupdate.sh -p -a chdir=/tmp creates=/etc/init/plexmediaserver.conf
+
+- name: Add cron
+  file: 
+    src: /root/plexupdate/extras/cronwrapper
+    dest: /etc/cron.daily/plexupdate
+    state: link
+
+## Remove old stuff
+- name: remove old cron for plex update
+  cron: name="plexupdate" cron_file=plexupdate user=root hour=4 minute=47 job="cd /tmp;/root/plexupdate/plexupdate.sh" state=absent
+
+- name: Remove old plex update
+  file: path=/root/.plexupdate state=absent

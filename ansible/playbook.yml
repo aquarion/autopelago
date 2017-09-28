@@ -45,7 +45,8 @@
   become: yes
   roles:
     - millpond-packages
-    - plex
+    - millpond-mount-media
+    - plexupdate
     - millpond-filebot
     - retort
 

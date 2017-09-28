@@ -1,0 +1,2 @@
+- name: Mount library directory
+  mount: name=/var/lib/plexmediaserver src=/dev/mapper/oceanus--vg-media state=mounted fstype=ext4
