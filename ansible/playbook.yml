@@ -30,7 +30,7 @@
     - { role: larpme, tags: larpme }
     - aws-aqcom-dns
     - { role: aws-pdforums , tags: pdforum }
-    - ansible-docker
+    - mongrelion.docker
     - { role: archipelago-nginx, tags: nginx }
   tasks:
     - user: name={{ item }} groups=docker append=yes
