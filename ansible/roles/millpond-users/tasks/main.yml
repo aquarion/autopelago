@@ -1,0 +1,17 @@
+---
+
+- name: Create normal users
+  user: name={{ item }}
+  with_items:
+   - plex
+
+- name: Delete normal users
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: yes
+  with_items:
+   - arkserver
+
+- name: Add Aquarion key to plex
+  authorized_key: user=plex key=https://github.com/aquarion.keys
