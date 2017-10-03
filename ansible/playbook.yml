@@ -15,7 +15,6 @@
   become: yes
   roles:
     - { role: water-gkhs-mysql-backup, tags: mysql }
-    # - { role: torian.filebeat, tags: logging }
 
 - hosts: nginx_hosts
   become: yes
@@ -30,7 +29,6 @@
     - { role: larpme, tags: larpme }
     - aws-aqcom-dns
     - { role: aws-pdforums , tags: pdforum }
-    - mongrelion.docker
     - { role: archipelago-nginx, tags: nginx }
   tasks:
     - user: name={{ item }} groups=docker append=yes

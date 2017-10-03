@@ -1,4 +1,3 @@
-- src: mongrelion.docker
 #- src: https://github.com/cspicer/ansible-apt
 - src: https://github.com/Fsero/ansible-apt.git
   version: removing_warning_in_ansible_2
