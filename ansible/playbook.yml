@@ -50,6 +50,7 @@
     - plexupdate
     - millpond-filebot
     - retort
+    - ansible-homebridge
 
 - hosts: millpond.water.gkhs.net
   become: yes
