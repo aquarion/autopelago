@@ -16,7 +16,7 @@ avenell.me.uk,www.avenell.me.uk,avenell.me,www.avenell.me,\
 www.gkhs.net,\
 aqxs.net,www.aqxs.net,\
 live.dailyphoto.aquarionics.com,\
-empireproxy.aqxs.net,fourrivers.foip.me,larp.me.uk,www.larp.me.uk,ornithocracy.aqxs.net,\
+empireproxy.aqxs.net,fourrivers.foip.me,larp.me.uk,www.larp.me.uk,ornithocracy.aqxs.net,forgotten.foip.me,\
 mosaiclarp.info,ref.mosaiclarp.info,www.mosaiclarp.info,\
 gossip.ankhmorporktimes.com,quotes.afphrid.org.uk,\
 maelfroth.org,lampstand.aqxs.net,lampstand.maelfroth.org,obviouslyfakeurl.foip.me,rickroll.maelfroth.org,wiki.maelfroth.org,www.maelfroth.com,www.maelfroth.org,maelfroth.com,\
