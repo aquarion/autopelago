@@ -36,6 +36,7 @@
     - omnyom.com
     - factionfiction.net
     - warehousebasement.com
+    - skute.me
     - clockworkcircus.zone
   notify:
    - restart nginx
