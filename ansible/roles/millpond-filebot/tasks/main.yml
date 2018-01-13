@@ -2,8 +2,16 @@
 - name: Install filebot
   include: filebot.yml
 
+- name: Disable protected hardlinks (makes filebot hardlink work)
+  lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
+  notify: sysctl
+
+# Script support
 - name: Make sure plex has a bin
   file: path=/var/lib/plexmediaserver/bin state=directory owner=plex
+
+
+# Sort It Ahht
 
 - name: Add sortitaaht script to bin
   template: src=sortitaaht.sh dest=/var/lib/plexmediaserver/bin/sortitaaht.sh mode=0755 owner=plex
@@ -12,7 +20,17 @@
   cron: name="filebot" minute="2,32"
         user="plex" job="/var/lib/plexmediaserver/bin/sortitaaht.sh"
         cron_file=filebot
+        state=absent
 
-- name: Disable protected hardlinks (makes filebot hardlink work)
-  lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
-  notify: sysctl
+# On Notify
+
+- name: Install inotify-tools
+  apt: package=inotify-tools state=installed
+
+- name: Add Notify script to bin
+  template: src=inotify.sh dest=/var/lib/plexmediaserver/bin/inotify.sh mode=0755 owner=plex
+
+- name: Add inotify cron job
+  cron: name="filebot-notify" special_time=reboot
+        user="plex" job="/var/lib/plexmediaserver/bin/inotify.sh"
+        cron_file=filebot-notify
