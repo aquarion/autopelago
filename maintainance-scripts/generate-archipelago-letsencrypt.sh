@@ -23,6 +23,7 @@ dagon.church,live.dagon.church,wiki.dagon.church,\
 mechan.istic.net,\
 larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,\
 diaspora.foip.me,\
+bless.ojaqs.foip.me,ojaqs.foip.me,\
 clockworkcircus.zone,www.clockworkcircus.zone
 
 #sudo service nginx start
