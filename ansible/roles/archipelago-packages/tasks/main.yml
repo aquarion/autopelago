@@ -7,7 +7,13 @@
     - irssi
     - exim4
 
-#- name: Install backported packages
-#  apt: pkg={{ item }} state=installed default_release=jessie-backports
-#  with_items:
-#    - certbot
+- apt_repository:
+    repo: deb http://ftp.debian.org/debian stretch-backports main
+    state: present
+    filename: 'stretch-backports'
+
+- name: Install backported packages
+  apt: pkg={{ item }} state=installed default_release=stretch-backports
+  with_items:
+    - certbot
+    
