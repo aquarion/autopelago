@@ -7,7 +7,7 @@
    - ccooke
 
 - name: Add Aquarion key
-  authorized_key: user=aquarion key=https://github.com/aquarion.keys
+  authorized_key: user=aquarion key={{ lookup('file', 'files/aquarion.keys') }}
 
 - name: Add ccooke key
   authorized_key: user=ccooke key="{{ lookup('file', 'files/ccooke.keys') }}"

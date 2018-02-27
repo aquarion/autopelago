@@ -2,7 +2,7 @@ upstream container-php { server 127.0.0.1:4080; }
 server {
   listen      80;
   listen [::]:80;
-  server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me; 
+  server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me ludoistic.com www.ludoistic.com; 
   
   return 301 https://$host$request_uri;
 }
@@ -10,7 +10,7 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me; 
+    server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me ludoistic.com www.ludoistic.com; 
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {

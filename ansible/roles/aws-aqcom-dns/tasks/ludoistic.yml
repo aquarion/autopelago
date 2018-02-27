@@ -1,0 +1,73 @@
+---
+
+#- name: ludoistic.com
+#  route53_zone: zone=ludoistic.com comment="Storytime"
+
+- name: ludoistic.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "ludoistic.com"
+      record: "ludoistic.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+      profile: 'istic-r53'
+
+
+
+- name: ludoistic.com. - NS
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "ludoistic.com"
+      record: "ludoistic.com."
+      type: "NS"
+      ttl: "172800"
+      value: ns-1761.awsdns-28.co.uk., ns-333.awsdns-41.com., ns-957.awsdns-55.net., ns-1058.awsdns-04.org.
+      profile: 'istic-r53'
+
+#- name: ludoistic.com. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "ludoistic.com"
+#      record: "ludoistic.com."
+#      type: "SOA"
+#      ttl: "900"
+#      value: 'ns-1302.awsdns-34.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+
+
+
+- name: www.ludoistic.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "ludoistic.com"
+      record: "www.ludoistic.com."
+      type: "CNAME"
+      ttl: "300"
+      value: 'ludoistic.com'
+      profile: 'istic-r53'
+
+
+# - name: google._domainkey.ludoistic.com. - TXT
+#   route53:
+#       overwrite: true
+#       command: "create"
+#       zone: "ludoistic.com"
+#       record: "google._domainkey.ludoistic.com."
+#       type: "TXT"
+#       ttl: "300"
+#       value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
+
+# - name: ludoistic.com. - MX
+#   route53:
+#       overwrite: true
+#       command: "create"
+#       zone: "ludoistic.com"
+#       record: "ludoistic.com."
+#       type: "MX"
+#       ttl: "300"
+#       value: '5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,1 ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.'
+

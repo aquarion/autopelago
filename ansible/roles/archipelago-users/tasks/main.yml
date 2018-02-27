@@ -1,9 +1,8 @@
 ---
 
-- name: Create normal users
-  user: name={{ item }}
-  with_items:
-   - factorio
+# - name: Create normal users
+#   user: name={{ item }}
+#   with_items:
 
 - name: Delete normal users
   user:
@@ -12,6 +11,7 @@
     remove: yes
   with_items:
    - arkserver
+   - factorio
 
-- name: Add Aquarion key to arkserver
-  authorized_key: user=factorio key=https://github.com/aquarion.keys
+# - name: Add Aquarion key to arkserver
+#   authorized_key: user=factorio key=https://github.com/aquarion.keys
