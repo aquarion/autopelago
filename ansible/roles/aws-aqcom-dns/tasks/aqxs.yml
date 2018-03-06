@@ -36,7 +36,7 @@
 
 
 
-- name: aqxs.net. - TXT
+- name: aqxs.net. - SPF
   route53:
       overwrite: true
       command: "create"
@@ -46,7 +46,17 @@
       ttl: "300"
       value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
 
+#
 
+- name: aqxs.net. - TXT for google-site-verification
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aqxs.net"
+      record: "aqxs.net."
+      type: "TXT"
+      ttl: "300"
+      value: '"google-site-verification=SvTocYjKGCKTzN9BlJSdq0MVkEaFvEAum18VoLaKB5s"'
 
 - name: wildcard.aqxs.net. - A
   route53:
