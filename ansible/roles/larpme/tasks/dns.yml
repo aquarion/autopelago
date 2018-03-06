@@ -69,6 +69,16 @@
       ttl: "300"
       value: 'www.larp.me'
 
+- name: Larpme DNS - Fic
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "fic.larp.me"
+      type: "CNAME"
+      ttl: "300"
+      value: 'www.larp.me'
+
 - name: Larpme DNS - Blog
   route53:
       overwrite: true
