@@ -6,3 +6,13 @@
 
 - name: Fix diffie-hellman insecurites
   include: diffie-hellman.yml
+
+
+- name: Add clacks overhead to nginx
+  copy: 
+    dest: /etc/nginx/conf.d/clacks.conf
+    src: files/clacks.conf 
+    owner: root 
+    group: root
+  notify:
+   - restart nginx
