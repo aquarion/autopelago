@@ -1,4 +1,5 @@
 #!/bin/sh
+export JAVA_OPTS=-Xmx1024m
 filebot -script fn:amc \
         --output "/var/lib/plexmediaserver/Media" \
         --log-file amc.log \
