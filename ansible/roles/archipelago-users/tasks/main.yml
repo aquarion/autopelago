@@ -15,6 +15,8 @@
    - factorio
 
 - name: Add Aquarion key to users
-  authorized_key: user=aquarion key={{ lookup('file', 'files/aquarion.keys') }}
+  authorized_key: user={{ item }} key={{ lookup('file', 'files/aquarion.keys') }}
   with_items:
+    - larpfic
+  tags:
     - larpfic
