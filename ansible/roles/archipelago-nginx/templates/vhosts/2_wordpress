@@ -17,7 +17,7 @@ server {
 server {
     listen      80;
     listen [::]:80;
-    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me;
+    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
     return 301 https://$host$request_uri;
     include /etc/nginx/snippets/errors.conf;
     client_max_body_size 32M;
@@ -51,7 +51,7 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me;
+    server_name istic.net wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {

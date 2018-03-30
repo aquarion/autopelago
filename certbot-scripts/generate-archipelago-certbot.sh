@@ -24,6 +24,7 @@ mechan.istic.net,\
 larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,\
 diaspora.foip.me,\
 bless.ojaqs.foip.me,ojaqs.foip.me,\
-clockworkcircus.zone,www.clockworkcircus.zone
+clockworkcircus.zone,www.clockworkcircus.zone,\
+www.iglooteas.com,iglooteas.blogs.water.gkhs.net
 
 #sudo service nginx start
