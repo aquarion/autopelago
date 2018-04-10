@@ -148,3 +148,13 @@
       type: "A"
       ttl: "300"
       value: '138.201.60.152'
+
+- name: Larpme DNS - LOCATIONS
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "larp.me"
+      record: "locations.larp.me"
+      type: "A"
+      ttl: "300"
+      value: '138.201.60.152'
