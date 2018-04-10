@@ -21,7 +21,7 @@ live.art.istic.net,imperial.istic.net,material.istic.net,\
 warehousebasement.com,www.warehousebasement.com,\
 dagon.church,live.dagon.church,wiki.dagon.church,\
 mechan.istic.net,\
-larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,\
+larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,locations.larp.me,\
 diaspora.foip.me,\
 bless.ojaqs.foip.me,ojaqs.foip.me,\
 clockworkcircus.zone,www.clockworkcircus.zone,\
