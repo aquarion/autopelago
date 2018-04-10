@@ -1,37 +1,78 @@
 <VirtualHost *:80>
 
-ServerName {{ retort_server_name }}
-{% if retort_server_alias is defined %}
-ServerAlias {{ retort_server_alias }}
-{% endif %}
+    ServerName {{ retort_server_name }}
+    {% if retort_server_alias is defined %}
+    ServerAlias {{ retort_server_alias }}
+    {% endif %}
 
-ProxyPass /.ErrorDocuments !
-ProxyPass / http://127.0.0.1:8000/
-ProxyPassReverse / http://127.0.0.1:8000/
+    ProxyPass /.ErrorDocuments !
+    ProxyPass / http://127.0.0.1:8000/
+    ProxyPassReverse / http://127.0.0.1:8000/
 
-<Location />
-{% if retort_allow_ip is defined %}
-<RequireAny>
-    {% for range in retort_allow_ip %}
-<RequireAll>
-        Require ip {{ range }}
-    </RequireAll>
-    {% endfor %}
-{% endif %}
-
-{% if retort_htaccess is defined %}
+    <Location />
+    {% if retort_allow_ip is defined %}
+    <RequireAny>
+        {% for range in retort_allow_ip %}
     <RequireAll>
-        <RequireAny>
-	AuthType Basic
-	AuthName "Restricted Resource"
-	AuthBasicProvider file
-	AuthUserFile "{{ retort_htaccess }}"
+            Require ip {{ range }}
+        </RequireAll>
+        {% endfor %}
+    {% endif %}
 
-            Require valid-user
-        </RequireAny>
-    </RequireAll>
-{% endif %}
-</RequireAny>
-</Location>
+    {% if retort_htaccess is defined %}
+        <RequireAll>
+            <RequireAny>
+            	AuthType Basic
+            	AuthName "Restricted Resource"
+            	AuthBasicProvider file
+            	AuthUserFile "{{ retort_htaccess }}"
+                Require valid-user
+            </RequireAny>
+        </RequireAll>
+    {% endif %}
+    </RequireAny>
+    </Location>
+
+</VirtualHost>
+
+<VirtualHost *:443>
+
+    ServerName {{ retort_server_name }}
+    {% if retort_server_alias is defined %}
+    ServerAlias {{ retort_server_alias }}
+    {% endif %}
+
+    ProxyPass /.ErrorDocuments !
+    ProxyPass / http://127.0.0.1:8000/
+    ProxyPassReverse / http://127.0.0.1:8000/
+
+    <Location />
+    {% if retort_allow_ip is defined %}
+    <RequireAny>
+        {% for range in retort_allow_ip %}
+    <RequireAll>
+            Require ip {{ range }}
+        </RequireAll>
+        {% endfor %}
+    {% endif %}
+
+    {% if retort_htaccess is defined %}
+        <RequireAll>
+            <RequireAny>
+                AuthType Basic
+                AuthName "Restricted Resource"
+                AuthBasicProvider file
+                AuthUserFile "{{ retort_htaccess }}"
+                Require valid-user
+            </RequireAny>
+        </RequireAll>
+    {% endif %}
+    </RequireAny>
+    </Location>
+
+    Include /etc/letsencrypt/options-ssl-apache.conf
+    SSLCertificateFile /etc/letsencrypt/live/treacle.mine.nu/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/treacle.mine.nu/privkey.pem
+    Include /etc/letsencrypt/options-ssl-apache.conf
 
 </VirtualHost>
