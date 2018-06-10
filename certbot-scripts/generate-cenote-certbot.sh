@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo certbot -t certonly --expand --standalone --pre-hook "service apache2 stop" --post-hook "service apache2 start" --domains \
-cenote.gkhs.net,cenote.water.gkhs.net,\
+cenote.gkhs.net,cenote.water.gkhs.net,ssl.aqxs.net,\
 advent.aqxs.net,advent-knowledge.info,www.advent-knowledge.info,\
 ashires.aqxs.net,bluebottle.aqxs.net,chesswiki.aqxs.net,dgold.aqxs.net,entimix.aqxs.net,locksmith.aqxs.net,makai.aqxs.net,martindenton.aqxs.net,rho21.aqxs.net,rjw76.aqxs.net,salavant.aqxs.net,taxellor.aqxs.net,tdk27.aqxs.net,\
 comic.mc.aqxs.net,comicpress.socksandpuppets.com,comic.socksandpuppets.com,ahdok.aqxs.net,socksandpuppets.com,www.socksandpuppets.com,\
