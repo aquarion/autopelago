@@ -45,6 +45,7 @@
     - millpond-packages
     - millpond-users
     - millpond-mount-media
+    - millpond-b2-backup
     - plexupdate
     - millpond-filebot
     - retort

@@ -34,3 +34,9 @@ retort_htaccess: /etc/apache2/users
 # Currently there's no update detection, so if you change this 
 #     delete /usr/bin/filebot on the servers to force the upgrade.
 filebot_version: 4.7.8
+
+backblaze_b2_app: XXX
+backblaze_b2_key: XXX
+# When this changes, the job will reauth with the above credentials
+# (Because detecting changes in SQLITE files is hard)
+backblaze_key_changed: XXX
