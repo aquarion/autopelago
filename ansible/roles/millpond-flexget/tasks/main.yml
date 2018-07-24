@@ -4,5 +4,5 @@
   become_user: plex
 
 - cron: name="flexget" minute="16,46"
-        user="plex" job="/var/lib/plexmediaserver/.virtualenvs/flexget/bin/python /var/lib/plexmediaserver/.virtualenvs/flexget/bin/flexget --cron execute"
+        user="plex" job="{{ plex_home }}/.virtualenvs/flexget/bin/python {{ plex_home }}/.virtualenvs/flexget/bin/flexget --cron execute"
         cron_file=flexget

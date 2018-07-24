@@ -1,7 +1,7 @@
 #!/bin/sh
 export JAVA_OPTS=-Xmx1024m
 filebot -script fn:amc \
-        --output "/var/lib/plexmediaserver/Media" \
+        --output "{{ plex_home }}/Media" \
         --log-file amc.log \
         --action hardlink \
         --conflict override -non-strict \
@@ -11,4 +11,4 @@ filebot -script fn:amc \
                 "animeFormat=Anime/{n}/{fn}" \
                 "movieFormat=Movies/{n} {y}/{fn}" \
                 "musicFormat=Music/{n}/{fn}" \
-        "/var/lib/plexmediaserver/Torrential/Completed"
+        "{{ plex_home }}/Torrential/Completed"

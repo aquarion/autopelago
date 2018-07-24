@@ -6,4 +6,4 @@ if ! flock -n 9  ; then
  exit 1
 fi
 
-time b2 sync --delete --replaceNewer /var/lib/plexmediaserver/Media b2://millpond-media
+time b2 sync --delete --replaceNewer {{ plex_home }}/Media b2://millpond-media

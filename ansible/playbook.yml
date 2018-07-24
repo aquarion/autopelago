@@ -69,15 +69,6 @@
     - role: elboletaire.transmission
       when: not transmission_bin.stat.exists
       become: yes
-      transmission_user: "{{ millpond_transmission_user }}"
-      transmission_password: "{{ millpond_transmission_pass }}"
-      transmission_rpc_auth_required: true
-      transmission_rpc_whitelist_enabled: true
-      transmission_umask: "002"
-      transmission_rpc_whitelist: "127.0.0.1,192.168.100.*"
-      transmission_incomplete_dir: /var/lib/plexmediaserver/Torrential/Progress
-      transmission_incomplete_dir_enabled: true
-      transmission_download_dir: /var/lib/plexmediaserver/Torrential/Completed
     - role: millpond-flexget
   tasks:
    # Clear up Transmission permissions
