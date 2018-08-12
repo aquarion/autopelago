@@ -30,6 +30,7 @@
     - aws-aqcom-dns
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
+    - { role: archipelago-orion, tags: orion }
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:
