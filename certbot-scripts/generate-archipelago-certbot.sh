@@ -25,6 +25,7 @@ larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,locations.larp.me,\
 diaspora.foip.me,\
 bless.ojaqs.foip.me,ojaqs.foip.me,\
 clockworkcircus.zone,www.clockworkcircus.zone,\
-www.iglooteas.com,iglooteas.blogs.water.gkhs.net
+www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
+orion.nicholasavenell.com
 
 #sudo service nginx start
