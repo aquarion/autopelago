@@ -51,6 +51,7 @@
     - millpond-filebot
     - retort
     - ansible-homebridge
+    - ansible-nordvpn
 
 - hosts: millpond.water.gkhs.net
   become: yes
