@@ -5,7 +5,7 @@ cenote.gkhs.net,cenote.water.gkhs.net,ssl.aqxs.net,\
 advent.aqxs.net,advent-knowledge.info,www.advent-knowledge.info,\
 ashires.aqxs.net,bluebottle.aqxs.net,chesswiki.aqxs.net,dgold.aqxs.net,entimix.aqxs.net,locksmith.aqxs.net,makai.aqxs.net,martindenton.aqxs.net,rho21.aqxs.net,rjw76.aqxs.net,salavant.aqxs.net,taxellor.aqxs.net,tdk27.aqxs.net,\
 comic.mc.aqxs.net,comicpress.socksandpuppets.com,comic.socksandpuppets.com,ahdok.aqxs.net,socksandpuppets.com,www.socksandpuppets.com,\
-camlarp.co.uk,www.camlarp.co.uk,bw.camlarp.co.uk,nfnc.camlarp.co.uk,refs.bw.camlarp.co.uk,refs.nfnc.camlarp.co.uk,\
+camlarp.co.uk,www.camlarp.co.uk,bw.camlarp.co.uk,nfnc.camlarp.co.uk,refs.bw.camlarp.co.uk,refs.nfnc.camlarp.co.uk,citadel.camlarp.co.uk\
 treasuretrap.co.uk,nfnc.treasuretrap.co.uk,www.treasuretrap.co.uk,\
 aquarion.aqxs.net,\
 emptytables.org,www.emptytables.org,\
