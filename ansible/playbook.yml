@@ -26,11 +26,14 @@
   roles:
     - archipelago-packages
     - archipelago-users
+    - plexupdate
+    - archipelago-mount-storagebox
     - { role: larpme, tags: larpme }
     - aws-aqcom-dns
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
     - { role: archipelago-orion, tags: orion }
+    - water-gkhs-filebot
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:
@@ -48,7 +51,7 @@
     - millpond-mount-media
     - millpond-b2-backup
     - plexupdate
-    - millpond-filebot
+    - water-gkhs-filebot
     - retort
     - ansible-homebridge
     - ansible-nordvpn

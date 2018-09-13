@@ -1,0 +1,30 @@
+
+
+- name: install samba
+  apt:
+    package: samba
+    state: absent
+
+- name: install cifs-utils
+  apt:
+    package: cifs-utils
+    state: present
+
+- name: Make Storagebox mount point
+  file: 
+    path: /mnt/storagebox
+    state: directory
+    mode: 0755
+
+- name: Storagebox credentials
+  copy:
+    content: "username={{ storagebox_user }}\npassword={{ storagebox_pass }}"
+    dest: /root/.storagebox_creds
+
+- name: Mount library directory
+  mount: 
+    name: /mnt/storagebox
+    src: //{{ storagebox_user }}.your-storagebox.de/backup
+    state: mounted
+    fstype: cifs
+    opts: credentials=/root/.storagebox_creds,uid=plex,gid=adm
