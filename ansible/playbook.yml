@@ -26,10 +26,14 @@
   roles:
     - archipelago-packages
     - archipelago-users
+    - plexupdate
+    - archipelago-mount-storagebox
     - { role: larpme, tags: larpme }
     - aws-aqcom-dns
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
+    - { role: archipelago-orion, tags: orion }
+    - water-gkhs-filebot
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:
@@ -47,9 +51,10 @@
     - millpond-mount-media
     - millpond-b2-backup
     - plexupdate
-    - millpond-filebot
+    - water-gkhs-filebot
     - retort
     - ansible-homebridge
+    - ansible-nordvpn
 
 - hosts: millpond.water.gkhs.net
   become: yes
@@ -69,15 +74,6 @@
     - role: elboletaire.transmission
       when: not transmission_bin.stat.exists
       become: yes
-      transmission_user: "{{ millpond_transmission_user }}"
-      transmission_password: "{{ millpond_transmission_pass }}"
-      transmission_rpc_auth_required: true
-      transmission_rpc_whitelist_enabled: true
-      transmission_umask: "002"
-      transmission_rpc_whitelist: "127.0.0.1,192.168.100.*"
-      transmission_incomplete_dir: {{ plex_home }}/Torrential/Progress
-      transmission_incomplete_dir_enabled: true
-      transmission_download_dir: {{ plex_home }}/Torrential/Completed
     - role: millpond-flexget
   tasks:
    # Clear up Transmission permissions

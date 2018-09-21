@@ -7,7 +7,7 @@
 
 - name: "Check B2 authorisation"
   lineinfile:
-    path: {{ plex_home }}/.b2_auth_date
+    path: "{{ plex_home }}/.b2_auth_date"
     regexp: '^etag'
     line: 'etag {{ backblaze_key_changed }}'
     owner: plex

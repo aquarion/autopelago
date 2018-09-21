@@ -1,0 +1,10 @@
+
+- name: restart orion
+  service: name=orion state=restarted
+
+- name: rebuild orion-web
+  command: "NODE_ENV=production MAPBOX_API_TOKEN={{ mapbox_key }} ORION_SERVER_URL=https://{{ orion_domain }}/api {{ orion_home }}/.nvm/versions/node/{{orion_node_version}}/bin/npm run build"
+  args:
+    chdir: "{{ orion_home }}/web"
+  become: yes
+  become_user: "{{ orion_user }}"

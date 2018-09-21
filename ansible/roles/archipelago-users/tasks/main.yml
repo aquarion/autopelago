@@ -18,5 +18,7 @@
   authorized_key: user={{ item }} key={{ lookup('file', 'files/aquarion.keys') }}
   with_items:
     - larpfic
+    - plex
   tags:
     - larpfic
+    - plex

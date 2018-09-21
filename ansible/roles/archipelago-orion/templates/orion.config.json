@@ -1,0 +1,11 @@
+ {
+  "database": {
+    "host": "localhost",
+    "port": 3306,
+    "name": "{{orion_mysql_db}}",
+    "user": "{{orion_mysql_user}}",
+    "password": "{{orion_mysql_password}}"
+  },
+  "frontend_url": "https://{{orion_domain}}",
+  "google_api_key": "{{orion_google_maps_key}}"
+}

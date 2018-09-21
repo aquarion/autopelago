@@ -8,3 +8,4 @@
 - src: torian.filebeat
 - src: azavea.papertrail
 #- src: charleskorn.raspi-information-radiator
+- src: https://github.com/ieguiguren/ansible-nordvpn

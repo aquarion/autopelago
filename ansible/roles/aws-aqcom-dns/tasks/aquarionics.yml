@@ -205,6 +205,15 @@
       ttl: "86400"
       value: 'ghs.google.com'
 
+- name: plex. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "{{ plex_domain }}."
+      type: "A"
+      ttl: "86400"
+      value: '{{ ansible_default_ipv4.address }}'
 
 
 - name: old.aquarionics.com. - A

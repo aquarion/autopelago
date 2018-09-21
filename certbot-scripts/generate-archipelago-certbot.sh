@@ -3,7 +3,7 @@
 sudo certbot -t certonly --expand --standalone --pre-hook "service nginx stop" --post-hook "service nginx start" --domains \
 istic.net,\
 archipelago.water.gkhs.net,\
-aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,\
+aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,\
 wywo.blogs.water.gkhs.net,wywo.aquarionics.com,\
 factionfiction.net,www.factionfiction.net,factionfiction.blogs.water.gkhs.net,\
 cleartextcontent.blogs.water.gkhs.net,www.cleartextcontent.co.uk,cleartextcontent.co.uk,\
@@ -25,6 +25,7 @@ larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,locations.larp.me,\
 diaspora.foip.me,\
 bless.ojaqs.foip.me,ojaqs.foip.me,\
 clockworkcircus.zone,www.clockworkcircus.zone,\
-www.iglooteas.com,iglooteas.blogs.water.gkhs.net
+www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
+orion.nicholasavenell.com
 
 #sudo service nginx start
