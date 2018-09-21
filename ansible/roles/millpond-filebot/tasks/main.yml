@@ -8,17 +8,17 @@
 
 # Script support
 - name: Make sure plex has a bin
-  file: path=/var/lib/plexmediaserver/bin state=directory owner=plex
+  file: path={{ plex_home }}/bin state=directory owner=plex
 
 
 # Sort It Ahht
 
 - name: Add sortitaaht script to bin
-  template: src=sortitaaht.sh dest=/var/lib/plexmediaserver/bin/sortitaaht.sh mode=0755 owner=plex
+  template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht.sh mode=0755 owner=plex
 
 - name: Add sortitaaht cron job
   cron: name="filebot" minute="2,32"
-        user="plex" job="/var/lib/plexmediaserver/bin/sortitaaht.sh"
+        user="plex" job="{{ plex_home }}/bin/sortitaaht.sh"
         cron_file=filebot
         state=absent
 
@@ -28,9 +28,9 @@
   apt: package=inotify-tools state=installed
 
 - name: Add Notify script to bin
-  template: src=inotify.sh dest=/var/lib/plexmediaserver/bin/inotify.sh mode=0755 owner=plex
+  template: src=inotify.sh dest={{ plex_home }}/bin/inotify.sh mode=0755 owner=plex
 
 - name: Add inotify cron job
   cron: name="filebot-notify" special_time=reboot
-        user="plex" job="/var/lib/plexmediaserver/bin/inotify.sh"
+        user="plex" job="{{ plex_home }}/bin/inotify.sh"
         cron_file=filebot-notify

@@ -1,6 +1,6 @@
 #!/bin/bash                                                                                                                                                                                                                                                                    
 
-HOME=/var/lib/plexmediaserver
+HOME={{ plex_home }}
 WATCH_PATH=$HOME/Torrential/Completed
 LOGFILE=$HOME/inotify_watch.log
 

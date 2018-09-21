@@ -7,7 +7,7 @@
 
 - name: "Check B2 authorisation"
   lineinfile:
-    path: /var/lib/plexmediaserver/.b2_auth_date
+    path: {{ plex_home }}/.b2_auth_date
     regexp: '^etag'
     line: 'etag {{ backblaze_key_changed }}'
     owner: plex
@@ -19,13 +19,13 @@
   tags:
     - "b2backup"
 
-- template: src=media-backup.bash.j2 dest=/var/lib/plexmediaserver/bin/media-backup.sh mode=0770 owner=plex 
+- template: src=media-backup.bash.j2 dest={{ plex_home }}/bin/media-backup.sh mode=0770 owner=plex 
   tags:
     - "b2backup"
 
 
 - cron: name="b2backup" hour=04 minute="46"
-        user="plex" job="/var/lib/plexmediaserver/bin/media-backup.sh"
+        user="plex" job="{{ plex_home }}/bin/media-backup.sh"
         cron_file=b2backup
   tags:
     - "b2backup"

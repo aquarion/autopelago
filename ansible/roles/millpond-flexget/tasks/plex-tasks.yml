@@ -1,6 +1,6 @@
-- pip: name=transmissionrpc virtualenv=/var/lib/plexmediaserver/.virtualenvs/flexget
-- pip: name=flexget virtualenv=/var/lib/plexmediaserver/.virtualenvs/flexget
+- pip: name=transmissionrpc virtualenv={{ plex_home }}/.virtualenvs/flexget
+- pip: name=flexget virtualenv={{ plex_home }}/.virtualenvs/flexget
 
-- file: path=/var/lib/plexmediaserver/.flexget state=directory owner=plex
+- file: path={{ plex_home }}/.flexget state=directory owner=plex
 
-- template: src=flexget.yml dest=/var/lib/plexmediaserver/.flexget/config.yml mode=0440 owner=plex 
+- template: src=flexget.yml dest={{ plex_home }}/.flexget/config.yml mode=0440 owner=plex 
