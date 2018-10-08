@@ -1,7 +1,7 @@
 #Must be set in the global scope see: https://forum.nginx.org/read.php?2,152294,152294
 #Why this is important especially with Plex as it makes a lot of requests http://vincent.bernat.im/en/blog/2011-ssl-session-reuse-rfc5077.html / https://www.peterbe.com/plog/ssl_session_cache-ab
-ssl_session_cache shared:SSL:10m;
-ssl_session_timeout 10m;
+#ssl_session_cache shared:SSL:10m;
+#ssl_session_timeout 10m;
 
 #Upstream to Plex
 upstream plex_backend {
