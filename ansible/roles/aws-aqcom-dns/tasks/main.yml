@@ -34,6 +34,7 @@
     - aws
     - monthlymoon
 
-# - include: ludoistic.yml
-#   tags:
-#     - aws
+- include: ludoistic.yml
+  tags:
+    - aws
+    - ludoistic

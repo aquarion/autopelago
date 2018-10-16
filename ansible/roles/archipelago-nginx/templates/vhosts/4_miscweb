@@ -2,7 +2,7 @@ upstream container-php { server 127.0.0.1:4080; }
 server {
   listen      80;
   listen [::]:80;
-  server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me ludoistic.com www.ludoistic.com sevenmirrors.foip.me; 
+  server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me ludoistic.com sevenmirrors.foip.me istic.co; 
   
   return 301 https://$host$request_uri;
 }
@@ -10,7 +10,7 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me ludoistic.com www.ludoistic.com sevenmirrors.foip.me; 
+    server_name imperial.istic.net altru.istic.net ark.ludo.istic.net live.art.istic.net material.istic.net warehousebasement.com dagon.church live.dagon.church wiki.dagon.church archipelago.water.gkhs.net casu.istic.net wildfeathers.casu.istic.net istic.casu.istic.net hol.istic.net diaspora.foip.me old.aquarionics.com clockworkcircus.zone bless.ojaqs.foip.me ojaqs.foip.me ludoistic.com sevenmirrors.foip.me istic.co; 
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {
@@ -23,4 +23,18 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
   include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+    listen              443 ssl;
+    listen              80;
+    server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
+    return 301 $scheme://istic.co;
+}
+
+server {
+    listen              443 ssl;
+    listen              80;
+    server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
+    return 301 $scheme://ludoistic.com;
 }

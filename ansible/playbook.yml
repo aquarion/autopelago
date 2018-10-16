@@ -29,7 +29,7 @@
     - plexupdate
     - archipelago-mount-storagebox
     - { role: larpme, tags: larpme }
-    - aws-aqcom-dns
+    - { role: aws-aqcom-dns, become: no }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
     - { role: archipelago-orion, tags: orion }
