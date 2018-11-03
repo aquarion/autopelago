@@ -13,3 +13,6 @@ archipelago.water.gkhs.net hostname=archipelago.water.gkhs.net
 
 [cenote]
 cenote.water.gkhs.net hostname=cenote.water.gkhs.net
+
+[localactions]
+localhost

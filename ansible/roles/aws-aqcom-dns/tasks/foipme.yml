@@ -6,6 +6,8 @@
       command: "create"
       zone: "foip.me"
       record: "foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "86400"
       value: '67.199.248.13,67.199.248.12'
@@ -18,6 +20,8 @@
       command: "create"
       zone: "foip.me"
       record: "foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "NS"
       ttl: "172800"
       value: ns-1164.awsdns-17.org., ns-1794.awsdns-32.co.uk., ns-76.awsdns-09.com., ns-979.awsdns-58.net.
@@ -30,7 +34,9 @@
 #      command: "create"
 #      zone: "foip.me"
 #      record: "foip.me."
-#      type: "SOA"
+#      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
+      type: "SOA"
 #      ttl: "900"
 #      value: 'ns-1164.awsdns-17.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
@@ -40,6 +46,8 @@
       command: "create"
       zone: "foip.me"
       record: "strangelrp.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '109.74.192.161'
@@ -51,6 +59,8 @@
       command: "create"
       zone: "foip.me"
       record: "wakingnightmare.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '109.74.192.161'
@@ -62,6 +72,8 @@
       command: "create"
       zone: "foip.me"
       record: "fourrivers.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '109.74.192.161'
@@ -72,6 +84,8 @@
       command: "create"
       zone: "foip.me"
       record: "forgotten.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '109.74.192.161'
@@ -82,6 +96,8 @@
       command: "create"
       zone: "foip.me"
       record: "ojaqs.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
@@ -92,6 +108,8 @@
       command: "create"
       zone: "foip.me"
       record: "bless.ojaqs.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
@@ -102,6 +120,8 @@
       command: "create"
       zone: "foip.me"
       record: "diaspora.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
@@ -112,6 +132,8 @@
       command: "create"
       zone: "foip.me"
       record: "herodiaries.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
@@ -122,6 +144,8 @@
       command: "create"
       zone: "foip.me"
       record: "sevenmirrors.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
@@ -133,6 +157,8 @@
       command: "create"
       zone: "foip.me"
       record: "idlespeculation.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
@@ -145,6 +171,8 @@
       command: "create"
       zone: "foip.me"
       record: "obviouslyfakeurl.foip.me."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
       value: '109.74.192.161'

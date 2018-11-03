@@ -28,8 +28,8 @@
     - archipelago-users
     - plexupdate
     - archipelago-mount-storagebox
+    - { role: aws-aqcom-dns, become: no, connection: local }
     - { role: larpme, tags: larpme }
-    - { role: aws-aqcom-dns, become: no }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
     - { role: archipelago-orion, tags: orion }
