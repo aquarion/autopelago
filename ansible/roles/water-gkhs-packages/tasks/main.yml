@@ -15,7 +15,7 @@
     - python-pip
     - build-essential
     - libffi-dev
-    - libssl-dev
+      #- libssl-dev
     - apt-transport-https
     - ca-certificates
     - etckeeper
