@@ -35,8 +35,8 @@
 #      zone: "factionfiction.net"
 #      record: "factionfiction.net."
 #      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
-      type: "SOA"
+#      aws_secret_key: '{{aqcom_aws_secret}}'
+#      type: "SOA"
 #      ttl: "900"
 #      value: 'ns-1302.awsdns-34.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 

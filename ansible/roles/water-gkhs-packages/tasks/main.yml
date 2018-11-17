@@ -20,6 +20,7 @@
     - ca-certificates
     - etckeeper
     - fail2ban
+    - dnsutils
 
 - name: config fail2ban
   lineinfile:

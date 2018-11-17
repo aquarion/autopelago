@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: all:!localactions
   become: yes
   roles:
    - water-gkhs-packages
@@ -51,12 +51,18 @@
     - millpond-mount-media
     - millpond-b2-backup
     - plexupdate
-    - water-gkhs-filebot
     - retort
     - ansible-homebridge
+    - water-gkhs-filebot
+
+- hosts: caisson.water.gkhs.net
+  vars:
+    hostname: caisson.water.gkhs.net
+  become: yes
+  roles:
     - ansible-nordvpn
 
-- hosts: millpond.water.gkhs.net
+- hosts: caisson.water.gkhs.net
   become: yes
   tasks:
     - name: "Transmission: check for installation"
@@ -65,25 +71,34 @@
     - name: installing repo for Java 8 in Ubuntu
       apt_repository: repo='ppa:openjdk-r/ppa'
 
-- hosts: millpond.water.gkhs.net
+- hosts: caisson.water.gkhs.net
   become: yes
   roles:
+    - role: millpond-flexget
     - role: geerlingguy.java
       java_packages:
         - openjdk-8-jdk
     - role: elboletaire.transmission
       when: not transmission_bin.stat.exists
       become: yes
-    - role: millpond-flexget
+    - role: ansible-get-external-ip-via-dyndns
   tasks:
    # Clear up Transmission permissions
    - file: group=debian-transmission mode=g+wx path=/var/lib/plexserver/Torrential/Progress
    - file: group=debian-transmission mode=g+wx path=/var/lib/plexserver/Torrential/Complete
    - user: name=debian-tranmission groups=plex append=yes
    - user: name=plex groups=debian-tranmission append=yes
+   - name: Add or modify ansible.example.org A to 192.168.1.1"
+     nsupdate:
+       key_name: "{{ dyndns_name }}"
+       key_secret: "{{ dyndns_secret }}"
+       server: "update.dyndns.com"
+       zone: "{{ dyndns_domain }}"
+       record: "{{ dyndns_host }}"
+       value: "{{ external_ip }}"
 
 
 # Non-authenticated tasks
-- hosts: all
+- hosts: all:!localactions
   roles:
    - aquarion-bootstrap

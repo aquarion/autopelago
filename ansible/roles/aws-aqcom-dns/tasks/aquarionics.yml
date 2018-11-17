@@ -57,7 +57,7 @@
 #      zone: "aquarionics.com"
 #      record: "aquarionics.com."
 #      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      # aws_secret_key: '{{aqcom_aws_secret}}'
       # type: "SOA"
 #      ttl: "900"
 #      value: 'ns-1103.awsdns-09.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'

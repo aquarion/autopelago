@@ -19,8 +19,8 @@
 #    record: "postmark.pdforums.larp.me"
 #    value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
 #    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
-    type: "SPF"
+#    aws_secret_key: '{{aqcom_aws_secret}}'
+#    type: "SPF"
 #    ttl: 300
 
 - name: PD Forums DNS - PDForums DMARC

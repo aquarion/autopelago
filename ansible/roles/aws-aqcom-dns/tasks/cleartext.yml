@@ -45,8 +45,8 @@
 #      zone: "cleartextcontent.co.uk"
 #      record: "cleartextcontent.co.uk."
 #      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
-      type: "SOA"
+#      aws_secret_key: '{{aqcom_aws_secret}}'
+#      type: "SOA"
 #      ttl: "900"
 #      value: 'ns-797.awsdns-35.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 

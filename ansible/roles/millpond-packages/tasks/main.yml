@@ -1,7 +1,7 @@
 ---
 
 - name: Remove some packages
-  apt: pkg={{ item }} state=removed
+  apt: pkg={{ item }} state=absent
   with_items:
     - nginx-full
 
