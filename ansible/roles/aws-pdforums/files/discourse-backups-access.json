@@ -12,11 +12,12 @@
                "s3:PutObjectAcl",
                "s3:PutObjectVersionAcl",
                "s3:PutLifecycleConfiguration",
-               "s3:CreateBucket"
+               "s3:CreateBucket",
+               "s3:*"
       ],
       "Resource": [
-        "arn:aws:s3:::pdforums-upload/*",
-        "arn:aws:s3:::pdforums-upload"
+        "arn:aws:s3:::pdforums-backups/*",
+        "arn:aws:s3:::pdforums-backups"
       ]
     },
     {

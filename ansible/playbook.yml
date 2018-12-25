@@ -32,7 +32,7 @@
     - { role: larpme, tags: larpme }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
-    - { role: archipelago-orion, tags: orion }
+#    - { role: archipelago-orion, tags: orion }
     - water-gkhs-filebot
   tasks:
     - user: name={{ item }} groups=docker append=yes

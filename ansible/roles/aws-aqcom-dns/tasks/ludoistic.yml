@@ -41,17 +41,17 @@
 
 
 
-- name: www.ludoistic.com. - CNAME
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "ludoistic.com"
-      record: "www.ludoistic.com."
-      type: "CNAME"
-      ttl: "300"
-      value: 'ludoistic.com'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+#- name: www.ludoistic.com. - CNAME
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "ludoistic.com"
+#      record: "www.ludoistic.com."
+#      type: "CNAME"
+#      ttl: "300"
+#      value: 'ludoistic.com'
+#      aws_access_key: '{{istic_aws_key}}'
+#      aws_secret_key: '{{istic_aws_secret}}'
 
 
 # - name: google._domainkey.ludoistic.com. - TXT
