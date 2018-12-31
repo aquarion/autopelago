@@ -28,5 +28,6 @@ diaspora.foip.me,\
 bless.ojaqs.foip.me,ojaqs.foip.me,\
 www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
 orion.nicholasavenell.com,\
-optim.istic.net
+optim.istic.net,\
+carcosadreams.com,carcosadreams.co.uk,www.carcosadreams.com,www.carcosadreams.co.uk
 #sudo service nginx start

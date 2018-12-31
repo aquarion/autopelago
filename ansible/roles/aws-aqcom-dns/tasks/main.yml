@@ -38,3 +38,8 @@
   tags:
     - aws
     - ludoistic
+
+- include: carcosadreams.yml
+  tags:
+    - aws
+    - carcosadreams
