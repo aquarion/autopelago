@@ -1,0 +1,30 @@
+upstream container-carcosadreams { server 127.0.0.1:2080; }
+
+server {
+    listen      80;
+    listen [::]:80;
+    server_name www.carcosadreams.co.uk t67.carcosadreams.co.uk forsaken.carcosadreams.co.uk alba.carcosadreams.co.uk;
+    return 301 https://$host$request_uri;
+    include /etc/nginx/snippets/errors.conf;
+    client_max_body_size 32M;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.carcosadreams.co.uk t67.carcosadreams.co.uk forsaken.carcosadreams.co.uk alba.carcosadreams.co.uk;
+    include /etc/nginx/snippets/letsencrypt.conf;
+
+  location    / {
+    proxy_pass  http://container-wordpress;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  
+  include /etc/nginx/snippets/errors.conf;
+   client_max_body_size 32M;
+}
