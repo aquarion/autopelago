@@ -16,7 +16,6 @@ casu.istic.net,wildfeathers.casu.istic.net,pdforums.casu.istic.net,\
 monthlymoon.blogs.water.gkhs.net,themonthlymoon.com,\
 blogs.water.gkhs.net,\
 ludo.istic.co,ludoistic.com,www.ludoistic.com,\
-skute.me,alpha.skute.me,\
 forums.profounddecisions.co.uk,\
 imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,\
 live.art.istic.net,imperial.istic.net,material.istic.net,\
