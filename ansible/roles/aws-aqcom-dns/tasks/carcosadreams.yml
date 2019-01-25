@@ -4,30 +4,6 @@
   route53_zone:
     zone: carcosadreams.co.uk
     comment: CarcosaDreams
-    state: absent
-  tags:
-    - carcosadreams
-
-- name: CarcosaDreams.uk
-  route53_zone:
-    zone: carcosadreams.co.uk
-    comment: CarcosaDreams
-    state: absent
-  tags:
-    - carcosadreams
-
-- name: CarcosaDreams.com
-  route53_zone:
-    zone: carcosadreams.com
-    comment: CarcosaDreams
-    state: absent
-  tags:
-    - carcosadreams
-
-- name: CarcosaDreams.co.uk
-  route53_zone:
-    zone: carcosadreams.co.uk
-    comment: CarcosaDreams
     aws_access_key: '{{istic_aws_key}}'
     aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -146,7 +122,7 @@
       overwrite: true
       command: "create"
       zone: "carcosadreams.co.uk"
-      record: "www.carcosadreams.co.uk."
+      record: "t67.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
@@ -175,6 +151,50 @@
       command: "create"
       zone: "carcosadreams.co.uk"
       record: "alba.carcosadreams.co.uk."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+
+
+- name: t67.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "t67.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: forsaken.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "forsaken.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: alba.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "alba.carcosadreams.com."
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'

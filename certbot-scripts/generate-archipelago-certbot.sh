@@ -28,5 +28,6 @@ bless.ojaqs.foip.me,ojaqs.foip.me,\
 www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
 orion.nicholasavenell.com,\
 optim.istic.net,\
-carcosadreams.com,carcosadreams.co.uk,www.carcosadreams.com,www.carcosadreams.co.uk
+carcosadreams.co.uk,www.carcosadreams.co.uk,alba.carcosadreams.co.uk,t67.carcosadreams.co.uk,forsaken.carcosadreams.co.uk,\
+carcosadreams.com,www.carcosadreams.com,alba.carcosadreams.com,t67.carcosadreams.com,forsaken.carcosadreams.com
 #sudo service nginx start
