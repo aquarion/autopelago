@@ -160,6 +160,19 @@
     - carcosadreams
 
 
+- name: wiki.carcosadreams.co.uk. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.co.uk"
+      record: "wiki.carcosadreams.co.uk."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
 
 - name: t67.carcosadreams.com. - A
   route53:
@@ -195,6 +208,20 @@
       command: "create"
       zone: "carcosadreams.com"
       record: "alba.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: wiki.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "wiki.carcosadreams.com."
       type: "A"
       ttl: "300"
       value: '{{ ansible_default_ipv4.address }}'
