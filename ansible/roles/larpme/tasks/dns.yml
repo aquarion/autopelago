@@ -16,7 +16,7 @@
       record: "larp.me"
       type: "MX"
       ttl: "300"
-      value: '10 cenote.gkhs.net'
+      value: '1 ASPMX.L.GOOGLE.COM., 5 ALT1.ASPMX.L.GOOGLE.COM., 10 ALT2.ASPMX.L.GOOGLE.COM., 10 ASPMX2.GOOGLEMAIL.COM., 10 ASPMX3.GOOGLEMAIL.COM.'
 
 - name: Larpme DNS - NS
   route53:
