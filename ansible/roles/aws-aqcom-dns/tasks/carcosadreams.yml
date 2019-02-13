@@ -86,6 +86,8 @@
   tags:
     - carcosadreams
 
+
+
 - name: www.carcosadreams.com. - A
   route53:
       overwrite: true
@@ -229,3 +231,192 @@
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
     - carcosadreams
+
+
+- name: wiki.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "wiki.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ ansible_default_ipv4.address }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+
+- name: carcosadreams.co.uk. - MX
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.co.uk"
+      record: "carcosadreams.co.uk"
+      type: "MX"
+      ttl: "300"
+      value: '0 carcosadreams-co-uk.mail.protection.outlook.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.com. - MX
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "carcosadreams.com"
+      type: "MX"
+      ttl: "300"
+      value: '0 carcosadreams-com.mail.protection.outlook.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.com. - autodiscover
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "autodiscover.carcosadreams.com"
+      type: "CNAME"
+      ttl: "300"
+      value: 'autodiscover.outlook.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.co.uk. - autodiscover
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.co.uk"
+      record: "autodiscover.carcosadreams.co.uk"
+      type: "CNAME"
+      ttl: "300"
+      value: 'autodiscover.outlook.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.com. - sipdir
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: 'sip.carcosadreams.com'
+      type: "CNAME"
+      ttl: "300"
+      value: 'sipdir.online.lync.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.com. - sipdir.TLS
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: '_sip._tls.carcosadreams.com'
+      type: "SRV"
+      ttl: "300"
+      value: '100 1 443 sipdir.online.lync.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.com. - sipdir.Federated
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: '_sipfederationtls._tcp.carcosadreams.com'
+      type: "SRV"
+      ttl: "300"
+      value: '100 1 5061 sipfed.online.lync.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.com. - lyncdiscover
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: 'lyncdiscover.carcosadreams.com'
+      type: "CNAME"
+      ttl: "300"
+      value: 'webdir.online.lync.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+
+- name: carcosadreams.com. - enterpriseregistration
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: 'enterpriseregistration.carcosadreams.com'
+      type: "CNAME"
+      ttl: "300"
+      value: 'enterpriseregistration.windows.net.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+
+- name: carcosadreams.com. - enterpriseenrollment
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: 'enterpriseenrollment.carcosadreams.com'
+      type: "CNAME"
+      ttl: "300"
+      value: 'enterpriseenrollment.manage.microsoft.com.'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+
+- name: carcosadreams.com. - SPF
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: 'carcosadreams.com'
+      type: "TXT"
+      ttl: "300"
+      value: '"v=spf1 include:spf.protection.outlook.com -all"'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.co.uk. - SPF
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.co.uk"
+      record: 'carcosadreams.co.uk'
+      type: "TXT"
+      ttl: "300"
+      value: '"v=spf1 include:spf.protection.outlook.com -all"'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+
