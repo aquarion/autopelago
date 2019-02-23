@@ -15,28 +15,28 @@ server {
     listen              443 ssl;
     listen              80;
     server_name www.carcosadreams.co.uk;
-    return 301 $scheme://www.carcosadreams.com;
+    return 301 $scheme://www.carcosadreams.com$request_uri;
 }
 
 server {
     listen              443 ssl;
     listen              80;
     server_name t67.carcosadreams.co.uk;
-    return 301 $scheme://t67.carcosadreams.com;
+    return 301 $scheme://t67.carcosadreams.com$request_uri;
 }
 
 server {
     listen              443 ssl;
     listen              80;
     server_name forsaken.carcosadreams.co.uk;
-    return 301 $scheme://forsaken.carcosadreams.com;
+    return 301 $scheme://forsaken.carcosadreams.com$request_uri;
 }
 
 server {
     listen              443 ssl;
     listen              80;
     server_name alba.carcosadreams.co.uk;
-    return 301 $scheme://alba.carcosadreams.com;
+    return 301 $scheme://alba.carcosadreams.com$request_uri;
 }
 
 server {
