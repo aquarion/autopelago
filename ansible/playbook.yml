@@ -8,7 +8,7 @@
    - water-gkhs-update
    - water-gkhs-network
    - water-gkhs-users
-   - { role: "azavea.papertrail", tags: papertrail }
+   - { role: "ansible.papertrail", tags: papertrail }
    - { role: water-gkhs-web-errors, tags: nginx }
 
 - hosts: archipelago_cenote

@@ -6,7 +6,8 @@
 - src: elboletaire.transmission
 - src: pablocrivella.heroku-toolbelt
 - src: torian.filebeat
-- src: azavea.papertrail
+- src: https://github.com/aquarion/ansible-papertrail
+  name: ansible.papertrail
 #- src: charleskorn.raspi-information-radiator
 - src: https://github.com/ieguiguren/ansible-nordvpn
 - src: https://github.com/amarao/ansible-get-external-ip-via-dyndns
