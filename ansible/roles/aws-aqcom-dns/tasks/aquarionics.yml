@@ -34,7 +34,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "MX"
       ttl: "300"
-      value: "10 ASPMX.L.GOOGLE.COM.,10 ALT1.ASPMX.L.GOOGLE.COM.,20 ALT2.ASPMX.L.GOOGLE.COM.,20 ASPMX2.GOOGLEMAIL.COM.,30 ASPMX3.GOOGLEMAIL.COM."
+      value: 10 aspmx.l.google.com.,10 alt1.aspmx.l.google.com.,20 alt2.aspmx.l.google.com.,20 aspmx2.googlemail.com.,30 aspmx3.googlemail.com.
 
 - name: aquarionics.com. - NS
   route53:
@@ -142,62 +142,89 @@
       value: 'd2r0e8lumqw3g1.cloudfront.net'
 
 
+- name: Amazon DNS Validation for aqcom - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "_718a5f89a82bf1a5111be33a782c832a.aquarionics.com."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
+      type: "CNAME"
+      ttl: "300"
+      value: '_02827ed4ad6fed8455c7ece69808224e.hkvuiqjoua.acm-validations.aws.'
+
+
+- name: Amazon DNS Validation for cdn.aqcom - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "_7ca693a0f8f72e0865bf5335a6877adb.cdn.aquarionics.com."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
+      type: "CNAME"
+      ttl: "300"
+      value: '_a610429fde9cdbee8f486a8f8ee9c28e.hkvuiqjoua.acm-validations.aws.'
+
+
+- name: \*.cdn.aquarionics.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "*.cdn.aquarionics.com."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
+      type: "CNAME"
+      ttl: "3600"
+      value: 'd2r0e8lumqw3g1.cloudfront.net'
+
+
 
 - name: 1.cdn.aquarionics.com. - CNAME
   route53:
       overwrite: true
-      command: "create"
+      command: "delete"
       zone: "aquarionics.com"
-      record: "1.cdn.aquarionics.com."
+      record: "live.dailyphoto.aquarionics.com."
       aws_access_key: '{{aqcom_aws_key}}'
       aws_secret_key: '{{aqcom_aws_secret}}'
+      value: "d2r0e8lumqw3g1.cloudfront.net"
       type: "CNAME"
-      ttl: "3600"
-      value: 'd2r0e8lumqw3g1.cloudfront.net'
-
-
 
 - name: 2.cdn.aquarionics.com. - CNAME
   route53:
       overwrite: true
-      command: "create"
+      command: "delete"
       zone: "aquarionics.com"
-      record: "2.cdn.aquarionics.com."
+      record: "live.dailyphoto.aquarionics.com."
+      value: "d2r0e8lumqw3g1.cloudfront.net"
       aws_access_key: '{{aqcom_aws_key}}'
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "CNAME"
-      ttl: "3600"
-      value: 'd2r0e8lumqw3g1.cloudfront.net'
-
-
 
 - name: 3.cdn.aquarionics.com. - CNAME
   route53:
       overwrite: true
-      command: "create"
+      command: "delete"
       zone: "aquarionics.com"
-      record: "3.cdn.aquarionics.com."
+      record: "live.dailyphoto.aquarionics.com."
+      value: "d2r0e8lumqw3g1.cloudfront.net"
       aws_access_key: '{{aqcom_aws_key}}'
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "CNAME"
-      ttl: "3600"
-      value: 'd2r0e8lumqw3g1.cloudfront.net'
-
-
 
 - name: 4.cdn.aquarionics.com. - CNAME
   route53:
       overwrite: true
-      command: "create"
+      command: "delete"
       zone: "aquarionics.com"
-      record: "4.cdn.aquarionics.com."
+      record: "live.dailyphoto.aquarionics.com."
+      value: "d2r0e8lumqw3g1.cloudfront.net"
       aws_access_key: '{{aqcom_aws_key}}'
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "CNAME"
-      ttl: "3600"
-      value: 'd2r0e8lumqw3g1.cloudfront.net'
-
-
 
 - name: dailyphoto.aquarionics.com. - CNAME
   route53:
