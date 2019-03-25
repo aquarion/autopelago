@@ -1,0 +1,34 @@
+
+- name: Remove plexupdate
+  file: 
+    path: /root/plexupdate
+    state: absent
+
+- name: delete cron plexupdate preferences
+  file: state=absent path==/etc/plexupdate.cron.conf
+
+- name: delete public plexupdate preferences
+  file: state=absent path=/etc/plexupdate.conf
+
+- name: remove plex
+  file: state=absent path=/etc/init/plexmediaserver.conf
+
+- name: remove plex
+  apt: 
+    package: plexmediaserver 
+    state: absent
+    autoclean: yes
+    autoremove: yes
+    purge: yes
+
+- name: remove cron
+  file: 
+    path: /etc/cron.daily/plexupdate
+    state: absent
+
+## Remove old stuff
+- name: remove old cron for plex update
+  cron: name="plexupdate" cron_file=plexupdate user=root hour=4 minute=47 job="cd /tmp;/root/plexupdate/plexupdate.sh" state=absent
+
+- name: Remove old plex update
+  file: path=/root/.plexupdate state=absent
