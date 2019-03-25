@@ -50,7 +50,7 @@
     - millpond-packages
     - millpond-users
     - millpond-mount-media
-    - plexupdate
+    - plexupdate-uninstall
     - retort
     - ansible-homebridge
     - water-gkhs-filebot
