@@ -6,4 +6,5 @@ if ! flock -n 9  ; then
  exit 1
 fi
 
+export PATH=$PATH:/usr/local/bin
 time b2 sync --delete --replaceNewer {{ plex_home }}/Media b2://millpond-media

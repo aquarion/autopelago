@@ -20,17 +20,35 @@
   cron: name="filebot" minute="2,32"
         user="plex" job="{{ plex_home }}/bin/sortitaaht.sh"
         cron_file=filebot
-        state=absent
+        state=present
 
-# On Notify
+- name: Add youtube_download script to bin
+  template: src=youtube_download.sh dest={{ plex_home }}/bin/youtube_download.sh mode=0755 owner=plex
 
-- name: Install inotify-tools
-  apt: package=inotify-tools state=installed
+- name: Add youtube_download cron job
+  cron: name="youtube_download" minute="15" hour=3
+        user="plex" job="{{ plex_home }}/bin/youtube_download.sh"
+        cron_file=youtube_download
+        state=present
 
-- name: Add Notify script to bin
-  template: src=inotify.sh dest={{ plex_home }}/bin/inotify.sh mode=0755 owner=plex
+- name: Add remove_completed_torrents script to bin
+  template: src=remove_completed_torrents.sh dest={{ plex_home }}/bin/remove_completed_torrents.sh mode=0755 owner=plex
 
-- name: Add inotify cron job
-  cron: name="filebot-notify" special_time=reboot
-        user="plex" job="{{ plex_home }}/bin/inotify.sh"
-        cron_file=filebot-notify
+- name: Add remove_completed_torrents cron job
+  cron: name="remove_completed_torrents" minute="15" hour=18
+        user="plex" job="{{ plex_home }}/bin/remove_completed_torrents.sh"
+        cron_file=remove_completed_torrents
+        state=present
+
+# # On Notify
+
+# - name: Install inotify-tools
+#   apt: package=inotify-tools state=installed
+
+# - name: Add Notify script to bin
+#   template: src=inotify.sh dest={{ plex_home }}/bin/inotify.sh mode=0755 owner=plex
+
+# - name: Add inotify cron job
+#   cron: name="filebot-notify" special_time=reboot
+#         user="plex" job="{{ plex_home }}/bin/inotify.sh"
+#         cron_file=filebot-notify
