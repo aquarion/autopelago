@@ -53,7 +53,7 @@
     - plexupdate-uninstall
     - retort
     - ansible-homebridge
-    - water-gkhs-filebot
+    #§:wq- water-gkhs-filebot
 
 # Non-authenticated tasks
 - hosts: all:!localactions

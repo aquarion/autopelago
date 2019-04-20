@@ -4,7 +4,7 @@ server {
     listen      80;
     listen [::]:80;
     server_name www.carcosadreams.co.uk t67.carcosadreams.co.uk forsaken.carcosadreams.co.uk
-                www.carcosadreams.com   t67.carcosadreams.com   forsaken.carcosadreams.com;
+                www.carcosadreams.com;
     return 301 https://$host$request_uri;
     include /etc/nginx/snippets/errors.conf;
     client_max_body_size 32M;
@@ -42,7 +42,7 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name www.carcosadreams.com   t67.carcosadreams.com   forsaken.carcosadreams.com;
+    server_name www.carcosadreams.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {

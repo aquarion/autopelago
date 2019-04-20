@@ -49,7 +49,7 @@ server {
     listen              443 ssl;
     listen              80;
     server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
-    return 301 $scheme://istic.co;
+    return 301 $scheme://istic.co$uri;
 }
 
 server {
