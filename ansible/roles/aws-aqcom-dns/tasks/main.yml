@@ -49,3 +49,8 @@
   tags:
     - aws
     - larpfic
+
+- include: conterio.yml
+  tags:
+    - aws
+    - conterio
