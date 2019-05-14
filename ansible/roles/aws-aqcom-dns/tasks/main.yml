@@ -43,3 +43,9 @@
   tags:
     - aws
     - carcosadreams
+
+
+- include: larpfic.yml
+  tags:
+    - aws
+    - larpfic
