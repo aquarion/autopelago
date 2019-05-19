@@ -50,7 +50,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
 
 
 - name: wakingnightmare.foip.me. - A
@@ -63,7 +63,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
 
 
 - name: fourrivers.foip.me. - A
@@ -76,7 +76,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
 
 - name: forgotten.foip.me. - A
   route53:
@@ -88,7 +88,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
 
 - name: ojaqs.foip.me. - A
   route53:
@@ -100,7 +100,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 
 - name: bless.ojaqs.foip.me. - A
   route53:
@@ -112,7 +112,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 
 - name: diaspora.foip.me. - A
   route53:
@@ -124,7 +124,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 
 - name: herodiaries.foip.me. - A
   route53:
@@ -136,7 +136,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 
 - name: sevenmirrors.foip.me. - A
   route53:
@@ -148,7 +148,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 
 
 - name: idlespeculation.foip.me. - A
@@ -161,7 +161,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 
 
 
@@ -175,5 +175,5 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
 

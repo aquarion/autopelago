@@ -10,7 +10,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 
 - name: cleartextcontent.co.uk. - MX
   route53:
@@ -62,5 +62,5 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
 

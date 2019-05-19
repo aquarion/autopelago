@@ -21,7 +21,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
   tags:
       - conterio
 
@@ -61,7 +61,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
   tags:
       - conterio
 
@@ -76,7 +76,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "300"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
   tags:
       - conterio
 

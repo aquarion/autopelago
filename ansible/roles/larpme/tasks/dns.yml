@@ -6,7 +6,7 @@
       record: "larp.me"
       type: "A"
       ttl: "300"
-      value: '138.201.60.152'
+      value: '{{ archipelago_ip }}'
 
 - name: Larpme DNS - MX
   route53:
@@ -107,7 +107,7 @@
       record: "www.larp.me"
       type: "A"
       ttl: "300"
-      value: '138.201.60.152'
+      value: '{{ archipelago_ip }}'
 
 - name: Larpme DNS - Local Dev
   route53:
@@ -117,7 +117,7 @@
       record: "local.larp.me"
       type: "A"
       ttl: "300"
-      value: '138.201.60.152'
+      value: '{{ archipelago_ip }}'
 
 - name: Larpme DNS - Staging
   route53:
@@ -127,7 +127,7 @@
       record: "staging.larp.me"
       type: "A"
       ttl: "300"
-      value: '138.201.60.152'
+      value: '{{ archipelago_ip }}'
 
 - name: Larpme DNS - Staging API
   route53:
@@ -147,7 +147,7 @@
       record: "wiki.larp.me"
       type: "A"
       ttl: "300"
-      value: '138.201.60.152'
+      value: '{{ archipelago_ip }}'
 
 - name: Larpme DNS - LOCATIONS
   route53:
@@ -157,4 +157,4 @@
       record: "locations.larp.me"
       type: "A"
       ttl: "300"
-      value: '138.201.60.152'
+      value: '{{ archipelago_ip }}'

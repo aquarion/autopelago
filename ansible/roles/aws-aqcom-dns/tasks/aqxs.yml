@@ -10,7 +10,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "3600"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
 
 
 
@@ -78,7 +78,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "A"
       ttl: "3600"
-      value: '109.74.192.161'
+      value: '{{ cenote_ip }}'
 
 
 

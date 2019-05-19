@@ -36,7 +36,7 @@
       record: "carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -50,7 +50,7 @@
       record: "carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -65,7 +65,7 @@
       record: "carcosadreams.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -80,7 +80,7 @@
       record: "www.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -96,7 +96,7 @@
       record: "www.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -111,7 +111,7 @@
       record: "www.carcosadreams.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -127,7 +127,7 @@
       record: "t67.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -141,7 +141,7 @@
       record: "forsaken.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -155,7 +155,7 @@
       record: "alba.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -169,7 +169,7 @@
       record: "alba.narrative.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -184,7 +184,7 @@
       record: "wiki.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -198,7 +198,7 @@
       record: "t67.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -212,7 +212,7 @@
       record: "forsaken.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -226,7 +226,7 @@
       record: "alba.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -240,7 +240,7 @@
       record: "wiki.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
@@ -255,7 +255,7 @@
       record: "wiki.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ ansible_default_ipv4.address }}'
+      value: '{{ archipelago_ip }}'
       aws_access_key: '{{istic_aws_key}}'
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
