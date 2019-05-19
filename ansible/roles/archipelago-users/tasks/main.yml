@@ -4,6 +4,7 @@
   user: name={{ item }}
   with_items:
     - larpfic
+    - plex
 
 - name: Delete normal users
   user:

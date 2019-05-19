@@ -27,15 +27,14 @@
     - archipelago-packages
     - archipelago-users
     - plexupdate
-    - archipelago-mount-storagebox
+    # - archipelago-mount-storagebox
     - { role: aws-aqcom-dns, become: no, connection: local }
     - { role: larpme, tags: larpme }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
-#    - { role: archipelago-orion, tags: orion }
     - water-gkhs-filebot
-    - millpond-flexget
-    - millpond-b2-backup
+    - water-gkhs-flexget
+    - b2-backup
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:
@@ -53,7 +52,6 @@
     - plexupdate-uninstall
     - retort
     - ansible-homebridge
-    #§:wq- water-gkhs-filebot
 
 # Non-authenticated tasks
 - hosts: all:!localactions

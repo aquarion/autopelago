@@ -4,6 +4,7 @@
   apt_key:
     keyserver: keyring.debian.org
     id: 8B48AD6246925553
+  when: ansible_distribution == 'Debian'
 
 - name: Package list update
   apt: update_cache=yes cache_valid_time=21600
@@ -48,9 +49,10 @@
     repo: deb http://ftp.debian.org/debian stretch-backports main
     state: present
     filename: 'stretch-backports'
+  when: ansible_distribution == 'Debian'
 
 - name: Install backported packages
   apt: pkg={{ item }} state=installed default_release=stretch-backports
   with_items:
     - certbot
-    
+  when: ansible_distribution == 'Debian'
