@@ -3,7 +3,7 @@ export JAVA_OPTS=-Xmx1024m
 filebot -script fn:amc \
         --output "{{ media_home }}" \
         --log-file amc.log \
-        --action move \
+        --action hardlink \
         --conflict override -non-strict \
         --def music=y subtitles=en artwork=y \
         --def \
@@ -11,4 +11,4 @@ filebot -script fn:amc \
                 "animeFormat=Anime/{n}/{fn}" \
                 "movieFormat=Movies/{n} {y}/{fn}" \
                 "musicFormat=Music/{n}/{fn}" \
-        "{{ transmission_complete }}"
+        "{{ transmission_complete }}" > ~/amc.stdout.log
