@@ -3,6 +3,6 @@
 - name: Install Application Packages
   apt: pkg={{ item }} state=installed
   with_items:
-    - mysql-server
+    - mariadb-server
     - irssi
     - exim4

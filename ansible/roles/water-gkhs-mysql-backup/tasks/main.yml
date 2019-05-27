@@ -2,7 +2,7 @@
 # Install Mysql
 
 - apt: name=python-mysqldb state=present
-- apt: name=mysql-server state=present
+- apt: name=mariadb-server state=present
 
 # Set root password
 - mysql_user: name=root password={{mysql_root_password}} check_implicit_admin=yes
