@@ -19,11 +19,12 @@ function download {
 		FILTER='--reject-title'
 	fi
 
-	mkdir -p "$SCRATCH"
+	mkdir -p $SCRATCH
 	cd $SCRATCH
 
 	youtube-dl \
 		--download-archive $DIR/downloaded.txt \
+		-q \
 		-i \
 		-o "${CHANNEL}/${SERIES}/${SERIES} - S${SEASON}E%(playlist_index)s - %(title)s.%(ext)s" \
 	       	-f bestvideo[ext=mp4]+bestaudio[ext=m4a] \
@@ -34,8 +35,7 @@ function download {
 		--convert-subs srt \
 		$FILTER "$FILTER_VALUE" \
 		$PLAYLIST
-	echo rsync -r --stats --progress --remove-source-files $SCRATCH/ $DIR
-	rsync -r --stats --progress --remove-source-files $SCRATCH/ $DIR
+	rsync -r --remove-source-files $SCRATCH/ $DIR
 	rm -rf $SCRATCH
 }
 

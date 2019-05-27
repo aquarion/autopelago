@@ -1,44 +1,76 @@
 
 - name: Install filebot
   include: filebot.yml
+  tags:
+    - media
 
 - name: Disable protected hardlinks (makes filebot hardlink work)
   lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
   notify: sysctl
+  tags:
+    - media
 
 # Script support
 - name: Make sure plex has a bin
   file: path={{ plex_home }}/bin state=directory owner=plex
+  tags:
+    - media
 
 
 # Sort It Ahht
 
 - name: Add sortitaaht script to bin
   template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht.sh mode=0755 owner=plex
+  tags:
+    - media
 
 - name: Add sortitaaht cron job
   cron: name="filebot" minute="2,32"
-        user="plex" job="{{ plex_home }}/bin/sortitaaht.sh"
+        user="plex" job="{{ plex_home }}/bin/sortitaaht.sh >> {{ plex_home }}/Logs/sortitaaht.log"
         cron_file=filebot
         state=present
+  tags:
+    - media
 
 - name: Add youtube_download script to bin
   template: src=youtube_download.sh dest={{ plex_home }}/bin/youtube_download.sh mode=0755 owner=plex
+  tags:
+    - media
 
 - name: Add youtube_download cron job
   cron: name="youtube_download" minute="15" hour=3
         user="plex" job="{{ plex_home }}/bin/youtube_download.sh"
         cron_file=youtube_download
         state=present
+  tags:
+    - media
+
+- apt:
+   state: present
+   name: transmission-cli
+  tags:
+    - media
+
+- apt:
+   state: present
+   name: transmission-remote-cli
+  tags:
+    - media
 
 - name: Add remove_completed_torrents script to bin
   template: src=remove_completed_torrents.sh dest={{ plex_home }}/bin/remove_completed_torrents.sh mode=0755 owner=plex
+  tags:
+    - media
+
 
 - name: Add remove_completed_torrents cron job
   cron: name="remove_completed_torrents" minute="15" hour=18
-        user="plex" job="{{ plex_home }}/bin/remove_completed_torrents.sh"
+        user="plex" job="{{ plex_home }}/bin/remove_completed_torrents.sh >> {{ plex_home }}/Logs/remove_torrents.log"
         cron_file=remove_completed_torrents
         state=present
+  tags:
+    - media
+
 
 # # On Notify
 
