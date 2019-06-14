@@ -10,9 +10,7 @@ server {
   diaspora.foip.me 
   old.aquarionics.com 
   bless.ojaqs.foip.me ojaqs.foip.me 
-  ludoistic.com sevenmirrors.foip.me
-  www.carcosadreams.co.uk t67.carcosadreams.co.uk forsaken.carcosadreams.co.uk alba.carcosadreams.co.uk wiki.carcosadreams.co.uk
-  www.carcosadreams.com t67.carcosadreams.com forsaken.carcosadreams.com alba.carcosadreams.com wiki.carcosadreams.co.uk; 
+  ludoistic.com sevenmirrors.foip.me;
   
   return 301 https://$host$request_uri;
 }
@@ -28,9 +26,7 @@ server {
   	diaspora.foip.me 
   	old.aquarionics.com 
   	bless.ojaqs.foip.me ojaqs.foip.me 
-  	ludoistic.com sevenmirrors.foip.me
-  	www.carcosadreams.co.uk t67.carcosadreams.co.uk forsaken.carcosadreams.co.uk alba.carcosadreams.co.uk wiki.carcosadreams.co.uk
-  	www.carcosadreams.com t67.carcosadreams.com forsaken.carcosadreams.com alba.carcosadreams.com wiki.carcosadreams.co.uk; 
+  	ludoistic.com sevenmirrors.foip.me;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {

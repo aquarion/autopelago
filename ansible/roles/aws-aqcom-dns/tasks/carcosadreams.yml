@@ -164,9 +164,23 @@
 - name: alba.narrative.carcosadreams.com. - A
   route53:
       overwrite: true
-      command: "create"
+      command: "absent"
       zone: "carcosadreams.com"
       record: "alba.narrative.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: alba-internal.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "alba-internal.carcosadreams.com."
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
@@ -210,6 +224,20 @@
       command: "create"
       zone: "carcosadreams.com"
       record: "forsaken.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: sisyphus.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "sisyphus.carcosadreams.com."
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'

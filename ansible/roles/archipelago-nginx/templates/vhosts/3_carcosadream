@@ -3,8 +3,12 @@ upstream container-carcosadreams { server 127.0.0.1:3080; }
 server {
     listen      80;
     listen [::]:80;
-    server_name www.carcosadreams.co.uk t67.carcosadreams.co.uk forsaken.carcosadreams.co.uk
-                www.carcosadreams.com;
+    server_name 
+        www.carcosadreams.com
+        alba.carcosadreams.com alba-internal.carcosadreams.com
+        t67-internal.carcosadreams.com t67.carcosadreams.com 
+        sisyphus.carcosadreams.com sisyphus-internal.carcosadreams.com
+        forsaken.carcosadreams.com forsaken-internal.carcosadreams.com;
     return 301 https://$host$request_uri;
     include /etc/nginx/snippets/errors.conf;
     client_max_body_size 32M;
@@ -21,28 +25,18 @@ server {
 server {
     listen              443 ssl;
     listen              80;
-    server_name t67.carcosadreams.co.uk;
-    return 301 $scheme://t67.carcosadreams.com$request_uri;
-}
-
-server {
-    listen              443 ssl;
-    listen              80;
-    server_name forsaken.carcosadreams.co.uk;
-    return 301 $scheme://forsaken.carcosadreams.com$request_uri;
-}
-
-server {
-    listen              443 ssl;
-    listen              80;
-    server_name alba.carcosadreams.co.uk;
-    return 301 $scheme://alba.carcosadreams.com$request_uri;
+    server_name alba.carcosadreams.co.uk t67.carcosadreams.co.uk sisyphus.carcosadreams.co.uk forsaken.carcosadreams.co.uk;
+    return 301 $scheme://www.carcosadreams.com;
 }
 
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name www.carcosadreams.com;
+    server_name www.carcosadreams.com
+        alba.carcosadreams.com alba-internal.carcosadreams.com
+        t67-internal.carcosadreams.com t67.carcosadreams.com
+        sisyphus.carcosadreams.com sisyphus-internal.carcosadreams.com
+        forsaken.carcosadreams.com forsaken-internal.carcosadreams.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
   location    / {

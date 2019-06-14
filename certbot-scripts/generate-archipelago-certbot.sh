@@ -25,8 +25,8 @@ diaspora.foip.me,\
 bless.ojaqs.foip.me,ojaqs.foip.me,\
 optim.istic.net,\
 carcosadreams.co.uk,www.carcosadreams.co.uk,alba.carcosadreams.co.uk,t67.carcosadreams.co.uk,forsaken.carcosadreams.co.uk,\
-carcosadreams.com,www.carcosadreams.com,alba.carcosadreams.com,t67.carcosadreams.com,forsaken.carcosadreams.com,\
-alba.narrative.carcosadreams.com,\
+carcosadreams.com,www.carcosadreams.com,alba.carcosadreams.com,t67.carcosadreams.com,forsaken.carcosadreams.com,sisyphus.carcosadreams.com,\
+alba-internal.carcosadreams.com,\
 www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
 forums.profounddecisions.co.uk
 # www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
