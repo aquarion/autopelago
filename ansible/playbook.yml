@@ -41,18 +41,6 @@
        - aquarion
        - ccooke
 
-- hosts: millpond.water.gkhs.net
-  vars:
-    hostname: millpond.water.gkhs.net
-  become: yes
-  roles:
-    - millpond-packages
-    - millpond-users
-    - millpond-mount-media
-    - plexupdate-uninstall
-    - retort
-    - ansible-homebridge
-
 # Non-authenticated tasks
 - hosts: all:!localactions
   roles:

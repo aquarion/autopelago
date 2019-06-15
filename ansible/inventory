@@ -5,12 +5,6 @@ cenote
 [nginx_hosts:children]
 archipelago
 
-[millpond]
-millpond.water.gkhs.net ansible_host=millpond.treacle.mine.nu hostname=millpond.water.gkhs.net
-
-;[caisson]
-;caisson.water.gkhs.net ansible_host=localhost  ansible_post=22 hostname=caisson.water.gkhs.net
-
 [archipelago]
 archipelago.water.gkhs.net hostname=archipelago.water.gkhs.net
 

@@ -1,13 +1,10 @@
-#- src: https://github.com/cspicer/ansible-apt
 - src: https://github.com/Fsero/ansible-apt.git
   version: removing_warning_in_ansible_2
-- src: https://github.com/aquarion/ansible-homebridge.git
 - src: geerlingguy.java
 - src: elboletaire.transmission
 - src: pablocrivella.heroku-toolbelt
 - src: torian.filebeat
 - src: https://github.com/aquarion/ansible-papertrail
   name: ansible.papertrail
-#- src: charleskorn.raspi-information-radiator
 - src: https://github.com/ieguiguren/ansible-nordvpn
 - src: https://github.com/amarao/ansible-get-external-ip-via-dyndns
