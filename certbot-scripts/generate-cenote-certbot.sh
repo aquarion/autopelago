@@ -22,7 +22,7 @@ gossip.ankhmorporktimes.com,quotes.afphrid.org.uk,\
 maelfroth.org,lampstand.aqxs.net,lampstand.maelfroth.org,obviouslyfakeurl.foip.me,rickroll.maelfroth.org,wiki.maelfroth.org,www.maelfroth.com,www.maelfroth.org,maelfroth.com,\
 lottery.aqxs.net,snakesandladders.aqxs.net,spycattes.aqxs.net,unhelpfulclue.aqxs.net,\
 ludo.istic.net,\
-mc.aqxs.net,mcwp.aqxs.net,www.contrarythoughts.com,contrarythoughts.com,\
+mc.aqxs.net,mcwp.aqxs.net,www.contrarythoughts.com,contrarythoughts.com,michael.conterio.co.uk,\
 duckgoose.aqxs.net,\
 nicholasavenell.com,www.nicholasavenell.com,\
 voicemail.aqxs.net,\
