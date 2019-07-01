@@ -50,7 +50,17 @@
       ttl: "300"
       value: '{{ cenote_ip }}'
 
-
+- name: obscura.camlarp.co.uk. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "camlarp.co.uk"
+      record: "obscura.camlarp.co.uk."
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
+      type: "A"
+      ttl: "300"
+      value: '{{ cenote_ip }}'
 
 - name: bw.camlarp.co.uk. - A
   route53:
