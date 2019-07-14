@@ -1,12 +1,29 @@
 - name: install nginx
   apt: pkg=nginx state=installed
 
-- name: configure letsencrypt config
-  template: src=letsencrypt.conf.j2 dest=/etc/nginx/snippets/letsencrypt.conf
+- name: configure letsencrypt config for misc
+  template: 
+    src: letsencrypt.conf.j2 
+    dest: /etc/nginx/snippets/letsencrypt.conf
+  vars:
+    cert_id: "{{ letsencrypt_dir }}"
+
+- name: configure letsencrypt config for foip_me
+  template: 
+    src: letsencrypt.conf.j2 
+    dest: /etc/nginx/snippets/foipme.conf
+  vars:
+    cert_id: "foip.me"
+
+- name: configure letsencrypt config for istic
+  template: 
+    src: letsencrypt.conf.j2 
+    dest: /etc/nginx/snippets/istic.conf
+  vars:
+    cert_id: "istic.net-0001"
 
 - name: Fix diffie-hellman insecurites
   include: diffie-hellman.yml
-
 
 - name: Add clacks overhead to nginx
   copy: 
