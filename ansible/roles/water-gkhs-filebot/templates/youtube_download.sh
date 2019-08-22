@@ -23,15 +23,18 @@ function download {
 	cd $SCRATCH
 
 	youtube-dl \
-		--download-archive $DIR/downloaded.txt \
+		--download-archive "$DIR/downloads-${CHANNEL}-${PLAYLIST}.txt" \
 		-q \
 		-i \
+                -4 \
 		-o "${CHANNEL}/${SERIES}/${SERIES} - S${SEASON}E%(playlist_index)s - %(title)s.%(ext)s" \
 	       	-f bestvideo[ext=mp4]+bestaudio[ext=m4a] \
 	       	--merge-output-format mp4 \
 		--add-metadata \
 		--write-thumbnail \
 		--write-sub \
+                --embed-subs \
+                --embed-thumbnail \
 		--convert-subs srt \
 		$FILTER "$FILTER_VALUE" \
 		$PLAYLIST
