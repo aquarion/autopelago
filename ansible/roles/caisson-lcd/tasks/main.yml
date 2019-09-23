@@ -1,0 +1,50 @@
+
+- name: Get LCD Show
+  git:
+    repo: 'https://github.com/goodtft/LCD-show.git'
+    dest: "/usr/src/LCD-show"
+    version: master
+
+
+- name: Prepare LCD Show script
+  shell: |
+    sed -e "s/reboot/#reboot/g" < LCD35-show > LCD35-show-modified
+    chmod 755 LCD35-show-modified
+  args:
+    chdir: /usr/src/LCD-show
+    creates: /usr/src/LCD-show/LCD35-show-modified
+
+- name: Install LCD Drivers
+  command: ./LCD35-show-modified
+  args:
+    chdir: /usr/src/LCD-show
+    creates: /boot/overlays/tft35a.dtbo
+  register: install_drivers
+
+- name: Rotated Display
+  copy:
+    src: /usr/src/LCD-show/usr/99-calibration.conf-35-180
+    dest: /etc/X11/xorg.conf.d/99-calibration.conf
+    remote_src: yes
+  register: rotato
+
+- lineinfile:
+    state: present
+    path: /boot/config.txt
+    line: "overscan_left: 10"
+    regexp: '^overscan_left:'
+  register: overscan
+
+- lineinfile:
+    state: present
+    path: /boot/config.txt
+    line: "overscan_right: -10"
+    regexp: '^overscan_right:'
+  register: overscan
+
+
+# - reboot:
+#   when: install_drivers.changed or overscan.changed or rotato.changed
+
+
+
