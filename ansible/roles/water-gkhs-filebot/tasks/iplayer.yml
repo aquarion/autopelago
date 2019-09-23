@@ -1,0 +1,13 @@
+
+- apt_repository:
+    repo: ppa:jon-hedgerows/get-iplayer
+  notify:
+    - Update APT
+
+
+- meta: flush_handlers
+
+- apt:
+   pkg: get-iplayer
+   state: present
+

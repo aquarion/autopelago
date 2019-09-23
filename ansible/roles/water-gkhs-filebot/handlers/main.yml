@@ -5,3 +5,7 @@
 
 - name: register filebot
   command: "filebot --license {{ plex_home }}/.filebot_license.psm"
+
+
+- name: Update APT
+  apt: update_cache=yes

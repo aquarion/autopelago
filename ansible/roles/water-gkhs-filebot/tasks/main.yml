@@ -4,6 +4,11 @@
   tags:
     - media
 
+- name: Install get_iplayer
+  include: iplayer.yml
+  tags:
+    - media
+
 - name: Disable protected hardlinks (makes filebot hardlink work)
   lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
   notify: sysctl
