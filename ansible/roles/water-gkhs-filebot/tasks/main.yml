@@ -77,6 +77,11 @@
     - media
 
 
+- name: Add media logrotate
+  template: src=media_logrotate.j2 dest=/etc/logrotate.d/media_logrotate mode=0644 owner=root
+  tags:
+    - media
+
 # # On Notify
 
 # - name: Install inotify-tools
