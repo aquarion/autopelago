@@ -28,6 +28,10 @@
   tags:
     - "filebot"
 
+- apt:
+   pkg: libmediainfo0v5
+   state: present
+
 - name: register licence
   copy:
     src: Filebot_Licence.psm

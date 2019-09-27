@@ -1,27 +1,14 @@
----
-- name: sysctl
-  command: "sysctl -p"
-
-
-- name: register filebot
-  command: "filebot --license {{ plex_home }}/.filebot_license.psm"
-
-
-- name: Update APT
-  apt: update_cache=yes
-
-
 
 
 - name: Get running processes
-  shell: "ps -ef | grep -v grep | grep -w filebot_inotify.fifo | grep inotifywait | awk '{print $2}'"
+  shell: "ps -ef | grep -v grep | grep -w inotify_ifttt.fifo | grep inotifywait | awk '{print $2}'"
   register: running_processes
-  listen: "restart filebot inotify"
+  listen: "restart inotify"
 
 - name: Kill running processes
   shell: "kill {{ item }}"
   with_items: "{{ running_processes.stdout_lines }}"
-  listen: "restart filebot inotify"
+  listen: "restart inotify"
 
 - wait_for:
     path: "/proc/{{ item }}/status"
@@ -29,16 +16,16 @@
   with_items: "{{ running_processes.stdout_lines }}"
   ignore_errors: yes
   register: killed_processes
-  listen: "restart filebot inotify"
+  listen: "restart inotify"
 
 - name: Force kill stuck processes
-  listen: "restart filebot inotify"
+  listen: "restart inotify"
   shell: "kill -9 {{ item }}"
   with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
   ignore_errors: yes
 
 - name: Restart inotify
-  listen: "restart filebot inotify"
-  command: "{{ plex_home }}/bin/inotify.sh"
+  listen: "restart inotify"
+  command: /usr/local/bin/inotify_ifttt.sh
   async: 1000
   poll: 0

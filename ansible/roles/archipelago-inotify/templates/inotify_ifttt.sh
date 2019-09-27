@@ -25,20 +25,11 @@ exlock_now || exit 1
  
 # Remember! Lock file is removed when one of the scripts exits and it is
 #           the only script holding the lock or lock is not acquired at all.
-                                                                                                                                                                                                                                                                 
 
-HOME={{ plex_home }}
-WATCH_PATH={{ transmission_complete }}/completed
-LOGFILE=$HOME/Logs/filebot_inotify.log
-WATCHFILE=$HOME/.filebot_inotify.fifo
-
-if [[ -p $WATCHFILE ]];
-then
-	true;
-else
-	mkfifo $WATCHFILE || exit 5
-fi
-
+HOME=/home/aquarion
+WATCH_PATH=$HOME/Dropbox/IFTTT
+WATCHFILE=$HOME/logs/inotify_ifttt.fifo
+LOGFILE=$HOME/logs/inotify_ifttt.log
 
 # Close STDOUT file descriptor
 exec 1<&-
@@ -51,14 +42,36 @@ exec 1<>$LOGFILE
 # Redirect STDERR to STDOUT
 exec 2>&1
 
+if [[ -p $WATCHFILE ]];
+then
+	true;
+else
+	mkfifo $WATCHFILE
+fi
+
+echo "Hello World  (`date`)"
 
 inotifywait -drq -o $WATCHFILE -e create -e moved_to $WATCH_PATH
 
 trap "true" PIPE
 cat $WATCHFILE | while read  path action file; 
 do
-	echo Saw $action on $path$file
-	#echo "Saw $action in $path"; 
-	$HOME/bin/sortitaaht.sh $path$file
+	SUM=`md5sum "$path$file" | cut -d\  -f1` 
+	echo Hello $path$file $SUM
+	if [[ "$SUM" == "394f8b4fa928b5f2d0c13645f99e2d33" ]]
+	then 
+		echo "Looks like the old IFTTT 404"
+		rm -v "$path$file"
+	elif  [[ "$SUM" == "96ff1cee0b824f18612629b4bcf24e91" ]]
+	then
+		echo "Looks like the new IFTTT 404 JPG"
+		rm -v "$path$file"
+	elif  [[ "$SUM" == "4d3559b444eb8d78b1a9e0ee15132434" ]]
+	then
+		echo "Looks like the new IFTTT 404 PNG"
+		rm -v "$path$file"
+	else
+		echo "No idea about $SUM"
+	fi
 done
 trap PIPE

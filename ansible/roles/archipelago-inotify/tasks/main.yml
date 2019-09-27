@@ -1,0 +1,21 @@
+
+# On Notify
+
+- name: Install inotify-tools
+  apt: package=inotify-tools state=present
+  tags:
+    - inotify
+
+- name: Add Notify script to bin
+  template: src=inotify_ifttt.sh dest=/usr/local/bin/inotify_ifttt.sh mode=0755 owner=aquarion
+  notify: 
+    - restart inotify
+  tags:
+    - inotify
+
+- name: Add inotify cron job
+  cron: name="inotify-ifttt" special_time=hourly
+        user="aquarion" job="/usr/local/bin/inotify_ifttt.sh"
+        cron_file=inotify-ifttt
+  tags:
+    - inotify

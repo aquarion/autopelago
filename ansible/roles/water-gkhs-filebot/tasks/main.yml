@@ -80,17 +80,28 @@
 - name: Add media logrotate
   template: src=media_logrotate.j2 dest=/etc/logrotate.d/media_logrotate mode=0644 owner=root
   tags:
+    - inotify
+
+# On Notify
+
+- name: Install inotify-tools
+  apt: package=inotify-tools state=present
+  tags:
     - media
+    - inotify
 
-# # On Notify
+- name: Add Notify script to bin
+  template: src=inotify.sh dest={{ plex_home }}/bin/inotify.sh mode=0755 owner=plex
+  notify: 
+    - restart filebot inotify
+  tags:
+    - media
+    - inotify
 
-# - name: Install inotify-tools
-#   apt: package=inotify-tools state=installed
-
-# - name: Add Notify script to bin
-#   template: src=inotify.sh dest={{ plex_home }}/bin/inotify.sh mode=0755 owner=plex
-
-# - name: Add inotify cron job
-#   cron: name="filebot-notify" special_time=reboot
-#         user="plex" job="{{ plex_home }}/bin/inotify.sh"
-#         cron_file=filebot-notify
+- name: Add inotify cron job
+  cron: name="filebot-notify" special_time=hourly
+        user="plex" job="{{ plex_home }}/bin/inotify.sh"
+        cron_file=filebot-notify
+  tags:
+    - media
+    - inotify
