@@ -17,13 +17,11 @@ www.gkhs.net,\
 aqxs.net,www.aqxs.net,\
 live.dailyphoto.aquarionics.com,\
 empireproxy.aqxs.net,fourrivers.foip.me,larp.me.uk,www.larp.me.uk,ornithocracy.aqxs.net,forgotten.foip.me,\
-mosaiclarp.info,ref.mosaiclarp.info,www.mosaiclarp.info,\
 gossip.ankhmorporktimes.com,quotes.afphrid.org.uk,\
-maelfroth.org,lampstand.aqxs.net,lampstand.maelfroth.org,obviouslyfakeurl.foip.me,rickroll.maelfroth.org,wiki.maelfroth.org,www.maelfroth.com,www.maelfroth.org,maelfroth.com,\
+maelfroth.org,lampstand.aqxs.net,lampstand.maelfroth.org,obviouslyfakeurl.foip.me,rickroll.maelfroth.org,wiki.maelfroth.org,www.maelfroth.org,\
 lottery.aqxs.net,snakesandladders.aqxs.net,spycattes.aqxs.net,unhelpfulclue.aqxs.net,\
 ludo.istic.net,\
 mc.aqxs.net,mcwp.aqxs.net,www.contrarythoughts.com,contrarythoughts.com,michael.conterio.co.uk,\
-duckgoose.aqxs.net,\
 nicholasavenell.com,www.nicholasavenell.com,\
 voicemail.aqxs.net,\
 www.deadbadgerdesigns.co.uk,deadbadgerdesigns.co.uk,\
@@ -31,6 +29,7 @@ www.grantabruggehamstery.aqxs.net,www.grantabruggehamstery.co.uk,grantabruggeham
 www.pinsandneedlescostume.co.uk,pinsandneedlescostume.co.uk,\
 thomwillis.uk,thomwillis.uk,moth.aqxs.net
 
+sudo certbot -t certonly --expand --standalone --pre-hook "service apache2 stop" --post-hook "service apache2 start" --domains nicholasavenell.com,www.nicholasavenell.com
  #mothinabutterfly.net,www.mothinabutterfly.net,\
  #swatt.treasuretrap.co.uk,
 #dailyphoto.aquarionics.com,
