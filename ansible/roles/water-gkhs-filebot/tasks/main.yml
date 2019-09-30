@@ -4,6 +4,11 @@
   tags:
     - media
 
+- name: Install get_iplayer
+  include: iplayer.yml
+  tags:
+    - media
+
 - name: Disable protected hardlinks (makes filebot hardlink work)
   lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
   notify: sysctl
@@ -71,6 +76,11 @@
   tags:
     - media
 
+
+- name: Add media logrotate
+  template: src=media_logrotate.j2 dest=/etc/logrotate.d/media_logrotate mode=0644 owner=root
+  tags:
+    - media
 
 # # On Notify
 

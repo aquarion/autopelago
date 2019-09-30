@@ -41,6 +41,21 @@
        - aquarion
        - ccooke
 
+- hosts: caisson
+  become: yes
+  roles:
+    - water-gkhs-nginx
+    - caisson-printers
+    - caisson-lcd
+    - hannseman.homebridge
+  vars:
+    homebridge_plugins:
+     - name: homebridge-tuya-web
+     - name: homebridge-dummy
+     - name: homebridge-control-chromecast
+     - name: homebridge-switchbot
+     - name: homebridge-tplink-smarthome
+
 # Non-authenticated tasks
 - hosts: all:!localactions
   roles:

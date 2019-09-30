@@ -2,6 +2,7 @@
   version: removing_warning_in_ansible_2
 - src: geerlingguy.java
 - src: elboletaire.transmission
+- src: hannseman.homebridge
 - src: pablocrivella.heroku-toolbelt
 - src: torian.filebeat
 - src: https://github.com/aquarion/ansible-papertrail

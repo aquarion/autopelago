@@ -1,8 +1,12 @@
 ---
 
+- name: Set timezone to UTC
+  timezone:
+    name: UTC
+
 - name: Install key
   apt_key:
-    keyserver: keyring.debian.org
+    keyserver: keyserver.ubuntu.com
     id: 8B48AD6246925553
   when: ansible_distribution == 'Debian'
 
@@ -10,18 +14,19 @@
   apt: update_cache=yes cache_valid_time=21600
 
 - name: Install System Packages
-  apt: pkg={{ item }} state=installed
-  with_items:
-    - python
-    - python-pip
-    - build-essential
-    - libffi-dev
-      #- libssl-dev
-    - apt-transport-https
-    - ca-certificates
-    - etckeeper
-    - fail2ban
-    - dnsutils
+  apt:
+    state: present
+    pkg:
+     - python
+     - python-pip
+     - build-essential
+     - libffi-dev
+       #- libssl-dev
+     - apt-transport-https
+     - ca-certificates
+     - etckeeper
+     - fail2ban
+     - dnsutils
 
 - name: config fail2ban
   lineinfile:
@@ -32,8 +37,9 @@
     restart fail2ban
 
 - name: Install Utility Packages
-  apt: pkg={{ item }} state=installed
-  with_items:
+  apt:
+    state: present
+    pkg:
       - vim
       - screen
       - git
@@ -50,12 +56,13 @@
     repo: deb http://ftp.debian.org/debian stretch-backports main
     state: present
     filename: 'stretch-backports'
-  when: ansible_distribution == 'Debian'
+  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
 
 - name: Install ubuntu packages
-  apt: pkg={{ item }} state=present
-  with_items:
-    - software-properties-common
+  apt: 
+    state: present
+    pkg:
+     - software-properties-common
   when: ansible_distribution == 'Ubuntu'
   tags:
     - certbot
@@ -79,10 +86,11 @@
     - certbot
 
 - name: Install ubuntu packages
-  apt: pkg={{ item }} state=present
-  with_items:
-    - certbot
-    - python-certbot-nginx
+  apt: 
+    state: present
+    pkg:
+     - certbot
+     - python-certbot-nginx
   when: ansible_distribution == 'Ubuntu'
   tags:
     - certbot

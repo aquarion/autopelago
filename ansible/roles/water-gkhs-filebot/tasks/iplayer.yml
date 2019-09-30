@@ -1,0 +1,111 @@
+
+- apt_repository:
+    repo: ppa:jon-hedgerows/get-iplayer
+  notify:
+    - Update APT
+  tags:
+    - media
+    - iplayer
+
+
+- meta: flush_handlers
+  tags:
+    - media
+    - iplayer
+
+- apt:
+   pkg: get-iplayer
+   state: present
+
+- name: Add update iplayer script to bin
+  template: src=update_iplayer.sh dest={{ plex_home }}/bin/update_iplayer.sh mode=0755 owner=plex
+  tags:
+    - media
+    - iplayer
+
+
+- name: Add update_iplayer cron job
+  cron: name="update_iplayer" minute="15" hour=2
+        user="plex" job="{{ plex_home }}/bin/update_iplayer.sh >> {{ plex_home }}/Logs/update_iplayer.log"
+        cron_file=update_iplayer
+        state=present
+  tags:
+    - media
+    - iplayer
+
+- name: Make sure plex has a .get_iplayer directory
+  file: path={{ plex_home }}/.get_iplayer state=directory owner=plex
+  tags:
+    - media
+    - iplayer
+
+- name: Add iplayer quality config
+  lineinfile:
+    path: "{{ plex_home }}/.get_iplayer/options"
+    regexp: '^tvmode'
+    line: tvmode best
+    create: yes
+  tags:
+    - media
+    - iplayer
+
+- name: Add subdirformat config
+  lineinfile:
+    path: "{{ plex_home }}/.get_iplayer/options"
+    regexp: '^subdirformat'
+    line: subdirformat <nameshort>
+    create: yes
+  tags:
+    - media
+    - iplayer
+    
+- name: Add subtitles config
+  lineinfile:
+    path: "{{ plex_home }}/.get_iplayer/options"
+    regexp: '^subtitles'
+    line: subtitles 1
+    create: yes
+  tags:
+    - media
+    - iplayer
+
+- name: Add subdirformat config
+  lineinfile:
+    path: "{{ plex_home }}/.get_iplayer/options"
+    regexp: '^proxy'
+    line: "proxy http://{{ nordvpn_username }}:{{ nordvpn_password }}@{{ nordvpn_server }}.nordvpn.com:80"
+    create: yes
+  tags:
+    - media
+    - iplayer
+
+
+- name: Add fileprefix config
+  lineinfile:
+    path: "{{ plex_home }}/.get_iplayer/options"
+    regexp: '^fileprefix'
+    line: fileprefix - S<00seriesnum>E<00episodenum> 
+    create: yes
+  tags:
+    - media
+    - iplayer
+
+- name: Add output config
+  lineinfile:
+    path: "{{ plex_home }}/.get_iplayer/options"
+    regexp: '^output'
+    line: output {{media_home}}/TV/
+    create: yes
+  tags:
+    - media
+    - iplayer
+
+- name: Add whitespace config
+  lineinfile:
+    path: "{{ plex_home }}/.get_iplayer/options"
+    regexp: '^whitespace'
+    line: whitespace 1
+    create: yes
+  tags:
+    - media
+    - iplayer

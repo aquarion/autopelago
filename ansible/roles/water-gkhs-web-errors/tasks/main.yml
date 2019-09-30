@@ -4,6 +4,10 @@
 - name: Create www errors directory
   file: path=/var/www/errors state=directory
 
+- name: Create www directory
+  file: path=/var/www/html state=directory
+
+
 - name: configure istic error pages
   template: src={{item}} dest=/var/www/errors/{{ item | basename }}
   with_fileglob:

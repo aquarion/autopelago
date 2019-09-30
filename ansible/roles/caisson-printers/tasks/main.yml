@@ -1,0 +1,199 @@
+
+- name: Install CUPS
+  apt:
+    pkg: cups
+    state: present
+
+
+- lineinfile:
+    state: present
+    path: /etc/cups/cupsd.conf
+    line: "Listen 0.0.0.0:631 "
+    insertafter: "^Listen"
+  notify:
+    - restart cups
+
+- lineinfile:
+    state: present
+    path: /etc/cups/cupsd.conf
+    line: "  Allow 192.168.0.0/16"
+    insertafter: "^<Location />"
+  notify:
+    - restart cups
+
+- lineinfile:
+    state: present
+    path: /etc/cups/cupsd.conf
+    line: "  Allow 192.168.0.0/16"
+    insertafter: "^<Location /admin>"
+  notify:
+    - restart cups
+
+- lineinfile:
+    state: absent
+    path: /etc/cups/cupsd.conf
+    line: "Listen localhost:631"
+  notify:
+    - restart cups
+
+- user:
+    name: aquarion
+    groups: lpadmin
+    append: yes
+  notify:
+    - restart cups
+
+- name: Get Thermal Print drivers
+  git:
+    repo: 'https://github.com/klirichek/zj-58.git'
+    dest: "/usr/src/zj-58"
+    version: master
+  register: driverupdate
+
+- file:
+    state: absent
+    path: /usr/src/zj-58/build
+  when: driverupdate.changed
+
+- file:
+    state: absent
+    path: /usr/share/cups/model/zjiang
+  when: driverupdate.changed
+
+- name:
+  apt:
+    pkg:
+      - build-essential
+      - cmake
+      - libcups2-dev
+      - libcupsimage2-dev
+    state: present
+
+- file:
+    path: /usr/src/zj-58/build
+    state: directory
+
+- name: Prepare Thermal Printer Drivers build environment
+  shell: |
+    cmake /usr/src/zj-58
+  args:
+    chdir: /usr/src/zj-58/build
+    creates: /usr/src/zj-58/build/cmake_install.cmake
+
+- name: Build Thermal Printer Drivers
+  shell: |
+    cmake --build .
+  args:
+    chdir: /usr/src/zj-58/build
+    creates: /usr/src/zj-58/build/ppd/zj58.ppd
+
+- name: Thermal Printer Drivers installation
+  shell: |
+    make install
+  args:
+    chdir: /usr/src/zj-58/build
+    creates: /usr/share/cups/model/zjiang
+
+
+- name: Set up HPLIP temp directory
+  file:
+    path: /usr/src/hplip
+    state: directory
+
+
+#### <HP41>From https://github.com/HP41/ansible-cups
+- name: Install Expect
+  apt: name=expect state=latest
+
+- name: Install HPLIP
+  apt: name=hplip state=latest
+  register: hplip_package
+
+- name: Copy hp-plugin-install.exp install script to /usr/src/hplip/
+  copy:
+    src: "files/hp-plugin-install.exp"
+    dest: "/usr/src/hplip/hp-plugin-install.exp"
+    mode: a+rx
+  register: hplip
+
+- name: Installing HP Plugin using an except script to avoid user interaction
+  command: "/usr/src/hplip/hp-plugin-install.exp"
+  when: hplip.changed or hplip_package.changed
+#### </HP41>
+
+- name: test printer config
+  copy:
+    src: printers.conf
+    dest: /etc/cups/printers.conf
+    owner: root
+    group: lp
+    mode: 0664
+  check_mode: yes
+  register: test_config
+
+- name: test thermal printer ppd
+  copy:
+    src: /usr/share/cups/model/zjiang/zj58.ppd 
+    dest: /etc/cups/ppd/Receipt.ppd
+    owner: root
+    group: lp
+    mode: 0664
+    remote_src: true
+  check_mode: yes
+  register: test_receipt
+
+- name: test laserjet printer ppd
+  copy:
+    src: Laserjet.ppd
+    dest: /etc/cups/Laserjet.ppd
+    owner: root
+    group: lp
+    mode: 0664
+  check_mode: yes
+  register: test_laserjet
+
+- name: Stop CUPS
+  service: 
+    name: cups
+    state: stopped
+  when: test_config.changed or test_receipt.changed or test_laserjet.changed
+
+- name: apply printer config
+  copy:
+    src: printers.conf
+    dest: /etc/cups/printers.conf
+    backup: yes
+    owner: root
+    group: lp
+    mode: 0664
+  notify:
+    - restart cups
+
+- name: apply thermal printer ppd
+  copy:
+    src: /usr/share/cups/model/zjiang/zj58.ppd 
+    dest: /etc/cups/ppd/Receipt.ppd
+    backup: yes
+    owner: root
+    group: lp
+    mode: 0664
+    remote_src: true
+  notify:
+    - restart cups
+
+- name: test laserjet printer ppd
+  copy:
+    src: Laserjet.ppd
+    dest: /etc/cups/ppd/Laserjet.ppd
+    owner: root
+    group: lp
+    mode: 0664
+  notify:
+    - restart cups
+
+- name: Install avahi-discover for airprint
+  apt:
+    pkg: avahi-discover
+    state: present
+
+
