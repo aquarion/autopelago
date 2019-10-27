@@ -31,3 +31,7 @@ www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
 forums.profounddecisions.co.uk
 # www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
 # omnyom.blogs.water.gkhs.net,omnyom.com,www.omnyom.com,\
+
+
+AWS_PROFILE=istic-r53 sudo -E certbot certonly --dns-route53 -d *.istic.net && sudo service nginx restart
+sudo certbot certonly --dns-route53 -d *.foip.me && sudo service nginx restart
