@@ -12,7 +12,7 @@
   template: 
     src: letsencrypt.conf.j2 
     dest: /etc/nginx/snippets/foipme.conf
-    when: "'archipelago' in inventory_hostname"
+  when: "'archipelago' in inventory_hostname"
   vars:
     cert_id: "foip.me"
 
@@ -20,7 +20,7 @@
   template: 
     src: letsencrypt.conf.j2 
     dest: /etc/nginx/snippets/istic.conf
-    when: "'archipelago' in inventory_hostname"
+  when: "'archipelago' in inventory_hostname"
   vars:
     cert_id: "istic.net-0001"
 
