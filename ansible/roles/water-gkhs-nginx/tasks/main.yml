@@ -22,7 +22,7 @@
     dest: /etc/nginx/snippets/istic.conf
   when: "'archipelago' in inventory_hostname"
   vars:
-    cert_id: "istic.net-0001"
+    cert_id: "istic.net"
 
 - name: Fix diffie-hellman insecurites
   include: diffie-hellman.yml
