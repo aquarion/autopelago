@@ -18,7 +18,7 @@ server {
 server {
     listen              443 ssl;
     listen              80;
-    server_name www.carcosadreams.co.uk;
+    server_name www.carcosadreams.co.uk carcosadreams.com carcosadreams.co.uk;
     return 301 $scheme://www.carcosadreams.com$request_uri;
 }
 
