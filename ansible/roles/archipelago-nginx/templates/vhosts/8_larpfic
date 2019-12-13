@@ -4,9 +4,10 @@ upstream larpfic_rails {
   # single worker for timing out).
 
   # for UNIX domain socket setups:
-  server unix:/path/to/.unicorn.sock fail_timeout=0;
+  # server unix:/path/to/.unicorn.sock fail_timeout=0;
 
   # for TCP setups, point these to your backend servers
+  server localhost:3000 fail_timeout=0;
   # server 192.168.0.7:8080 fail_timeout=0;
   # server 192.168.0.8:8080 fail_timeout=0;
   # server 192.168.0.9:8080 fail_timeout=0;
@@ -48,7 +49,7 @@ server {
   keepalive_timeout 5;
 
   # path for static files
-  root /path/to/app/current/public;
+  root /home/larpfic/code/otwarchive-staging/public;
 
   # Prefer to serve static files directly from nginx to avoid unnecessary
   # data copies from the application server.
