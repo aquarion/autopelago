@@ -52,7 +52,9 @@
 
 - apt:
    state: present
-   name: transmission-cli
+   pkg: 
+    - transmission-cli
+    - aria2
   tags:
     - media
 
