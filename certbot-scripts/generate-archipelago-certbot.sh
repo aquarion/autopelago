@@ -23,6 +23,7 @@ mechan.istic.net,\
 larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,locations.larp.me,www.larp.me,\
 optim.istic.net,\
 www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
+www.deathuntodarkness.org,\
 forums.profounddecisions.co.uk
 # www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
 # omnyom.blogs.water.gkhs.net,omnyom.com,www.omnyom.com,\

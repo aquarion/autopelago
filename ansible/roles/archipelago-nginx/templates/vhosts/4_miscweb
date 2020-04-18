@@ -7,7 +7,8 @@ server {
   dagon.church live.dagon.church wiki.dagon.church 
   archipelago.water.gkhs.net 
   istic.co
-  old.aquarionics.com 
+  old.aquarionics.com
+  www.deathuntodarkness.org
   ludoistic.com
   *.istic.net
   *.foip.me;
@@ -24,6 +25,7 @@ server {
     archipelago.water.gkhs.net 
     istic.co
     old.aquarionics.com 
+    www.deathuntodarkness.org
     ludoistic.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
