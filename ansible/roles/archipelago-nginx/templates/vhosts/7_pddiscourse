@@ -27,8 +27,14 @@ server {
 
   error_page 502 /502_empire.html;
   location = /502_empire.html {
-  	root /var/www/errors/;
-  	internal;
+    root /var/www/errors/;
+    internal;
+  }
+
+  error_page 404 /404_empire.html;
+  location = /404_empire.html {
+    root /var/www/errors/;
+    internal;
   }
 
   gzip on;
