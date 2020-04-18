@@ -218,6 +218,62 @@
   tags:
     - carcosadreams
 
+- name: deadair.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "deadair.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: da-internal.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "da-internal.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: tr-internal.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "tr-internal.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
+- name: tabula-rasa.carcosadreams.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "carcosadreams.com"
+      record: "tabula-rasa.carcosadreams.com."
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'
+      aws_access_key: '{{istic_aws_key}}'
+      aws_secret_key: '{{istic_aws_secret}}'
+  tags:
+    - carcosadreams
+
 - name: forsaken.carcosadreams.com. - A
   route53:
       overwrite: true

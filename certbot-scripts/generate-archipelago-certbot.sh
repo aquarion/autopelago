@@ -21,12 +21,7 @@ warehousebasement.com,www.warehousebasement.com,\
 dagon.church,live.dagon.church,wiki.dagon.church,\
 mechan.istic.net,\
 larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,locations.larp.me,www.larp.me,\
-diaspora.foip.me,\
-bless.ojaqs.foip.me,ojaqs.foip.me,\
 optim.istic.net,\
-carcosadreams.co.uk,www.carcosadreams.co.uk,alba.carcosadreams.co.uk,t67.carcosadreams.co.uk,forsaken.carcosadreams.co.uk,\
-carcosadreams.com,www.carcosadreams.com,alba.carcosadreams.com,t67.carcosadreams.com,forsaken.carcosadreams.com,sisyphus.carcosadreams.com,\
-alba-internal.carcosadreams.com,\
 www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
 forums.profounddecisions.co.uk
 # www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
@@ -35,3 +30,6 @@ forums.profounddecisions.co.uk
 
 AWS_PROFILE=istic-r53 sudo -E certbot certonly --dns-route53 -d *.istic.net && sudo service nginx restart
 sudo certbot certonly --dns-route53 -d *.foip.me && sudo service nginx restart
+
+
+AWS_PROFILE=istic-r53 sudo -E certbot certonly --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk && sudo service nginx restart
