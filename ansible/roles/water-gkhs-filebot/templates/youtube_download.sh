@@ -71,11 +71,15 @@ function download {
 	       	-f bestvideo[ext=mp4]+bestaudio[ext=m4a] \
 	       	--merge-output-format mp4 \
 		--add-metadata \
-		--write-thumbnail \
 		--write-sub \
                 --embed-subs \
                 --embed-thumbnail \
 		--convert-subs srt \
+		--write-all-thumbnails \
+		--embed-thumbnail \
+		--write-info-json \
+		--all-subs \
+		--external-downloader aria2c --external-downloader-args "-c -j 3 -x 3 -s 3 -k 1M" \
 		$FILTER "$FILTER_VALUE" \
 		$PLAYLIST
 	rsync -r --remove-source-files $SCRATCH/ $DIR

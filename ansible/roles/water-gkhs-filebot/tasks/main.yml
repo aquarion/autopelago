@@ -41,6 +41,7 @@
   template: src=youtube_download.sh dest={{ plex_home }}/bin/youtube_download.sh mode=0755 owner=plex
   tags:
     - media
+    - media_playlists
 
 - name: Add youtube_download cron job
   cron: name="youtube_download" minute="15" hour=3
@@ -52,7 +53,9 @@
 
 - apt:
    state: present
-   name: transmission-cli
+   pkg: 
+    - transmission-cli
+    - aria2
   tags:
     - media
 

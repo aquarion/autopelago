@@ -33,12 +33,12 @@
     - aquarionics.com
     - cleartextcontent.co.uk
     - carcosadreams.co.uk
+    - deathuntodarkness.org
     remove_www:
     - ludoistic.com
     - omnyom.com
     - factionfiction.net
     - warehousebasement.com
     - skute.me
-    - clockworkcircus.zone
   notify:
    - restart nginx

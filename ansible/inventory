@@ -15,4 +15,4 @@ cenote.water.gkhs.net hostname=cenote.water.gkhs.net
 localhost
 
 [caisson]
-caisson.water.gkhs.net ansible_host=192.168.0.16 hostname=caisson.water.gkhs.net
+caisson.water.gkhs.net ansible_host=192.168.0.60 hostname=caisson.water.gkhs.net

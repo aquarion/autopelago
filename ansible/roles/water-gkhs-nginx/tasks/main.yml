@@ -24,6 +24,16 @@
   vars:
     cert_id: "istic.net"
 
+- name: configure letsencrypt config for istic
+  template: 
+    src: letsencrypt.conf.j2 
+    dest: /etc/nginx/snippets/carcosadreams_ssl.conf
+  when: "'archipelago' in inventory_hostname"
+  vars:
+    cert_id: "carcosadreams.com"
+  tags:
+    - carcosadreams
+
 - name: Fix diffie-hellman insecurites
   include: diffie-hellman.yml
 

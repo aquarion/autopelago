@@ -144,8 +144,8 @@
 
 - name: test laserjet printer ppd
   copy:
-    src: Laserjet.ppd
-    dest: /etc/cups/Laserjet.ppd
+    src: LaserJet.ppd
+    dest: /etc/cups/LaserJet.ppd
     owner: root
     group: lp
     mode: 0664
@@ -183,8 +183,8 @@
 
 - name: test laserjet printer ppd
   copy:
-    src: Laserjet.ppd
-    dest: /etc/cups/ppd/Laserjet.ppd
+    src: LaserJet.ppd
+    dest: /etc/cups/ppd/LaserJet.ppd
     owner: root
     group: lp
     mode: 0664
