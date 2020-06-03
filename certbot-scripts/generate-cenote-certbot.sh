@@ -28,7 +28,7 @@ www.deadbadgerdesigns.co.uk,deadbadgerdesigns.co.uk,\
 www.grantabruggehamstery.aqxs.net,www.grantabruggehamstery.co.uk,grantabruggehamstery.co.uk,\
 www.pinsandneedlescostume.co.uk,pinsandneedlescostume.co.uk,\
 thomwillis.uk,thomwillis.uk,moth.aqxs.net,\
-comeoutandplay.aqxs.net,\
+comeoutandplay.aqxs.net,comeoutandplay.games,\
 dhmstark.co.uk,www.dhmstark.co.uk
 
 sudo certbot -t certonly --expand --standalone --pre-hook "service apache2 stop" --post-hook "service apache2 start" --domains nicholasavenell.com,www.nicholasavenell.com
