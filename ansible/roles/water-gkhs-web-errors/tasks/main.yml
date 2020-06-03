@@ -14,7 +14,7 @@
    - templates/errors/*
 
 - name: configure web base page
-  template: src=host_not_found.html dest=/var/www/html/index.html
+  template: src=errors/404_host.html dest=/var/www/html/index.html
 
 - name: "Nginx: check for installation"
   register: nginx_installed
