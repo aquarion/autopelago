@@ -1,6 +1,0 @@
---- 
-
-- include: dns.yml
-  tags:
-    - aws
-    - larpme

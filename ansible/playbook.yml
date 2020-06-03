@@ -29,7 +29,6 @@
     - plexupdate
     # - archipelago-mount-storagebox
     - { role: aws-aqcom-dns, become: no, connection: local }
-    - { role: larpme, tags: larpme }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
     - water-gkhs-filebot

@@ -50,6 +50,11 @@
     - aws
     - larpfic
 
+- include: larpme.yml
+  tags:
+    - aws
+    - larpme
+
 - include: conterio.yml
   tags:
     - aws
