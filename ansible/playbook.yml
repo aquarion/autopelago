@@ -27,7 +27,6 @@
     - archipelago-packages
     - archipelago-users
     - plexupdate
-    # - archipelago-mount-storagebox
     - { role: aws-aqcom-dns, become: no, connection: local }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
