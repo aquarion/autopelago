@@ -7,6 +7,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - MX
   route53:
@@ -17,6 +19,8 @@
       type: "MX"
       ttl: "300"
       value: '1 ASPMX.L.GOOGLE.COM., 5 ALT1.ASPMX.L.GOOGLE.COM., 10 ALT2.ASPMX.L.GOOGLE.COM., 10 ASPMX2.GOOGLEMAIL.COM., 10 ASPMX3.GOOGLEMAIL.COM.'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - NS
   route53:
@@ -27,6 +31,8 @@
       type: "NS"
       ttl: "172800"
       value: ns-377.awsdns-47.com., ns-1181.awsdns-19.org., ns-1976.awsdns-55.co.uk., ns-527.awsdns-01.net.
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 
 #- name: Larpme DNS - SOA
@@ -48,6 +54,8 @@
       type: "SPF"
       ttl: "300"
       value: '"v=spf1 a mx include:smtp1.uservoice.com include:_spf.google.com include:spf.mtasv.net ~all"'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - DKIM
   route53:
@@ -58,6 +66,8 @@
     type: "TXT"
     ttl: 300
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNNNCDLsEMUlCnWkjtJ9pQnWAACeQHJG8PYBhfiZPb7XRtWf5eK0XRKSGJzTOJFaS8b+PBaB3cT6VWvTSNYJqQGtfdhLnE6xh5yaiBssdCNQZgeO/OffFVZRB/yyBNSjoXNSTTHXeonLLKxpaZTs7s2MBTJvpE5nl5kM5haRbwVwIDAQAB"'
+    aws_access_key: '{{aqcom_aws_key}}'
+    aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Prod API
   route53:
@@ -68,6 +78,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'www.larp.me'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Fic
   route53:
@@ -78,6 +90,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'www.larp.me'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Blog
   route53:
@@ -88,6 +102,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'domains.tumblr.com'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Dev
   route53:
@@ -98,6 +114,8 @@
       type: "A"
       ttl: "300"
       value: '127.0.0.1'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Prod WWW
   route53:
@@ -108,6 +126,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Local Dev
   route53:
@@ -118,6 +138,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Staging
   route53:
@@ -128,6 +150,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - Staging API
   route53:
@@ -138,6 +162,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'staging.larp.me'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - WIKI
   route53:
@@ -148,6 +174,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
 
 - name: Larpme DNS - LOCATIONS
   route53:
@@ -158,3 +186,5 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
+      aws_access_key: '{{aqcom_aws_key}}'
+      aws_secret_key: '{{aqcom_aws_secret}}'
