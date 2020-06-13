@@ -2,6 +2,10 @@
 
 - name: Safe Upgrade
   apt: update_cache=yes cache_valid_time=21600 upgrade=safe autoremove=yes
+  tags:
+    - patch
 
 - name: Safe Remove
   apt: autoremove=yes
+  tags:
+    - patch
