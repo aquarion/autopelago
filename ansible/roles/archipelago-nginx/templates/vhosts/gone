@@ -2,8 +2,8 @@ server {
     listen      80;
     listen [::]:80;
     server_name www.larp.me larp.me api.larp.me;
-    return 410;
     include /etc/nginx/snippets/errors.conf;
+    return 410;
 }
 
 
@@ -13,6 +13,6 @@ server {
     server_name www.larp.me larp.me api.larp.me;
     include /etc/nginx/snippets/letsencrypt.conf;
 
-    return 410;
     include /etc/nginx/snippets/errors.conf;
+    return 410;
 }
