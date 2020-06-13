@@ -1,5 +1,7 @@
 - name: install nginx
-  apt: pkg=nginx state=installed
+  apt: 
+    pkg: nginx 
+    state: present
 
 - name: configure letsencrypt config for misc
   template: 
