@@ -7,4 +7,4 @@
 
 - file: path={{ plex_home }}/.flexget state=directory owner=plex
 
-- template: src=flexget.yml dest={{ plex_home }}/.flexget/config.yml mode=0440 owner=plex 
+- template: src=flexget.yml dest={{ plex_home }}/.flexget/config.yml mode=0660 owner=plex 
