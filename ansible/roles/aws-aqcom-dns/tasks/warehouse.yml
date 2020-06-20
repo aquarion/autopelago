@@ -24,8 +24,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "NS"
       ttl: "172800"
-      value: ns-983.awsdns-58.net., ns-1661.awsdns-15.co.uk., ns-1161.awsdns-17.org., ns-271.awsdns-33.com.
-
+      value: ns-983.awsdns-58.net.,ns-1661.awsdns-15.co.uk.,ns-1161.awsdns-17.org.,ns-271.awsdns-33.com.
 
 
 #- name: warehousebasement.com. - SOA

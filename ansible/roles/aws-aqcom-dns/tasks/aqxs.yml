@@ -41,8 +41,7 @@
 #      value: 'ns-1408.awsdns-48.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
 
-
-- name: aqxs.net. - SPF
+- name: aqxs.net. - TXT Records
   route53:
       overwrite: true
       command: "create"
@@ -52,21 +51,9 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "TXT"
       ttl: "300"
-      value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
-
-#
-
-- name: aqxs.net. - TXT for google-site-verification
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "aqxs.net"
-      record: "aqxs.net."
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
-      type: "TXT"
-      ttl: "300"
-      value: '"google-site-verification=SvTocYjKGCKTzN9BlJSdq0MVkEaFvEAum18VoLaKB5s"'
+      value: 
+        - '"google-site-verification=SvTocYjKGCKTzN9BlJSdq0MVkEaFvEAum18VoLaKB5s"'
+        - '"v=spf1 a mx include:spf.mtasv.net ~all"'
 
 - name: wildcard.aqxs.net. - A
   route53:
@@ -80,8 +67,6 @@
       ttl: "3600"
       value: '{{ cenote_ip }}'
 
-
-
 - name: 20151026232244.pm._domainkey.aqxs.net. - TXT
   route53:
       overwrite: true
@@ -94,8 +79,7 @@
       ttl: "300"
       value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGF2/JFx7pvFw7RU1wXzqtMohMaSZTEbeLscHSrvzrKKtH2M1zTY8YwIZpjFCjbCbQ2aW28bLzzhd2e1klZorwWV++CYoXnnGgVtz1241ToVPgKyKepmBn6E+3DaJZWsj17jINgEkxYoZ3hvp34y+NSFxlMR4bD9V3EetoxUAYgQIDAQAB"'
 
-
-- name: lists.aqxs.net. - MX
+- name: aqxs.net. - MX
   route53:
       overwrite: true
       command: "delete"
@@ -105,7 +89,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "MX"
       ttl: "3600"
-      value: '10 cenote.gkhs.net.aqxs.net.'
+      value: 10 aspmx2.googlemail.com.,10 aspmx3.googlemail.com.,5 alt1.aspmx.l.google.com.,5 alt2.aspmx.l.google.com.,1 aspmx.l.google.com.
 
 - name: pmbounce.aqxs.net. - CNAME
   route53:

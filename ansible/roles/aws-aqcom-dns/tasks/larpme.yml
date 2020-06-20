@@ -18,7 +18,7 @@
       record: "larp.me"
       type: "MX"
       ttl: "300"
-      value: '1 ASPMX.L.GOOGLE.COM., 5 ALT1.ASPMX.L.GOOGLE.COM., 10 ALT2.ASPMX.L.GOOGLE.COM., 10 ASPMX2.GOOGLEMAIL.COM., 10 ASPMX3.GOOGLEMAIL.COM.'
+      value: 1 ASPMX.L.GOOGLE.COM.,10 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.
       aws_access_key: '{{aqcom_aws_key}}'
       aws_secret_key: '{{aqcom_aws_secret}}'
 
@@ -30,10 +30,9 @@
       record: "larp.me"
       type: "NS"
       ttl: "172800"
-      value: ns-377.awsdns-47.com., ns-1181.awsdns-19.org., ns-1976.awsdns-55.co.uk., ns-527.awsdns-01.net.
+      value: ns-377.awsdns-47.com.,ns-1181.awsdns-19.org.,ns-1976.awsdns-55.co.uk.,ns-527.awsdns-01.net.
       aws_access_key: '{{aqcom_aws_key}}'
       aws_secret_key: '{{aqcom_aws_secret}}'
-
 
 #- name: Larpme DNS - SOA
 #  route53:
