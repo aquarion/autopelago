@@ -29,6 +29,19 @@
   tags:
     - media
 
+- name: Add sortitaaht script to bin
+  template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht_verbose.sh mode=0755 owner=plex
+  tags:
+    - media
+  vars:
+    verbose: true
+
+
+- name: Add sortitaaht script to bin
+  template: src=clear_bullshit.sh dest={{ plex_home }}/bin/clear_bullshit.sh mode=0755 owner=plex
+  tags:
+    - media
+
 - name: Add sortitaaht cron job
   cron: name="filebot" minute="2,32"
         user="plex" job="{{ plex_home }}/bin/sortitaaht.sh >> {{ plex_home }}/Logs/sortitaaht.log"

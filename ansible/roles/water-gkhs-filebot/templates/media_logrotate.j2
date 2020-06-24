@@ -6,3 +6,12 @@
     delaycompress
     missingok
 }
+
+{{ plex_home}}/.filebot/logs/*.log {
+    weekly
+    rotate 4
+    compress
+
+    delaycompress
+    missingok
+}
