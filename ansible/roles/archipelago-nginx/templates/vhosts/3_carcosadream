@@ -22,6 +22,15 @@ server {
 server {
     listen              443 ssl;
     listen              80;
+    server_name sisyphus.carcosadreams.com;
+    return 301 https://the-sisyphus.carcosadreams.com$request_uri;
+
+    include /etc/nginx/snippets/carcosadreams_ssl.conf;
+}
+
+server {
+    listen              443 ssl;
+    listen              80;
     server_name *.carcosadreams.co.uk;
     return 301 $scheme://www.carcosadreams.com;
     include /etc/nginx/snippets/carcosadreams_ssl.conf;
