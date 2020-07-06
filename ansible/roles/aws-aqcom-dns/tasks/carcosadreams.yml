@@ -31,7 +31,7 @@
 - name: carcosadreams.co.uk. - A
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.co.uk"
       record: "carcosadreams.co.uk."
       type: "A"
@@ -45,7 +45,7 @@
 - name: carcosadreams.com. - A
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: "carcosadreams.com."
       type: "A"
@@ -60,7 +60,7 @@
 - name: carcosadreams.uk. - A
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.uk"
       record: "carcosadreams.uk."
       type: "A"
@@ -75,7 +75,7 @@
 - name: www.carcosadreams.co.uk. - A
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.co.uk"
       record: "www.carcosadreams.co.uk."
       type: "A"
@@ -91,7 +91,7 @@
 - name: www.carcosadreams.com. - A
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: "www.carcosadreams.com."
       type: "A"
@@ -106,7 +106,7 @@
 - name: www.carcosadreams.uk. - A
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.uk"
       record: "www.carcosadreams.uk."
       type: "A"
@@ -118,13 +118,12 @@
     - carcosadreams
 
 
-
-- name: t67.carcosadreams.co.uk. - A
+- name: "*.carcosadreams.co.uk. - A"
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.co.uk"
-      record: "t67.carcosadreams.co.uk."
+      record: "*.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
@@ -133,12 +132,13 @@
   tags:
     - carcosadreams
 
-- name: forsaken.carcosadreams.co.uk. - A
+
+- name: "*.carcosadreams.com. - A"
   route53:
       overwrite: true
-      command: "create"
-      zone: "carcosadreams.co.uk"
-      record: "forsaken.carcosadreams.co.uk."
+      command: "present"
+      zone: "carcosadreams.com"
+      record: "*.carcosadreams.com."
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
@@ -147,26 +147,12 @@
   tags:
     - carcosadreams
 
-- name: alba.carcosadreams.co.uk. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.co.uk"
-      record: "alba.carcosadreams.co.uk."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: alba.narrative.carcosadreams.com. - A
+- name: carcosadreams.com old records
   route53:
       overwrite: true
       command: "absent"
       zone: "carcosadreams.com"
-      record: "alba.narrative.carcosadreams.com."
+      record: "{{ item }}"
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
@@ -174,196 +160,14 @@
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
     - carcosadreams
-
-- name: alba-internal.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "alba-internal.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-
-- name: wiki.carcosadreams.co.uk. - A
-  route53:
-      overwrite: true
-      command: "delete"
-      zone: "carcosadreams.co.uk"
-      record: "wiki.carcosadreams.co.uk."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: t67.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "t67.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: deadair.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "deadair.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: da-internal.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "da-internal.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: tr-internal.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "tr-internal.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: tabula-rasa.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "tabula-rasa.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: forsaken.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "forsaken.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: sisyphus.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "sisyphus.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: the-sisyphus.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "the-sisyphus.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: alba.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "alba.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-- name: wiki.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "wiki.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
-
-- name: wiki.carcosadreams.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "carcosadreams.com"
-      record: "wiki.carcosadreams.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
-  tags:
-    - carcosadreams
-
+  with_items: 
+    # Add any records to delete to this.
+    - wiki.carcosadreams.com
 
 - name: carcosadreams.co.uk. - MX
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.co.uk"
       record: "carcosadreams.co.uk"
       type: "MX"
@@ -377,7 +181,7 @@
 - name: carcosadreams.com. - MX
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: "carcosadreams.com"
       type: "MX"
@@ -391,7 +195,7 @@
 - name: carcosadreams.com. - autodiscover
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: "autodiscover.carcosadreams.com"
       type: "CNAME"
@@ -405,7 +209,7 @@
 - name: carcosadreams.co.uk. - autodiscover
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.co.uk"
       record: "autodiscover.carcosadreams.co.uk"
       type: "CNAME"
@@ -419,7 +223,7 @@
 - name: carcosadreams.com. - sipdir
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: 'sip.carcosadreams.com'
       type: "CNAME"
@@ -433,7 +237,7 @@
 - name: carcosadreams.com. - sipdir.TLS
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: '_sip._tls.carcosadreams.com'
       type: "SRV"
@@ -447,7 +251,7 @@
 - name: carcosadreams.com. - sipdir.Federated
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: '_sipfederationtls._tcp.carcosadreams.com'
       type: "SRV"
@@ -461,7 +265,7 @@
 - name: carcosadreams.com. - lyncdiscover
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: 'lyncdiscover.carcosadreams.com'
       type: "CNAME"
@@ -476,7 +280,7 @@
 - name: carcosadreams.com. - enterpriseregistration
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: 'enterpriseregistration.carcosadreams.com'
       type: "CNAME"
@@ -491,7 +295,7 @@
 - name: carcosadreams.com. - enterpriseenrollment
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: 'enterpriseenrollment.carcosadreams.com'
       type: "CNAME"
@@ -506,7 +310,7 @@
 - name: carcosadreams.com. - SPF
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.com"
       record: 'carcosadreams.com'
       type: "TXT"
@@ -520,7 +324,7 @@
 - name: carcosadreams.co.uk. - SPF
   route53:
       overwrite: true
-      command: "create"
+      command: "present"
       zone: "carcosadreams.co.uk"
       record: 'carcosadreams.co.uk'
       type: "TXT"
