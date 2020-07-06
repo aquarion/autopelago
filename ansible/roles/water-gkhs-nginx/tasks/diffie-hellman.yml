@@ -1,5 +1,5 @@
 - name: install openssl
-  apt: pkg=openssl state=installed
+  apt: pkg=openssl state=present
 
 - name: Create DHParam file
   command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 creates=/etc/ssl/certs/dhparam.pem
