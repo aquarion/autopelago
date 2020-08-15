@@ -4,6 +4,7 @@
 
 
 - name: register filebot
+  become_user: "plex"
   command: "filebot --license {{ plex_home }}/.filebot_license.psm"
 
 
