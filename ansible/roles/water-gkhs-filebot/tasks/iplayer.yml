@@ -1,6 +1,8 @@
 
-- apt_repository:
+- name: Remove old iplayer repo
+  apt_repository:
     repo: ppa:jon-hedgerows/get-iplayer
+    state: absent
   notify:
     - Update APT
   tags:
@@ -8,14 +10,53 @@
     - iplayer
 
 
+- name: "Check iPlayer Version"
+  lineinfile:
+    path: "{{ plex_home }}/.ansible_iplayer_reg"
+    regexp: '^etag'
+    line: 'etag {{ get_iplayer_version }}'
+    owner: plex
+    group: plex
+    mode: 0644
+    create: yes
+  register: iPlayerUpdate
+  tags:
+    - media
+    - iplayer
+    - iplayer_update
+
+- name: "Get iPlayer Script"
+  get_url: 
+    url: "https://raw.githubusercontent.com/get-iplayer/get_iplayer/v{{ get_iplayer_version }}/get_iplayer"
+    dest: /usr/local/bin/get_iplayer
+    owner: root
+    group: root
+    mode: 0755
+  when: iPlayerUpdate.changed
+  tags:
+    - media
+    - iplayer
+    - iplayer_update
+
 - meta: flush_handlers
   tags:
     - media
     - iplayer
 
+
 - apt:
-   pkg: get-iplayer
+   pkg:
+    - libwww-perl
+    - liblwp-protocol-https-perl
+    - libmojolicious-perl
+    - libxml-libxml-perl
+    - libcgi-pm-perl
+    - atomicparsley
+    - ffmpeg
    state: present
+   tags:
+     - media
+     - iplayer
 
 - name: Add update iplayer script to bin
   template: src=update_iplayer.sh dest={{ plex_home }}/bin/update_iplayer.sh mode=0755 owner=plex
@@ -68,6 +109,7 @@
   tags:
     - media
     - iplayer
+
 
 - name: Add subdirformat config
   lineinfile:
