@@ -2,3 +2,4 @@ ansible/playbook*.retry
 ansible/galaxy-roles
 certbot.log
 letsencrypt.log
+ansible/.direnv
