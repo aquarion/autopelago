@@ -54,9 +54,9 @@
     - atomicparsley
     - ffmpeg
    state: present
-   tags:
-     - media
-     - iplayer
+  tags:
+    - media
+    - iplayer
 
 - name: Add update iplayer script to bin
   template: src=update_iplayer.sh dest={{ plex_home }}/bin/update_iplayer.sh mode=0755 owner=plex

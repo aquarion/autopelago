@@ -59,12 +59,13 @@ function download {
 		FILTER='--reject-title'
 	fi
 
+	echo $CHANNEL $SERIES
+
 	mkdir -p $SCRATCH
 	cd $SCRATCH
 
 	youtube-dl \
 		--download-archive "$DIR/downloads-${CHANNEL}-${PLAYLIST}.txt" \
-		-q \
 		-i \
                 -4 \
 		-o "${CHANNEL}/${SERIES}/${SERIES} - S${SEASON}E%(playlist_index)s - %(title)s.%(ext)s" \
@@ -79,7 +80,7 @@ function download {
 		--embed-thumbnail \
 		--write-info-json \
 		--all-subs \
-		--external-downloader aria2c --external-downloader-args "-c -j 3 -x 3 -s 3 -k 1M" \
+		--external-downloader aria2c --external-downloader-args "-q -c -j 3 -x 3 -s 3 -k 1M" \
 		$FILTER "$FILTER_VALUE" \
 		$PLAYLIST
 	rsync -r --remove-source-files $SCRATCH/ $DIR
