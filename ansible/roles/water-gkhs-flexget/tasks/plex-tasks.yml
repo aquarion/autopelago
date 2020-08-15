@@ -1,9 +1,17 @@
+# Tasks performed as plex user
+
+- name: Install pip transmissionrpc package
 - pip: 
     name: transmissionrpc 
     virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
-    virtualenv_python: python2.7
+    virtualenv_python: python3.6
 
-- pip: name=flexget virtualenv={{ plex_home }}/.virtualenvs/flexget
+- name: Install Flexget
+  pip: 
+    name: flexget 
+    virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
+    virtualenv_python: python3.6
+    version: "{{ flexget_version }}"
 
 - file: path={{ plex_home }}/.flexget state=directory owner=plex
 
