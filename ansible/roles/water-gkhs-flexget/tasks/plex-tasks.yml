@@ -1,7 +1,7 @@
 # Tasks performed as plex user
 
 - name: Install pip transmissionrpc package
-- pip: 
+  pip: 
     name: transmissionrpc 
     virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
     virtualenv_python: python3.6
