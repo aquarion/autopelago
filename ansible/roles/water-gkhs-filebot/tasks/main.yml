@@ -44,22 +44,27 @@
 
 - name: Add sortitaaht cron job
   cron: name="filebot" minute="2,32"
-        user="plex" job="{{ plex_home }}/bin/sortitaaht.sh | logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
+        user="plex" job="{{ plex_home }}/bin/sortitaaht.sh 2>&1 | logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
         cron_file=filebot
         state=present
   tags:
     - media
 
-- name: Add youtube_download script to bin
-  template: src=youtube_download.sh dest={{ plex_home }}/bin/youtube_download.sh mode=0755 owner=plex
+- name: delete old youtube script
+  file:
+    path: "{{ plex_home }}/bin/youtube_download.sh"
+    state: absent
+
+- name: Add download_youtube script to bin
+  template: src=download_youtube.sh dest={{ plex_home }}/bin/download_youtube.sh mode=0755 owner=plex
   tags:
     - media
     - media_playlists
 
-- name: Add youtube_download cron job
-  cron: name="youtube_download" minute="15" hour=3
-        user="plex" job="{{ plex_home }}/bin/youtube_download.sh  | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag youtube"
-        cron_file=youtube_download
+- name: Add download_youtube cron job
+  cron: name="download_youtube" minute="15" hour=3
+        user="plex" job="{{ plex_home }}/bin/download_youtube.sh 2>&1  | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag youtube"
+        cron_file=download_youtube
         state=present
   tags:
     - media
@@ -86,7 +91,7 @@
 
 - name: Add remove_completed_torrents cron job
   cron: name="remove_completed_torrents" minute="15" hour=18
-        user="plex" job="{{ plex_home }}/bin/remove_completed_torrents.sh  | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag torrent_remove"
+        user="plex" job="{{ plex_home }}/bin/remove_completed_torrents.sh 2>&1 | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag torrent_remove"
         cron_file=remove_completed_torrents
         state=present
   tags:
@@ -116,7 +121,7 @@
 
 - name: Add inotify cron job
   cron: name="filebot-notify" special_time=hourly
-        user="plex" job="{{ plex_home }}/bin/inotify.sh | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag inotify"
+        user="plex" job="{{ plex_home }}/bin/inotify.sh 2>&1 | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag inotify"
         cron_file=filebot-notify
   tags:
     - media

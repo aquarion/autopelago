@@ -26,7 +26,11 @@ exlock_now()        { _lock xn; }  # obtain an exclusive lock immediately or fai
 exlock()            { _lock x; }   # obtain an exclusive lock
 shlock()            { _lock s; }   # obtain a shared lock
 unlock()            { _lock u; }   # drop a lock
+
  
+exec 2>&1
+exec > >(logger --tag Youtube --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }})
+
 
 function dienow {
 	echo "Lock found $LOCKFILE"
@@ -64,7 +68,7 @@ function download {
 	mkdir -p $SCRATCH
 	cd $SCRATCH
 
-	youtube-dl \
+	/usr/local/bin/youtube-dl \
 		--download-archive "$DIR/downloads-${CHANNEL}-${PLAYLIST}.txt" \
 		-i \
                 -4 \

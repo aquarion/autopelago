@@ -58,17 +58,22 @@
     - media
     - iplayer
 
+- name: delete old iplayer script
+  file:
+    path: "{{ plex_home }}/bin/update_iplayer.sh"
+    state: absent
+
 - name: Add update iplayer script to bin
-  template: src=update_iplayer.sh dest={{ plex_home }}/bin/update_iplayer.sh mode=0755 owner=plex
+  template: src=download_iplayer.sh dest={{ plex_home }}/bin/download_iplayer.sh mode=0755 owner=plex
   tags:
     - media
     - iplayer
 
 
-- name: Add update_iplayer cron job
-  cron: name="update_iplayer" minute="15" hour=2
-        user="plex" job="{{ plex_home }}/bin/update_iplayer.sh >> {{ plex_home }}/Logs/update_iplayer.log"
-        cron_file=update_iplayer
+- name: Add download_iplayer cron job
+  cron: name="download_iplayer" minute="15" hour=2
+        user="plex" job="{{ plex_home }}/bin/download_iplayer.sh >> logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
+        cron_file=download_iplayer
         state=present
   tags:
     - media
@@ -136,7 +141,7 @@
   lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
     regexp: '^output'
-    line: output {{media_home}}/TV/
+    line: output {{ transmission_complete }}/completed/
     create: yes
   tags:
     - media
