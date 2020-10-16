@@ -24,9 +24,10 @@
 #- template: src=flexget.yml dest={{ plex_home }}/.flexget/config.yml mode=0660 owner=plex 
 - name: Create flexget config
   copy:
-    dest: "{{ plex_home }}/.flexget/config.yml "
+    dest: "{{ plex_home }}/.flexget/config.yml"
     mode: 0660 
     owner: "plex"
     content: "{{ flexget_tasks | to_nice_yaml }}"
   tags:
     - flexget
+    - flexgetconfig
