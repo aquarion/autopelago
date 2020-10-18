@@ -5,12 +5,18 @@
   with_items:
    - aquarion
    - ccooke
+  tags:
+    - users
 
 - name: Add Aquarion key
   authorized_key: user=aquarion key={{ lookup('file', 'files/aquarion.keys') }}
+  tags:
+    - users
 
 - name: Add ccooke key
   authorized_key: user=ccooke key="{{ lookup('file', 'files/ccooke.keys') }}"
+  tags:
+    - users
 
 - name: add sudo
   template: 
@@ -24,3 +30,5 @@
   with_items:
     - aquarion
     - ccooke
+  tags:
+    - users

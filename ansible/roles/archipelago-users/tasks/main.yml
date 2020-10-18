@@ -5,6 +5,8 @@
   with_items:
     - larpfic
     - plex
+  tags:
+    - users
 
 - name: Delete normal users
   user:
@@ -14,6 +16,8 @@
   with_items:
    - arkserver
    - factorio
+  tags:
+    - users
 
 - name: Add Aquarion key to users
   authorized_key: user={{ item }} key={{ lookup('file', 'files/aquarion.keys') }}
@@ -23,3 +27,4 @@
   tags:
     - larpfic
     - plex
+    - users
