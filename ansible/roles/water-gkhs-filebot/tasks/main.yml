@@ -21,6 +21,12 @@
   tags:
     - media
 
+# Sync non-TV shows to their own libraries
+
+- name: Add sync_or_swim script to bin
+  template: src=sync_or_swim.sh dest={{ plex_home }}/bin/sync_or_swim.sh mode=0755 owner=plex
+  tags:
+    - media
 
 # Sort It Ahht
 
@@ -29,15 +35,14 @@
   tags:
     - media
 
-- name: Add sortitaaht script to bin
+- name: Add verbose sortitaaht script to bin
   template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht_verbose.sh mode=0755 owner=plex
   tags:
     - media
   vars:
     verbose: true
 
-
-- name: Add sortitaaht script to bin
+- name: Add Clear Bullshit script to bin
   template: src=clear_bullshit.sh dest={{ plex_home }}/bin/clear_bullshit.sh mode=0755 owner=plex
   tags:
     - media
@@ -71,7 +76,7 @@
 
 - apt:
    state: present
-   pkg: 
+   pkg:
     - transmission-cli
     - aria2
   tags:
@@ -111,18 +116,25 @@
     - media
     - inotify
 
-- name: Add Notify script to bin
-  template: src=inotify.sh dest={{ plex_home }}/bin/inotify.sh mode=0755 owner=plex
-  notify: 
-    - restart filebot inotify
-  tags:
-    - media
-    - inotify
+# - name: Add Notify script to bin
+#   template: src=inotify.sh dest={{ plex_home }}/bin/inotify.sh mode=0755 owner=plex
+#   notify:
+#     - restart filebot inotify
+#   tags:
+#     - media
+#     - inotify
 
 - name: Add inotify cron job
   cron: name="filebot-notify" special_time=hourly
         user="plex" job="{{ plex_home }}/bin/inotify.sh 2>&1 | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag inotify"
-        cron_file=filebot-notify
+        cron_file=filebot-notify state=absent
   tags:
     - media
     - inotify
+
+
+- name: Remove inotify script
+  file:
+    path: "{{ plex_home }}/bin/inotify.sh"
+    state: absent
+

@@ -30,3 +30,5 @@ filebot -script fn:amc \
                 "movieFormat=Movies/{n} {y}/{fn}" \
                 "musicFormat=Music/{n}/{fn}" \
         "$FILEPATH" {{ verbose }} > {{ plex_home }}/Logs/amc.stdout.log
+
+~/bin/sync_or_swim.sh
