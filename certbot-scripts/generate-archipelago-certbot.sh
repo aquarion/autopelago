@@ -20,6 +20,7 @@ live.art.istic.net,imperial.istic.net,material.istic.net,\
 warehousebasement.com,www.warehousebasement.com,\
 dagon.church,live.dagon.church,wiki.dagon.church,\
 mechan.istic.net,\
+www.iglooteas.com,iglooteas.com,\
 larp.me,api.larp.me,staging.larp.me,api.staging.larp.me,locations.larp.me,www.larp.me,\
 optim.istic.net,\
 www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
