@@ -32,7 +32,6 @@
     - { role: archipelago-nginx, tags: nginx }
     - water-gkhs-filebot
     - water-gkhs-flexget
-    - archipelago-inotify
     - b2-backup
   tasks:
     - user: name={{ item }} groups=docker append=yes
