@@ -64,6 +64,6 @@
     - omnyom.com
     - factionfiction.net
     - warehousebasement.com
-    - skute.me
+    - hubris.house
   notify:
    - restart nginx

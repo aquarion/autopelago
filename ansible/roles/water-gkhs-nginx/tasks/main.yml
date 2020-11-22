@@ -1,49 +1,70 @@
 - name: install nginx
-  apt: 
-    pkg: nginx 
+  apt:
+    pkg: nginx
     state: present
 
+- name: Fix diffie-hellman insecurites
+  include: diffie-hellman.yml
+
+- name: Add clacks overhead to nginx
+  copy:
+    dest: /etc/nginx/conf.d/clacks.conf
+    src: files/clacks.conf
+    owner: root
+    group: root
+  notify:
+   - restart nginx
+
+
 - name: configure letsencrypt config for misc
-  template: 
-    src: letsencrypt.conf.j2 
+  template:
+    src: letsencrypt.conf.j2
     dest: /etc/nginx/snippets/letsencrypt.conf
   vars:
     cert_id: "{{ letsencrypt_dir }}"
 
+# @todo These should be in Archipelago, really.
+
 - name: configure letsencrypt config for foip_me
-  template: 
-    src: letsencrypt.conf.j2 
+  template:
+    src: letsencrypt.conf.j2
     dest: /etc/nginx/snippets/foipme.conf
   when: "'archipelago' in inventory_hostname"
   vars:
     cert_id: "foip.me"
+  notify:
+   - restart nginx
 
 - name: configure letsencrypt config for istic
-  template: 
-    src: letsencrypt.conf.j2 
+  template:
+    src: letsencrypt.conf.j2
     dest: /etc/nginx/snippets/istic.conf
   when: "'archipelago' in inventory_hostname"
   vars:
     cert_id: "istic.net"
+  notify:
+   - restart nginx
 
-- name: configure letsencrypt config for istic
-  template: 
-    src: letsencrypt.conf.j2 
+- name: configure letsencrypt config for carcosadreams
+  template:
+    src: letsencrypt.conf.j2
     dest: /etc/nginx/snippets/carcosadreams_ssl.conf
   when: "'archipelago' in inventory_hostname"
   vars:
     cert_id: "carcosadreams.com"
   tags:
     - carcosadreams
+  notify:
+   - restart nginx
 
-- name: Fix diffie-hellman insecurites
-  include: diffie-hellman.yml
-
-- name: Add clacks overhead to nginx
-  copy: 
-    dest: /etc/nginx/conf.d/clacks.conf
-    src: files/clacks.conf 
-    owner: root 
-    group: root
+- name: configure letsencrypt config for hubris.house
+  template:
+    src: letsencrypt.conf.j2
+    dest: /etc/nginx/snippets/hubris_ssl.conf
+  when: "'archipelago' in inventory_hostname"
+  vars:
+    cert_id: "hubris.house"
+  tags:
+    - hubris.house
   notify:
    - restart nginx

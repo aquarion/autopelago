@@ -30,8 +30,12 @@ forums.profounddecisions.co.uk
 # omnyom.blogs.water.gkhs.net,omnyom.com,www.omnyom.com,\
 
 
-AWS_PROFILE=istic-r53 sudo -E certbot certonly --dns-route53 -d *.istic.net && sudo service nginx restart
-sudo certbot certonly --dns-route53 -d *.foip.me && sudo service nginx restart
+## Istic wildcards
 
+AWS_PROFILE=istic-r53 sudo -E certbot certonly --expand --dns-route53 -d *.istic.net && sudo service nginx restart
+AWS_PROFILE=istic-r53 sudo -E certbot certonly --expand --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk && sudo service nginx restart
 
-AWS_PROFILE=istic-r53 sudo -E certbot certonly --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk && sudo service nginx restart
+## AqCom Wildcards
+
+sudo certbot certonly --expand --dns-route53 -d *.foip.me && sudo service nginx restart
+sudo certbot certonly --expand --dns-route53 -d hubris.house -d *.hubris.house && sudo service nginx restart

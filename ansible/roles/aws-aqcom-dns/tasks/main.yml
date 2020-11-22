@@ -1,4 +1,4 @@
---- 
+---
 
 - name: Aquarionics DNS
   include: aquarionics.yml
@@ -12,7 +12,7 @@
 - include: camlarp.yml
   tags:
     - aws
-    
+
 - include: cleartext.yml
   tags:
     - aws
@@ -56,6 +56,11 @@
     - larpme
 
 - include: conterio.yml
+  tags:
+    - aws
+    - conterio
+
+- include: hubris.yml
   tags:
     - aws
     - conterio
