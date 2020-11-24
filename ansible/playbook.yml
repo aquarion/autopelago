@@ -33,6 +33,7 @@
     - water-gkhs-filebot
     - water-gkhs-flexget
     - b2-backup
+    - aqcom-xslt-opml
   tasks:
     - user: name={{ item }} groups=docker append=yes
       with_items:

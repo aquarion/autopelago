@@ -1,0 +1,7 @@
+
+
+- name: Get transform
+  git:
+    repo: 'https://github.com/dpobel/opml-utils.git'
+    dest: "/home/aquarion/opt/aqcom-xslt"
+    version: master

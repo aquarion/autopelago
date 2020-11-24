@@ -1,0 +1,16 @@
+
+- apt:
+   state: present
+   pkg:
+    - xsltproc
+  tags:
+    - aqcom-xslt
+
+
+
+- include: tasks-as-user.yml
+  become: yes
+  become_user: aquarion
+  tags:
+    - aqcom-xslt
+

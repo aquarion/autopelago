@@ -1,0 +1,9 @@
+#!/bin/bash
+
+OPML=`ls -1at /home/aquarion/Dropbox/apps/Feedly\ Vault/OPML\ Backup/*.opml | head -1`
+OUTPUT="/home/aquarion/docker/wordpress/htdocs/literal/opml.html"
+
+APPPATH=/home/aquarion/opt/aqcom-xslt
+
+cd $APPPATH
+xsltproc convert-to-html-fragment.xsl "$OPML" > $OUTPUT
