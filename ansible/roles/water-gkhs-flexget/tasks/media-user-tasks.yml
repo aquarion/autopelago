@@ -1,18 +1,18 @@
 # Tasks performed as media user
 
 - name: Install pip transmissionrpc package
-  pip: 
-    name: transmissionrpc 
+  pip:
+    name: transmissionrpc
     virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
-    virtualenv_python: python3.6
+    virtualenv_python: python3
   tags:
     - flexget
 
 - name: Install Flexget
-  pip: 
-    name: flexget 
+  pip:
+    name: flexget
     virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
-    virtualenv_python: python3.6
+    virtualenv_python: python3
     version: "{{ flexget_version }}"
   tags:
     - flexget
@@ -21,11 +21,11 @@
   tags:
     - flexget
 
-#- template: src=flexget.yml dest={{ plex_home }}/.flexget/config.yml mode=0660 owner=plex 
+#- template: src=flexget.yml dest={{ plex_home }}/.flexget/config.yml mode=0660 owner=plex
 - name: Create flexget config
   copy:
     dest: "{{ plex_home }}/.flexget/config.yml"
-    mode: 0660 
+    mode: 0660
     owner: "plex"
     content: "{{ flexget_tasks | to_nice_yaml }}"
   tags:

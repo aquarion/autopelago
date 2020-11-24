@@ -82,12 +82,6 @@
   tags:
     - media
 
-- apt:
-   state: present
-   name: transmission-remote-cli
-  tags:
-    - media
-
 - name: Add remove_completed_torrents script to bin
   template: src=remove_completed_torrents.sh dest={{ plex_home }}/bin/remove_completed_torrents.sh mode=0755 owner=plex
   tags:

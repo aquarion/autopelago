@@ -1,15 +1,38 @@
 
 # Install Mysql
 
-- apt: name=python-mysqldb state=present
+- name: Determine required MySQL Python libraries.
+  set_fact:
+    deb_mysql_python_package: "{% if 'python3' in ansible_python_interpreter|default('') %}python3-mysqldb{% else %}python-mysqldb{% endif %}"
+  tags:
+    mysql_user
+
+- name: Ensure MySQL Python libraries are installed.
+  apt: "name={{ deb_mysql_python_package }} state=present"
+  tags:
+    mysql_user
+
 - apt: name=mariadb-server state=present
 - apt: name=moreutils state=present # provides chronic
 
+
 # Set root password
-- mysql_user: name=root password={{mysql_root_password}} check_implicit_admin=yes
+- name: Set Root Password
+  mysql_user:
+    name: "root"
+    password: "{{mysql_root_password}}"
+    check_implicit_admin: yes
+    login_host: "{{ mysql_host }}"
+  tags:
+    mysql_user
+
+
+- ini_file: dest=/root/.my.cnf section=client option=user value=root mode=0600 backup=yes
+- ini_file: dest=/root/.my.cnf section=client option=password value={{mysql_root_password}} mode=0600 backup=yes
+
 # Setup backups
 
-- file: 
+- file:
     path: "{{ item }}"
     state: directory
     mode: 0755
@@ -34,7 +57,7 @@
 
 
 - name: Move Monthly backups to new directory
-  command: 
+  command:
     cmd: "mv /var/backups/mysql/{{ item }} /var/backups/mysql/Monthly/{{ item }}"
     removes: "/var/backups/mysql/{{ item }}"
   loop:
@@ -50,9 +73,6 @@
     - October
     - November
     - December
-
-- ini_file: dest=/root/.my.cnf section=client option=user value=root mode=0600 backup=yes
-- ini_file: dest=/root/.my.cnf section=client option=password value={{mysql_root_password}} mode=0600 backup=yes
 
 - template: src=mysql_backup.sh dest=/usr/local/bin/mysql_backup.sh mode=0755
 

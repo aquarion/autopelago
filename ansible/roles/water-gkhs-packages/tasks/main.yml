@@ -10,6 +10,28 @@
 #    id: 8B48AD6246925553
 #  when: ansible_distribution == 'Debian'
 
+
+- name: Install Debian Backports
+  apt_repository:
+    repo: deb http://ftp.debian.org/debian stretch-backports main
+    state: present
+    filename: 'stretch-backports'
+  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
+
+
+- name: Enable Ubuntu universe repository
+  when: ansible_distribution == 'Ubuntu'
+  apt_repository:
+    repo: "{{ item }}"
+  loop:
+    - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe"
+    - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-updates universe"
+    - "deb http://security.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-security universe"
+  tags:
+    - certbot
+
+
+
 - name: Package list update
   apt: update_cache=yes cache_valid_time=21600
 
@@ -18,7 +40,6 @@
     state: present
     pkg:
      - python
-     - python-pip
      - build-essential
      - libffi-dev
        #- libssl-dev
@@ -28,13 +49,23 @@
      - fail2ban
      - dnsutils
 
-- name: config fail2ban
-  lineinfile:
-    path: /etc/fail2ban/fail2ban.conf
-    regexp: '^logtarget'
-    line: "logtarget = SYSLOG"
-  notify:
-    restart fail2ban
+- name: Install Debian System Packages
+  when: ansible_distribution == 'Debian'
+  apt:
+    state: present
+    pkg:
+     - python-pip
+     - python3-cryptography
+
+- name: Install Ubuntu System packages
+  when: ansible_distribution == 'Ubuntu'
+  apt:
+    state: present
+    pkg:
+     - software-properties-common
+     - python3-pip
+  tags:
+    - certbot
 
 - name: Install Utility Packages
   apt:
@@ -51,47 +82,27 @@
       - moreutils
       - rzip
 
-- name: Install Debian Backports
-  apt_repository:
-    repo: deb http://ftp.debian.org/debian stretch-backports main
-    state: present
-    filename: 'stretch-backports'
-  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
+- name: config fail2ban
+  lineinfile:
+    path: /etc/fail2ban/fail2ban.conf
+    regexp: '^logtarget'
+    line: "logtarget = SYSLOG"
+  notify:
+    restart fail2ban
 
-- name: Install ubuntu packages
-  apt: 
-    state: present
-    pkg:
-     - software-properties-common
-  when: ansible_distribution == 'Ubuntu'
+
+- name: Determine remote Python version.
+  set_fact:
+    python_version: "{% if 'python3' in ansible_python_interpreter|default('') %}python3{% else %}python{% endif %}"
   tags:
-    - certbot
+    aws
 
-- name: Enable universe repository
-  when: ansible_distribution == 'Ubuntu'
-  apt_repository:
-    repo: "{{ item }}"
-  loop:
-    - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe"
-    - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-updates universe"
-    - "deb http://security.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-security universe"
-  tags:
-    - certbot
-
-- name: Install Ubuntu Certbot Repo
-  apt_repository:
-    repo: ppa:certbot/certbot
-  when: ansible_distribution == 'Ubuntu'
-  tags:
-    - certbot
-
-- name: Install ubuntu packages
-  apt: 
+- name: Ensure Python libraries that ansible needs aree installed.
+  apt:
     state: present
     pkg:
-     - certbot
-     - python-certbot-nginx
-  when: ansible_distribution == 'Ubuntu'
+     - "{{ python_version }}-boto3"
+     - "{{ python_version }}-boto"
+     - "{{ python_version }}-passlib"
   tags:
-    - certbot
-
+     - aws
