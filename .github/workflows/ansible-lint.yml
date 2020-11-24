@@ -12,11 +12,12 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Lint Ansible Playbook
+      working-directory: ansible
       uses: ansible/ansible-lint-action@master
       with:
+        vault_password: ${{ secrets.VaultPassword }}
         targets: |
-            "playbooks/local.yml"
-            "playbooks/webserver.yml"
+            "playbook.yml"
         override-deps: |
           ansible==2.8
           ansible-lint==4.2.0
