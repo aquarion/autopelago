@@ -12,7 +12,7 @@
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCj7W/8a+Nl3ucgDgHCU1ROWW1lzktsq6fq/YQXSbIpBbQX+zpTmEWUE7baIrbEBXggEF15RwYknSEN33W1kGRYqc1uAeoaHQolg+q++2UliaT1p1AXJdK4hphEvh62k6FZ6muu8XvxqDzwnao6B8KLD54E7+PIu4ErMzciLXLM6wIDAQAB"'
 
 #- name: PD Forums DNS - PDForums SPF
-#  route53:    
+#  route53:
 #    overwrite: true
 #    command: "create"
 #    zone: "larp.me"
@@ -24,7 +24,7 @@
 #    ttl: 300
 
 - name: PD Forums DNS - PDForums DMARC
-  route53:    
+  route53:
     overwrite: true
     command: "create"
     zone: "larp.me"
@@ -37,7 +37,7 @@
 
 
 - name: PD Forums DNS - PDForums A
-  route53:    
+  route53:
     overwrite: true
     command: "create"
     zone: "larp.me"
@@ -50,7 +50,7 @@
 
 
 - name: PD Forums DNS - PDForums A
-  route53:    
+  route53:
     overwrite: true
     command: "create"
     zone: "larp.me"

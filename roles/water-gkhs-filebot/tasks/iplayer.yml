@@ -26,7 +26,7 @@
     - iplayer_update
 
 - name: "Get iPlayer Script"
-  get_url: 
+  get_url:
     url: "https://raw.githubusercontent.com/get-iplayer/get_iplayer/v{{ get_iplayer_version }}/get_iplayer"
     dest: /usr/local/bin/get_iplayer
     owner: root
@@ -104,7 +104,7 @@
   tags:
     - media
     - iplayer
-    
+
 - name: Add subtitles config
   lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
@@ -131,7 +131,7 @@
   lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
     regexp: '^fileprefix'
-    line: fileprefix - S<00seriesnum>E<00episodenum> 
+    line: fileprefix - S<00seriesnum>E<00episodenum>
     create: yes
   tags:
     - media

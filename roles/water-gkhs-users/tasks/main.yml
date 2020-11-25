@@ -19,9 +19,9 @@
     - users
 
 - name: add sudo
-  template: 
+  template:
     dest=/etc/sudoers.d/{{ item }}
-    src=sudo.tpl 
+    src=sudo.tpl
     owner=root
     group=root
     mode=440

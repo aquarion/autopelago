@@ -19,10 +19,10 @@
     replace: '\1#Ansible#\2'
 
 - name: Add new DH params to nginx
-  copy: 
+  copy:
     dest: /etc/nginx/conf.d/diffie-helman.conf
-    src: files/diffie-helman.conf 
-    owner: root 
+    src: files/diffie-helman.conf
+    owner: root
     group: root
   notify:
    - restart nginx

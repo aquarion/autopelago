@@ -1,4 +1,4 @@
---- 
+---
 
 - name: CarcosaDreams.co.uk
   route53_zone:
@@ -160,7 +160,7 @@
       aws_secret_key: '{{istic_aws_secret}}'
   tags:
     - carcosadreams
-  with_items: 
+  with_items:
     # Add any records to delete to this.
     - wiki.carcosadreams.com
 

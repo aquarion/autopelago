@@ -1,4 +1,4 @@
---- 
+---
 
 - name: larpfic.com
   route53_zone:
@@ -21,7 +21,7 @@
   tags:
     - larpfic
 
-    
+
 - name: larpfic.com. - A
   route53:
       overwrite: true

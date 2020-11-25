@@ -21,7 +21,7 @@ plex_password: s3cret
 # Retort (Kettle controller)
 
 # Allows IPs that start with these numbers
-retort_allow_ip: 
+retort_allow_ip:
  - "192.168"
  - "82.6.184.52"
 
@@ -31,7 +31,7 @@ retort_htaccess: /etc/apache2/users
 
 #####
 # Filebot install version
-# Currently there's no update detection, so if you change this 
+# Currently there's no update detection, so if you change this
 #     delete /usr/bin/filebot on the servers to force the upgrade.
 filebot_version: 4.7.8
 

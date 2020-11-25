@@ -24,17 +24,17 @@
   become: yes
   become_user: "{{ orion_user }}"
 
-- name: Add the user 'orion' 
+- name: Add the user 'orion'
   user:
     name: "{{ orion_user }}"
     comment: Orion Location Manager
     group: www-data
     home: '{{ orion_home }}'
 
-- name: Create Orion home directory 
+- name: Create Orion home directory
   file:
     path: /srv/orion
-    state: directory 
+    state: directory
     mode: 0755
     owner: "{{ orion_user }}"
 
@@ -76,10 +76,10 @@
 
 
 
-- name: Create Orion config directory 
+- name: Create Orion config directory
   file:
     path: /etc/orion
-    state: directory 
+    state: directory
     mode: 0755
     owner: "{{ orion_user }}"
 
@@ -122,7 +122,7 @@
 
 - name: Configure Orion users
   htpasswd:
-    path: "{{ orion_home }}/users.htpass" 
+    path: "{{ orion_home }}/users.htpass"
     name: "{{ item.name }}"
     password: "{{ item.password }}"
     owner: "{{ orion_user }}"

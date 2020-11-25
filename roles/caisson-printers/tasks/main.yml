@@ -133,7 +133,7 @@
 
 - name: test thermal printer ppd
   copy:
-    src: /usr/share/cups/model/zjiang/zj58.ppd 
+    src: /usr/share/cups/model/zjiang/zj58.ppd
     dest: /etc/cups/ppd/Receipt.ppd
     owner: root
     group: lp
@@ -153,7 +153,7 @@
   register: test_laserjet
 
 - name: Stop CUPS
-  service: 
+  service:
     name: cups
     state: stopped
   when: test_config.changed or test_receipt.changed or test_laserjet.changed
@@ -171,7 +171,7 @@
 
 - name: apply thermal printer ppd
   copy:
-    src: /usr/share/cups/model/zjiang/zj58.ppd 
+    src: /usr/share/cups/model/zjiang/zj58.ppd
     dest: /etc/cups/ppd/Receipt.ppd
     backup: yes
     owner: root

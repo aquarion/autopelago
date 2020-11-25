@@ -19,7 +19,7 @@
   tags:
     - "b2backup"
 
-- template: src=media-backup.bash.j2 dest={{ plex_home }}/bin/media-backup.sh mode=0770 owner=plex 
+- template: src=media-backup.bash.j2 dest={{ plex_home }}/bin/media-backup.sh mode=0770 owner=plex
   tags:
     - "b2backup"
 

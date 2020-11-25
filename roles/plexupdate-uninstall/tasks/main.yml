@@ -1,6 +1,6 @@
 
 - name: Remove plexupdate
-  file: 
+  file:
     path: /root/plexupdate
     state: absent
 
@@ -14,15 +14,15 @@
   file: state=absent path=/etc/init/plexmediaserver.conf
 
 - name: remove plex
-  apt: 
-    package: plexmediaserver 
+  apt:
+    package: plexmediaserver
     state: absent
     autoclean: yes
     autoremove: yes
     purge: yes
 
 - name: remove cron
-  file: 
+  file:
     path: /etc/cron.daily/plexupdate
     state: absent
 

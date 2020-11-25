@@ -51,7 +51,7 @@
       aws_secret_key: '{{aqcom_aws_secret}}'
       type: "TXT"
       ttl: "300"
-      value: 
+      value:
         - '"google-site-verification=SvTocYjKGCKTzN9BlJSdq0MVkEaFvEAum18VoLaKB5s"'
         - '"v=spf1 a mx include:spf.mtasv.net ~all"'
 

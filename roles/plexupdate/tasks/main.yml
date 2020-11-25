@@ -15,7 +15,7 @@
   command: /root/plexupdate/plexupdate.sh -p -a chdir=/tmp creates=/etc/init/plexmediaserver.conf
 
 - name: Add cron
-  file: 
+  file:
     src: /root/plexupdate/extras/cronwrapper
     dest: /etc/cron.daily/plexupdate
     state: link
