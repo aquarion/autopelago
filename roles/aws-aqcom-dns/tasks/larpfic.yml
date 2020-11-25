@@ -5,8 +5,8 @@
     state: "present"
     zone: larpfic.com
     comment: larpfic
-    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
+    aws_access_key: '{{ aqcom_aws_key }}'
+    aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
     - larpfic
 
@@ -16,8 +16,8 @@
     state: "present"
     zone: lrpfic.com
     comment: lrpfic
-    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
+    aws_access_key: '{{ aqcom_aws_key }}'
+    aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
     - larpfic
 
@@ -31,8 +31,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
     - larpfic
 
@@ -45,8 +45,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
     - larpfic
 
@@ -61,8 +61,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
     - larpfic
 
@@ -75,7 +75,7 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
     - larpfic

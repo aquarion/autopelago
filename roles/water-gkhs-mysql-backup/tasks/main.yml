@@ -20,7 +20,7 @@
 - name: Set Root Password
   mysql_user:
     name: "root"
-    password: "{{mysql_root_password}}"
+    password: "{{ mysql_root_password }}"
     check_implicit_admin: yes
     login_host: "{{ mysql_host }}"
   tags:
@@ -28,7 +28,7 @@
 
 
 - ini_file: dest=/root/.my.cnf section=client option=user value=root mode=0600 backup=yes
-- ini_file: dest=/root/.my.cnf section=client option=password value={{mysql_root_password}} mode=0600 backup=yes
+- ini_file: dest=/root/.my.cnf section=client option=password value={{ mysql_root_password }} mode=0600 backup=yes
 
 # Setup backups
 

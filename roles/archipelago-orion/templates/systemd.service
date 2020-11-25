@@ -3,7 +3,7 @@ Description=Gunicorn instance to serve Orion
 After=network.target
 
 [Service]
-User={{orion_user}}
+User={{ orion_user }}
 Group=www-data
 WorkingDirectory={{ orion_home }}/server
 Environment="PATH={{ orion_home }}/server/venv/bin"

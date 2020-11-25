@@ -8,8 +8,8 @@ server {
 
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name www.{{domain}};
-    return 301 $scheme://{{domain}}$request_uri;
+    server_name www.{{ domain }};
+    return 301 $scheme://{{ domain }}$request_uri;
 }
 {% endfor %}
 
@@ -21,7 +21,7 @@ server {
 
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name {{domain}};
-    return 301 $scheme://www.{{domain}}$request_uri;
+    server_name {{ domain }};
+    return 301 $scheme://www.{{ domain }}$request_uri;
 }
 {% endfor %}

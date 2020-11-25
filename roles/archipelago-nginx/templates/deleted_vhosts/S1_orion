@@ -13,7 +13,7 @@ server {
   include /etc/nginx/snippets/errors.conf;
 
   auth_basic           "Restricted Access!";
-  auth_basic_user_file {{ orion_home }}/users.htpass; 
+  auth_basic_user_file {{ orion_home }}/users.htpass;
 }
 
 server {

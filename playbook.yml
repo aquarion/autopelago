@@ -34,7 +34,11 @@
     - water-gkhs-flexget
     - b2-backup
   tasks:
-    - user: name={{ item }} groups=docker append=yes
+    - name: Add users to docker group
+      user:
+        name: "{{ item }}"
+        groups: docker
+        append: yes
       with_items:
        - aquarion
        - ccooke

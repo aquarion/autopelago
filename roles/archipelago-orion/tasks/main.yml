@@ -68,7 +68,7 @@
 - name: get Orion web requirements
   npm:
     path: "{{ orion_home }}/web"
-    executable: '{{ orion_home }}/.nvm/versions/node/{{orion_node_version}}/bin/npm'
+    executable: '{{ orion_home }}/.nvm/versions/node/{{ orion_node_version }}/bin/npm'
   become: yes
   become_user: "{{ orion_user }}"
   notify:

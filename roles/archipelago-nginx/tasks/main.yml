@@ -1,6 +1,6 @@
 - name: Install required packages
   apt:
-    package: "{{item}}"
+    package: "{{ item }}"
     state: present
   loop:
     - "nginx"
@@ -10,7 +10,7 @@
     - streamsite
 
 - name: configure nginx sites as available
-  template: src={{item}} dest=/etc/nginx/sites-available/{{ item | basename }}
+  template: src={{ item }} dest=/etc/nginx/sites-available/{{ item | basename }}
   with_fileglob:
    - templates/vhosts/*
   notify:
@@ -46,7 +46,7 @@
     path: /etc/nginx/streamsite.htpass
     name: "{{ item.user }}"
     password: "{{ item.password }}"
-  loop: "{{  streamsite_users  }}"
+  loop: "{{ streamsite_users }}"
   tags:
     - streamsite
 

@@ -9,7 +9,7 @@
 
 
 - name: configure istic error pages
-  template: src={{item}} dest=/var/www/errors/{{ item | basename }}
+  template: src={{ item }} dest=/var/www/errors/{{ item | basename }}
   with_fileglob:
    - templates/errors/*
 

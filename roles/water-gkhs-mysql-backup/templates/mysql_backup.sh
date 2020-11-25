@@ -1,6 +1,6 @@
 #!/bin/bash +x
 #PASSWORD=$1 # Now using .my.cnf for password
-LOC={{mysql_backup_location}}/$1
+LOC={{ mysql_backup_location }}/$1
 
 # Exit immediately if a pipeline returns non-zero.
 # Short form: set -e
@@ -22,8 +22,8 @@ set -o pipefail
 
 mkdir -p $LOC
 
-mysql -u root -e 'show databases;' --skip-column-names --skip-pager | while read DATABASE; 
-do 
+mysql -u root -e 'show databases;' --skip-column-names --skip-pager | while read DATABASE;
+do
 	TMPFILE=`mktemp` || exit 1
 	echo "$DATABASE";
 	if [[ $DATABASE = performance_schema ]];

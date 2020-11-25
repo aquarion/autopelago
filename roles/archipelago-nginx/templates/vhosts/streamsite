@@ -2,7 +2,7 @@ server {
   listen      80;
   listen [::]:80;
   server_name vis.aquarionics.com;
-  
+
   return 301 https://$host$request_uri;
 }
 
@@ -27,8 +27,8 @@ server {
 
     location / {
             auth_basic "Speak melon and enter";
-            auth_basic_user_file /etc/nginx/streamsite.htpass; 
+            auth_basic_user_file /etc/nginx/streamsite.htpass;
     }
-   
+
 
 }

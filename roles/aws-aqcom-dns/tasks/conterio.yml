@@ -5,8 +5,8 @@
     state: "present"
     zone: conterio.co.uk.
     comment: Michael Conterio
-    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
+    aws_access_key: '{{ aqcom_aws_key }}'
+    aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
       - conterio
 
@@ -17,8 +17,8 @@
       command: "create"
       zone: "conterio.co.uk"
       record: "conterio.co.uk."
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
       value: '{{ cenote_ip }}'
@@ -32,8 +32,8 @@
 #       command: "create"
 #       zone: "conterio.co.uk"
 #       record: "conterio.co.uk."
-#       aws_access_key: '{{aqcom_aws_key}}'
-#       aws_secret_key: '{{aqcom_aws_secret}}'
+#       aws_access_key: '{{ aqcom_aws_key }}'
+#       aws_secret_key: '{{ aqcom_aws_secret }}'
 #       type: "NS"
 #       ttl: "172800"
 #       value: ns-422.awsdns-52.com,ns-617.awsdns-13.net,ns-1181.awsdns-19.org,ns-1809.awsdns-34.co.uk
@@ -45,8 +45,8 @@
 #      command: "create"
 #      zone: "conterio.co.uk"
 #      record: "conterio.co.uk."
-#      aws_access_key: '{{aqcom_aws_key}}'
-      # aws_secret_key: '{{aqcom_aws_secret}}'
+#      aws_access_key: '{{ aqcom_aws_key }}'
+      # aws_secret_key: '{{ aqcom_aws_secret }}'
       # type: "SOA"
 #      ttl: "900"
 #      value: 'ns-422.awsdns-52.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
@@ -57,8 +57,8 @@
       command: "create"
       zone: "conterio.co.uk"
       record: "michael.conterio.co.uk."
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
       value: '{{ cenote_ip }}'
@@ -72,8 +72,8 @@
       command: "create"
       zone: "conterio.co.uk"
       record: "www.conterio.co.uk."
-      aws_access_key: '{{aqcom_aws_key}}'
-      aws_secret_key: '{{aqcom_aws_secret}}'
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
       value: '{{ cenote_ip }}'

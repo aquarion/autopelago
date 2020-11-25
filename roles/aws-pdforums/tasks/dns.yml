@@ -5,8 +5,8 @@
     command: "create"
     zone: "larp.me"
     record: "20170201153337pm._domainkey.pdforums.larp.me"
-    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
+    aws_access_key: '{{ aqcom_aws_key }}'
+    aws_secret_key: '{{ aqcom_aws_secret }}'
     type: "TXT"
     ttl: 300
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCj7W/8a+Nl3ucgDgHCU1ROWW1lzktsq6fq/YQXSbIpBbQX+zpTmEWUE7baIrbEBXggEF15RwYknSEN33W1kGRYqc1uAeoaHQolg+q++2UliaT1p1AXJdK4hphEvh62k6FZ6muu8XvxqDzwnao6B8KLD54E7+PIu4ErMzciLXLM6wIDAQAB"'
@@ -18,8 +18,8 @@
 #    zone: "larp.me"
 #    record: "postmark.pdforums.larp.me"
 #    value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
-#    aws_access_key: '{{aqcom_aws_key}}'
-#    aws_secret_key: '{{aqcom_aws_secret}}'
+#    aws_access_key: '{{ aqcom_aws_key }}'
+#    aws_secret_key: '{{ aqcom_aws_secret }}'
 #    type: "SPF"
 #    ttl: 300
 
@@ -30,8 +30,8 @@
     zone: "larp.me"
     record: "postmark.pdforums.larp.me"
     value: 'pm.mtasv.net'
-    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
+    aws_access_key: '{{ aqcom_aws_key }}'
+    aws_secret_key: '{{ aqcom_aws_secret }}'
     type: "CNAME"
     ttl: 300
 
@@ -43,8 +43,8 @@
     zone: "larp.me"
     record: "pdforums.larp.me"
     value: '138.201.60.152'
-    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
+    aws_access_key: '{{ aqcom_aws_key }}'
+    aws_secret_key: '{{ aqcom_aws_secret }}'
     type: "A"
     ttl: 300
 
@@ -56,8 +56,8 @@
     zone: "larp.me"
     record: "old.pdforums.larp.me"
     value: '138.201.60.152'
-    aws_access_key: '{{aqcom_aws_key}}'
-    aws_secret_key: '{{aqcom_aws_secret}}'
+    aws_access_key: '{{ aqcom_aws_key }}'
+    aws_secret_key: '{{ aqcom_aws_secret }}'
     type: "A"
     ttl: 300
 

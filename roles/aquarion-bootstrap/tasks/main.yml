@@ -13,3 +13,4 @@
     repo: git@github.com:aquarion/dotfiles.git
     dest: /home/aquarion/code/dotfiles
     update: yes
+    version: master

@@ -4,8 +4,8 @@
   route53_zone:
     zone: carcosadreams.co.uk
     comment: CarcosaDreams
-    aws_access_key: '{{istic_aws_key}}'
-    aws_secret_key: '{{istic_aws_secret}}'
+    aws_access_key: '{{ istic_aws_key }}'
+    aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -13,8 +13,8 @@
   route53_zone:
     zone: carcosadreams.uk
     comment: CarcosaDreams
-    aws_access_key: '{{istic_aws_key}}'
-    aws_secret_key: '{{istic_aws_secret}}'
+    aws_access_key: '{{ istic_aws_key }}'
+    aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -22,8 +22,8 @@
   route53_zone:
     zone: carcosadreams.com
     comment: CarcosaDreams
-    aws_access_key: '{{istic_aws_key}}'
-    aws_secret_key: '{{istic_aws_secret}}'
+    aws_access_key: '{{ istic_aws_key }}'
+    aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -37,8 +37,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -51,8 +51,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -66,8 +66,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -81,8 +81,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -97,8 +97,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -112,8 +112,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -127,8 +127,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -142,8 +142,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -156,8 +156,8 @@
       type: "A"
       ttl: "300"
       value: '{{ archipelago_ip }}'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
   with_items:
@@ -173,8 +173,8 @@
       type: "MX"
       ttl: "300"
       value: '0 carcosadreams-co-uk.mail.protection.outlook.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -187,8 +187,8 @@
       type: "MX"
       ttl: "300"
       value: '0 carcosadreams-com.mail.protection.outlook.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -201,8 +201,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'autodiscover.outlook.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -215,8 +215,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'autodiscover.outlook.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -229,8 +229,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'sipdir.online.lync.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -243,8 +243,8 @@
       type: "SRV"
       ttl: "300"
       value: '100 1 443 sipdir.online.lync.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -257,8 +257,8 @@
       type: "SRV"
       ttl: "300"
       value: '100 1 5061 sipfed.online.lync.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -271,8 +271,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'webdir.online.lync.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -286,8 +286,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'enterpriseregistration.windows.net.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -301,8 +301,8 @@
       type: "CNAME"
       ttl: "300"
       value: 'enterpriseenrollment.manage.microsoft.com.'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -316,8 +316,8 @@
       type: "TXT"
       ttl: "300"
       value: '"v=spf1 include:spf.protection.outlook.com -all"'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
@@ -330,8 +330,8 @@
       type: "TXT"
       ttl: "300"
       value: '"v=spf1 include:spf.protection.outlook.com -all"'
-      aws_access_key: '{{istic_aws_key}}'
-      aws_secret_key: '{{istic_aws_secret}}'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
   tags:
     - carcosadreams
 
