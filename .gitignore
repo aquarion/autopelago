@@ -1,5 +1,5 @@
-ansible/playbook*.retry
-ansible/galaxy-roles
+playbook*.retry
+galaxy-roles
 certbot.log
 letsencrypt.log
 .direnv
