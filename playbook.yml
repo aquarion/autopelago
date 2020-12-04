@@ -26,6 +26,7 @@
   roles:
     - archipelago-packages
     - archipelago-users
+    - archipelago-exim
     - plexupdate
     - { role: aws-aqcom-dns, become: no, connection: local }
     - { role: aws-pdforums , tags: pdforum }

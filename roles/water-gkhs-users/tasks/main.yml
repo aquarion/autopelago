@@ -8,6 +8,14 @@
   tags:
     - users
 
+- name: Ensure group "certbot_access" exists
+  group:
+    name: certbot_access
+    state: present
+  tags:
+    - users
+
+
 - name: Add Aquarion key
   authorized_key: user=aquarion key={{ lookup('file', 'files/aquarion.keys') }}
   tags:

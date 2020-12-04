@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo certbot -t certonly --expand --standalone --pre-hook "service nginx stop" --post-hook "service nginx start" --domains \
+sudo certbot -n -t certonly --expand --standalone --pre-hook "service nginx stop" --post-hook "service nginx start" --domains \
  archipelago.water.gkhs.net,\
 istic.net,\
 stream.aquarionics.com,aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,\
@@ -32,10 +32,13 @@ forums.profounddecisions.co.uk
 
 ## Istic wildcards
 
-AWS_PROFILE=istic-r53 sudo -E certbot certonly --expand --dns-route53 -d *.istic.net && sudo service nginx restart
-AWS_PROFILE=istic-r53 sudo -E certbot certonly --expand --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk && sudo service nginx restart
+AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --dns-route53 -d *.istic.net && sudo service nginx restart
+AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk && sudo service nginx restart
 
 ## AqCom Wildcards
 
-sudo certbot certonly --expand --dns-route53 -d *.foip.me && sudo service nginx restart
-sudo certbot certonly --expand --dns-route53 -d hubris.house -d *.hubris.house && sudo service nginx restart
+sudo certbot certonly -n --expand --dns-route53 -d *.foip.me && sudo service nginx restart
+sudo certbot certonly -n --expand --dns-route53 -d hubris.house -d *.hubris.house && sudo service nginx restart
+
+sudo chown -R root:certbot_access /etc/letsencrypt
+sudo chmod g+rx /etc/letsencrypt

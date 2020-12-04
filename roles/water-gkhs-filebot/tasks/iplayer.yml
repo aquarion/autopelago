@@ -72,7 +72,7 @@
 
 - name: Add download_iplayer cron job
   cron: name="download_iplayer" minute="15" hour=2
-        user="plex" job="{{ plex_home }}/bin/download_iplayer.sh >> logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
+        user="plex" job="{{ plex_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
         cron_file=download_iplayer
         state=present
   tags:

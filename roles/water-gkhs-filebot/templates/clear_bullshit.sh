@@ -10,4 +10,5 @@ find {{ transmission_complete }}/completed -name \*sample\.??? -delete -print
 find {{ transmission_complete }}/completed -name \*srt -delete -print
 find {{ transmission_complete }}/completed -name RARBG.txt -delete -print
 find {{ transmission_complete }}/completed -name RARBG_DO_NOT_MIRROR.exe -delete -print
+find {{ transmission_complete }}/completed -name \*tvm.jpg -delete -print
 find {{ transmission_complete }}/completed -type d -exec rmdir {} \;
