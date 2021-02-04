@@ -39,7 +39,8 @@
   apt:
     state: present
     pkg:
-     - python
+     - python3
+     - python-is-python3
      - build-essential
      - libffi-dev
        #- libssl-dev
