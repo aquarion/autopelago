@@ -13,19 +13,42 @@ upstream larpfic_rails {
   # server 192.168.0.9:8080 fail_timeout=0;
 }
 
+upstream larpfic_staging {
+  server localhost:3001 fail_timeout=0;
+}
+
 server {
   listen      80;
   listen [::]:80;
   server_name www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
-  return 301 https://$host$request_uri;
+  return 301 https://larpfic.com/$request_uri;
   include /etc/nginx/snippets/errors.conf;
 }
 
+server {
+	server_name www.larpfic.com www.lrpfic.com lrpfic.com;
+	listen 443 ssl;
+	listen [::]:443 ssl;
+ 	return 301 https://larpfic.com$request_uri;
+	include /etc/nginx/snippets/letsencrypt.conf;
+ 	include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+	server_name stage.larpfic.com;
+	listen 443 ssl;
+	listen [::]:443 ssl;
+	include /etc/nginx/snippets/letsencrypt.conf;
+ 	include /etc/nginx/snippets/errors.conf;
+	location / { 
+		proxy_pass http://larpfic_staging;
+	}
+}
 
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
+    server_name larpfic.com; 
     include /etc/nginx/snippets/letsencrypt.conf;
     
   # enable one of the following if you're on Linux or FreeBSD
@@ -91,9 +114,10 @@ server {
     proxy_pass http://larpfic_rails;
   }
 
+  include /etc/nginx/snippets/errors.conf;
   # Rails error pages
-  error_page 500 502 503 504 /500.html;
-  location = /500.html {
-    root /path/to/app/current/public;
-  }
+  #error_page 500 502 503 504 /500.html;
+  #location = /500.html {
+  #  root /path/to/app/current/public;
+  #}
 }
