@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo certbot -n -t certonly --expand --standalone --pre-hook "service nginx stop" --post-hook "service nginx start" --domains \
+sudo certbot -n -t certonly --expand --nginx --domains \
  archipelago.water.gkhs.net,\
 istic.net,\
 stream.aquarionics.com,aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,\
@@ -13,6 +13,7 @@ sevenmirrors.foip.me,\
 istic.blogs.water.gkhs.net,istic.co,istic.systems,istic.network,\
 casu.istic.net,wildfeathers.casu.istic.net,pdforums.casu.istic.net,\
 monthlymoon.blogs.water.gkhs.net,themonthlymoon.com,\
+nicholasavenell.com,www.nicholasavenell.com,\
 blogs.water.gkhs.net,\
 ludo.istic.co,ludoistic.com,www.ludoistic.com,\
 imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,\
@@ -29,16 +30,19 @@ forums.profounddecisions.co.uk
 # www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
 # omnyom.blogs.water.gkhs.net,omnyom.com,www.omnyom.com,\
 
+sudo certbot -n -t certonly --expand --nginx --domains nicholasavenell.com,www.nicholasavenell.com
 
 ## Istic wildcards
 
-AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --dns-route53 -d *.istic.net && sudo service nginx restart
-AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk && sudo service nginx restart
+AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --dns-route53 -d *.istic.net
+AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk
 
 ## AqCom Wildcards
 
-sudo certbot certonly -n --expand --dns-route53 -d *.foip.me && sudo service nginx restart
-sudo certbot certonly -n --expand --dns-route53 -d hubris.house -d *.hubris.house && sudo service nginx restart
+sudo certbot certonly -n --expand --dns-route53 -d *.foip.me 
+sudo certbot certonly -n --expand --dns-route53 -d hubris.house -d *.hubris.house 
 
 sudo chown -R root:certbot_access /etc/letsencrypt
 sudo chmod g+rx /etc/letsencrypt
+
+sudo service nginx reload

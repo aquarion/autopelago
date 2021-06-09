@@ -21,7 +21,6 @@ maelfroth.org,lampstand.aqxs.net,lampstand.maelfroth.org,obviouslyfakeurl.foip.m
 lottery.aqxs.net,snakesandladders.aqxs.net,spycattes.aqxs.net,unhelpfulclue.aqxs.net,\
 ludo.istic.net,\
 mc.aqxs.net,mcwp.aqxs.net,www.contrarythoughts.com,contrarythoughts.com,michael.conterio.co.uk,\
-nicholasavenell.com,www.nicholasavenell.com,\
 voicemail.aqxs.net,\
 www.deadbadgerdesigns.co.uk,deadbadgerdesigns.co.uk,\
 www.grantabruggehamstery.aqxs.net,www.grantabruggehamstery.co.uk,grantabruggehamstery.co.uk,\
@@ -32,7 +31,6 @@ dhmstark.co.uk,www.dhmstark.co.uk,kastark.co.uk,www.kastark.co.uk
 
 sudo certbot certonly -n --expand --dns-route53 -d *.aqxs.net && sudo service apache2 restart
 
-sudo certbot -n -t certonly --expand --standalone --pre-hook "service apache2 stop" --post-hook "service apache2 start" --domains nicholasavenell.com,www.nicholasavenell.com
  #mothinabutterfly.net,www.mothinabutterfly.net,\
  #swatt.treasuretrap.co.uk,
 #dailyphoto.aquarionics.com,
