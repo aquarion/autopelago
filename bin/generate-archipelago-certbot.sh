@@ -44,5 +44,7 @@ sudo certbot certonly -n --expand --dns-route53 -d hubris.house -d *.hubris.hous
 
 sudo chown -R root:certbot_access /etc/letsencrypt
 sudo chmod g+rx /etc/letsencrypt
+sudo find /etc/letsencrypt -type d -exec chmod g+rx {} \;
+sudo find /etc/letsencrypt -type f -exec chmod g+r {} \;
 
 sudo service nginx reload
