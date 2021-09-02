@@ -1,2 +1,15 @@
-wheel
-ansible==2.8.*
+ansible==2.9.19
+boto==2.49.0
+boto3==1.17.38
+botocore==1.20.38
+cffi==1.14.5
+cryptography==3.4.6
+Jinja2==2.11.3
+jmespath==0.10.0
+MarkupSafe==1.1.1
+pycparser==2.20
+python-dateutil==2.8.1
+PyYAML==5.4.1
+s3transfer==0.3.6
+six==1.15.0
+urllib3==1.26.4
