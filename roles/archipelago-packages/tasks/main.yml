@@ -1,8 +1,9 @@
 ---
 
 - name: Install Application Packages
-  apt: pkg={{ item }} state=installed
-  with_items:
-    - mariadb-server
-    - irssi
-    - exim4
+  apt:
+    state: present
+    pkg:
+      - mariadb-server
+      - irssi
+      - exim4

@@ -39,7 +39,7 @@
   apt:
     state: present
     pkg:
-     - python
+     - python3
      - build-essential
      - libffi-dev
        #- libssl-dev
@@ -64,8 +64,15 @@
     pkg:
      - software-properties-common
      - python3-pip
+     - python-is-python3
   tags:
     - certbot
+
+- name: python-is-python3
+  file:
+   dest: /usr/bin/python
+   src: python3
+   state: link
 
 - name: Install Utility Packages
   apt:

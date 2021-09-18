@@ -336,3 +336,33 @@
     - carcosadreams
 
 
+- name: carcosadreams.com. - Mailchimp Domainkey
+  route53:
+      overwrite: true
+      command: "present"
+      zone: "carcosadreams.com"
+      record: 'k2._domainkey.carcosadreams.com'
+      type: "CNAME"
+      ttl: "300"
+      value: 'dkim2.mcsv.net'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
+  tags:
+    - carcosadreams
+
+- name: carcosadreams.com. - Mailchimp Domainkey 2
+  route53:
+      overwrite: true
+      command: "present"
+      zone: "carcosadreams.com"
+      record: 'k3._domainkey.carcosadreams.com'
+      type: "CNAME"
+      ttl: "300"
+      value: 'dkim3.mcsv.net'
+      aws_access_key: '{{ istic_aws_key }}'
+      aws_secret_key: '{{ istic_aws_secret }}'
+  tags:
+    - carcosadreams
+
+
+

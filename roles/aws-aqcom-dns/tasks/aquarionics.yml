@@ -411,3 +411,15 @@
       value: '{{ archipelago_ip }}'
   tags:
       - streamsite
+
+- name: panopticon.aquarionics.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "panopticon.aquarionics.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'
