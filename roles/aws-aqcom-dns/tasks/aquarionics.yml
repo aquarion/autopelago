@@ -34,7 +34,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "MX"
       ttl: "300"
-      value: 10 aspmx.l.google.com.,10 alt1.aspmx.l.google.com.,20 alt2.aspmx.l.google.com.,20 aspmx2.googlemail.com.,30 aspmx3.googlemail.com.
+      value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM.
 
 - name: aquarionics.com. - NS
   route53:
