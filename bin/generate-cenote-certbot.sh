@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo certbot -n -t certonly --expand --standalone --cert-name cenote.gkhs.net --pre-hook "service apache2 stop" --post-hook "service apache2 start" --domains \
+sudo certbot -n -t certonly --expand --apache --cert-name cenote.gkhs.net --domains \
 cenote.gkhs.net,cenote.water.gkhs.net,ssl.aqxs.net,\
 advent.aqxs.net,advent-knowledge.info,www.advent-knowledge.info,\
 ashires.aqxs.net,bluebottle.aqxs.net,chesswiki.aqxs.net,dgold.aqxs.net,entimix.aqxs.net,locksmith.aqxs.net,makai.aqxs.net,martindenton.aqxs.net,rho21.aqxs.net,rjw76.aqxs.net,salavant.aqxs.net,taxellor.aqxs.net,tdk27.aqxs.net,\
@@ -9,7 +9,6 @@ camlarp.co.uk,www.camlarp.co.uk,bw.camlarp.co.uk,nfnc.camlarp.co.uk,refs.bw.caml
 treasuretrap.co.uk,nfnc.treasuretrap.co.uk,www.treasuretrap.co.uk,\
 aquarion.aqxs.net,\
 emptytables.org,www.emptytables.org,\
-isittheweekend.com,www.isittheweekend.com,\
 nanocountdown.com,www.nanocountdown.com,\
 wherearemyfuckingkeys.com,www.wherearemyfuckingkeys.com,\
 avenell.me.uk,www.avenell.me.uk,avenell.me,www.avenell.me,\
