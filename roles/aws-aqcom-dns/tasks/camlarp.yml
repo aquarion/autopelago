@@ -102,6 +102,17 @@
       ttl: "300"
       value: '{{ cenote_ip }}'
 
+- name: darkmoon.camlarp.co.uk. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "camlarp.co.uk"
+      record: "darkmoon.camlarp.co.uk."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "A"
+      ttl: "300"
+      value: '{{ cenote_ip }}'
 
 
 - name: refs.nfnc.camlarp.co.uk. - A

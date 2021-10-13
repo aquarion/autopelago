@@ -13,6 +13,8 @@
 - include: camlarp.yml
   tags:
     - aws
+    - camlarp
+
 
 - include: cleartext.yml
   tags:
@@ -64,4 +66,4 @@
 - include: hubris.yml
   tags:
     - aws
-    - conterio
+    - hubris
