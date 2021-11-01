@@ -59,12 +59,16 @@
   file:
     path: "{{ plex_home }}/bin/youtube_download.sh"
     state: absent
+  tags:
+    - media
+    - dlyoutube
 
 - name: Add download_youtube script to bin
   template: src=download_youtube.sh dest={{ plex_home }}/bin/download_youtube.sh mode=0755 owner=plex
   tags:
     - media
     - media_playlists
+    - dlyoutube
 
 - name: Add download_youtube cron job
   cron: name="download_youtube" minute="15" hour=3
@@ -73,6 +77,7 @@
         state=present
   tags:
     - media
+    - dlyoutube
 
 - apt:
    state: present
@@ -81,6 +86,7 @@
     - aria2
   tags:
     - media
+    - dlyoutube
 
 - name: Add remove_completed_torrents script to bin
   template: src=remove_completed_torrents.sh dest={{ plex_home }}/bin/remove_completed_torrents.sh mode=0755 owner=plex
