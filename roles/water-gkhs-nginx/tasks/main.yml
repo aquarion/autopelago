@@ -68,3 +68,16 @@
     - hubris.house
   notify:
    - restart nginx
+
+
+- name: configure letsencrypt config for bromioscreations.com
+  template:
+    src: letsencrypt.conf.j2
+    dest: /etc/nginx/snippets/bromioscreations_ssl.conf
+  when: "'archipelago' in inventory_hostname"
+  vars:
+    cert_id: "bromioscreations.com"
+  tags:
+    - bromioscreations
+  notify:
+   - restart nginx

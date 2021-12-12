@@ -17,6 +17,7 @@
    - restart nginx
   tags:
    - streamsite
+   - nginx
 
 - name: Configure nginx sites as enabled
   file: path=/etc/nginx/sites-enabled/{{ item | basename }} src=../sites-available/{{ item | basename }} state=link

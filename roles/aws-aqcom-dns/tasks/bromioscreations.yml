@@ -1,0 +1,179 @@
+
+
+- name: bromioscreations.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "A"
+      ttl: "86400"
+      value: '{{ archipelago_ip }}'
+
+- name: bromioscreations.com. - AAAA
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "AAAA"
+      ttl: "300"
+      value: '{{ ansible_default_ipv6.address }}'
+
+- name: bromioscreations.com. - MX
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "MX"
+      ttl: "300"
+      value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM.
+
+# - name: bromioscreations.com. - NS
+#   route53:
+#       overwrite: true
+#       command: "create"
+#       zone: "bromioscreations.com"
+#       record: "bromioscreations.com."
+#       aws_access_key: '{{ aqcom_aws_key }}'
+#       aws_secret_key: '{{ aqcom_aws_secret }}'
+#       type: "NS"
+#       ttl: "172800"
+#       value: ns-1103.awsdns-09.org.,ns-1667.awsdns-16.co.uk.,ns-275.awsdns-34.com.,ns-1004.awsdns-61.net.
+
+
+
+#- name: bromioscreations.com. - SOA
+#  route53:
+#      overwrite: true
+#      command: "create"
+#      zone: "bromioscreations.com"
+#      record: "bromioscreations.com."
+#      aws_access_key: '{{ aqcom_aws_key }}'
+      # aws_secret_key: '{{ aqcom_aws_secret }}'
+      # type: "SOA"
+#      ttl: "900"
+#      value: 'ns-1103.awsdns-09.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+
+
+
+- name: bromioscreations.com. - SPF
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "SPF"
+      ttl: "86400"
+      value: '"v=spf1 include:aspmx.googlemail.com ~all"'
+
+
+
+- name: bromioscreations.com. - TXT
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "TXT"
+      ttl: "300"
+      value: '"v=spf1 include:aspmx.googlemail.com ~all"'
+
+
+- name: google._domainkey.bromioscreations.com. - TXT
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "google._domainkey.bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "TXT"
+      ttl: "300"
+      value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
+
+- name: cdn.bromioscreations.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "cdn.bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "CNAME"
+      ttl: "300"
+      value: 'd2r0e8lumqw3g1.cloudfront.net'
+
+
+# - name: Amazon DNS Validation for aqcom - CNAME
+#   route53:
+#       overwrite: true
+#       command: "create"
+#       zone: "bromioscreations.com"
+#       record: "_718a5f89a82bf1a5111be33a782c832a.bromioscreations.com."
+#       aws_access_key: '{{ aqcom_aws_key }}'
+#       aws_secret_key: '{{ aqcom_aws_secret }}'
+#       type: "CNAME"
+#       ttl: "300"
+#       value: '_02827ed4ad6fed8455c7ece69808224e.hkvuiqjoua.acm-validations.aws.'
+
+
+# - name: Amazon DNS Validation for cdn.aqcom - CNAME
+#   route53:
+#       overwrite: true
+#       command: "create"
+#       zone: "bromioscreations.com"
+#       record: "_7ca693a0f8f72e0865bf5335a6877adb.cdn.bromioscreations.com."
+#       aws_access_key: '{{ aqcom_aws_key }}'
+#       aws_secret_key: '{{ aqcom_aws_secret }}'
+#       type: "CNAME"
+#       ttl: "300"
+#       value: '_a610429fde9cdbee8f486a8f8ee9c28e.hkvuiqjoua.acm-validations.aws.'
+
+
+- name: \*.cdn.bromioscreations.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "*.cdn.bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "CNAME"
+      ttl: "3600"
+      value: 'd2r0e8lumqw3g1.cloudfront.net'
+
+- name: mail.bromioscreations.com. - CNAME
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "mail.bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "CNAME"
+      ttl: "86400"
+      value: 'ghs.google.com'
+
+- name: www.bromioscreations.com. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "bromioscreations.com"
+      record: "www.bromioscreations.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "A"
+      ttl: "300"
+      value: '{{ archipelago_ip }}'

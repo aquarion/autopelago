@@ -6,7 +6,6 @@ istic.net,\
 stream.aquarionics.com,aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,\
 wywo.blogs.water.gkhs.net,wywo.aquarionics.com,\
 factionfiction.net,www.factionfiction.net,factionfiction.blogs.water.gkhs.net,\
-cleartextcontent.blogs.water.gkhs.net,www.cleartextcontent.co.uk,cleartextcontent.co.uk,\
 idlespeculation.blogs.water.gkhs.net,idlespeculation.foip.me,\
 herodiaries.blogs.water.gkhs.net,herodiaries.foip.me,\
 sevenmirrors.foip.me,\
@@ -29,6 +28,7 @@ www.deathuntodarkness.org,\
 forums.profounddecisions.co.uk
 # www.iglooteas.com,iglooteas.blogs.water.gkhs.net,\
 # omnyom.blogs.water.gkhs.net,omnyom.com,www.omnyom.com,\
+# cleartextcontent.blogs.water.gkhs.net,www.cleartextcontent.co.uk,cleartextcontent.co.uk,\
 
 sudo certbot -n -t certonly --expand --nginx --cert-name nicholasavenell.com --domains nicholasavenell.com,www.nicholasavenell.com
 
@@ -39,8 +39,9 @@ AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --cert-name carcosadr
 
 ## AqCom Wildcards
 
-sudo certbot certonly -n --expand --dns-route53 --cert-name foip.me -d *.foip.me 
-sudo certbot certonly -n --expand --dns-route53 --cert-name hubris.house -d hubris.house -d *.hubris.house 
+sudo certbot certonly -n --expand --dns-route53 --cert-name bromioscreations.com -d *.bromioscreations.com
+sudo certbot certonly -n --expand --dns-route53 --cert-name foip.me -d *.foip.me
+sudo certbot certonly -n --expand --dns-route53 --cert-name hubris.house -d hubris.house -d *.hubris.house
 
 sudo chown -R root:certbot_access /etc/letsencrypt
 sudo chmod g+rx /etc/letsencrypt

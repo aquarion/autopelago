@@ -12,6 +12,7 @@ server {
   ludoistic.com
   *.istic.net
   *.foip.me
+  *.bromioscreations.com
   *.hubris.house;
 
   return 301 https://$host$request_uri;
@@ -61,6 +62,23 @@ server {
   include /etc/nginx/snippets/errors.conf;
 }
 
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name *.bromioscreations.com bromioscreations.com;
+    include /etc/nginx/snippets/bromioscreations_ssl.conf;
+
+  location    / {
+    proxy_pass  http://container-php;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
 
 server {
     listen 443 ssl;
