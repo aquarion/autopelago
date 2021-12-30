@@ -47,6 +47,9 @@ server {
     server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
+    error_log  /var/log/nginx/wordpress.error.log;
+    access_log /var/log/nginx/wordpress.access.log;
+
   location    / {
     proxy_pass  http://container-wordpress;
     proxy_http_version 1.1;

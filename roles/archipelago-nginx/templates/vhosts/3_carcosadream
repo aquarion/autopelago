@@ -42,13 +42,16 @@ server {
     server_name www.carcosadreams.com *.carcosadreams.com;
     include /etc/nginx/snippets/carcosadreams_ssl.conf;
 
+    error_log  /var/log/nginx/carcosadreams.error.log;
+    access_log /var/log/nginx/carcosadreams.access.log;
+
   location    / {
     proxy_pass  http://container-carcosadreams;
     proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
   }
-  
+
   include /etc/nginx/snippets/errors.conf;
    client_max_body_size 32M;
 }

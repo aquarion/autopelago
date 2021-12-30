@@ -10,6 +10,9 @@ server {
     server_name vis.aquarionics.com;
     charset UTF-8;
 
+    error_log  /var/log/nginx/vis.error.log;
+    access_log /var/log/nginx/vis.access.log;
+
     listen 443 ssl;
     listen [::]:443 ssl;
 

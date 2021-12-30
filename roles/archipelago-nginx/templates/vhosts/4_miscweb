@@ -31,6 +31,10 @@ server {
     ludoistic.com;
     include /etc/nginx/snippets/letsencrypt.conf;
 
+
+    error_log  /var/log/nginx/miscweb.error.log;
+    access_log /var/log/nginx/miscweb.access.log;
+
   location    / {
     proxy_pass  http://container-php;
     proxy_http_version 1.1;
@@ -49,6 +53,10 @@ server {
     listen [::]:443 ssl;
     server_name *.istic.net;
     include /etc/nginx/snippets/istic.conf;
+
+
+    error_log  /var/log/nginx/istic.error.log;
+    access_log /var/log/nginx/istic.access.log;
 
   location    / {
     proxy_pass  http://container-php;

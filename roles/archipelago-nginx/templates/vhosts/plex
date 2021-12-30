@@ -85,6 +85,9 @@ server {
 	proxy_redirect off;
 	proxy_buffering off;
 
+    error_log  /var/log/nginx/vis.error.log;
+    access_log /var/log/nginx/vis.access.log;
+
 	location / {
 		#Example of using sub_filter to alter what Plex displays, this disables Plex News.
 		#sub_filter ',news,' ',';

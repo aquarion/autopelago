@@ -14,6 +14,10 @@ server {
     server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
     include /etc/nginx/snippets/letsencrypt.conf;
 
+
+    error_log  /var/log/nginx/pddiscourse.error.log;
+    access_log /var/log/nginx/pddiscourse.access.log;
+
   location    / {
     proxy_pass  http://container-pddiscourse;
     proxy_http_version 1.1;

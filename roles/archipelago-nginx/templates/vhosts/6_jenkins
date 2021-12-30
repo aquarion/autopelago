@@ -15,6 +15,10 @@ server {
     server_name mechan.istic.net;
     include /etc/nginx/snippets/letsencrypt.conf;
 
+
+    error_log  /var/log/nginx/jenkins.error.log;
+    access_log /var/log/nginx/jenkins.access.log;
+
   location    / {
     proxy_pass  http://container-jenkins;
     proxy_http_version 1.1;
