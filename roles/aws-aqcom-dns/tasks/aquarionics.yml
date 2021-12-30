@@ -280,6 +280,19 @@
       ttl: "86400"
       value: 'ghs.google.com'
 
+- name: thalium. - A
+  route53:
+      overwrite: true
+      command: "create"
+      zone: "aquarionics.com"
+      record: "thalium.aquarionics.com."
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "A"
+      ttl: "86400"
+      value: '{{ archipelago_ip }}'
+
+
 - name: plex. - A
   route53:
       overwrite: true

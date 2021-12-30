@@ -3,7 +3,7 @@
 sudo certbot -n -t certonly --expand --nginx --cert-name archipelago.water.gkhs.net --domains \
  archipelago.water.gkhs.net,\
 istic.net,\
-stream.aquarionics.com,aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,\
+stream.aquarionics.com,aquarionics.blogs.water.gkhs.net,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,thalium.aquarionics.com,\
 wywo.blogs.water.gkhs.net,wywo.aquarionics.com,\
 factionfiction.net,www.factionfiction.net,factionfiction.blogs.water.gkhs.net,\
 idlespeculation.blogs.water.gkhs.net,idlespeculation.foip.me,\

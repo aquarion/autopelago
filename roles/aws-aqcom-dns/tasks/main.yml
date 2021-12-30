@@ -5,6 +5,7 @@
   include: aquarionics.yml
   tags:
     - aws
+    - aquarionics
 
 - include: aqxs.yml
   tags:
