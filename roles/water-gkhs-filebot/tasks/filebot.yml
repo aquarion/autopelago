@@ -28,7 +28,8 @@
   tags:
     - "filebot"
 
-- apt:
+- name: "Install mediainfo library"
+  apt:
    pkg: libmediainfo0v5
    state: present
 

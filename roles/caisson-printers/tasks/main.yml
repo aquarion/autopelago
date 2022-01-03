@@ -5,7 +5,8 @@
     state: present
 
 
-- lineinfile:
+- name: Add listen port to cups
+  lineinfile:
     state: present
     path: /etc/cups/cupsd.conf
     line: "Listen 0.0.0.0:631 "
@@ -13,7 +14,8 @@
   notify:
     - restart cups
 
-- lineinfile:
+- name: Add access network to access
+  lineinfile:
     state: present
     path: /etc/cups/cupsd.conf
     line: "  Allow 192.168.0.0/16"
@@ -21,7 +23,8 @@
   notify:
     - restart cups
 
-- lineinfile:
+- name: Add access network to admin
+  lineinfile:
     state: present
     path: /etc/cups/cupsd.conf
     line: "  Allow 192.168.0.0/16"
@@ -29,14 +32,16 @@
   notify:
     - restart cups
 
-- lineinfile:
+- name: Remove localhost limit
+  lineinfile:
     state: absent
     path: /etc/cups/cupsd.conf
     line: "Listen localhost:631"
   notify:
     - restart cups
 
-- user:
+- name: Add Aquarion to lpadmin
+  user:
     name: aquarion
     groups: lpadmin
     append: yes
@@ -50,17 +55,19 @@
     version: master
   register: driverupdate
 
-- file:
+- name: Remove old driver build file
+  file:
     state: absent
     path: /usr/src/zj-58/build
   when: driverupdate.changed
 
-- file:
+- name: Remove old print driver
+  file:
     state: absent
     path: /usr/share/cups/model/zjiang
   when: driverupdate.changed
 
-- name:
+- name: Install dev files for cups
   apt:
     pkg:
       - build-essential
@@ -69,8 +76,10 @@
       - libcupsimage2-dev
     state: present
 
-- file:
+- name: Add a build directory
+  file:
     path: /usr/src/zj-58/build
+    mode: 0755
     state: directory
 
 - name: Prepare Thermal Printer Drivers build environment
@@ -99,14 +108,19 @@
   file:
     path: /usr/src/hplip
     state: directory
+    mode: 0755
 
 
 #### <HP41>From https://github.com/HP41/ansible-cups
 - name: Install Expect
-  apt: name=expect state=latest
+  apt:
+    name: expect
+    state: present
 
 - name: Install HPLIP
-  apt: name=hplip state=latest
+  apt:
+    name: hplip
+    state: present
   register: hplip_package
 
 - name: Copy hp-plugin-install.exp install script to /usr/src/hplip/

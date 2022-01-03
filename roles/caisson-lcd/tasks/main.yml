@@ -6,7 +6,7 @@
     version: master
 
 
-- name: Prepare LCD Show script
+- name: Prepare LCD Show script # noqa 303
   shell: |
     sed -e "s/reboot/#reboot/g" < LCD35-show > LCD35-show-modified
     chmod 755 LCD35-show-modified
@@ -26,16 +26,19 @@
     src: /usr/src/LCD-show/usr/99-calibration.conf-35-180
     dest: /etc/X11/xorg.conf.d/99-calibration.conf
     remote_src: yes
+    mode: 0644
   register: rotato
 
-- lineinfile:
+- name: Add overscan L to config
+  lineinfile:
     state: present
     path: /boot/config.txt
     line: "overscan_left: 10"
     regexp: '^overscan_left:'
   register: overscan
 
-- lineinfile:
+- name: Add overscan R to config
+  lineinfile:
     state: present
     path: /boot/config.txt
     line: "overscan_right: -10"

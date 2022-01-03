@@ -38,13 +38,15 @@
     - iplayer
     - iplayer_update
 
-- meta: flush_handlers
+- name: "Flush handlers"
+  meta: flush_handlers
   tags:
     - media
     - iplayer
 
 
-- apt:
+- name: Install perl modules for iplayer
+  apt:
    pkg:
     - libwww-perl
     - liblwp-protocol-https-perl
@@ -80,7 +82,7 @@
     - iplayer
 
 - name: Make sure plex has a .get_iplayer directory
-  file: path={{ plex_home }}/.get_iplayer state=directory owner=plex
+  file: path={{ plex_home }}/.get_iplayer state=directory owner=plex mode=0755
   tags:
     - media
     - iplayer
@@ -91,6 +93,7 @@
     regexp: '^tvmode'
     line: tvmode best
     create: yes
+    mode: 0644
   tags:
     - media
     - iplayer
@@ -101,6 +104,7 @@
     regexp: '^subdirformat'
     line: subdirformat <nameshort>
     create: yes
+    mode: 0644
   tags:
     - media
     - iplayer
@@ -111,6 +115,7 @@
     regexp: '^subtitles'
     line: subtitles 1
     create: yes
+    mode: 0644
   tags:
     - media
     - iplayer
@@ -122,6 +127,7 @@
     regexp: '^proxy'
     line: "proxy http://{{ nordvpn_username }}:{{ nordvpn_password }}@{{ nordvpn_server }}.nordvpn.com:80"
     create: yes
+    mode: 0644
   tags:
     - media
     - iplayer
@@ -133,6 +139,7 @@
     regexp: '^fileprefix'
     line: fileprefix - S<00seriesnum>E<00episodenum>
     create: yes
+    mode: 0644
   tags:
     - media
     - iplayer
@@ -143,6 +150,7 @@
     regexp: '^output'
     line: output {{ transmission_complete }}/completed/
     create: yes
+    mode: 0644
   tags:
     - media
     - iplayer
@@ -153,6 +161,7 @@
     regexp: '^whitespace'
     line: whitespace 1
     create: yes
+    mode: 0644
   tags:
     - media
     - iplayer

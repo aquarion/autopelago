@@ -19,12 +19,18 @@
   tags:
     - "b2backup"
 
-- template: src=media-backup.bash.j2 dest={{ plex_home }}/bin/media-backup.sh mode=0770 owner=plex
+- name: Setup B2 backup of Media (Script)
+  template:
+    src: 'media-backup.bash.j2'
+    dest: '{{ plex_home }}/bin/media-backup.sh'
+    mode: 0770
+    owner: 'plex'
   tags:
     - "b2backup"
 
 
-- cron: name="b2backup" hour=04 minute="46"
+- name: Setup B2 backup of Media (Cron)
+  cron: name="b2backup" hour=04 minute="46"
         user="plex" job="{{ plex_home }}/bin/media-backup.sh"
         cron_file=b2backup
   tags:

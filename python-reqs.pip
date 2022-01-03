@@ -13,3 +13,4 @@ PyYAML==5.4.1
 s3transfer==0.3.6
 six==1.15.0
 urllib3==1.26.4
+ansible-lint==4.3.7

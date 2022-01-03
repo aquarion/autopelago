@@ -5,7 +5,7 @@ server {
   listen [::]:80;
 
   server_name skute.me alpha.skute.me;
-  
+
   return 301 https://$host$request_uri;
 }
 

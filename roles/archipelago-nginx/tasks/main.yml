@@ -10,7 +10,10 @@
     - streamsite
 
 - name: configure nginx sites as available
-  template: src={{ item }} dest=/etc/nginx/sites-available/{{ item | basename }}
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/sites-available/{{ item | basename }}"
+    mode: 0644
   with_fileglob:
    - templates/vhosts/*
   notify:
@@ -20,7 +23,11 @@
    - nginx
 
 - name: Configure nginx sites as enabled
-  file: path=/etc/nginx/sites-enabled/{{ item | basename }} src=../sites-available/{{ item | basename }} state=link
+  file:
+    path: "/etc/nginx/sites-enabled/{{ item | basename }}"
+    src: "../sites-available/{{ item | basename }}"
+    state: link
+    mode: 0644
   with_fileglob:
    - templates/vhosts/*
   notify:
@@ -29,14 +36,18 @@
      - streamsite
 
 - name: Configure dead nginx sites as disabled
-  file: path=/etc/nginx/sites-enabled/{{ item | basename }} state=absent
+  file:
+    path: "/etc/nginx/sites-enabled/{{ item | basename }}"
+    state: absent
   with_fileglob:
    - templates/deleted_vhosts/*
   notify:
    - restart nginx
 
 - name: Configure dead nginx sites as unavailable
-  file: path=/etc/nginx/sites-available/{{ item | basename }} state=absent
+  file:
+    path: "/etc/nginx/sites-available/{{ item | basename }}"
+    state: absent
   with_fileglob:
    - templates/deleted_vhosts/*
   notify:
@@ -47,13 +58,17 @@
     path: /etc/nginx/streamsite.htpass
     name: "{{ item.user }}"
     password: "{{ item.password }}"
+    mode: 0644
   loop: "{{ streamsite_users }}"
   tags:
     - streamsite
 
 
 - name: Configure nginx redirects
-  template: src=config/redirects.nginx.j2 dest=/etc/nginx/conf.d/www_redirects.conf
+  template:
+    src: config/redirects.nginx.j2
+    dest: /etc/nginx/conf.d/www_redirects.conf
+    mode: 0644
   vars:
     add_www:
     - aquarionics.com

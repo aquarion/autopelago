@@ -1,8 +1,12 @@
 - name: install openssl
-  apt: pkg=openssl state=present
+  apt:
+    pkg: openssl
+    state: present
 
 - name: Create DHParam file
-  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 creates=/etc/ssl/certs/dhparam.pem
+  command:
+    cmd: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+    creates: /etc/ssl/certs/dhparam.pem
   notify:
    - restart nginx
 
@@ -24,5 +28,6 @@
     src: files/diffie-helman.conf
     owner: root
     group: root
+    mode: 0644
   notify:
    - restart nginx

@@ -6,7 +6,8 @@
     - flexget
     - media
 
-- cron: name="flexget" minute="16,46"
+- name: "Setup flexget cron"
+  cron: name="flexget" minute="16,46"
         user="plex" job="{{ plex_home }}/.virtualenvs/flexget/bin/python {{ plex_home }}/.virtualenvs/flexget/bin/flexget --cron execute"
         cron_file=flexget
   tags:

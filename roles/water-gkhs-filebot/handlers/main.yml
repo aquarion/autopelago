@@ -24,7 +24,8 @@
   with_items: "{{ running_processes.stdout_lines }}"
   listen: "restart filebot inotify"
 
-- wait_for:
+- name: Wait for things to end before going on
+  wait_for:
     path: "/proc/{{ item }}/status"
     state: absent
   with_items: "{{ running_processes.stdout_lines }}"

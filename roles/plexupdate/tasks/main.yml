@@ -1,15 +1,21 @@
 
 - name: Fetch plexupdate
-  git: repo=https://github.com/mrworf/plexupdate.git dest=/root/plexupdate
-
-- name: Install plexupdate
-  git: repo=https://github.com/mrworf/plexupdate.git dest=/root/plexupdate
+  git:
+    repo: https://github.com/mrworf/plexupdate.git
+    dest: /root/plexupdate
+    version: master
 
 - name: Set cron plexupdate preferences
-  template: src=plexupdate.cron.conf dest=/etc/plexupdate.cron.conf
+  template:
+    src: plexupdate.cron.conf
+    dest: /etc/plexupdate.cron.conf
+    mode: 0644
 
 - name: Set public plexupdate preferences
-  template: src=plexupdate.conf dest=/etc/plexupdate.conf
+  template:
+    src: plexupdate.conf
+    dest: /etc/plexupdate.conf
+    mode: 0644
 
 - name: Install plex
   command: /root/plexupdate/plexupdate.sh -p -a chdir=/tmp creates=/etc/init/plexmediaserver.conf

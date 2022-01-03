@@ -11,7 +11,7 @@ for TORRENTID in $TORRENTLIST
 do
     INFO=$(transmission-remote $SERVER --torrent $TORRENTID --info)
     echo -e "Processing #$TORRENTID - $(echo $INFO | sed -e 's/.*Name: \(.*\) Hash.*/\1/')"
-    
+
     # check if torrent download is completed
     DL_COMPLETED=`echo $INFO | grep "Done: 100%\|Done: 99\..%"`
     # check torrents current state is

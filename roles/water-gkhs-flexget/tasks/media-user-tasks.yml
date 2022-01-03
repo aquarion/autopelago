@@ -17,7 +17,12 @@
   tags:
     - flexget
 
-- file: path={{ plex_home }}/.flexget state=directory owner=plex
+- name: Make sure flexget config dir exists
+  file:
+    path: "{{ plex_home }}/.flexget"
+    state: directory
+    owner: plex
+    mode: 0755
   tags:
     - flexget
 

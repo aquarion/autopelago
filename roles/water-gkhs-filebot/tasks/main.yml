@@ -17,7 +17,7 @@
 
 # Script support
 - name: Make sure plex has a bin
-  file: path={{ plex_home }}/bin state=directory owner=plex
+  file: path={{ plex_home }}/bin state=directory owner=plex mode=0755
   tags:
     - media
 
@@ -79,7 +79,8 @@
     - media
     - dlyoutube
 
-- apt:
+- name: "Install Transmission & Aria"
+  apt:
    state: present
    pkg:
     - transmission-cli
