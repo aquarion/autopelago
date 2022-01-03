@@ -3,10 +3,11 @@ name: Ansible Lint  # feel free to pick your own name
 on: [push, pull_request]
 
 jobs:
-  build:
+  lint:
 
     runs-on: ubuntu-latest
-
+    env:
+      ANSIBLE_VAULT_PASSWORD: ${{ secrets.VaultPassword }}
     steps:
     # Important: This sets up your GITHUB_WORKSPACE environment variable
     - uses: actions/checkout@v2
@@ -14,7 +15,6 @@ jobs:
     - name: Lint Ansible Playbook
       uses: ansible/ansible-lint-action@master
       with:
-        vault_password: ${{ secrets.VaultPassword }}
         targets: |
             "playbook.yml"
         override-deps: |
