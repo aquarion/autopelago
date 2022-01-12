@@ -1,4 +1,12 @@
 
+
+# Script support
+- name: Make sure plex has a bin
+  file: path={{ plex_home }}/bin state=directory owner=plex mode=0755
+  tags:
+    - media
+
+
 - name: Install filebot
   include: filebot.yml
   tags:
@@ -14,13 +22,6 @@
   notify: sysctl
   tags:
     - media
-
-# Script support
-- name: Make sure plex has a bin
-  file: path={{ plex_home }}/bin state=directory owner=plex mode=0755
-  tags:
-    - media
-
 # Sync non-TV shows to their own libraries
 
 - name: Add sync_or_swim script to bin
