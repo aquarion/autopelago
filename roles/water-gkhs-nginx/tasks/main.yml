@@ -20,7 +20,7 @@
 - name: configure letsencrypt config for misc
   template:
     src: letsencrypt.conf.j2
-    dest: /etc/nginx/snippets/letsencrypt.conf
+    dest: /etc/nginx/snippets/letsencrypt_ssl.conf
     mode: 0664
   vars:
     cert_id: "{{ letsencrypt_dir }}"
@@ -30,7 +30,7 @@
 - name: configure letsencrypt config for foip_me
   template:
     src: letsencrypt.conf.j2
-    dest: /etc/nginx/snippets/foipme.conf
+    dest: /etc/nginx/snippets/foipme_ssl.conf
     mode: 0664
   when: "'archipelago' in inventory_hostname"
   vars:
@@ -41,7 +41,7 @@
 - name: configure letsencrypt config for istic
   template:
     src: letsencrypt.conf.j2
-    dest: /etc/nginx/snippets/istic.conf
+    dest: /etc/nginx/snippets/istic_ssl.conf
     mode: 0664
   when: "'archipelago' in inventory_hostname"
   vars:

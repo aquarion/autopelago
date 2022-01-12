@@ -16,7 +16,7 @@ server {
 server {
     listen              443 ssl;
     server_name old.pdforums.larp.me;
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
   location    / {
     proxy_pass  http://container-pdforum;

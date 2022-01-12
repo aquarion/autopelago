@@ -19,7 +19,7 @@ server {
     root {{ media_home }};
 
 	include /etc/nginx/snippets/errors.conf;
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
 
     fancyindex on;              # Enable fancy indexes.

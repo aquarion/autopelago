@@ -13,7 +13,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name mechan.istic.net;
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
 
     error_log  /var/log/nginx/jenkins.error.log;

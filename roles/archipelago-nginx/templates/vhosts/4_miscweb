@@ -29,7 +29,7 @@ server {
     old.aquarionics.com panopticon.aquarionics.com
     www.deathuntodarkness.org
     ludoistic.com;
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
 
     error_log  /var/log/nginx/miscweb.error.log;
@@ -52,7 +52,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name *.istic.net;
-    include /etc/nginx/snippets/istic.conf;
+    include /etc/nginx/snippets/istic_ssl.conf;
 
 
     error_log  /var/log/nginx/istic.error.log;
@@ -110,7 +110,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name *.foip.me;
-    include /etc/nginx/snippets/foipme.conf;
+    include /etc/nginx/snippets/foipme_ssl.conf;
 
   location    / {
     proxy_pass  http://container-php;

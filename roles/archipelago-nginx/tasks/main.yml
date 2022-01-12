@@ -9,6 +9,19 @@
   tags:
     - streamsite
 
+- name: configure ssl config snippits
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/snippets/{{ item | basename }}"
+    mode: 0644
+  with_fileglob:
+   - templates/ssl/*
+  notify:
+   - restart nginx
+  tags:
+   - streamsite
+   - nginx
+
 - name: configure nginx sites as available
   template:
     src: "{{ item }}"

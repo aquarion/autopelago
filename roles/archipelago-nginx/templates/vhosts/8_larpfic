@@ -32,7 +32,7 @@ server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
  	return 301 https://larpfic.com$request_uri;
-	include /etc/nginx/snippets/letsencrypt.conf;
+	include /etc/nginx/snippets/letsencrypt_ssl.conf;
  	include /etc/nginx/snippets/errors.conf;
 }
 
@@ -42,7 +42,7 @@ server {
     access_log /var/log/nginx/larpfic_stage.access.log;
 	listen 443 ssl;
 	listen [::]:443 ssl;
-	include /etc/nginx/snippets/letsencrypt.conf;
+	include /etc/nginx/snippets/letsencrypt_ssl.conf;
  	include /etc/nginx/snippets/errors.conf;
 	location / {
 		proxy_pass http://larpfic_staging;
@@ -53,7 +53,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name larpfic.com;
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
 
     error_log  /var/log/nginx/larpfic_prod.error.log;

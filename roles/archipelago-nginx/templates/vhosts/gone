@@ -33,7 +33,7 @@ server {
     server_name
         www.larp.me larp.me api.larp.me wiki.larp.me fjord.water.gkhs.net locations.larp.me skute.me  wf.kabbal.istic.net wiki.aquarionics.com;
 
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
     include /etc/nginx/snippets/errors.conf;
     return 410;
@@ -46,7 +46,7 @@ server {
         bless.ojaqs.foip.me sands.foip.me sevenmirrors.foip.me
         ;
 
-    include /etc/nginx/snippets/foipme.conf;
+    include /etc/nginx/snippets/foipme_ssl.conf;
 
     include /etc/nginx/snippets/errors.conf;
     return 410;
@@ -58,7 +58,7 @@ server {
     server_name
         ark.ludo.istic.net atoll.istic.net errorz.istic.net feathers.casu.istic.net hol.istic.net kabbal.istic.net kick.istic.net log.istic.net mc.ludo.istic.net mimir.cabal.istic.net odyshirt.istic.net pd.casu.istic.net wildfeathers.casu.istic.net;
 
-    include /etc/nginx/snippets/istic.conf;
+    include /etc/nginx/snippets/istic_ssl.conf;
 
     include /etc/nginx/snippets/errors.conf;
     return 410;

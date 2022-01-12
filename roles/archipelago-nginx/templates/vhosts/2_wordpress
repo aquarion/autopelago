@@ -45,7 +45,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
     error_log  /var/log/nginx/wordpress.error.log;
     access_log /var/log/nginx/wordpress.access.log;
