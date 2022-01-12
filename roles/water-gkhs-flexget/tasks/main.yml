@@ -1,4 +1,16 @@
 
+- name: Install Flexget Packages
+  apt:
+    state: present
+    pkg:
+     - python3
+     - virtualenv
+     - acl
+  tags:
+    - flexget
+    - media
+
+
 - include: media-user-tasks.yml
   become: yes
   become_user: plex

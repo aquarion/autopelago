@@ -48,6 +48,7 @@
      - etckeeper
      - fail2ban
      - dnsutils
+     - acl
 
 - name: Install Debian System Packages
   when: ansible_distribution == 'Debian'
