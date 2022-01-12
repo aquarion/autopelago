@@ -7,6 +7,7 @@ archipelago
 
 [archipelago]
 archipelago.water.gkhs.net hostname=archipelago.water.gkhs.net
+firth.water.gkhs.net hostname=firth.water.gkhs.net ansible_host=46.4.84.119
 
 [cenote]
 cenote.water.gkhs.net hostname=cenote.water.gkhs.net

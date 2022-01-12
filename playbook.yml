@@ -21,7 +21,7 @@
   roles:
     - { role: water-gkhs-nginx, tags: nginx }
 
-- hosts: archipelago.water.gkhs.net
+- hosts: archipelago
   become: yes
   roles:
     - archipelago-packages
@@ -60,6 +60,6 @@
      - name: homebridge-tplink-smarthome
 
 # Non-authenticated tasks
-- hosts: all:!localactions
-  roles:
-   - aquarion-bootstrap
+#- hosts: all:!localactions
+#  roles:
+#   - aquarion-bootstrap
