@@ -27,6 +27,7 @@
     - archipelago-packages
     - archipelago-users
     - archipelago-exim
+    - archipelago-docker
     - plexupdate
     - { role: aws-aqcom-dns, become: no, connection: local }
     - { role: aws-pdforums , tags: pdforum }
@@ -34,15 +35,6 @@
     - water-gkhs-filebot
     - water-gkhs-flexget
     - b2-backup
-  tasks:
-    - name: Add users to docker group
-      user:
-        name: "{{ item }}"
-        groups: docker
-        append: yes
-      with_items:
-       - aquarion
-       - ccooke
 
 - hosts: caisson
   become: yes
