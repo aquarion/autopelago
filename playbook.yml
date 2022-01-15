@@ -35,6 +35,7 @@
     - water-gkhs-filebot
     - water-gkhs-flexget
     - b2-backup
+    - { role: elastic.elasticsearch, tags: elastic }
 
 - hosts: caisson
   become: yes
