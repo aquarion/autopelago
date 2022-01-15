@@ -29,7 +29,7 @@
     - archipelago-exim
     - archipelago-docker
     - plexupdate
-    - { role: aws-aqcom-dns, become: no, connection: local }
+    - { role: aws-route53, become: no, connection: local }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
     - water-gkhs-filebot
