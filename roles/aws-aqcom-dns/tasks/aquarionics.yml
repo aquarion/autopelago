@@ -10,7 +10,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "86400"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
 
 - name: aquarionics.com. - AAAA
   route53:
@@ -290,7 +290,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "86400"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
 
 
 - name: plex. - A
@@ -303,7 +303,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "86400"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
 
 
 - name: old.aquarionics.com. - A
@@ -316,7 +316,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "86400"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
 
 
 
@@ -355,7 +355,7 @@
       ttl: "86400"
       zone: "aquarionics.com"
       record: "wiki.aquarionics.com."
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       command: "delete"
 
 
@@ -396,7 +396,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
 
 - name: wywo.aquarionics.com. - A
   route53:
@@ -408,7 +408,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
 
 
 - name: vis.aquarionics.com. - A
@@ -421,7 +421,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
   tags:
       - streamsite
 
@@ -435,4 +435,4 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'

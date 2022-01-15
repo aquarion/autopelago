@@ -10,7 +10,9 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
+  tags:
+    - warehouse_basement
 
 
 
@@ -25,6 +27,9 @@
       type: "NS"
       ttl: "172800"
       value: ns-983.awsdns-58.net.,ns-1661.awsdns-15.co.uk.,ns-1161.awsdns-17.org.,ns-271.awsdns-33.com.
+  tags:
+    - warehouse_basement
+
 
 
 #- name: warehousebasement.com. - SOA
@@ -52,4 +57,7 @@
       type: "CNAME"
       ttl: "300"
       value: 'warehousebasement.com'
+  tags:
+    - warehouse_basement
+
 

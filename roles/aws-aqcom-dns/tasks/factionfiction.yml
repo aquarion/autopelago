@@ -10,7 +10,7 @@
       aws_secret_key: '{{ aqcom_aws_secret }}'
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
 
 
 

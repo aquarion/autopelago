@@ -30,7 +30,7 @@
       record: "larpfic.com."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ aqcom_aws_key }}'
       aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
@@ -44,7 +44,7 @@
       record: "www.larpfic.com."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ aqcom_aws_key }}'
       aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
@@ -60,7 +60,7 @@
       record: "lrpfic.com."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ aqcom_aws_key }}'
       aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:
@@ -74,7 +74,7 @@
       record: "www.lrpfic.com."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ aqcom_aws_key }}'
       aws_secret_key: '{{ aqcom_aws_secret }}'
   tags:

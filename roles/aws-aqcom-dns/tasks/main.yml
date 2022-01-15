@@ -74,3 +74,19 @@
   tags:
     - aws
     - bromioscreations
+
+- include: istic.yml
+  tags:
+    - aws
+    - istic_net
+
+- include: nanocountdown.yml
+  tags:
+    - aws
+    - nanocountdown
+
+- include: dagon_church.yml
+  tags:
+    - aws
+    - dagon_church
+

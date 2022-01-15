@@ -36,7 +36,7 @@
       record: "carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -50,7 +50,7 @@
       record: "carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -65,7 +65,7 @@
       record: "carcosadreams.uk."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -80,7 +80,7 @@
       record: "www.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -96,7 +96,7 @@
       record: "www.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -111,7 +111,7 @@
       record: "www.carcosadreams.uk."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -126,7 +126,7 @@
       record: "*.carcosadreams.co.uk."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -141,7 +141,7 @@
       record: "*.carcosadreams.com."
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
@@ -155,7 +155,7 @@
       record: "{{ item }}"
       type: "A"
       ttl: "300"
-      value: '{{ archipelago_ip }}'
+      value: '{{ loadbalancer_ip }}'
       aws_access_key: '{{ istic_aws_key }}'
       aws_secret_key: '{{ istic_aws_secret }}'
   tags:
