@@ -1,12 +1,16 @@
 [archipelago_cenote:children]
 archipelago
 cenote
+firth
 
 [nginx_hosts:children]
 archipelago
+firth
 
 [archipelago]
 archipelago.water.gkhs.net hostname=archipelago.water.gkhs.net
+
+[firth]
 firth.water.gkhs.net hostname=firth.water.gkhs.net ansible_host=46.4.84.119
 
 [cenote]
