@@ -43,7 +43,7 @@
     - archipelago-exim
     - archipelago-docker
     - plexupdate
-    - { role: archipelago-nginx, tags: nginx }
+    - { role: firth-nginx, tags: nginx }
     - water-gkhs-filebot
     - water-gkhs-flexget
     - b2-backup

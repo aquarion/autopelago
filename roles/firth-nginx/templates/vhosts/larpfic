@@ -18,8 +18,8 @@ upstream larpfic_staging {
 }
 
 server {
-  listen      80;
-  listen [::]:80;
+  listen      80 proxy_protocol;
+  listen [::]:80 proxy_protocol;
   server_name www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
   return 301 https://larpfic.com/$request_uri;
   include /etc/nginx/snippets/errors.conf;
@@ -29,8 +29,8 @@ server {
 	server_name www.larpfic.com www.lrpfic.com lrpfic.com;
     error_log  /var/log/nginx/larpfic_prod.error.log;
     access_log /var/log/nginx/larpfic_prod.access.log;
-	listen 443 ssl;
-	listen [::]:443 ssl;
+	listen 443 ssl proxy_protocol;
+	listen [::]:443 ssl proxy_protocol;
  	return 301 https://larpfic.com$request_uri;
 	include /etc/nginx/snippets/letsencrypt_ssl.conf;
  	include /etc/nginx/snippets/errors.conf;
@@ -40,8 +40,8 @@ server {
 	server_name stage.larpfic.com;
     error_log  /var/log/nginx/larpfic_stage.error.log;
     access_log /var/log/nginx/larpfic_stage.access.log;
-	listen 443 ssl;
-	listen [::]:443 ssl;
+	listen 443 ssl proxy_protocol;
+	listen [::]:443 ssl proxy_protocol;
 	include /etc/nginx/snippets/letsencrypt_ssl.conf;
  	include /etc/nginx/snippets/errors.conf;
 	location / {
@@ -50,8 +50,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name larpfic.com;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 

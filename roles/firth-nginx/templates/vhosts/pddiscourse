@@ -1,16 +1,16 @@
 upstream container-pddiscourse { server 127.0.0.1:7080; }
 
 server {
-  listen 80;
-  listen [::]:80;
+  listen 80 proxy_protocol;
+  listen [::]:80 proxy_protocol;
   server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
   return 301 https://$host$request_uri;
 }
 
 # SSL
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 

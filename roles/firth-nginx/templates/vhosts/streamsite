@@ -1,6 +1,6 @@
 server {
-  listen      80;
-  listen [::]:80;
+  listen      80 proxy_protocol;
+  listen [::]:80 proxy_protocol;
   server_name vis.aquarionics.com;
 
   return 301 https://$host$request_uri;
@@ -13,8 +13,8 @@ server {
     error_log  /var/log/nginx/vis.error.log;
     access_log /var/log/nginx/vis.access.log;
 
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
 
     root {{ media_home }};
 

@@ -1,8 +1,8 @@
 upstream container-carcosadreams { server 127.0.0.1:3080; }
 
 server {
-    listen      80;
-    listen [::]:80;
+    listen      80 proxy_protocol;
+    listen [::]:80 proxy_protocol;
     server_name www.carcosadreams.com *.carcosadreams.com;
     return 301 https://$host$request_uri;
     include /etc/nginx/snippets/errors.conf;
@@ -11,8 +11,8 @@ server {
 
 
 server {
-    listen              443 ssl;
-    listen              80;
+    listen              443 ssl proxy_protocol;
+    listen              80 proxy_protocol;
     server_name www.carcosadreams.co.uk carcosadreams.com carcosadreams.co.uk;
     return 301 $scheme://www.carcosadreams.com$request_uri;
 
@@ -20,8 +20,8 @@ server {
 }
 
 server {
-    listen              443 ssl;
-    listen              80;
+    listen              443 ssl proxy_protocol;
+    listen              80 proxy_protocol;
     server_name sisyphus.carcosadreams.com;
     return 301 https://the-sisyphus.carcosadreams.com$request_uri;
 
@@ -29,16 +29,16 @@ server {
 }
 
 server {
-    listen              443 ssl;
-    listen              80;
+    listen              443 ssl proxy_protocol;
+    listen              80 proxy_protocol;
     server_name *.carcosadreams.co.uk;
     return 301 $scheme://www.carcosadreams.com;
     include /etc/nginx/snippets/carcosadreams_ssl.conf;
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name www.carcosadreams.com *.carcosadreams.com;
     include /etc/nginx/snippets/carcosadreams_ssl.conf;
 

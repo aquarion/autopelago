@@ -1,8 +1,8 @@
 upstream container-jenkins { server 127.0.0.1:6081; }
 server {
 
-  listen      80;
-  listen [::]:80;
+  listen      80 proxy_protocol;
+  listen [::]:80 proxy_protocol;
   server_name mechan.istic.net;
   return 301 https://$host$request_uri;
   include /etc/nginx/snippets/errors.conf;
@@ -10,8 +10,8 @@ server {
 
 # SSL
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name mechan.istic.net;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 

@@ -1,7 +1,7 @@
 upstream container-php { server 127.0.0.1:4080; }
 server {
-  listen      80;
-  listen [::]:80;
+  listen      80 proxy_protocol;
+  listen [::]:80 proxy_protocol;
   server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
   warehousebasement.com
   dagon.church live.dagon.church wiki.dagon.church
@@ -19,8 +19,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
     warehousebasement.com
     dagon.church live.dagon.church wiki.dagon.church
@@ -44,8 +44,8 @@ server {
 
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name *.istic.net;
     include /etc/nginx/snippets/istic_ssl.conf;
 
@@ -61,8 +61,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name *.bromioscreations.com bromioscreations.com;
     include /etc/nginx/snippets/bromioscreations_ssl.conf;
 
@@ -74,8 +74,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name *.hubris.house hubris.house;
     include /etc/nginx/snippets/hubris_ssl.conf;
 
@@ -87,8 +87,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
     server_name *.foip.me;
     include /etc/nginx/snippets/foipme_ssl.conf;
 
@@ -100,15 +100,15 @@ server {
 }
 
 server {
-    listen              443 ssl;
-    listen              80;
+    listen              443 ssl proxy_protocol;
+    listen              80 proxy_protocol;
     server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
     return 301 $scheme://istic.co$uri;
 }
 
 server {
-    listen              443 ssl;
-    listen              80;
+    listen              443 ssl proxy_protocol;
+    listen              80 proxy_protocol;
     server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
     return 301 $scheme://ludoistic.com;
 }
