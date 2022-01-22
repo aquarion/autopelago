@@ -1,0 +1,114 @@
+upstream container-php { server 127.0.0.1:4080; }
+server {
+  listen      80;
+  listen [::]:80;
+  server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
+  warehousebasement.com
+  dagon.church live.dagon.church wiki.dagon.church
+  archipelago.water.gkhs.net
+  istic.co
+  old.aquarionics.com panopticon.aquarionics.com
+  www.deathuntodarkness.org
+  ludoistic.com
+  *.istic.net
+  *.foip.me
+  *.bromioscreations.com
+  *.hubris.house;
+
+  return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
+    warehousebasement.com
+    dagon.church live.dagon.church wiki.dagon.church
+    archipelago.water.gkhs.net
+    istic.co
+    old.aquarionics.com panopticon.aquarionics.com
+    www.deathuntodarkness.org
+    ludoistic.com;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+
+
+    error_log  /var/log/nginx/miscweb.error.log;
+    access_log /var/log/nginx/miscweb.access.log;
+
+  location    / {
+    proxy_pass  http://container-php;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name *.istic.net;
+    include /etc/nginx/snippets/istic_ssl.conf;
+
+
+    error_log  /var/log/nginx/istic.error.log;
+    access_log /var/log/nginx/istic.access.log;
+
+  location    / {
+    proxy_pass  http://container-php;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name *.bromioscreations.com bromioscreations.com;
+    include /etc/nginx/snippets/bromioscreations_ssl.conf;
+
+  location    / {
+    proxy_pass  http://container-php;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name *.hubris.house hubris.house;
+    include /etc/nginx/snippets/hubris_ssl.conf;
+
+  location    / {
+    proxy_pass  http://container-php;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name *.foip.me;
+    include /etc/nginx/snippets/foipme_ssl.conf;
+
+  location    / {
+    proxy_pass  http://container-php;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+    listen              443 ssl;
+    listen              80;
+    server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
+    return 301 $scheme://istic.co$uri;
+}
+
+server {
+    listen              443 ssl;
+    listen              80;
+    server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
+    return 301 $scheme://ludoistic.com;
+}

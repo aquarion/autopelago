@@ -1,0 +1,119 @@
+upstream larpfic_rails {
+  # fail_timeout=0 means we always retry an upstream even if it failed
+  # to return a good HTTP response (in case the unicorn master nukes a
+  # single worker for timing out).
+
+  # for UNIX domain socket setups:
+  # server unix:/path/to/.unicorn.sock fail_timeout=0;
+
+  # for TCP setups, point these to your backend servers
+  server localhost:3000 fail_timeout=0;
+  # server 192.168.0.7:8080 fail_timeout=0;
+  # server 192.168.0.8:8080 fail_timeout=0;
+  # server 192.168.0.9:8080 fail_timeout=0;
+}
+
+upstream larpfic_staging {
+  server localhost:3001 fail_timeout=0;
+}
+
+server {
+  listen      80;
+  listen [::]:80;
+  server_name www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
+  return 301 https://larpfic.com/$request_uri;
+  include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+	server_name www.larpfic.com www.lrpfic.com lrpfic.com;
+    error_log  /var/log/nginx/larpfic_prod.error.log;
+    access_log /var/log/nginx/larpfic_prod.access.log;
+	listen 443 ssl;
+	listen [::]:443 ssl;
+ 	return 301 https://larpfic.com$request_uri;
+	include /etc/nginx/snippets/letsencrypt_ssl.conf;
+ 	include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+	server_name stage.larpfic.com;
+    error_log  /var/log/nginx/larpfic_stage.error.log;
+    access_log /var/log/nginx/larpfic_stage.access.log;
+	listen 443 ssl;
+	listen [::]:443 ssl;
+	include /etc/nginx/snippets/letsencrypt_ssl.conf;
+ 	include /etc/nginx/snippets/errors.conf;
+	location / {
+		proxy_pass http://larpfic_staging;
+	}
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name larpfic.com;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+
+
+    error_log  /var/log/nginx/larpfic_prod.error.log;
+    access_log /var/log/nginx/larpfic_prod.access.log;
+
+  client_max_body_size 4G;
+  server_name _;
+
+  # ~2 seconds is often enough for most folks to parse HTML/CSS and
+  # retrieve needed images/icons/frames, connections are cheap in
+  # nginx so increasing this is generally safe...
+  keepalive_timeout 5;
+
+  # path for static files
+  root /home/larpfic/code/otwarchive-staging/public;
+
+  # Prefer to serve static files directly from nginx to avoid unnecessary
+  # data copies from the application server.
+  #
+  # try_files directive appeared in in nginx 0.7.27 and has stabilized
+  # over time.  Older versions of nginx (e.g. 0.6.x) requires
+  # "if (!-f $request_filename)" which was less efficient:
+  # https://bogomips.org/unicorn.git/tree/examples/nginx.conf?id=v3.3.1#n127
+  try_files $uri/index.html $uri.html $uri @app;
+
+  location @app {
+    # an HTTP header important enough to have its own Wikipedia entry:
+    #   http://en.wikipedia.org/wiki/X-Forwarded-For
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    # enable this if you forward HTTPS traffic to unicorn,
+    # this helps Rack set the proper URL scheme for doing redirects:
+    # proxy_set_header X-Forwarded-Proto $scheme;
+
+    # pass the Host: header from the client right along so redirects
+    # can be set properly within the Rack application
+    proxy_set_header Host $http_host;
+
+    # we don't want nginx trying to do something clever with
+    # redirects, we set the Host: header above already.
+    proxy_redirect off;
+
+    # It's also safe to set if you're using only serving fast clients
+    # with unicorn + nginx, but not slow clients.  You normally want
+    # nginx to buffer responses to slow clients, even with Rails 3.1
+    # streaming because otherwise a slow client can become a bottleneck
+    # of unicorn.
+    #
+    # The Rack application may also set "X-Accel-Buffering (yes|no)"
+    # in the response headers do disable/enable buffering on a
+    # per-response basis.
+    # proxy_buffering off;
+
+    proxy_pass http://larpfic_rails;
+  }
+
+  include /etc/nginx/snippets/errors.conf;
+  # Rails error pages
+  #error_page 500 502 503 504 /500.html;
+  #location = /500.html {
+  #  root /path/to/app/current/public;
+  #}
+}
