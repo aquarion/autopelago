@@ -34,6 +34,7 @@
   tags:
    - streamsite
    - nginx
+   - nginx_sites
 
 - name: Configure nginx sites as enabled
   file:
