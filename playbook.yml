@@ -28,12 +28,9 @@
     - archipelago-users
     - archipelago-exim
     - archipelago-docker
-    - plexupdate
     - { role: aws-route53, become: no, connection: local }
     - { role: aws-pdforums , tags: pdforum }
     - { role: archipelago-nginx, tags: nginx }
-    - water-gkhs-filebot
-    - water-gkhs-flexget
 
 - hosts: firth
   become: yes
