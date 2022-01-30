@@ -46,7 +46,7 @@ server {
     }
 
     location /_libris/ {
-        alias /mnt/rpg/Systems/;
+        alias /home/library/RPG/Systems/;
         gzip_static on;
     }
 
