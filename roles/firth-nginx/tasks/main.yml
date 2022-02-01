@@ -22,6 +22,33 @@
    - streamsite
    - nginx
 
+- name: configure config overrides
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/{{ item | basename }}"
+    mode: 0644
+  with_fileglob:
+   - templates/nginx_root/*
+  notify:
+   - restart nginx
+  tags:
+   - streamsite
+   - nginx
+
+- name: configure conf.d items
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/conf.d/{{ item | basename }}"
+    mode: 0644
+  with_fileglob:
+   - templates/nginx_confd/*
+  notify:
+   - restart nginx
+  tags:
+   - streamsite
+   - nginx
+
+
 - name: configure nginx sites as available
   template:
     src: "{{ item }}"
