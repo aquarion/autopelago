@@ -1,4 +1,5 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 # Remove stray files from downloaded torrents
 

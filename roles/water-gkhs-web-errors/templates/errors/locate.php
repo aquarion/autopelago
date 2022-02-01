@@ -1,4 +1,5 @@
 <?PHP
+# {{ ansible_managed }}
 
 $purl = parse_url($_SERVER['REQUEST_URI']);
 

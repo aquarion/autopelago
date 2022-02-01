@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 upstream container-jenkins { server 127.0.0.1:6081; }
 server {
 

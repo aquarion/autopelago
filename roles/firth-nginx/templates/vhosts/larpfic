@@ -1,4 +1,5 @@
 upstream larpfic_rails {
+# {{ ansible_managed }}
   # fail_timeout=0 means we always retry an upstream even if it failed
   # to return a good HTTP response (in case the unicorn master nukes a
   # single worker for timing out).

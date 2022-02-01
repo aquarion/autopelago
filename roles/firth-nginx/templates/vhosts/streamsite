@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 server {
   listen      80 proxy_protocol;
   listen [::]:80 proxy_protocol;

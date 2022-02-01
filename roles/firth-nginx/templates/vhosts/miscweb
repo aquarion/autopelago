@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 upstream container-php { server 127.0.0.1:4080; }
 server {
   listen      80 proxy_protocol;

@@ -1,4 +1,5 @@
 #!/bin/bash +x
+# {{ ansible_managed }}
 #PASSWORD=$1 # Now using .my.cnf for password
 LOC={{ mysql_backup_location }}/$1
 

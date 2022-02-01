@@ -1,4 +1,5 @@
 #!/bin/sh
+# {{ ansible_managed }}
 
 {% if verbose is not defined %}
 {% set verbose = "" %}

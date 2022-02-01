@@ -1,12 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: MIT
-
-## Copyright (C) 2009 Przemyslaw Pawelczyk <przemoc@gmail.com>
-##
-## This script is licensed under the terms of the MIT license.
-## https://opensource.org/licenses/MIT
-#
-# Lockable script boilerplate
+# {{ ansible_managed }}
 
 ### HEADER ###
 

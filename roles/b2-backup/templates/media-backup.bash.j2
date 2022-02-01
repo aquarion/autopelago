@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# {{ ansible_managed }}
 exec 9>/var/lock/media-backup
 if ! flock -n 9  ; then
  echo "B2 media backup is still running";

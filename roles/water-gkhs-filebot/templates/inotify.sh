@@ -1,4 +1,5 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 
 LOCKFILE="/var/lock/`basename $0`"

@@ -1,4 +1,5 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 MEDIAHOME="{{ media_home }}"
 

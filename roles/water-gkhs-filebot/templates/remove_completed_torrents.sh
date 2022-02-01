@@ -1,4 +1,5 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 # port, username, password
 #SERVER="localhost:9091 --auth user:pass"
