@@ -17,3 +17,6 @@ jobs:
       with:
         targets: |
             "playbook.yml"
+        override-deps: |
+          ansible==2.10
+          ansible-lint==4.*
