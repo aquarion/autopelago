@@ -20,3 +20,4 @@ jobs:
         override-deps: |
           ansible==2.10
           ansible-lint==4.*
+          rich>=10.0.0,<11.0.0
