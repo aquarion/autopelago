@@ -33,6 +33,7 @@
     - water-gkhs-filebot
     - water-gkhs-flexget
     - b2-backup
+    - github-cli
     - { role: aws-route53, become: no, connection: local }
     - { role: aws-pdforums , tags: pdforum }
     - { role: elastic.elasticsearch, tags: elastic }

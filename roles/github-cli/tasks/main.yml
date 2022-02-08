@@ -1,0 +1,35 @@
+---
+
+- name: Upload github gpg key
+  ansible.builtin.copy:
+    src: githubcli-archive-keyring.gpg
+    dest: /etc/apt/trusted.gpg.d/githubcli-archive-keyring.gpg
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - githubcli
+
+- name: Get DEB architecture
+  shell: dpkg --print-architecture
+  register: deb_architecture
+  tags:
+    - githubcli
+
+- name: Add specified repository into sources list
+  ansible.builtin.apt_repository:
+    repo: "deb [arch={{ deb_architecture.stdout }} signed-by=/etc/apt/trusted.gpg.d/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+    state: present
+  tags:
+    - githubcli
+
+
+- name: install gh
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - gh
+  tags:
+    - githubcli
