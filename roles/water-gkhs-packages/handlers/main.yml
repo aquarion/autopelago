@@ -2,3 +2,7 @@
 
 - name: restart fail2ban
   service: name=fail2ban state=restarted
+
+- name: sysctl
+  command: "sysctl -p"
+
