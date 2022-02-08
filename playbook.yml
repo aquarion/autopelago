@@ -21,29 +21,20 @@
   roles:
     - { role: water-gkhs-nginx, tags: nginx }
 
-- hosts: archipelago
-  become: yes
-  roles:
-    - archipelago-packages
-    - archipelago-users
-    - archipelago-exim
-    - archipelago-docker
-    - { role: aws-route53, become: no, connection: local }
-    - { role: aws-pdforums , tags: pdforum }
-    - { role: archipelago-nginx, tags: nginx }
-
 - hosts: firth
   become: yes
   roles:
-    - archipelago-packages
-    - archipelago-users
-    - archipelago-exim
-    - archipelago-docker
+    - firth-packages
+    - firth-users
+    - firth-exim
+    - firth-docker
     - plexupdate
     - { role: firth-nginx, tags: nginx }
     - water-gkhs-filebot
     - water-gkhs-flexget
     - b2-backup
+    - { role: aws-route53, become: no, connection: local }
+    - { role: aws-pdforums , tags: pdforum }
     - { role: elastic.elasticsearch, tags: elastic }
 
 - hosts: caisson
