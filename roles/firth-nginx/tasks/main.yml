@@ -75,6 +75,7 @@
    - restart nginx
   tags:
      - streamsite
+     - nginx_sites
 
 - name: Configure dead nginx sites as disabled
   file:
@@ -84,6 +85,9 @@
    - templates/deleted_vhosts/*
   notify:
    - restart nginx
+  tags:
+     - streamsite
+     - nginx_sites
 
 - name: Configure dead nginx sites as unavailable
   file:
@@ -93,6 +97,9 @@
    - templates/deleted_vhosts/*
   notify:
    - restart nginx
+  tags:
+     - streamsite
+     - nginx_sites
 
 - name: Streamsite Basic Auth
   htpasswd:
@@ -103,6 +110,7 @@
   loop: "{{ streamsite_users }}"
   tags:
     - streamsite
+    - nginx_sites
 
 
 - name: Configure nginx redirects
