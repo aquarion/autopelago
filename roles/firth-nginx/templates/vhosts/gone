@@ -3,7 +3,7 @@ server {
     listen      80;
     listen [::]:80;
     server_name
-        www.larp.me larp.me api.larp.me wiki.larp.me fjord.water.gkhs.net locations.larp.me skute.me  wf.kabbal.istic.net wiki.aquarionics.com;
+        www.larp.me larp.me api.larp.me wiki.larp.me fjord.water.gkhs.net locations.larp.me skute.me  wf.kabbal.istic.net;
     include /etc/nginx/snippets/errors.conf;
     return 410;
 }
@@ -32,7 +32,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name
-        www.larp.me larp.me api.larp.me wiki.larp.me fjord.water.gkhs.net locations.larp.me skute.me  wf.kabbal.istic.net wiki.aquarionics.com;
+        www.larp.me larp.me api.larp.me wiki.larp.me fjord.water.gkhs.net locations.larp.me skute.me  wf.kabbal.istic.net;
 
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 

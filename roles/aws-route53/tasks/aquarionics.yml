@@ -347,19 +347,6 @@
       value: 'domains.tumblr.com'
 
 
-- name: wiki.aquarionics.com. - A
-  route53:
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "86400"
-      zone: "aquarionics.com"
-      record: "wiki.aquarionics.com."
-      value: '{{ loadbalancer_ip }}'
-      command: "delete"
-
-
-
 - name: wiki.aquarionics.com. - AAAA
   route53:
       overwrite: true
@@ -376,7 +363,7 @@
 - name: wiki.aquarionics.com. - CNAME
   route53:
       overwrite: true
-      command: "create"
+      command: "delete"
       zone: "aquarionics.com"
       record: "wiki.aquarionics.com."
       aws_access_key: '{{ aqcom_aws_key }}'
@@ -384,6 +371,17 @@
       type: "CNAME"
       ttl: "86400"
       value: 'aquarion.github.io'
+
+- name: wiki.aquarionics.com. - A
+  route53:
+      aws_access_key: '{{ aqcom_aws_key }}'
+      aws_secret_key: '{{ aqcom_aws_secret }}'
+      type: "A"
+      ttl: "86400"
+      zone: "aquarionics.com"
+      record: "wiki.aquarionics.com."
+      value: '{{ loadbalancer_ip }}'
+      command: "create"
 
 
 - name: www.aquarionics.com. - A

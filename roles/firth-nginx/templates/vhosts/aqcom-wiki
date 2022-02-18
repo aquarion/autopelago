@@ -1,0 +1,25 @@
+# {{ ansible_managed }}
+upstream docker-gollum { server 127.0.0.1:7280; }
+server {
+  listen      80;
+  listen [::]:80;
+  server_name wiki.aquarionics.com;
+  return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name wiki.aquarionics.com;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+
+    error_log  /var/log/nginx/aqcom-wiki.error.log;
+    access_log /var/log/nginx/aqcom-wiki.access.log;
+
+  location    / {
+    proxy_pass  http://docker-gollum;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
