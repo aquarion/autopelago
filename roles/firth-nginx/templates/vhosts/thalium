@@ -8,7 +8,7 @@ upstream thalium_backend {
 
 server {
 	server_name thalium.aquarionics.com;
-	listen 80 proxy_protocol;
+	listen 80;
 	return 301 https://$host$request_uri;
 }
 

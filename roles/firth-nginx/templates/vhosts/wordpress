@@ -3,14 +3,14 @@ upstream container-wordpress { server 127.0.0.1:2080; }
 
 server {
     listen              443 ssl proxy_protocol;
-    listen              80 proxy_protocol;
+    listen              80;
     server_name herodiaries.blogs.water.gkhs.net;
     return 301 $scheme://herodiaries.foip.me;
 }
 
 server {
-    listen      80 proxy_protocol;
-    listen [::]:80 proxy_protocol;
+    listen      80;
+    listen [::]:80;
     server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
     return 301 https://$host$request_uri;
     include /etc/nginx/snippets/errors.conf;
@@ -19,13 +19,13 @@ server {
 
 server {
     listen              443 ssl proxy_protocol;
-    listen              80 proxy_protocol;
+    listen              80;
     server_name herodiaries.blogs.water.gkhs.net
     return 301 $scheme://herodiaries.foip.me;
 }
 
 server {
-    listen              80 proxy_protocol;
+    listen              80;
     server_name live.aquarionics.com;
 
     location    / {

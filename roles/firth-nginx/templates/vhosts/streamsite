@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 server {
-  listen      80 proxy_protocol;
-  listen [::]:80 proxy_protocol;
+  listen      80;
+  listen [::]:80;
   server_name vis.aquarionics.com;
 
   return 301 https://$host$request_uri;

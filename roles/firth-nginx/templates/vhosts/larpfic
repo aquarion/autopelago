@@ -19,8 +19,8 @@ upstream larpfic_staging {
 }
 
 server {
-  listen      80 proxy_protocol;
-  listen [::]:80 proxy_protocol;
+  listen      80;
+  listen [::]:80;
   server_name www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
   return 301 https://larpfic.com/$request_uri;
   include /etc/nginx/snippets/errors.conf;

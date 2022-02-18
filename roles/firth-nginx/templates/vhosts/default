@@ -1,8 +1,8 @@
 # {{ ansible_managed }}
 server {
 
-    listen 80 proxy_protocol default_server;
-    listen [::]:80 proxy_protocol default_server;
+    listen 80 default_server;
+    listen [::]:80 default_server;
     charset UTF-8;
 
     listen 443 ssl proxy_protocol default_server;

@@ -1,8 +1,8 @@
 # {{ ansible_managed }}
 upstream container-php { server 127.0.0.1:4080; }
 server {
-  listen      80 proxy_protocol;
-  listen [::]:80 proxy_protocol;
+  listen      80;
+  listen [::]:80;
   server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
   warehousebasement.com
   dagon.church live.dagon.church wiki.dagon.church
@@ -102,14 +102,14 @@ server {
 
 server {
     listen              443 ssl proxy_protocol;
-    listen              80 proxy_protocol;
+    listen              80;
     server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
     return 301 $scheme://istic.co$uri;
 }
 
 server {
     listen              443 ssl proxy_protocol;
-    listen              80 proxy_protocol;
+    listen              80;
     server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
     return 301 $scheme://ludoistic.com;
 }

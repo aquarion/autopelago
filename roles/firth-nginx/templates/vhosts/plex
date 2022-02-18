@@ -11,7 +11,7 @@ upstream plex_backend {
 }
 
 server {
-	listen 80 proxy_protocol;
+	listen 80;
 	#Enabling http2 can cause some issues with some devices, see #29 - Disable it if you experience issues
 	listen 443 ssl proxy_protocol http2; #http2 can provide a substantial improvement for streaming: https://blog.cloudflare.com/introducing-http2/
 	server_name {{ plex_domain }};
