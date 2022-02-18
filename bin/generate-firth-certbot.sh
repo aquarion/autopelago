@@ -40,6 +40,7 @@ AWS_PROFILE=istic-r53 sudo -E certbot -n certonly --expand --cert-name carcosadr
 sudo certbot certonly -n --expand --dns-route53 --cert-name bromioscreations.com -d *.bromioscreations.com
 sudo certbot certonly -n --expand --dns-route53 --cert-name foip.me -d *.foip.me
 sudo certbot certonly -n --expand --dns-route53 --cert-name hubris.house -d hubris.house -d *.hubris.house
+sudo certbot certonly -n --expand --nginx --cert-name forums.profounddecisions.co.uk -d forums.profounddecisions.co.uk 
 
 sudo chown -R root:certbot_access /etc/letsencrypt
 sudo chmod g+rx /etc/letsencrypt
