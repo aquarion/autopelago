@@ -17,12 +17,18 @@
 
 
 - name: Add Aquarion key
-  authorized_key: user=aquarion key={{ lookup('file', 'files/aquarion.keys') }}
+  authorized_key:
+    user: aquarion
+    key: "{{ lookup('file', 'files/aquarion.keys') }}"
+    exclusive: true
   tags:
     - users
 
 - name: Add ccooke key
-  authorized_key: user=ccooke key="{{ lookup('file', 'files/ccooke.keys') }}"
+  authorized_key:
+    user: ccooke
+    key: "{{ lookup('file', 'files/ccooke.keys') }}"
+    exclusive: true
   tags:
     - users
 
