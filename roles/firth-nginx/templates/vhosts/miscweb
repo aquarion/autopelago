@@ -6,7 +6,7 @@ server {
   server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
   warehousebasement.com
   dagon.church live.dagon.church wiki.dagon.church
-  archipelago.water.gkhs.net
+  firth.water.gkhs.net
   istic.co
   old.aquarionics.com panopticon.aquarionics.com
   www.deathuntodarkness.org
@@ -25,7 +25,7 @@ server {
     server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
     warehousebasement.com
     dagon.church live.dagon.church wiki.dagon.church
-    archipelago.water.gkhs.net
+    firth.water.gkhs.net
     istic.co
     old.aquarionics.com panopticon.aquarionics.com
     www.deathuntodarkness.org
@@ -43,6 +43,22 @@ server {
   include /etc/nginx/snippets/errors.conf;
 }
 
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name firth.water.gkhs.net;
+    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+
+
+    error_log  /var/log/nginx/miscweb.error.log;
+    access_log /var/log/nginx/miscweb.access.log;
+
+  location    / {
+    proxy_pass  http://container-php;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
 
 server {
     listen 443 ssl proxy_protocol;
