@@ -15,19 +15,13 @@
   tags:
     - users
 
-
-- name: Add Aquarion key
+- name: Add keys key
+  with_items:
+   - aquarion
+   - ccooke
   authorized_key:
-    user: aquarion
-    key: "{{ lookup('file', 'files/aquarion.keys') }}"
-    exclusive: true
-  tags:
-    - users
-
-- name: Add ccooke key
-  authorized_key:
-    user: ccooke
-    key: "{{ lookup('file', 'files/ccooke.keys') }}"
+    user: "{{ item }}"
+    key: "{{ lookup('file', 'files/{{ item }}.keys') }}"
     exclusive: true
   tags:
     - users
@@ -44,5 +38,16 @@
   with_items:
     - aquarion
     - ccooke
+  tags:
+    - users
+
+
+- name: Send admin emails to aquarion
+  ansible.builtin.copy:
+    content: 'nicholas+{{ inventory_hostname_short }}-cron@aquarionics.com'
+    dest: "~{{ item }}/.forward"
+  with_items:
+    - aquarion
+    - root
   tags:
     - users
