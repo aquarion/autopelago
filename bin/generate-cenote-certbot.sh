@@ -10,7 +10,6 @@ treasuretrap.co.uk,nfnc.treasuretrap.co.uk,www.treasuretrap.co.uk,\
 aquarion.aqxs.net,\
 emptytables.org,www.emptytables.org,\
 nanocountdown.com,www.nanocountdown.com,\
-wherearemyfuckingkeys.com,www.wherearemyfuckingkeys.com,\
 avenell.me.uk,www.avenell.me.uk,avenell.me,www.avenell.me,\
 www.gkhs.net,\
 aqxs.net,www.aqxs.net,\
