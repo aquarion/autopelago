@@ -21,7 +21,7 @@
    - ccooke
   authorized_key:
     user: "{{ item }}"
-    key: "{{ lookup('file', 'files/{{ item }}.keys') }}"
+    key: "{{ lookup('file', 'files/' ~  item ~ '.keys') }}"
     exclusive: true
   tags:
     - users
