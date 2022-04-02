@@ -76,6 +76,24 @@ server {
   include /etc/nginx/snippets/errors.conf;
 }
 
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.com nicholasavenell.net;
+    include /etc/nginx/snippets/nicholasavenell_ssl.conf;
+
+
+    error_log  /var/log/nginx/nicholasavenell.error.log;
+    access_log /var/log/nginx/nicholasavenell.access.log;
+
+  location    / {
+    proxy_pass  http://container-php;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
 server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
