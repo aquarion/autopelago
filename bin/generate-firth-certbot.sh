@@ -33,13 +33,13 @@ www.deathuntodarkness.org
 
 ## Istic wildcards
 
-AWS_PROFILE=istic-r53
+export AWS_PROFILE=istic-r53
 
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.net --dns-route53 -d *.istic.net
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name carcosadreams.com --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk
 
 ## AqCom Wildcards
-AWS_PROFILE=aqcom
+export AWS_PROFILE=aqcom
 
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name nicholasavenell.com -d *.nicholasavenell.com -d *.nicholasavenell.net -d nicholasavenell.com -d nicholasavenell.net
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name bromioscreations.com -d *.bromioscreations.com
