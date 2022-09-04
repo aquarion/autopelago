@@ -80,7 +80,7 @@ server {
 server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
-    server_name *.istic.dev;
+    server_name *.istic.dev istic.dev;
     include /etc/nginx/snippets/istic_dev_ssl.conf;
 
 
