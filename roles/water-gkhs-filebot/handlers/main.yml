@@ -9,7 +9,7 @@
 
 
 - name: Update APT
-  apt: update_cache=yes
+  apt: update_cache=yes cache_valid_time=21600
 
 
 

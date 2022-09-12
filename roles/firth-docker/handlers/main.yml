@@ -7,5 +7,5 @@
 
 - name: restart mysql
   service:
-    name: redis
-    state: mysql
+    name: mysql
+    state: restarted

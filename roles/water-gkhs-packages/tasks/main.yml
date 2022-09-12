@@ -46,6 +46,7 @@
     state: present
     pkg:
      - python3
+     - python3-pip
      - build-essential
      - libffi-dev
        #- libssl-dev
@@ -61,7 +62,6 @@
   apt:
     state: present
     pkg:
-     - python-pip
      - python3-cryptography
 
 - name: Install Ubuntu System packages
@@ -70,7 +70,6 @@
     state: present
     pkg:
      - software-properties-common
-     - python3-pip
      - python-is-python3
   tags:
     - certbot
