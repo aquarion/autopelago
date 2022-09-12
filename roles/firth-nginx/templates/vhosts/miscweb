@@ -15,7 +15,8 @@ server {
   *.istic.dev
   *.foip.me
   *.bromioscreations.com
-  *.hubris.house;
+  *.hubris.house
+  *.deadbadgerdesigns.co.uk;
 
   return 301 https://$host$request_uri;
 }
@@ -29,7 +30,8 @@ server {
     istic.co
     old.aquarionics.com panopticon.aquarionics.com
     www.deathuntodarkness.org
-    ludoistic.com;
+    ludoistic.com
+    deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
 

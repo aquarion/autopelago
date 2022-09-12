@@ -21,7 +21,8 @@ larp.me,www.larp.me,\
 optim.istic.net,\
 www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
 www.iglooteas.com,\
-www.deathuntodarkness.org
+www.deathuntodarkness.org,\
+deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk
 
 #forums.profounddecisions.co.uk
 # www.iglooteas.com,\
