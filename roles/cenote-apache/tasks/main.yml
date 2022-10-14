@@ -1,0 +1,129 @@
+- name: Install required packages
+  apt:
+    package: "{{ item }}"
+    state: present
+  loop:
+    - "python-passlib"
+
+- name: configure ssl config snippits
+  template:
+    src: "{{ item }}"
+    dest: "/etc/apache2/conf.d/ssl-{{ item | basename }}"
+    mode: 0644
+  with_fileglob:
+   - templates/ssl/*
+  notify:
+   - restart apache
+  tags:
+   - streamsite
+   - apache
+
+# - name: configure config overrides
+#   template:
+#     src: "{{ item }}"
+#     dest: "/etc/apache2/cond.d/{{ item | basename }}"
+#     mode: 0644
+#   with_fileglob:
+#    - templates/nginx_root/*
+#   notify:
+#    - restart nginx
+#   tags:
+#    - streamsite
+#    - nginx
+
+- name: configure conf.d items
+  template:
+    src: "{{ item }}"
+    dest: "/etc/apache2/conf.d/{{ item | basename }}"
+    mode: 0644
+  with_fileglob:
+   - templates/apache_confd/*
+  notify:
+   - restart apache
+  tags:
+   - streamsite
+   - apache
+
+
+- name: configure apache sites as available
+  template:
+    src: "{{ item }}"
+    dest: "/etc/apache2/sites-available/{{ item | basename }}"
+    mode: 0644
+  with_fileglob:
+   - templates/vhosts/*
+  notify:
+   - restart apache
+  tags:
+   - streamsite
+   - apache
+   - apache_sites
+
+- name: Configure apache sites as enabled
+  file:
+    path: "/etc/apache2/sites-enabled/{{ item | basename }}"
+    src: "../sites-available/{{ item | basename }}"
+    state: link
+    mode: 0644
+  with_fileglob:
+   - templates/vhosts/*
+  notify:
+   - restart apache
+  tags:
+     - apache_sites
+
+- name: Configure dead apache sites as disabled
+  file:
+    path: "/etc/apache2/sites-enabled/{{ item | basename }}"
+    state: absent
+  with_fileglob:
+   - templates/deleted_vhosts/*
+  notify:
+   - restart apache
+  tags:
+     - streamsite
+     - apache_sites
+
+- name: Configure dead apache sites as unavailable
+  file:
+    path: "/etc/apache2/sites-available/{{ item | basename }}"
+    state: absent
+  with_fileglob:
+   - templates/deleted_vhosts/*
+  notify:
+   - restart apache
+  tags:
+     - streamsite
+     - apache_sites
+
+- name: Streamsite Basic Auth
+  htpasswd:
+    path: /etc/apache2/streamsite.htpass
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    mode: 0644
+  loop: "{{ streamsite_users }}"
+  tags:
+    - streamsite
+    - apache_sites
+
+
+# - name: Configure apache redirects
+#   template:
+#     src: config/redirects.apache.j2
+#     dest: /etc/apache2/conf.d/www_redirects.conf
+#     mode: 0644
+#   vars:
+#     add_www:
+#     - aquarionics.com
+#     - cleartextcontent.co.uk
+#     - carcosadreams.co.uk
+#     - deathuntodarkness.org
+#     remove_www:
+#     - ludoistic.com
+#     - omnyom.com
+#     - factionfiction.net
+#     - warehousebasement.com
+#     - hubris.house
+#   notify:
+#    - restart apache
