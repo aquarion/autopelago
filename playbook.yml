@@ -11,7 +11,7 @@
    - { role: "ansible.papertrail", tags: papertrail }
    - { role: water-gkhs-web-errors, tags: nginx }
 
-- hosts: archipelago_cenote
+- hosts: external_hosts
   become: yes
   roles:
     - { role: water-gkhs-mysql-backup, tags: mysql }
@@ -26,17 +26,24 @@
   roles:
     - firth-packages
     - firth-users
-    - firth-exim
     - firth-docker
     - plexupdate
     - { role: firth-nginx, tags: nginx }
     - water-gkhs-filebot
     - water-gkhs-flexget
+    - water-gkhs-exim
     - b2-backup
     - github-cli
     - { role: aws-route53, become: no, connection: local }
     - { role: aws-pdforums , tags: pdforum }
     - { role: elastic.elasticsearch, tags: elastic }
+    
+- hosts: atoll
+  become: yes
+  roles:
+    - water-gkhs-nginx
+    - water-gkhs-exim
+    - github-cli
 
 - hosts: caisson
   become: yes
