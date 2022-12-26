@@ -17,7 +17,7 @@ server {
     access_log /var/log/nginx/aqcom-wiki.access.log;
 
   location    / {
-    proxy_pass  http://docker-gollum;
+    proxy_pass http://docker-gollum;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
