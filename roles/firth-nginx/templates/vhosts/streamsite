@@ -4,6 +4,7 @@ server {
   listen [::]:80;
   server_name vis.aquarionics.com;
 
+  add_header X-WhyAmI "vis redirect";
   return 301 https://$host$request_uri;
 }
 
@@ -22,6 +23,7 @@ server {
 	include /etc/nginx/snippets/errors.conf;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
+  add_header X-WhyAmI vis;
 
     fancyindex on;              # Enable fancy indexes.
     fancyindex_exact_size off;  # Output human-readable file sizes.

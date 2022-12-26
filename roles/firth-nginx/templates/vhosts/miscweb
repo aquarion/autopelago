@@ -5,7 +5,7 @@ server {
   listen [::]:80;
   server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
   warehousebasement.com
-  dagon.church live.dagon.church wiki.dagon.church
+  dagon.church live.dagon.church wiki.dagon.church wiki.aquarionics.com
   firth.water.gkhs.net
   istic.co
   old.aquarionics.com panopticon.aquarionics.com
@@ -18,6 +18,7 @@ server {
   *.hubris.house
   *.deadbadgerdesigns.co.uk;
 
+  add_header X-WhyAmI "miscweb redirect";
   return 301 https://$host$request_uri;
 }
 
@@ -28,7 +29,7 @@ server {
     warehousebasement.com
     dagon.church live.dagon.church wiki.dagon.church
     istic.co
-    old.aquarionics.com panopticon.aquarionics.com
+    old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
     www.deathuntodarkness.org
     ludoistic.com
     deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
@@ -37,9 +38,10 @@ server {
 
     error_log  /var/log/nginx/miscweb.error.log;
     access_log /var/log/nginx/miscweb.access.log;
+    add_header X-WhyAmI miscweb;
 
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -51,12 +53,13 @@ server {
     server_name firth.water.gkhs.net;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
+   add_header X-WhyAmI "miscweb firth";
 
     error_log  /var/log/nginx/miscweb.error.log;
     access_log /var/log/nginx/miscweb.access.log;
 
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -68,12 +71,13 @@ server {
     server_name *.istic.net;
     include /etc/nginx/snippets/istic_ssl.conf;
 
+   add_header X-WhyAmI "miscweb istic.net";
 
     error_log  /var/log/nginx/istic.error.log;
     access_log /var/log/nginx/istic.access.log;
 
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -85,12 +89,13 @@ server {
     server_name *.istic.dev istic.dev;
     include /etc/nginx/snippets/istic_dev_ssl.conf;
 
+   add_header X-WhyAmI "miscweb istic.dev";
 
     error_log  /var/log/nginx/istic.error.log;
     access_log /var/log/nginx/istic.access.log;
 
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -102,12 +107,13 @@ server {
     server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.com nicholasavenell.net;
     include /etc/nginx/snippets/nicholasavenell_ssl.conf;
 
+   add_header X-WhyAmI "miscweb nacom";
 
     error_log  /var/log/nginx/nicholasavenell.error.log;
     access_log /var/log/nginx/nicholasavenell.access.log;
 
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -118,9 +124,9 @@ server {
     listen [::]:443 ssl proxy_protocol;
     server_name *.bromioscreations.com bromioscreations.com;
     include /etc/nginx/snippets/bromioscreations_ssl.conf;
-
+   add_header X-WhyAmI "miscweb bromios";
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -131,9 +137,10 @@ server {
     listen [::]:443 ssl proxy_protocol;
     server_name *.hubris.house hubris.house;
     include /etc/nginx/snippets/hubris_ssl.conf;
+   add_header X-WhyAmI "miscweb hubris";
 
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -144,9 +151,10 @@ server {
     listen [::]:443 ssl proxy_protocol;
     server_name *.foip.me;
     include /etc/nginx/snippets/foipme_ssl.conf;
+   add_header X-WhyAmI "miscweb foipme";
 
   location    / {
-    proxy_pass  http://container-php;
+    proxy_pass http://container-php;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
@@ -157,11 +165,13 @@ server {
     listen              80;
     server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
     return 301 $scheme://istic.co$uri;
+   add_header X-WhyAmI "miscweb istic redirect";
 }
 
 server {
     listen              443 ssl proxy_protocol;
     listen              80;
     server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
+   add_header X-WhyAmI "miscweb ludoistic";
     return 301 $scheme://ludoistic.com;
 }

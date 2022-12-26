@@ -5,6 +5,7 @@ server {
   listen 80;
   listen [::]:80;
   server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
+  add_header X-WhyAmI "pddiscourse redirect";
   return 301 https://$host$request_uri;
 }
 
@@ -15,12 +16,13 @@ server {
     server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
     include /etc/nginx/snippets//pddiscourse_ssl.conf;
 
+  add_header X-WhyAmI pddiscourse;
 
     error_log  /var/log/nginx/pddiscourse.error.log;
     access_log /var/log/nginx/pddiscourse.access.log;
 
   location    / {
-    proxy_pass  http://container-pddiscourse;
+    proxy_pass http://container-pddiscourse;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";

@@ -7,6 +7,7 @@ server {
   server_name voyeur.istic.net;
   return 301 https://$host$request_uri;
   include /etc/nginx/snippets/errors.conf;
+  add_header X-WhyAmI "masterdon redirect";
 }
 
 # SSL
@@ -21,7 +22,7 @@ server {
     access_log /var/log/nginx/mastodon.access.log;
 
   location    / {
-    proxy_pass  http://container-mastodon;
+    proxy_pass http://container-mastodon;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -29,5 +30,6 @@ server {
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
   }
+  add_header X-WhyAmI masterdon;
   include /etc/nginx/snippets/errors.conf;
 }

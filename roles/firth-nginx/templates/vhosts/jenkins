@@ -7,6 +7,7 @@ server {
   server_name mechan.istic.net;
   return 301 https://$host$request_uri;
   include /etc/nginx/snippets/errors.conf;
+    add_header X-WhyAmI "jenkins redirect";
 }
 
 # SSL
@@ -21,7 +22,7 @@ server {
     access_log /var/log/nginx/jenkins.access.log;
 
   location    / {
-    proxy_pass  http://container-jenkins;
+    proxy_pass http://container-jenkins;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -30,4 +31,5 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
   include /etc/nginx/snippets/errors.conf;
+    add_header X-WhyAmI jenkins;
 }

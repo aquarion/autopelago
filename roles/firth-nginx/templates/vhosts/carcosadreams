@@ -8,6 +8,7 @@ server {
     return 301 https://$host$request_uri;
     include /etc/nginx/snippets/errors.conf;
     client_max_body_size 32M;
+    add_header X-WhyAmI "carcosa ssl redirect";
 }
 
 
@@ -18,6 +19,7 @@ server {
     return 301 $scheme://www.carcosadreams.com$request_uri;
 
     include /etc/nginx/snippets/carcosadreams_ssl.conf;
+    add_header X-WhyAmI "carcosa host redirect";
 }
 
 server {
@@ -27,6 +29,7 @@ server {
     return 301 https://the-sisyphus.carcosadreams.com$request_uri;
 
     include /etc/nginx/snippets/carcosadreams_ssl.conf;
+    add_header X-WhyAmI "carcosa sisyphus redirect";
 }
 
 server {
@@ -35,6 +38,7 @@ server {
     server_name *.carcosadreams.co.uk;
     return 301 $scheme://www.carcosadreams.com;
     include /etc/nginx/snippets/carcosadreams_ssl.conf;
+    add_header X-WhyAmI "carcosa www redirect";
 }
 
 server {
@@ -45,9 +49,10 @@ server {
 
     error_log  /var/log/nginx/carcosadreams.error.log;
     access_log /var/log/nginx/carcosadreams.access.log;
+    add_header X-WhyAmI "carcosa wordpress";
 
   location    / {
-    proxy_pass  http://container-carcosadreams;
+    proxy_pass http://container-carcosadreams;
     proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;

@@ -24,6 +24,7 @@ server {
   server_name www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
   return 301 https://larpfic.com/$request_uri;
   include /etc/nginx/snippets/errors.conf;
+    add_header X-WhyAmI "larpfic redirect";
 }
 
 server {
@@ -35,6 +36,7 @@ server {
  	return 301 https://larpfic.com$request_uri;
 	include /etc/nginx/snippets/letsencrypt_ssl.conf;
  	include /etc/nginx/snippets/errors.conf;
+    add_header X-WhyAmI "larpfic ssl redirect";
 }
 
 server {
@@ -48,12 +50,14 @@ server {
 	location / {
 		proxy_pass http://larpfic_staging;
 	}
+    add_header X-WhyAmI "larpfic docker";
 }
 
 server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name larpfic.com;
+    add_header X-WhyAmI "larpfic docker";
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
 

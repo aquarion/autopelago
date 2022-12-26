@@ -9,6 +9,7 @@ upstream thalium_backend {
 server {
 	server_name thalium.aquarionics.com;
 	listen 80;
+  	add_header X-WhyAmI "thalium redirect";
 	return 301 https://$host$request_uri;
 }
 
@@ -18,6 +19,7 @@ server {
 	listen 443 ssl proxy_protocol http2; #http2 can provide a substantial improvement for streaming: https://blog.cloudflare.com/introducing-http2/
 	server_name thalium.aquarionics.com;
 
+  add_header X-WhyAmI thalium;
 
     error_log  /var/log/nginx/thalium.error.log;
     access_log /var/log/nginx/thalium.access.log;
