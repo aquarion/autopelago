@@ -6,30 +6,45 @@ server {
     listen              80;
     server_name herodiaries.blogs.water.gkhs.net;
     return 301 $scheme://herodiaries.foip.me;
+    add_header X-WhyAmI "wordpress heroediaries redirect";
 }
 
 server {
     listen      80;
     listen [::]:80;
-    server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
+    server_name 
+      wywo.aquarionics.com
+      www.aquarionics.com
+      factionfiction.net
+      blogs.water.gkhs.net       *.blogs.water.gkhs.net
+      omnyom.com
+      www.cleartextcontent.co.uk
+      herodiaries.foip.me
+      themonthlymoon.com
+      idlespeculation.foip.me
+      www.iglooteas.com
+      blogs.istic.network *.blogs.istic.network;
     return 301 https://$host$request_uri;
     include /etc/nginx/snippets/errors.conf;
     client_max_body_size 32M;
+    add_header X-WhyAmI "wordpress redirect";
 }
 
 server {
     listen              443 ssl proxy_protocol;
     listen              80;
     server_name herodiaries.blogs.water.gkhs.net
+    add_header X-WhyAmI "wordpress redirect ssl";
     return 301 $scheme://herodiaries.foip.me;
 }
 
 server {
     listen              80;
     server_name live.aquarionics.com;
+    add_header X-WhyAmI "wordpress aquarionics live";
 
     location    / {
-        proxy_pass  http://container-wordpress;
+        proxy_pass http://container-wordpress;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -46,13 +61,14 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
+    add_header X-WhyAmI wordpress;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
     error_log  /var/log/nginx/wordpress.error.log;
     access_log /var/log/nginx/wordpress.access.log;
 
   location    / {
-    proxy_pass  http://container-wordpress;
+    proxy_pass http://container-wordpress;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -63,3 +79,28 @@ server {
   include /etc/nginx/snippets/errors.conf;
    client_max_body_size 32M;
 }
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name blogs.istic.network *.blogs.istic.network
+    add_header X-WhyAmI "wordpress blogs.istic.net";
+    include /etc/nginx/snippets/istic.conf;
+
+    error_log  /var/log/nginx/wordpress.error.log;
+    access_log /var/log/nginx/wordpress.access.log;
+
+  location    / {
+    proxy_pass http://container-wordpress;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  include /etc/nginx/snippets/errors.conf;
+   client_max_body_size 32M;
+}
+
+
