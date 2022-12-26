@@ -56,7 +56,7 @@ exec 2>&1
 inotifywait -drq -o $WATCHFILE -e create -e moved_to $WATCH_PATH
 
 trap "true" PIPE
-cat $WATCHFILE | while read  path action file;
+cat $WATCHFILE | while read path action file;
 do
 	echo Saw $action on $path$file
 	#echo "Saw $action in $path";

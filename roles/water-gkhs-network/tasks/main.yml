@@ -3,11 +3,11 @@
   hostname: name={{ hostname }}
 
 - name: Resolve to gkhs.net
-  lineinfile: dest=/etc/dhcp/dhclient.conf  line='supersede domain-name "water.gkhs.net";'
+  lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-name "water.gkhs.net";'
   notify: renew dhcp
 
 - name: Search to gkhs.net
-  lineinfile: dest=/etc/dhcp/dhclient.conf  line='supersede domain-search "water.gkhs.net gkhs.net";'
+  lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-search "water.gkhs.net gkhs.net";'
   notify: renew dhcp
 
 - name: hostfile for ipv4
