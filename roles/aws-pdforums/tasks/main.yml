@@ -1,9 +1,9 @@
 ---
 
-- include: dns.yml
+- include_tasks: dns.yml
   tags:
     - aws
 
-- include: iam.yml
+- include_tasks: iam.yml
   tags:
     - aws

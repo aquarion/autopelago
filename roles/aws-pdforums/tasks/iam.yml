@@ -1,6 +1,5 @@
 - name: Create discourse IAM users
-  iam:
-    iam_type: user
+  amazon.aws.iam_user:
     name: "{{ item }}"
     state: present
   with_items:
@@ -10,7 +9,7 @@
 
 
 - name: Attach all-access S3 policy to discourse user
-  iam_policy:
+  amazon.aws.iam_user:
     iam_type: user
     iam_name: "pdforums-discourse"
     policy_name: discourse-upload-access
@@ -21,7 +20,7 @@
 
 
 - name: Attach all-access S3 policy to discourse user
-  iam_policy:
+  amazon.aws.iam_policy:
     iam_type: user
     iam_name: "pdforums-discourse"
     policy_name: discourse-backups-access

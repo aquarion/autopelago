@@ -11,7 +11,7 @@
     - media
 
 
-- include: media-user-tasks.yml
+- import_tasks: media-user-tasks.yml
   become: yes
   become_user: plex
   tags:

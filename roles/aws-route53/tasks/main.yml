@@ -7,91 +7,91 @@
     - aws
     - aquarionics
 
-- include: aqxs.yml
+- include_tasks: aqxs.yml
   tags:
     - aws
 
-- include: camlarp.yml
+- include_tasks: camlarp.yml
   tags:
     - aws
     - camlarp
 
 
-- include: cleartext.yml
+- include_tasks: cleartext.yml
   tags:
     - aws
 
-- include: factionfiction.yml
+- include_tasks: factionfiction.yml
   tags:
     - aws
 
-- include: foipme.yml
+- include_tasks: foipme.yml
   tags:
     - aws
 
-- include: warehouse.yml
+- include_tasks: warehouse.yml
   tags:
     - aws
 
-- include: monthlymoon.yml
+- include_tasks: monthlymoon.yml
   tags:
     - aws
     - monthlymoon
 
-- include: ludoistic.yml
+- include_tasks: ludoistic.yml
   tags:
     - aws
     - ludoistic
 
-- include: carcosadreams.yml
+- include_tasks: carcosadreams.yml
   tags:
     - aws
     - carcosadreams
 
 
-- include: larpfic.yml
+- include_tasks: larpfic.yml
   tags:
     - aws
     - larpfic
 
-- include: larpme.yml
+- include_tasks: larpme.yml
   tags:
     - aws
     - larpme
 
-- include: conterio.yml
+- include_tasks: conterio.yml
   tags:
     - aws
     - conterio
 
-- include: hubris.yml
+- include_tasks: hubris.yml
   tags:
     - aws
     - hubris
 
 
-- include: bromioscreations.yml
+- include_tasks: bromioscreations.yml
   tags:
     - aws
     - bromioscreations
 
-- include: istic.yml
+- include_tasks: istic.yml
   tags:
     - aws
     - istic_net
 
-- include: nanocountdown.yml
+- include_tasks: nanocountdown.yml
   tags:
     - aws
     - nanocountdown
 
-- include: dagon_church.yml
+- include_tasks: dagon_church.yml
   tags:
     - aws
     - dagon_church
 
 
-- include: nicholasavenell.yml
+- include_tasks: nicholasavenell.yml
   tags:
     - aws
     - nicholasavenell
