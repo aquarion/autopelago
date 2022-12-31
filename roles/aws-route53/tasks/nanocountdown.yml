@@ -1,70 +1,70 @@
-- name: nanocountdown.com - A
-  route53:
-      overwrite: true
-      command: "present"
-      zone: "nanocountdown.com"
-      record: "nanocountdown.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+---
+- name: Nanocountdown.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: nanocountdown.com
+    record: nanocountdown.com.
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - nanocountdown
 
-- name: dev.nanocountdown.com - CNAME - remove
-  route53:
-      overwrite: true
-      command: "absent"
-      zone: "nanocountdown.com"
-      record: "dev.nanocountdown.com."
-      type: "CNAME"
-      ttl: "300"
-      value: 'cenote.gkhs.net'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Dev.nanocountdown.com - CNAME - remove
+  amazon.aws.route53:
+    overwrite: true
+    command: absent
+    zone: nanocountdown.com
+    record: dev.nanocountdown.com.
+    type: CNAME
+    ttl: "300"
+    value: cenote.gkhs.net
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - nanocountdown
 
-- name: dev.nanocountdown.com - A
-  route53:
-      overwrite: true
-      command: "present"
-      zone: "nanocountdown.com"
-      record: "dev.nanocountdown.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Dev.nanocountdown.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: nanocountdown.com
+    record: dev.nanocountdown.com.
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - nanocountdown
 
-- name: www.nanocountdown.com - CNAME - remove
-  route53:
-      overwrite: true
-      command: "absent"
-      zone: "nanocountdown.com"
-      record: "www.nanocountdown.com."
-      type: "CNAME"
-      ttl: "300"
-      value: 'cenote.gkhs.net'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Www.nanocountdown.com - CNAME - remove
+  amazon.aws.route53:
+    overwrite: true
+    command: absent
+    zone: nanocountdown.com
+    record: www.nanocountdown.com.
+    type: CNAME
+    ttl: "300"
+    value: cenote.gkhs.net
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - nanocountdown
 
-
-- name: www.nanocountdown.com - A
-  route53:
-      overwrite: true
-      command: "present"
-      zone: "nanocountdown.com"
-      record: "www.nanocountdown.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Www.nanocountdown.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: nanocountdown.com
+    record: www.nanocountdown.com.
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - nanocountdown

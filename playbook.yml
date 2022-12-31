@@ -1,28 +1,31 @@
 ---
-
-- hosts: all:!localactions
-  become: yes
+- name: Actions on all hosts
+  hosts: all:!localactions
+  become: true
   roles:
-   - water-gkhs-packages
-   - water-gkhs-listchanges
-   - water-gkhs-update
-   - water-gkhs-network
-   - water-gkhs-users
-   - { role: "ansible.papertrail", tags: papertrail }
-   - { role: water-gkhs-web-errors, tags: nginx }
+    - water-gkhs-packages
+    - water-gkhs-listchanges
+    - water-gkhs-update
+    - water-gkhs-network
+    - water-gkhs-users
+    - { role: ansible.papertrail, tags: papertrail }
+    - { role: water-gkhs-web-errors, tags: nginx }
 
-- hosts: external_hosts
-  become: yes
+- name: Actions on all non-local hosts
+  hosts: external_hosts
+  become: true
   roles:
     - { role: water-gkhs-mysql-backup, tags: mysql }
 
-- hosts: nginx_hosts
-  become: yes
+- name: Actions on all hosts running NGINX
+  hosts: nginx_hosts
+  become: true
   roles:
     - { role: water-gkhs-nginx, tags: nginx }
 
-- hosts: firth
-  become: yes
+- name: Hello Firth
+  hosts: firth
+  become: true
   roles:
     - firth-packages
     - firth-users
@@ -34,33 +37,20 @@
     - water-gkhs-exim
     - b2-backup
     - github-cli
-    - { role: aws-route53, become: no, connection: local }
-    - { role: aws-pdforums , tags: pdforum }
+    - { role: aws-route53, become: false, connection: local }
+    - { role: aws-pdforums, tags: pdforum }
     - { role: elastic.elasticsearch, tags: elastic }
-    
-- hosts: atoll
-  become: yes
+
+- name: Hello Atoll
+  hosts: atoll
+  become: true
   roles:
     - water-gkhs-nginx
     - water-gkhs-exim
     - github-cli
 
-- hosts: caisson
-  become: yes
+- name: Hello Caisson
+  hosts: caisson
+  become: true
   roles:
     - water-gkhs-nginx
-    - caisson-printers
-    - caisson-lcd
-    - hannseman.homebridge
-  vars:
-    homebridge_plugins:
-     - name: homebridge-tuya-web
-     - name: homebridge-dummy
-     - name: homebridge-control-chromecast
-     - name: homebridge-switchbot
-     - name: homebridge-tplink-smarthome
-
-# Non-authenticated tasks
-#- hosts: all:!localactions
-#  roles:
-#   - aquarion-bootstrap

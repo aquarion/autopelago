@@ -1,7 +1,8 @@
 ---
-
 - name: Create normal users
-  user: name={{ item }}
+  # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
+  ansible.builtin.user:
+    name: "{{ item }}"
   with_items:
     - larpfic
     - plex
@@ -9,18 +10,21 @@
     - users
 
 - name: Delete normal users
-  user:
+  # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
+  ansible.builtin.user:
     name: "{{ item }}"
     state: absent
-    remove: yes
+    remove: true
   with_items:
-   - arkserver
-   - factorio
+    - arkserver
+    - factorio
   tags:
     - users
 
 - name: Add Aquarion key to users
-  authorized_key: user={{ item }} key={{ lookup('file', 'files/aquarion.keys') }}
+  ansible.posix.authorized_key:
+    user: "{{ item }} "
+    key: "{{ lookup('file', 'files/aquarion.keys') }}"
   with_items:
     - larpfic
     - plex

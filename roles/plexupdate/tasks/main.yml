@@ -1,34 +1,46 @@
-
+---
 - name: Fetch plexupdate
-  git:
+  ansible.builtin.git:
     repo: https://github.com/mrworf/plexupdate.git
     dest: /root/plexupdate
     version: master
 
 - name: Set cron plexupdate preferences
-  template:
+  ansible.builtin.template:
     src: plexupdate.cron.conf
     dest: /etc/plexupdate.cron.conf
     mode: 0644
 
 - name: Set public plexupdate preferences
-  template:
+  ansible.builtin.template:
     src: plexupdate.conf
     dest: /etc/plexupdate.conf
     mode: 0644
 
 - name: Install plex
-  command: /root/plexupdate/plexupdate.sh -p -a chdir=/tmp creates=/etc/init/plexmediaserver.conf
+  ansible.builtin.command:
+    cmd: /root/plexupdate/plexupdate.sh -p -a
+    chdir: /tmp
+    creates: /etc/init/plexmediaserver.conf
 
 - name: Add cron
-  file:
+  ansible.builtin.file:
     src: /root/plexupdate/extras/cronwrapper
     dest: /etc/cron.daily/plexupdate
     state: link
 
-## Remove old stuff
-- name: remove old cron for plex update
-  cron: name="plexupdate" cron_file=plexupdate user=root hour=4 minute=47 job="cd /tmp;/root/plexupdate/plexupdate.sh" state=absent
+# # Remove old stuff
+- name: Remove old cron for plex update
+  ansible.builtin.cron:
+    name: plexupdate
+    cron_file: plexupdate
+    user: root
+    hour: 4
+    minute: 47
+    job: cd /tmp;/root/plexupdate/plexupdate.sh
+    state: absent
 
 - name: Remove old plex update
-  file: path=/root/.plexupdate state=absent
+  ansible.builtin.file:
+    path: /root/.plexupdate
+    state: absent

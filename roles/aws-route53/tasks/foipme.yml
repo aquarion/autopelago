@@ -1,35 +1,30 @@
 ---
+- name: Foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "86400"
+    value: 67.199.248.13,67.199.248.12
 
-- name: foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "86400"
-      value: '67.199.248.13,67.199.248.12'
+- name: Foip.me. - NS
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: NS
+    ttl: "172800"
+    value: ns-1164.awsdns-17.org.,ns-1794.awsdns-32.co.uk.,ns-76.awsdns-09.com.,ns-979.awsdns-58.net.
 
-
-
-- name: foip.me. - NS
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "NS"
-      ttl: "172800"
-      value: ns-1164.awsdns-17.org.,ns-1794.awsdns-32.co.uk.,ns-76.awsdns-09.com.,ns-979.awsdns-58.net.
-
-
-
-#- name: foip.me. - SOA
-#  route53:
+# - name: Foip.me. - SOA
+#  amazon.aws.route53:
 #      overwrite: true
 #      command: "create"
 #      zone: "foip.me"
@@ -40,176 +35,170 @@
 #      ttl: "900"
 #      value: 'ns-1164.awsdns-17.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
-- name: dud.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "dud.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Dud.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: dud.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: sands.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "sands.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Sands.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: sands.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: strangelrp.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "strangelrp.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
+- name: Strangelrp.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: strangelrp.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
 
+- name: Wakingnightmare.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: wakingnightmare.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
 
-- name: wakingnightmare.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "wakingnightmare.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
+- name: Fourrivers.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: fourrivers.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
 
+- name: Forgotten.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: forgotten.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
 
-- name: fourrivers.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "fourrivers.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
+- name: Ojaqs.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: ojaqs.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: forgotten.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "forgotten.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
+- name: Bless.ojaqs.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: bless.ojaqs.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: ojaqs.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "ojaqs.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Diaspora.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: diaspora.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: bless.ojaqs.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "bless.ojaqs.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Herodiaries.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: herodiaries.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: diaspora.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "diaspora.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Sevenmirrors.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: sevenmirrors.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: herodiaries.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "herodiaries.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Idlespeculation.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: idlespeculation.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: sevenmirrors.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "sevenmirrors.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Bobbitworm.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: bobbitworm.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-
-- name: idlespeculation.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "idlespeculation.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-
-
-
-- name: bobbitworm.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "bobbitworm.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-
-- name: obviouslyfakeurl.foip.me. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "foip.me"
-      record: "obviouslyfakeurl.foip.me."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
-
+- name: Obviouslyfakeurl.foip.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: foip.me
+    record: obviouslyfakeurl.foip.me.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"

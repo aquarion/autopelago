@@ -1,25 +1,26 @@
+---
 - name: Install required packages
-  apt:
+  ansible.builtin.apt:
     package: "{{ item }}"
     state: present
   loop:
-    - "python-passlib"
+    - python-passlib
 
-- name: configure ssl config snippits
-  template:
+- name: Configure ssl config snippits
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/apache2/conf.d/ssl-{{ item | basename }}"
+    dest: /etc/apache2/conf.d/ssl-{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/ssl/*
+    - templates/ssl/*
   notify:
-   - restart apache
+    - restart apache
   tags:
-   - streamsite
-   - apache
+    - streamsite
+    - apache
 
-# - name: configure config overrides
-#   template:
+# - name: Configure config overrides
+#   ansible.builtin.template:
 #     src: "{{ item }}"
 #     dest: "/etc/apache2/cond.d/{{ item | basename }}"
 #     mode: 0644
@@ -31,73 +32,72 @@
 #    - streamsite
 #    - nginx
 
-- name: configure conf.d items
-  template:
+- name: Configure conf.d items
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/apache2/conf.d/{{ item | basename }}"
+    dest: /etc/apache2/conf.d/{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/apache_confd/*
+    - templates/apache_confd/*
   notify:
-   - restart apache
+    - restart apache
   tags:
-   - streamsite
-   - apache
+    - streamsite
+    - apache
 
-
-- name: configure apache sites as available
-  template:
+- name: Configure apache sites as available
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/apache2/sites-available/{{ item | basename }}"
+    dest: /etc/apache2/sites-available/{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/vhosts/*
+    - templates/vhosts/*
   notify:
-   - restart apache
+    - restart apache
   tags:
-   - streamsite
-   - apache
-   - apache_sites
+    - streamsite
+    - apache
+    - apache_sites
 
 - name: Configure apache sites as enabled
-  file:
-    path: "/etc/apache2/sites-enabled/{{ item | basename }}"
-    src: "../sites-available/{{ item | basename }}"
+  ansible.builtin.file:
+    path: /etc/apache2/sites-enabled/{{ item | basename }}
+    src: ../sites-available/{{ item | basename }}
     state: link
     mode: 0644
   with_fileglob:
-   - templates/vhosts/*
+    - templates/vhosts/*
   notify:
-   - restart apache
+    - restart apache
   tags:
-     - apache_sites
+    - apache_sites
 
 - name: Configure dead apache sites as disabled
-  file:
-    path: "/etc/apache2/sites-enabled/{{ item | basename }}"
+  ansible.builtin.file:
+    path: /etc/apache2/sites-enabled/{{ item | basename }}
     state: absent
   with_fileglob:
-   - templates/deleted_vhosts/*
+    - templates/deleted_vhosts/*
   notify:
-   - restart apache
+    - restart apache
   tags:
-     - streamsite
-     - apache_sites
+    - streamsite
+    - apache_sites
 
 - name: Configure dead apache sites as unavailable
-  file:
-    path: "/etc/apache2/sites-available/{{ item | basename }}"
+  ansible.builtin.file:
+    path: /etc/apache2/sites-available/{{ item | basename }}
     state: absent
   with_fileglob:
-   - templates/deleted_vhosts/*
+    - templates/deleted_vhosts/*
   notify:
-   - restart apache
+    - restart apache
   tags:
-     - streamsite
-     - apache_sites
+    - streamsite
+    - apache_sites
 
 - name: Streamsite Basic Auth
-  htpasswd:
+  community.general.htpasswd:
     path: /etc/apache2/streamsite.htpass
     name: "{{ item.user }}"
     password: "{{ item.password }}"
@@ -107,9 +107,8 @@
     - streamsite
     - apache_sites
 
-
 # - name: Configure apache redirects
-#   template:
+#   ansible.builtin.template:
 #     src: config/redirects.apache.j2
 #     dest: /etc/apache2/conf.d/www_redirects.conf
 #     mode: 0644

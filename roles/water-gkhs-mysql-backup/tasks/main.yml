@@ -1,56 +1,52 @@
-
+---
 # Install Mysql
 
 - name: Determine required MySQL Python libraries.
-  set_fact:
+  ansible.builtin.set_fact:
     deb_mysql_python_package: "{% if 'python3' in ansible_python_interpreter|default('') %}python3-mysqldb{% else %}python-mysqldb{% endif %}"
-  tags:
-    mysql_user
+  tags: mysql_user
 
 - name: Ensure Maria & MySQL Python libraries are installed.
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
       - "{{ deb_mysql_python_package }}"
       - mariadb-server
       - moreutils
       - python3-mysqldb
-  tags:
-    mysql_user
+  tags: mysql_user
 
 # Set root password
 - name: Set Root Password
-  mysql_user:
-    name: "root"
+  community.mysql.mysql_user:
+    name: root
     password: "{{ mysql_root_password }}"
-    check_implicit_admin: yes
+    check_implicit_admin: true
     login_host: "{{ mysql_host }}"
-  tags:
-    mysql_user
-
+  tags: mysql_user
 
 - name: Setup root user
-  ini_file:
+  community.general.ini_file:
     dest: /root/.my.cnf
     section: client
     option: user
     value: root
     mode: 0600
-    backup: yes
+    backup: true
 
 - name: Setup root user's password
-  ini_file:
+  community.general.ini_file:
     dest: /root/.my.cnf
     section: client
     option: password
-    value: '{{ mysql_root_password }}'
+    value: "{{ mysql_root_password }}"
     mode: 0600
-    backup: yes
+    backup: true
 
 # Setup backups
 
 - name: Setup backup locations
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: 0755
@@ -59,25 +55,23 @@
     - "{{ mysql_backup_location }}/Daily"
     - "{{ mysql_backup_location }}/Monthly"
 
-
 - name: Move Daily backups to new directory
-  command:
-    cmd: "mv /var/backups/mysql/{{ item }} /var/backups/mysql/Daily/{{ item }}"
-    removes: "/var/backups/mysql/{{ item }}"
+  ansible.builtin.command:
+    cmd: mv /var/backups/mysql/{{ item }} /var/backups/mysql/Daily/{{ item }}
+    removes: /var/backups/mysql/{{ item }}
   loop:
-     - Monday
-     - Tuesday
-     - Wednesday
-     - Thursday
-     - Friday
-     - Saturday
-     - Sunday
-
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    - Sunday
 
 - name: Move Monthly backups to new directory
-  command:
-    cmd: "mv /var/backups/mysql/{{ item }} /var/backups/mysql/Monthly/{{ item }}"
-    removes: "/var/backups/mysql/{{ item }}"
+  ansible.builtin.command:
+    cmd: mv /var/backups/mysql/{{ item }} /var/backups/mysql/Monthly/{{ item }}
+    removes: /var/backups/mysql/{{ item }}
   loop:
     - January
     - February
@@ -93,26 +87,26 @@
     - December
 
 - name: Setup backup script
-  template:
+  ansible.builtin.template:
     src: mysql_backup.sh
     dest: /usr/local/bin/mysql_backup.sh
     mode: 0755
 
-- name: "Setup daily backup"
-  cron:
-    name: "mysql_backup_daily"
+- name: Setup daily backup
+  ansible.builtin.cron:
+    name: mysql_backup_daily
     minute: "16"
     hour: "3"
-    user: "root"
-    job: "chronic /usr/local/bin/mysql_backup.sh Daily/`date +%A`"
+    user: root
+    job: chronic /usr/local/bin/mysql_backup.sh Daily/`date +%A`
     cron_file: mysql_backup_daily
 
-- name: "Setup monthly backup"
-  cron:
-    name: "mysql_backup_monthly"
+- name: Setup monthly backup
+  ansible.builtin.cron:
+    name: mysql_backup_monthly
     minute: "16"
     hour: "0"
     day: "1"
-    user: "root"
-    job: "chronic /usr/local/bin/mysql_backup.sh Monthly/`date +%B`"
+    user: root
+    job: chronic /usr/local/bin/mysql_backup.sh Monthly/`date +%B`
     cron_file: mysql_backup_monthly

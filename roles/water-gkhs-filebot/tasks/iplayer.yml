@@ -1,6 +1,6 @@
-
+---
 - name: Remove old iplayer repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: ppa:jon-hedgerows/get-iplayer
     state: absent
   notify:
@@ -9,25 +9,24 @@
     - media
     - iplayer
 
-
-- name: "Check iPlayer Version"
-  lineinfile:
+- name: Check iPlayer Version
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.ansible_iplayer_reg"
-    regexp: '^etag'
-    line: 'etag {{ get_iplayer_version }}'
+    regexp: ^etag
+    line: etag {{ get_iplayer_version }}
     owner: plex
     group: plex
     mode: 0644
-    create: yes
+    create: true
   register: iPlayerUpdate
   tags:
     - media
     - iplayer
     - iplayer_update
 
-- name: "Get iPlayer Script"
-  get_url:
-    url: "https://raw.githubusercontent.com/get-iplayer/get_iplayer/v{{ get_iplayer_version }}/get_iplayer"
+- name: Get iPlayer Script
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/get-iplayer/get_iplayer/v{{ get_iplayer_version }}/get_iplayer
     dest: /usr/local/bin/get_iplayer
     owner: root
     group: root
@@ -38,129 +37,123 @@
     - iplayer
     - iplayer_update
 
-- name: "Flush handlers"
-  meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
   tags:
     - media
     - iplayer
-
 
 - name: Install perl modules for iplayer
-  apt:
-   pkg:
-    - libwww-perl
-    - liblwp-protocol-https-perl
-    - libmojolicious-perl
-    - libxml-libxml-perl
-    - libcgi-pm-perl
-    - atomicparsley
-    - ffmpeg
-   state: present
+  ansible.builtin.apt:
+    pkg:
+      - libwww-perl
+      - liblwp-protocol-https-perl
+      - libmojolicious-perl
+      - libxml-libxml-perl
+      - libcgi-pm-perl
+      - atomicparsley
+      - ffmpeg
+    state: present
   tags:
     - media
     - iplayer
 
-- name: delete old iplayer script
-  file:
+- name: Delete old iplayer script
+  ansible.builtin.file:
     path: "{{ plex_home }}/bin/update_iplayer.sh"
     state: absent
 
 - name: Add update iplayer script to bin
-  template: src=download_iplayer.sh dest={{ plex_home }}/bin/download_iplayer.sh mode=0755 owner=plex
+  ansible.builtin.template: src=download_iplayer.sh dest={{ plex_home }}/bin/download_iplayer.sh mode=0755 owner=plex
   tags:
     - media
     - iplayer
 
-
 - name: Add download_iplayer cron job
-  cron: name="download_iplayer" minute="15" hour=2
-        user="plex" job="{{ plex_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
-        cron_file=download_iplayer
-        state=present
+  ansible.builtin.cron: name="download_iplayer" minute="15" hour=2 user="plex" job="{{ plex_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ plex_remote_syslog_host
+    }} --port={{ plex_remote_syslog_port }}" cron_file=download_iplayer state=present
   tags:
     - media
     - iplayer
 
 - name: Make sure plex has a .get_iplayer directory
-  file: path={{ plex_home }}/.get_iplayer state=directory owner=plex mode=0755
+  ansible.builtin.file: path={{ plex_home }}/.get_iplayer state=directory owner=plex mode=0755
   tags:
     - media
     - iplayer
 
 - name: Add iplayer quality config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
-    regexp: '^tvmode'
+    regexp: ^tvmode
     line: tvmode best
-    create: yes
+    create: true
     mode: 0644
   tags:
     - media
     - iplayer
 
 - name: Add subdirformat config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
-    regexp: '^subdirformat'
+    regexp: ^subdirformat
     line: subdirformat <nameshort>
-    create: yes
+    create: true
     mode: 0644
   tags:
     - media
     - iplayer
 
 - name: Add subtitles config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
-    regexp: '^subtitles'
+    regexp: ^subtitles
     line: subtitles 1
-    create: yes
+    create: true
     mode: 0644
   tags:
     - media
     - iplayer
-
 
 - name: Add subdirformat config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
-    regexp: '^proxy'
-    line: "proxy http://{{ nordvpn_username }}:{{ nordvpn_password }}@{{ nordvpn_server }}.nordvpn.com:80"
-    create: yes
+    regexp: ^proxy
+    line: proxy http://{{ nordvpn_username }}:{{ nordvpn_password }}@{{ nordvpn_server }}.nordvpn.com:80
+    create: true
     mode: 0644
   tags:
     - media
     - iplayer
 
-
 - name: Add fileprefix config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
-    regexp: '^fileprefix'
+    regexp: ^fileprefix
     line: fileprefix - S<00seriesnum>E<00episodenum>
-    create: yes
+    create: true
     mode: 0644
   tags:
     - media
     - iplayer
 
 - name: Add output config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
-    regexp: '^output'
+    regexp: ^output
     line: output {{ transmission_complete }}/completed/
-    create: yes
+    create: true
     mode: 0644
   tags:
     - media
     - iplayer
 
 - name: Add whitespace config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.get_iplayer/options"
-    regexp: '^whitespace'
+    regexp: ^whitespace
     line: whitespace 1
-    create: yes
+    create: true
     mode: 0644
   tags:
     - media

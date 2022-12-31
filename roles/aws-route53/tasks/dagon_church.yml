@@ -1,42 +1,42 @@
-
-- name: dagon.church - A
-  route53:
-      overwrite: true
-      command: "present"
-      zone: "dagon.church"
-      record: "dagon.church."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+---
+- name: Dagon.church - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: dagon.church
+    record: dagon.church.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - dagon_church
 
-- name: live.dagon.church - CNAME
-  route53:
-      overwrite: true
-      command: "present"
-      zone: "dagon.church"
-      record: "live.dagon.church."
-      type: "CNAME"
-      ttl: "300"
-      value: 'dagon.church'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Live.dagon.church - CNAME
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: dagon.church
+    record: live.dagon.church.
+    type: CNAME
+    ttl: "300"
+    value: dagon.church
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - dagon_church
 
-- name: wiki.dagon.church - CNAME
-  route53:
-      overwrite: true
-      command: "present"
-      zone: "dagon.church"
-      record: "wiki.dagon.church."
-      type: "CNAME"
-      ttl: "300"
-      value: 'dagon.church'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Wiki.dagon.church - CNAME
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: dagon.church
+    record: wiki.dagon.church.
+    type: CNAME
+    ttl: "300"
+    value: dagon.church
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - dagon_church

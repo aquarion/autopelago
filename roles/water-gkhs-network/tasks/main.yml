@@ -1,18 +1,18 @@
-
+---
 - name: Set hostname
-  hostname: name={{ hostname }}
+  ansible.builtin.hostname: name={{ hostname }}
 
 - name: Resolve to gkhs.net
-  lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-name "water.gkhs.net";'
+  ansible.builtin.lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-name "water.gkhs.net";'
   notify: renew dhcp
 
 - name: Search to gkhs.net
-  lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-search "water.gkhs.net gkhs.net";'
+  ansible.builtin.lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-search "water.gkhs.net gkhs.net";'
   notify: renew dhcp
 
-- name: hostfile for ipv4
-  lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
+- name: Hostfile for ipv4
+  ansible.builtin.lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
 
-- name: hostfile for ipv6
+- name: Hostfile for ipv6
   when: ansible_default_ipv6.address is not undefined
-  lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv6.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
+  ansible.builtin.lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv6.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"

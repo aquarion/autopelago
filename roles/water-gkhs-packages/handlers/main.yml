@@ -1,8 +1,6 @@
 ---
+- name: Restart fail2ban
+  ansible.builtin.service: name=fail2ban state=restarted
 
-- name: restart fail2ban
-  service: name=fail2ban state=restarted
-
-- name: sysctl
-  command: "sysctl -p"
-
+- name: Sysctl
+  ansible.builtin.command: sysctl -p

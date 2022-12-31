@@ -1,6 +1,6 @@
+---
 - name: Create discourse IAM users
-  iam:
-    iam_type: user
+  amazon.aws.iam_user:
     name: "{{ item }}"
     state: present
   with_items:
@@ -8,24 +8,22 @@
   tags:
     - pdforums-discourse
 
-
 - name: Attach all-access S3 policy to discourse user
-  iam_policy:
+  amazon.aws.iam_policy:
     iam_type: user
-    iam_name: "pdforums-discourse"
+    iam_name: pdforums-discourse
     policy_name: discourse-upload-access
     state: present
-    policy_json: "{{ lookup( 'file', 'discourse-bucket-access.json') }}"
+    policy_json: "{{ lookup('file', 'discourse-bucket-access.json') }}"
   tags:
     - pdforums-discourse
 
-
 - name: Attach all-access S3 policy to discourse user
-  iam_policy:
+  amazon.aws.iam_policy:
     iam_type: user
-    iam_name: "pdforums-discourse"
+    iam_name: pdforums-discourse
     policy_name: discourse-backups-access
     state: present
-    policy_json: "{{ lookup( 'file', 'discourse-backups-access.json') }}"
+    policy_json: "{{ lookup('file', 'discourse-backups-access.json') }}"
   tags:
     - pdforums-discourse

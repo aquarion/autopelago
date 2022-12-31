@@ -1,7 +1,6 @@
 ---
-
 - name: Add Github Host Key
-  known_hosts:
+  ansible.builtin.known_hosts:
     path: /home/aquarion/.ssh/known_hosts
     name: github.com
     key: "{{ lookup('file', 'pubkeys/github.com') }}"
@@ -9,8 +8,8 @@
     - github
 
 - name: Update Aquarion Dotfiles
-  git:
+  ansible.builtin.git:
     repo: git@github.com:aquarion/dotfiles.git
     dest: /home/aquarion/code/dotfiles
-    update: yes
+    update: true
     version: master

@@ -1,60 +1,61 @@
 ---
+# - name: Ludoistic.com
+#  amazon.aws.route53_zone: zone=ludoistic.com comment="Storytime"
 
-#- name: ludoistic.com
-#  route53_zone: zone=ludoistic.com comment="Storytime"
-
-- name: ludoistic.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "ludoistic.com"
-      record: "ludoistic.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Ludoistic.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: ludoistic.com
+    record: ludoistic.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
-      - ludoistic
+    - ludoistic
 
-- name: www.ludoistic.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "ludoistic.com"
-      record: "www.ludoistic.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Www.ludoistic.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: ludoistic.com
+    record: www.ludoistic.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
-      - ludoistic
+    - ludoistic
 
-- name: google._domainkey.ludoistic.com. - TXT
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "ludoistic.com"
-      record: "google._domainkey.ludoistic.com."
-      type: "TXT"
-      ttl: "300"
-      value: '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAup2hbfv7PQuI+z8j634065jEtT" "eW4km3D7Vnt+tVQt+76mBp18mAb5C+xl70KS6LUEtYmrBe3fo6QbElQ96BZ4KnNJTo62NBfEkO2i/AuIO91ksKaL01En5wrH" "B6oo9JYhJ231eDZ01af6eBkrI9dy5wYSlU1wYwpIvk/DDA9HvmTMMGv87VOQYiEfEDfdWJq8ZRxUj+sKCDQAono7dmC/vHFG" "GkQ7/pFa+EqO4e2MFn22SmnXhLW1aGShJ3PSGvplyxZ3JHQiUO6bBi4ZoUtUZc1MOLRZjKMch/cXbkB+f/XUVNH9r0uOaZHt" "LXH+zwikjUVFStCdgtzyqOF2tVSwIDAQAB"'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Google._domainkey.ludoistic.com. - TXT
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: ludoistic.com
+    record: google._domainkey.ludoistic.com.
+    type: TXT
+    ttl: "300"
+    value: '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAup2hbfv7PQuI+z8j634065jEtT" "eW4km3D7Vnt+tVQt+76mBp18mAb5C+xl70KS6LUEtYmrBe3fo6QbElQ96BZ4KnNJTo62NBfEkO2i/AuIO91ksKaL01En5wrH"
+      "B6oo9JYhJ231eDZ01af6eBkrI9dy5wYSlU1wYwpIvk/DDA9HvmTMMGv87VOQYiEfEDfdWJq8ZRxUj+sKCDQAono7dmC/vHFG" "GkQ7/pFa+EqO4e2MFn22SmnXhLW1aGShJ3PSGvplyxZ3JHQiUO6bBi4ZoUtUZc1MOLRZjKMch/cXbkB+f/XUVNH9r0uOaZHt"
+      "LXH+zwikjUVFStCdgtzyqOF2tVSwIDAQAB"'
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
-      - ludoistic
+    - ludoistic
 
-- name: ludoistic.com. - MX
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "ludoistic.com"
-      record: "ludoistic.com."
-      type: "MX"
-      ttl: "300"
-      value: '1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.'
-      aws_access_key: '{{ istic_aws_key }}'
-      aws_secret_key: '{{ istic_aws_secret }}'
+- name: Ludoistic.com. - MX
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: ludoistic.com
+    record: ludoistic.com.
+    type: MX
+    ttl: "300"
+    value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
+    aws_access_key: "{{ istic_aws_key }}"
+    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
-      - ludoistic
+    - ludoistic

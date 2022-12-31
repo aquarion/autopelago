@@ -1,98 +1,109 @@
 ---
-
-
 - name: Aquarionics DNS
-  include: aquarionics.yml
+  ansible.builtin.include_tasks: aquarionics.yml
   tags:
     - aws
     - aquarionics
 
-- include: aqxs.yml
+- name: Update Route53 for aqxs
+  ansible.builtin.include_tasks: aqxs.yml
   tags:
     - aws
 
-- include: camlarp.yml
+- name: Update Route53 for camlarp
+  ansible.builtin.include_tasks: camlarp.yml
   tags:
     - aws
     - camlarp
 
-
-- include: cleartext.yml
+- name: Update Route53 for cleartext
+  ansible.builtin.include_tasks: cleartext.yml
   tags:
     - aws
 
-- include: factionfiction.yml
+- name: Update Route53 for factionfiction
+  ansible.builtin.include_tasks: factionfiction.yml
   tags:
     - aws
 
-- include: foipme.yml
+- name: Update Route53 for foipme
+  ansible.builtin.include_tasks: foipme.yml
   tags:
     - aws
 
-- include: warehouse.yml
+- name: Update Route53 for warehouse
+  ansible.builtin.include_tasks: warehouse.yml
   tags:
     - aws
 
-- include: monthlymoon.yml
+- name: Update Route53 for monthlymoon
+  ansible.builtin.include_tasks: monthlymoon.yml
   tags:
     - aws
     - monthlymoon
 
-- include: ludoistic.yml
+- name: Update Route53 for ludoistic
+  ansible.builtin.include_tasks: ludoistic.yml
   tags:
     - aws
     - ludoistic
 
-- include: carcosadreams.yml
+- name: Update Route53 for carcosadreams
+  ansible.builtin.include_tasks: carcosadreams.yml
   tags:
     - aws
     - carcosadreams
 
-
-- include: larpfic.yml
+- name: Update Route53 for larpfic
+  ansible.builtin.include_tasks: larpfic.yml
   tags:
     - aws
     - larpfic
 
-- include: larpme.yml
+- name: Update Route53 for larpme
+  ansible.builtin.include_tasks: larpme.yml
   tags:
     - aws
     - larpme
 
-- include: conterio.yml
+- name: Update Route53 for conterio
+  ansible.builtin.include_tasks: conterio.yml
   tags:
     - aws
     - conterio
 
-- include: hubris.yml
+- name: Update Route53 for hubris
+  ansible.builtin.include_tasks: hubris.yml
   tags:
     - aws
     - hubris
 
-
-- include: bromioscreations.yml
+- name: Update Route53 for bromioscreations
+  ansible.builtin.include_tasks: bromioscreations.yml
   tags:
     - aws
     - bromioscreations
 
-- include: istic.yml
+- name: Update Route53 for istic
+  ansible.builtin.include_tasks: istic.yml
   tags:
     - aws
     - istic_net
 
-- include: nanocountdown.yml
+- name: Update Route53 for nanocountdown
+  ansible.builtin.include_tasks: nanocountdown.yml
   tags:
     - aws
     - nanocountdown
 
-- include: dagon_church.yml
+- name: Update Route53 for dagon_church
+  ansible.builtin.include_tasks: dagon_church.yml
   tags:
     - aws
     - dagon_church
 
-
-- include: nicholasavenell.yml
+- name: Update Route53 for nicholasavenell
+  ansible.builtin.include_tasks: nicholasavenell.yml
   tags:
     - aws
     - nicholasavenell
-

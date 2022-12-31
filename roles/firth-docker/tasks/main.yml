@@ -1,23 +1,23 @@
-
-- name: add GPG key
-  apt_key:
+---
+- name: Add GPG key
+  ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
   tags:
     - docker
 
-- name: add docker repository to apt
-  apt_repository:
+- name: Add docker repository to apt
+  ansible.builtin.apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
     state: present
   tags:
     - docker
 
-- name: install docker
-  apt:
+- name: Install docker
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 21600
   loop:
     - docker-ce
@@ -26,31 +26,32 @@
     - docker
 
 - name: Allow docker to access redis
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/redis/redis.conf
     line: bind 127.0.0.1 ::1 172.17.0.1
     regex: ^bind
   tags:
     - docker
   notify:
-   - restart redis
+    - restart redis
 
 - name: Make sure docker can access MariaDB
-  copy:
+  ansible.builtin.copy:
     src: mysql/docker.cnf
     dest: /etc/mysql/mariadb.conf.d/60-docker.cnf
     owner: root
-    mode: '0664'
+    mode: "0664"
   tags:
     - docker
   notify:
-   - restart mysql
+    - restart mysql
 
 - name: Add users to docker group
-  user:
+  # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
+  ansible.builtin.user:
     name: "{{ item }}"
     groups: docker
-    append: yes
+    append: true
   with_items:
     - aquarion
     - ccooke

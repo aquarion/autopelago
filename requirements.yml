@@ -1,13 +1,15 @@
-- src: https://github.com/Fsero/ansible-apt.git
-  version: removing_warning_in_ansible_2
-- src: elastic.elasticsearch
-  version: v7.16.3
-- src: geerlingguy.java
-- src: elboletaire.transmission
-- src: hannseman.homebridge
-#- src: pablocrivella.heroku-toolbelt
-- src: torian.filebeat
-- src: https://github.com/aquarion/ansible-papertrail
-  name: ansible.papertrail
-- src: https://github.com/ieguiguren/ansible-nordvpn
-- src: https://github.com/amarao/ansible-get-external-ip-via-dyndns
+---
+roles:
+  - src: elastic.elasticsearch
+    version: v7.16.3
+  - src: geerlingguy.java
+    version: 2.2.0
+  - src: elboletaire.transmission
+    version: 2.0.2
+  - src: https://github.com/aquarion/ansible-papertrail
+    name: ansible.papertrail
+
+collections:
+  - amazon.aws
+  - community.general
+  - community.mysql

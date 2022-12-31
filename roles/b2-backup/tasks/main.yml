@@ -1,37 +1,39 @@
-
-- name: "Install B2"
-  pip:
-   name: b2
+---
+- name: Install B2
+  ansible.builtin.pip:
+    name: b2
   tags:
-    - "b2backup"
+    - b2backup
 
-- name: "Check B2 authorisation"
-  lineinfile:
+- name: Check B2 authorisation
+  ansible.builtin.lineinfile:
     path: "{{ plex_home }}/.b2_auth_date"
-    regexp: '^etag'
-    line: 'etag {{ backblaze_key_changed }}'
+    regexp: ^etag
+    line: etag {{ backblaze_key_changed }}
     owner: plex
     group: plex
     mode: 0644
-    create: yes
-  notify:
-    reauthorize backblaze
+    create: true
+  notify: reauthorize backblaze
   tags:
-    - "b2backup"
+    - b2backup
 
 - name: Setup B2 backup of Media (Script)
-  template:
-    src: 'media-backup.bash.j2'
-    dest: '{{ plex_home }}/bin/media-backup.sh'
+  ansible.builtin.template:
+    src: media-backup.bash.j2
+    dest: "{{ plex_home }}/bin/media-backup.sh"
     mode: 0770
-    owner: 'plex'
+    owner: plex
   tags:
-    - "b2backup"
-
+    - b2backup
 
 - name: Setup B2 backup of Media (Cron)
-  cron: name="b2backup" hour=04 minute="46"
-        user="plex" job="{{ plex_home }}/bin/media-backup.sh"
-        cron_file=b2backup
+  ansible.builtin.cron:
+    name: b2backup
+    hour: 04
+    minute: "46"
+    user: plex
+    job: "{{ plex_home }}/bin/media-backup.sh"
+    cron_file: b2backup
   tags:
-    - "b2backup"
+    - b2backup
