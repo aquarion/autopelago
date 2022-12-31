@@ -1,13 +1,23 @@
+---
 exclude_paths:
   - ./galaxy-roles # Don't bother checking upstream code
 skip_list: # Bad lint things we're doing for good reasons
-  - '305' # Use shell only when shell functionality is required
-  - '301' # Commands should not change things if nothing needs doing
-  - '503' # Tasks that run when changed should likely be handlers
-  - '106' # [106] Role name archipelago-nginx does not match ``^[a-z][a-z0-9_]+$`` pattern
-  - '204' # Lines should be no longer than 160 chars
+  - "305" # Use shell only when shell functionality is required
+  - "301" # Commands should not change things if nothing needs doing
+  - "503" # Tasks that run when changed should likely be handlers
+  - "106" # [106] Role name archipelago-nginx does not match ``^[a-z][a-z0-9_]+$`` pattern
+  - "204" # Lines should be no longer than 160 chars
+  - yaml[line-length]
 
+# mock_roles:
+#   - ansible.papertrail
+#   - elastic.elasticsearch
+#   - geerlingguy.java
+#   - elboletaire.transmission
+#   - ansible.papertrail
 
+# # mock_modules:
+# #  - amazon.aws.iam_user
+# #  - community.general.timezone
 
-mock_roles:
-  - ansible.papertrail
+# offline: true

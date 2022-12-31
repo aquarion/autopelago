@@ -1,34 +1,30 @@
 ---
+- name: Factionfiction.net. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: factionfiction.net
+    record: factionfiction.net.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: factionfiction.net. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "factionfiction.net"
-      record: "factionfiction.net."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Factionfiction.net. - NS
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: factionfiction.net
+    record: factionfiction.net.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: NS
+    ttl: "172800"
+    value: ns-1302.awsdns-34.org.,ns-1969.awsdns-54.co.uk.,ns-147.awsdns-18.com.,ns-614.awsdns-12.net.
 
-
-
-- name: factionfiction.net. - NS
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "factionfiction.net"
-      record: "factionfiction.net."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "NS"
-      ttl: "172800"
-      value: ns-1302.awsdns-34.org.,ns-1969.awsdns-54.co.uk.,ns-147.awsdns-18.com.,ns-614.awsdns-12.net.
-
-
-#- name: factionfiction.net. - SOA
-#  route53:
+# - name: Factionfiction.net. - SOA
+#  amazon.aws.route53:
 #      overwrite: true
 #      command: "create"
 #      zone: "factionfiction.net"
@@ -39,17 +35,14 @@
 #      ttl: "900"
 #      value: 'ns-1302.awsdns-34.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
-
-
-- name: www.factionfiction.net. - CNAME
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "factionfiction.net"
-      record: "www.factionfiction.net."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "CNAME"
-      ttl: "300"
-      value: 'factionfiction.net'
-
+- name: Www.factionfiction.net. - CNAME
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: factionfiction.net
+    record: www.factionfiction.net.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: CNAME
+    ttl: "300"
+    value: factionfiction.net

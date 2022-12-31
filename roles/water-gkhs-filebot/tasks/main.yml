@@ -1,63 +1,59 @@
-
-
+---
 # Script support
 - name: Make sure plex has a bin
-  file: path={{ plex_home }}/bin state=directory owner=plex mode=0755
+  ansible.builtin.file: path={{ plex_home }}/bin state=directory owner=plex mode=0755
   tags:
     - media
 
-
 - name: Install filebot
-  include: filebot.yml
+  ansible.builtin.include_tasks: filebot.yml
   tags:
     - media
 
 - name: Install get_iplayer
-  include: iplayer.yml
+  ansible.builtin.include_tasks: iplayer.yml
   tags:
     - media
 
 - name: Disable protected hardlinks (makes filebot hardlink work)
-  lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
+  ansible.builtin.lineinfile: line="fs.protected_hardlinks = 0" state="present" dest=/etc/sysctl.conf
   notify: sysctl
   tags:
     - media
 # Sync non-TV shows to their own libraries
 
 - name: Add sync_or_swim script to bin
-  template: src=sync_or_swim.sh dest={{ plex_home }}/bin/sync_or_swim.sh mode=0755 owner=plex
+  ansible.builtin.template: src=sync_or_swim.sh dest={{ plex_home }}/bin/sync_or_swim.sh mode=0755 owner=plex
   tags:
     - media
 
 # Sort It Ahht
 
 - name: Add sortitaaht script to bin
-  template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht.sh mode=0755 owner=plex
+  ansible.builtin.template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht.sh mode=0755 owner=plex
   tags:
     - media
 
 - name: Add verbose sortitaaht script to bin
-  template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht_verbose.sh mode=0755 owner=plex
+  ansible.builtin.template: src=sortitaaht.sh dest={{ plex_home }}/bin/sortitaaht_verbose.sh mode=0755 owner=plex
   tags:
     - media
   vars:
     verbose: true
 
 - name: Add Clear Bullshit script to bin
-  template: src=clear_bullshit.sh dest={{ plex_home }}/bin/clear_bullshit.sh mode=0755 owner=plex
+  ansible.builtin.template: src=clear_bullshit.sh dest={{ plex_home }}/bin/clear_bullshit.sh mode=0755 owner=plex
   tags:
     - media
 
 - name: Add sortitaaht cron job
-  cron: name="filebot" minute="2,32"
-        user="plex" job="{{ plex_home }}/bin/sortitaaht.sh 2>&1 | logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
-        cron_file=filebot
-        state=present
+  ansible.builtin.cron: name="filebot" minute="2,32" user="plex" job="{{ plex_home }}/bin/sortitaaht.sh 2>&1 | logger --tag Filebot --server={{ plex_remote_syslog_host
+    }} --port={{ plex_remote_syslog_port }}" cron_file=filebot state=present
   tags:
     - media
 
-- name: delete old youtube script
-  file:
+- name: Delete old youtube script
+  ansible.builtin.file:
     path: "{{ plex_home }}/bin/youtube_download.sh"
     state: absent
   tags:
@@ -65,47 +61,41 @@
     - dlyoutube
 
 - name: Add download_youtube script to bin
-  template: src=download_youtube.sh dest={{ plex_home }}/bin/download_youtube.sh mode=0755 owner=plex
+  ansible.builtin.template: src=download_youtube.sh dest={{ plex_home }}/bin/download_youtube.sh mode=0755 owner=plex
   tags:
     - media
     - media_playlists
     - dlyoutube
 
 - name: Add download_youtube cron job
-  cron: name="download_youtube" minute="15" hour=3
-        user="plex" job="{{ plex_home }}/bin/download_youtube.sh 2>&1  | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag youtube"
-        cron_file=download_youtube
-        state=present
+  ansible.builtin.cron: name="download_youtube" minute="15" hour=3 user="plex" job="{{ plex_home }}/bin/download_youtube.sh 2>&1  | logger --server={{ plex_remote_syslog_host
+    }} --port={{ plex_remote_syslog_port }} --tag youtube" cron_file=download_youtube state=present
   tags:
     - media
     - dlyoutube
 
-- name: "Install Transmission & Aria"
-  apt:
-   state: present
-   pkg:
-    - transmission-cli
-    - aria2
+- name: Install Transmission & Aria
+  ansible.builtin.apt:
+    state: present
+    pkg:
+      - transmission-cli
+      - aria2
   tags:
     - media
     - dlyoutube
 
 - name: Add remove_completed_torrents script to bin
-  template: src=remove_completed_torrents.sh dest={{ plex_home }}/bin/remove_completed_torrents.sh mode=0755 owner=plex
+  ansible.builtin.template: src=remove_completed_torrents.sh dest={{ plex_home }}/bin/remove_completed_torrents.sh mode=0755 owner=plex
   tags:
     - media
-
 
 - name: Add remove_completed_torrents cron job
-  cron: name="remove_completed_torrents" minute="15" hour=18
-        user="plex" job="{{ plex_home }}/bin/remove_completed_torrents.sh 2>&1 | logger --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag torrent_remove"
-        cron_file=remove_completed_torrents
-        state=present
+  ansible.builtin.cron: name="remove_completed_torrents" minute="15" hour=18 user="plex" job="{{ plex_home }}/bin/remove_completed_torrents.sh 2>&1 | logger --server={{
+    plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }} --tag torrent_remove" cron_file=remove_completed_torrents state=present
   tags:
     - media
 
-
 - name: Add media logrotate
-  template: src=media_logrotate.j2 dest=/etc/logrotate.d/media_logrotate mode=0644 owner=root
+  ansible.builtin.template: src=media_logrotate.j2 dest=/etc/logrotate.d/media_logrotate mode=0644 owner=root
   tags:
     - logrotate

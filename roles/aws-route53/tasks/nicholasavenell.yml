@@ -1,82 +1,74 @@
+---
+- name: Nicholasavenell.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: nicholasavenell.com
+    record: nicholasavenell.com.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "86400"
+    value: "{{ loadbalancer_ip }}"
 
+- name: Nicholasavenell.com. - AAAA
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: nicholasavenell.com
+    record: nicholasavenell.com.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: AAAA
+    ttl: "300"
+    value: "{{ ansible_default_ipv6.address }}"
 
-- name: nicholasavenell.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "nicholasavenell.com"
-      record: "nicholasavenell.com."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "86400"
-      value: '{{ loadbalancer_ip }}'
+- name: Www.nicholasavenell.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: nicholasavenell.com
+    record: www.nicholasavenell.com.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
 
-- name: nicholasavenell.com. - AAAA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "nicholasavenell.com"
-      record: "nicholasavenell.com."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "AAAA"
-      ttl: "300"
-      value: '{{ ansible_default_ipv6.address }}'
+# ################################################################### .net
 
+- name: Nicholasavenell.net. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: nicholasavenell.net
+    record: nicholasavenell.net.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "86400"
+    value: "{{ loadbalancer_ip }}"
 
-- name: www.nicholasavenell.com. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "nicholasavenell.com"
-      record: "www.nicholasavenell.com."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
+- name: Nicholasavenell.net. - AAAA
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: nicholasavenell.net
+    record: nicholasavenell.net.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: AAAA
+    ttl: "300"
+    value: "{{ ansible_default_ipv6.address }}"
 
-
-#################################################################### .net
-
-
-
-- name: nicholasavenell.net. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "nicholasavenell.net"
-      record: "nicholasavenell.net."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "86400"
-      value: '{{ loadbalancer_ip }}'
-
-- name: nicholasavenell.net. - AAAA
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "nicholasavenell.net"
-      record: "nicholasavenell.net."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "AAAA"
-      ttl: "300"
-      value: '{{ ansible_default_ipv6.address }}'
-
-
-- name: www.nicholasavenell.net. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "nicholasavenell.net"
-      record: "www.nicholasavenell.net."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-
-
+- name: Www.nicholasavenell.net. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: nicholasavenell.net
+    record: www.nicholasavenell.net.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"

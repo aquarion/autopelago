@@ -1,7 +1,6 @@
 ---
-
 - name: Install Application Packages
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
       - mariadb-server

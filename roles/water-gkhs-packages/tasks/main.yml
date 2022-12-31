@@ -1,25 +1,22 @@
 ---
-
 - name: Set timezone to UTC
-  timezone:
+  community.general.timezone:
     name: UTC
 
-#- name: Install key
+# - name: Install key
 #  apt_key:
 #    keyserver: keyserver.ubuntu.com
 #    id: 8B48AD6246925553
 #  when: ansible_distribution == 'Debian'
 
-
 - name: Install Debian Backports
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb http://ftp.debian.org/debian stretch-backports main
     state: present
-    filename: 'stretch-backports'
+    filename: stretch-backports
   when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
 
-
-#- name: Install key
+# - name: Install key
 #  apt_key:
 #    keyserver: keyserver.ubuntu.com
 #    id: 8B48AD6246925553
@@ -27,61 +24,58 @@
 
 - name: Enable Ubuntu universe repository
   when: ansible_distribution == 'Ubuntu'
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ item }}"
   loop:
-    - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe"
-    - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-updates universe"
-    - "deb http://security.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-security universe"
+    - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe
+    - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-updates universe
+    - deb http://security.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-security universe
   tags:
     - certbot
 
-
-
 - name: Package list update
-  apt: update_cache=yes cache_valid_time=21600
+  ansible.builtin.apt: update_cache=yes cache_valid_time=21600
 
 - name: Install System Packages
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
-     - python3
-     - python3-pip
-     - build-essential
-     - libffi-dev
-       #- libssl-dev
-     - apt-transport-https
-     - ca-certificates
-     - etckeeper
-     - fail2ban
-     - dnsutils
-     - acl
+      - python3
+      - python3-pip
+      - build-essential
+      - libffi-dev
+      - apt-transport-https
+      - ca-certificates
+      - etckeeper
+      - fail2ban
+      - dnsutils
+      - acl
 
 - name: Install Debian System Packages
   when: ansible_distribution == 'Debian'
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
-     - python3-cryptography
+      - python3-cryptography
 
 - name: Install Ubuntu System packages
   when: ansible_distribution == 'Ubuntu'
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
-     - software-properties-common
-     - python-is-python3
+      - software-properties-common
+      - python-is-python3
   tags:
     - certbot
 
-- name: python-is-python3
-  file:
-   dest: /usr/bin/python
-   src: python3
-   state: link
+- name: Python-is-python3
+  ansible.builtin.file:
+    dest: /usr/bin/python
+    src: python3
+    state: link
 
 - name: Install Utility Packages
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
       - vim
@@ -95,37 +89,33 @@
       - moreutils
       - rzip
 
-- name: config fail2ban
-  lineinfile:
+- name: Config fail2ban
+  ansible.builtin.lineinfile:
     path: /etc/fail2ban/fail2ban.conf
-    regexp: '^logtarget'
-    line: "logtarget = SYSLOG"
-  notify:
-    restart fail2ban
-
+    regexp: ^logtarget
+    line: logtarget = SYSLOG
+  notify: restart fail2ban
 
 - name: Determine remote Python version.
-  set_fact:
+  ansible.builtin.set_fact:
     python_version: "{% if 'python3' in ansible_python_interpreter|default('') %}python3{% else %}python{% endif %}"
-  tags:
-    aws
+  tags: aws
 
 - name: Ensure Python libraries that ansible needs aree installed.
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
-     - "{{ python_version }}-boto3"
-     - "{{ python_version }}-boto"
-     - "{{ python_version }}-passlib"
+      - "{{ python_version }}-boto3"
+      - "{{ python_version }}-boto"
+      - "{{ python_version }}-passlib"
   tags:
-     - aws
+    - aws
 
 - name: Increase inotify watches level (for VSCode)
-  lineinfile:
-    line: "fs.inotify.max_user_watches=524288"
-    state: "present"
+  ansible.builtin.lineinfile:
+    line: fs.inotify.max_user_watches=524288
+    state: present
     dest: /etc/sysctl.conf
-    regexp: '^fs.inotify.max_user_watches'
+    regexp: ^fs.inotify.max_user_watches
   notify: sysctl
-  tags:
-    sysctl
+  tags: sysctl

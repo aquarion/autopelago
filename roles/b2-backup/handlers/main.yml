@@ -1,7 +1,6 @@
-
-
- - name: "reauthorize backblaze"
-   command:
-      cmd: "b2 authorize-account {{ backblaze_b2_app }} {{ backblaze_b2_key }}"
-   become: yes
-   become_user: plex
+---
+- name: Reauthorize backblaze
+  ansible.builtin.command:
+    cmd: b2 authorize-account {{ backblaze_b2_app }} {{ backblaze_b2_key }}
+  become: true
+  become_user: plex

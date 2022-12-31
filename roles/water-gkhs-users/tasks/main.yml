@@ -1,15 +1,18 @@
 ---
-
 - name: Create Admin Users
-  user: name={{ item }} groups=adm append=yes
+  # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: adm
+    append: true
   with_items:
-   - aquarion
-   - ccooke
+    - aquarion
+    - ccooke
   tags:
     - users
 
 - name: Ensure group "certbot_access" exists
-  group:
+  ansible.builtin.group:
     name: certbot_access
     state: present
   tags:
@@ -17,35 +20,35 @@
 
 - name: Add keys key
   with_items:
-   - aquarion
-   - ccooke
-  authorized_key:
+    - aquarion
+    - ccooke
+  ansible.posix.authorized_key:
     user: "{{ item }}"
     key: "{{ lookup('file', 'files/' ~  item ~ '.keys') }}"
     exclusive: true
   tags:
     - users
 
-- name: add sudo
-  template:
-    dest=/etc/sudoers.d/{{ item }}
-    src=sudo.tpl
-    owner=root
-    group=root
-    mode=440
-    force=yes
-    validate='visudo -cf %s'
+- name: Add sudo
+  ansible.builtin.template:
+    dest: /etc/sudoers.d/{{ item }}
+    src: sudo.tpl
+    owner: root
+    group: root
+    mode: ug=r,o=
+    force: true
+    validate: visudo -cf %s
   with_items:
     - aquarion
     - ccooke
   tags:
     - users
 
-
 - name: Send admin emails to aquarion
   ansible.builtin.copy:
-    content: 'nicholas+{{ inventory_hostname_short }}-cron@aquarionics.com'
-    dest: "~{{ item }}/.forward"
+    content: nicholas+{{ inventory_hostname_short }}-cron@aquarionics.com
+    dest: ~{{ item }}/.forward
+    mode: a=rw
   with_items:
     - aquarion
     - root

@@ -1,11 +1,10 @@
 ---
-
-- name: restart redis
-  service:
+- name: Restart redis
+  ansible.builtin.service:
     name: redis
     state: restarted
 
-- name: restart mysql
-  service:
+- name: Restart mysql
+  ansible.builtin.service:
     name: mysql
     state: restarted

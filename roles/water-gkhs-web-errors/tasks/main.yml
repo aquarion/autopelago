@@ -1,57 +1,57 @@
-#- name: install nginx
+---
+# - name: Install nginx
 #  apt: pkg=nginx state=installed
 
 - name: Create www errors directory
-  file:
+  ansible.builtin.file:
     path: /var/www/errors
     state: directory
     mode: 0755
 
 - name: Create www directory
-  file:
+  ansible.builtin.file:
     path: /var/www/html
     state: directory
     mode: 0755
 
-
-- name: configure istic error pages
-  template:
+- name: Configure istic error pages
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/var/www/errors/{{ item | basename }}"
+    dest: /var/www/errors/{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/errors/*
+    - templates/errors/*
 
-- name: configure web base page
-  template:
+- name: Configure web base page
+  ansible.builtin.template:
     src: errors/404_host.html
     dest: /var/www/html/index.html
     mode: 0644
 
 - name: "Nginx: check for installation"
   register: nginx_installed
-  stat:
-    path: "/etc/nginx/nginx.conf"
+  ansible.builtin.stat:
+    path: /etc/nginx/nginx.conf
 
-- name: configure nginx error pages
-  template:
+- name: Configure nginx error pages
+  ansible.builtin.template:
     src: config/errors_nginx.conf
     dest: /etc/nginx/snippets/errors.conf
     mode: 0644
   when: nginx_installed.stat.exists
   notify:
-   - restart nginx
+    - restart nginx
 
 - name: "Apache: check for installation"
   register: apache_installed
-  stat:
-    path: "/etc/apache2/apache2.conf"
+  ansible.builtin.stat:
+    path: /etc/apache2/apache2.conf
 
-- name: configure apache error pages
-  template:
+- name: Configure apache error pages
+  ansible.builtin.template:
     src: config/errors_apache.conf
     dest: /etc/apache2/conf-enabled/errors.conf
     mode: 0644
   when: apache_installed.stat.exists
   notify:
-   - restart apache
+    - restart apache

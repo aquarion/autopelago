@@ -1,33 +1,34 @@
-- name: install openssl
-  apt:
+---
+- name: Install openssl
+  ansible.builtin.apt:
     pkg: openssl
     state: present
 
 - name: Create DHParam file
-  command:
+  ansible.builtin.command:
     cmd: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
     creates: /etc/ssl/certs/dhparam.pem
   notify:
-   - restart nginx
+    - restart nginx
 
 - name: Comment out ssl protocols in default config
-  replace:
+  ansible.builtin.replace:
     dest: /etc/nginx/nginx.conf
-    regexp: '^(\s*)(ssl_protocols.*)'
-    replace: '\1#Ansible#\2'
+    regexp: ^(\s*)(ssl_protocols.*)
+    replace: \1#Ansible#\2
 
 - name: Comment out ssl cipher preferences in default config
-  replace:
+  ansible.builtin.replace:
     dest: /etc/nginx/nginx.conf
-    regexp: '^(\s*)(ssl_prefer_server_ciphers.*)'
-    replace: '\1#Ansible#\2'
+    regexp: ^(\s*)(ssl_prefer_server_ciphers.*)
+    replace: \1#Ansible#\2
 
 - name: Add new DH params to nginx
-  copy:
+  ansible.builtin.copy:
     dest: /etc/nginx/conf.d/diffie-helman.conf
     src: files/diffie-helman.conf
     owner: root
     group: root
     mode: 0644
   notify:
-   - restart nginx
+    - restart nginx

@@ -1,74 +1,74 @@
-
+---
 - name: Install CUPS
-  apt:
+  ansible.builtin.apt:
     pkg: cups
     state: present
 
-
 - name: Add listen port to cups
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     path: /etc/cups/cupsd.conf
     line: "Listen 0.0.0.0:631 "
-    insertafter: "^Listen"
+    insertafter: ^Listen
   notify:
     - restart cups
 
 - name: Add access network to access
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     path: /etc/cups/cupsd.conf
     line: "  Allow 192.168.0.0/16"
-    insertafter: "^<Location />"
+    insertafter: ^<Location />
   notify:
     - restart cups
 
 - name: Add access network to admin
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     path: /etc/cups/cupsd.conf
     line: "  Allow 192.168.0.0/16"
-    insertafter: "^<Location /admin>"
+    insertafter: ^<Location /admin>
   notify:
     - restart cups
 
 - name: Remove localhost limit
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: absent
     path: /etc/cups/cupsd.conf
-    line: "Listen localhost:631"
+    line: Listen localhost:631
   notify:
     - restart cups
 
 - name: Add Aquarion to lpadmin
-  user:
+  # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
+  ansible.builtin.user:
     name: aquarion
     groups: lpadmin
-    append: yes
+    append: true
   notify:
     - restart cups
 
 - name: Get Thermal Print drivers
-  git:
-    repo: 'https://github.com/klirichek/zj-58.git'
-    dest: "/usr/src/zj-58"
+  ansible.builtin.git:
+    repo: https://github.com/klirichek/zj-58.git
+    dest: /usr/src/zj-58
     version: master
   register: driverupdate
 
 - name: Remove old driver build file
-  file:
+  ansible.builtin.file:
     state: absent
     path: /usr/src/zj-58/build
   when: driverupdate.changed
 
 - name: Remove old print driver
-  file:
+  ansible.builtin.file:
     state: absent
     path: /usr/share/cups/model/zjiang
   when: driverupdate.changed
 
 - name: Install dev files for cups
-  apt:
+  ansible.builtin.apt:
     pkg:
       - build-essential
       - cmake
@@ -77,117 +77,115 @@
     state: present
 
 - name: Add a build directory
-  file:
+  ansible.builtin.file:
     path: /usr/src/zj-58/build
     mode: 0755
     state: directory
 
 - name: Prepare Thermal Printer Drivers build environment
-  shell: |
+  ansible.builtin.shell: |
     cmake /usr/src/zj-58
   args:
     chdir: /usr/src/zj-58/build
     creates: /usr/src/zj-58/build/cmake_install.cmake
 
 - name: Build Thermal Printer Drivers
-  shell: |
+  ansible.builtin.shell: |
     cmake --build .
   args:
     chdir: /usr/src/zj-58/build
     creates: /usr/src/zj-58/build/ppd/zj58.ppd
 
 - name: Thermal Printer Drivers installation
-  shell: |
+  ansible.builtin.shell: |
     make install
   args:
     chdir: /usr/src/zj-58/build
     creates: /usr/share/cups/model/zjiang
 
-
 - name: Set up HPLIP temp directory
-  file:
+  ansible.builtin.file:
     path: /usr/src/hplip
     state: directory
     mode: 0755
 
-
-#### <HP41>From https://github.com/HP41/ansible-cups
+# ### <HP41>From https://github.com/HP41/ansible-cups
 - name: Install Expect
-  apt:
+  ansible.builtin.apt:
     name: expect
     state: present
 
 - name: Install HPLIP
-  apt:
+  ansible.builtin.apt:
     name: hplip
     state: present
   register: hplip_package
 
 - name: Copy hp-plugin-install.exp install script to /usr/src/hplip/
-  copy:
-    src: "files/hp-plugin-install.exp"
-    dest: "/usr/src/hplip/hp-plugin-install.exp"
+  ansible.builtin.copy:
+    src: files/hp-plugin-install.exp
+    dest: /usr/src/hplip/hp-plugin-install.exp
     mode: a+rx
   register: hplip
 
 - name: Installing HP Plugin using an except script to avoid user interaction
-  command: "/usr/src/hplip/hp-plugin-install.exp"
+  ansible.builtin.command: /usr/src/hplip/hp-plugin-install.exp
   when: hplip.changed or hplip_package.changed
-#### </HP41>
+# ### </HP41>
 
-- name: test printer config
-  copy:
+- name: Test printer config
+  ansible.builtin.copy:
     src: printers.conf
     dest: /etc/cups/printers.conf
     owner: root
     group: lp
     mode: 0664
-  check_mode: yes
+  check_mode: true
   register: test_config
 
-- name: test thermal printer ppd
-  copy:
+- name: Test thermal printer ppd
+  ansible.builtin.copy:
     src: /usr/share/cups/model/zjiang/zj58.ppd
     dest: /etc/cups/ppd/Receipt.ppd
     owner: root
     group: lp
     mode: 0664
     remote_src: true
-  check_mode: yes
+  check_mode: true
   register: test_receipt
 
-- name: test laserjet printer ppd
-  copy:
+- name: Test laserjet printer ppd
+  ansible.builtin.copy:
     src: LaserJet.ppd
     dest: /etc/cups/LaserJet.ppd
     owner: root
     group: lp
     mode: 0664
-  check_mode: yes
+  check_mode: true
   register: test_laserjet
 
 - name: Stop CUPS
-  service:
+  ansible.builtin.service:
     name: cups
     state: stopped
   when: test_config.changed or test_receipt.changed or test_laserjet.changed
 
-- name: apply printer config
-  copy:
+- name: Apply printer config
+  ansible.builtin.copy:
     src: printers.conf
     dest: /etc/cups/printers.conf
-    backup: yes
+    backup: true
     owner: root
     group: lp
     mode: 0664
   notify:
     - restart cups
 
-- name: apply thermal printer ppd
-  copy:
+- name: Apply thermal printer ppd
+  ansible.builtin.copy:
     src: /usr/share/cups/model/zjiang/zj58.ppd
     dest: /etc/cups/ppd/Receipt.ppd
-    backup: yes
+    backup: true
     owner: root
     group: lp
     mode: 0664
@@ -195,8 +193,8 @@
   notify:
     - restart cups
 
-- name: test laserjet printer ppd
-  copy:
+- name: Test laserjet printer ppd
+  ansible.builtin.copy:
     src: LaserJet.ppd
     dest: /etc/cups/ppd/LaserJet.ppd
     owner: root
@@ -206,8 +204,6 @@
     - restart cups
 
 - name: Install avahi-discover for airprint
-  apt:
+  ansible.builtin.apt:
     pkg: avahi-discover
     state: present
-
-

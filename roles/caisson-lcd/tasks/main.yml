@@ -1,13 +1,12 @@
-
+---
 - name: Get LCD Show
-  git:
-    repo: 'https://github.com/goodtft/LCD-show.git'
-    dest: "/usr/src/LCD-show"
+  ansible.builtin.git:
+    repo: https://github.com/goodtft/LCD-show.git
+    dest: /usr/src/LCD-show
     version: master
 
-
-- name: Prepare LCD Show script # noqa 303
-  shell: |
+- name: Prepare LCD Show script # noqa command-instead-of-module
+  ansible.builtin.shell: |
     sed -e "s/reboot/#reboot/g" < LCD35-show > LCD35-show-modified
     chmod 755 LCD35-show-modified
   args:
@@ -15,39 +14,35 @@
     creates: /usr/src/LCD-show/LCD35-show-modified
 
 - name: Install LCD Drivers
-  command: ./LCD35-show-modified
+  ansible.builtin.command: ./LCD35-show-modified
   args:
     chdir: /usr/src/LCD-show
     creates: /boot/overlays/tft35a.dtbo
   register: install_drivers
 
 - name: Rotated Display
-  copy:
+  ansible.builtin.copy:
     src: /usr/src/LCD-show/usr/99-calibration.conf-35-180
     dest: /etc/X11/xorg.conf.d/99-calibration.conf
-    remote_src: yes
+    remote_src: true
     mode: 0644
   register: rotato
 
 - name: Add overscan L to config
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     path: /boot/config.txt
     line: "overscan_left: 10"
-    regexp: '^overscan_left:'
+    regexp: "^overscan_left:"
   register: overscan
 
 - name: Add overscan R to config
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     path: /boot/config.txt
     line: "overscan_right: -10"
-    regexp: '^overscan_right:'
+    regexp: "^overscan_right:"
   register: overscan
-
 
 # - reboot:
 #   when: install_drivers.changed or overscan.changed or rotato.changed
-
-
-

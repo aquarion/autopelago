@@ -1,81 +1,76 @@
 ---
-
-- name: larpfic.com
-  route53_zone:
-    state: "present"
+- name: Larpfic.com
+  amazon.aws.route53_zone:
+    state: present
     zone: larpfic.com
     comment: larpfic
-    aws_access_key: '{{ aqcom_aws_key }}'
-    aws_secret_key: '{{ aqcom_aws_secret }}'
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - larpfic
 
-
-- name: lrpfic.com
-  route53_zone:
-    state: "present"
+- name: Lrpfic.com
+  amazon.aws.route53_zone:
+    state: present
     zone: lrpfic.com
     comment: lrpfic
-    aws_access_key: '{{ aqcom_aws_key }}'
-    aws_secret_key: '{{ aqcom_aws_secret }}'
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - larpfic
 
-
-- name: larpfic.com. - A
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "larpfic.com"
-      record: "larpfic.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Larpfic.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larpfic.com
+    record: larpfic.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - larpfic
 
-- name: www.larpfic.com. - A
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "larpfic.com"
-      record: "www.larpfic.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Www.larpfic.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larpfic.com
+    record: www.larpfic.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - larpfic
 
-
-
-- name: lrpfic.com. - A
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "lrpfic.com"
-      record: "lrpfic.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Lrpfic.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: lrpfic.com
+    record: lrpfic.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - larpfic
 
-- name: www.lrpfic.com. - A
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "lrpfic.com"
-      record: "www.lrpfic.com."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Www.lrpfic.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: lrpfic.com
+    record: www.lrpfic.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - larpfic

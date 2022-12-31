@@ -1,33 +1,30 @@
 ---
-
-- name: conterio.co.uk.
-  route53_zone:
-    state: "present"
+- name: Conterio.co.uk.
+  amazon.aws.route53_zone:
+    state: present
     zone: conterio.co.uk.
     comment: Michael Conterio
-    aws_access_key: '{{ aqcom_aws_key }}'
-    aws_secret_key: '{{ aqcom_aws_secret }}'
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
-      - conterio
+    - conterio
 
-
-- name: conterio.co.uk. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "conterio.co.uk"
-      record: "conterio.co.uk."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
+- name: Conterio.co.uk. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: conterio.co.uk
+    record: conterio.co.uk.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
   tags:
-      - conterio
+    - conterio
 
-
-# - name: conterio.co.uk. - NS
-#   route53:
+# - name: Conterio.co.uk. - NS
+#   amazon.aws.route53:
 #       overwrite: true
 #       command: "create"
 #       zone: "conterio.co.uk"
@@ -38,45 +35,42 @@
 #       ttl: "172800"
 #       value: ns-422.awsdns-52.com,ns-617.awsdns-13.net,ns-1181.awsdns-19.org,ns-1809.awsdns-34.co.uk
 
-
-#- name: conterio.co.uk. - SOA
-#  route53:
+# - name: Conterio.co.uk. - SOA
+#  amazon.aws.route53:
 #      overwrite: true
 #      command: "create"
 #      zone: "conterio.co.uk"
 #      record: "conterio.co.uk."
 #      aws_access_key: '{{ aqcom_aws_key }}'
-      # aws_secret_key: '{{ aqcom_aws_secret }}'
-      # type: "SOA"
+# aws_secret_key: '{{ aqcom_aws_secret }}'
+# type: "SOA"
 #      ttl: "900"
 #      value: 'ns-422.awsdns-52.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
-- name: michael.conterio.co.uk. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "conterio.co.uk"
-      record: "michael.conterio.co.uk."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
+- name: Michael.conterio.co.uk. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: conterio.co.uk
+    record: michael.conterio.co.uk.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
   tags:
-      - conterio
+    - conterio
 
-
-- name: www.conterio.co.uk. - A
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "conterio.co.uk"
-      record: "www.conterio.co.uk."
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
-      type: "A"
-      ttl: "300"
-      value: '{{ cenote_ip }}'
+- name: Www.conterio.co.uk. - A
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: conterio.co.uk
+    record: www.conterio.co.uk.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
+    type: A
+    ttl: "300"
+    value: "{{ cenote_ip }}"
   tags:
-      - conterio
-
+    - conterio

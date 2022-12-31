@@ -1,100 +1,96 @@
 ---
-
-- name: hubris.house
-  route53_zone:
-    state: "present"
+- name: Hubris.house
+  amazon.aws.route53_zone:
+    state: present
     zone: hubris.house
     comment: hubris.house
-    aws_access_key: '{{ aqcom_aws_key }}'
-    aws_secret_key: '{{ aqcom_aws_secret }}'
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - hubris.house
 
-
-- name: hubris.house. - A
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "hubris.house"
-      record: "hubris.house."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Hubris.house. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: hubris.house
+    record: hubris.house.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - hubris.house
 
-- name: www.hubris.house. - A
-  route53:
-      overwrite: true
-      state: "absent"
-      zone: "hubris.house"
-      record: "www.hubris.house."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Www.hubris.house. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: absent
+    zone: hubris.house
+    record: www.hubris.house.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - hubris.house
 
 - name: 35938230.hubris.house. - CNAME
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "hubris.house"
-      record: "35938230.hubris.house."
-      type: "CNAME"
-      ttl: "300"
-      value: 'google.com'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: hubris.house
+    record: 35938230.hubris.house.
+    type: CNAME
+    ttl: "300"
+    value: google.com
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - hubris.house
 
-
-- name: wildcard.hubris.house. - A
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "hubris.house"
-      record: "*.hubris.house."
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Wildcard.hubris.house. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: hubris.house
+    record: "*.hubris.house."
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - hubris.house
 
 - name: Google Validation for hubris
-  route53:
-      overwrite: true
-      state: "present"
-      zone: "hubris.house"
-      record: "hubris.house"
-      value: '"google-site-verification=y3Y66Y4hWEyWQ3cm4WwsyH3Er9vEjzZxrKZAsNTXIE4"'
-      type: "TXT"
-      ttl: "300"
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: hubris.house
+    record: hubris.house
+    value: '"google-site-verification=y3Y66Y4hWEyWQ3cm4WwsyH3Er9vEjzZxrKZAsNTXIE4"'
+    type: TXT
+    ttl: "300"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - hubris.house
     - hubris.house.google
 
-
-- name: hubris.house. - MX
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "hubris.house"
-      record: "hubris.house."
-      type: "MX"
-      ttl: "300"
-      value: '1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM.'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+- name: Hubris.house. - MX
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: hubris.house
+    record: hubris.house.
+    type: MX
+    ttl: "300"
+    value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
   tags:
     - hubris.house
     - hubris.house.google

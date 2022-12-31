@@ -1,27 +1,30 @@
-
+---
 - name: Install Flexget Packages
-  apt:
+  ansible.builtin.apt:
     state: present
     pkg:
-     - python3
-     - virtualenv
-     - acl
+      - python3
+      - virtualenv
+      - acl
   tags:
     - flexget
     - media
 
-
-- import_tasks: media-user-tasks.yml
-  become: yes
+- name: Do things as the media centre user
+  ansible.builtin.import_tasks: media-user-tasks.yml
+  become: true
   become_user: plex
   tags:
     - flexget
     - media
 
-- name: "Setup flexget cron"
-  cron: name="flexget" minute="16,46"
-        user="plex" job="{{ plex_home }}/.virtualenvs/flexget/bin/python {{ plex_home }}/.virtualenvs/flexget/bin/flexget --cron execute"
-        cron_file=flexget
+- name: Setup flexget cron
+  ansible.builtin.cron:
+    name: flexget
+    minute: 16,46
+    user: plex
+    job: "{{ plex_home }}/.virtualenvs/flexget/bin/python {{ plex_home }}/.virtualenvs/flexget/bin/flexget --cron execute"
+    cron_file: flexget
   tags:
     - flexget
     - media

@@ -1,108 +1,108 @@
+---
 - name: Install required packages
-  apt:
+  ansible.builtin.apt:
     package: "{{ item }}"
     state: present
   loop:
-    - "nginx"
-    - "python-passlib"
+    - nginx
+    - python-passlib
     - libnginx-mod-http-fancyindex
   tags:
     - streamsite
 
-- name: configure ssl config snippits
-  template:
+- name: Configure ssl config snippits
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/nginx/snippets/{{ item | basename }}"
+    dest: /etc/nginx/snippets/{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/ssl/*
+    - templates/ssl/*
   notify:
-   - restart nginx
+    - restart nginx
   tags:
-   - streamsite
-   - nginx
+    - streamsite
+    - nginx
 
-- name: configure config overrides
-  template:
+- name: Configure config overrides
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/nginx/{{ item | basename }}"
+    dest: /etc/nginx/{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/nginx_root/*
+    - templates/nginx_root/*
   notify:
-   - restart nginx
+    - restart nginx
   tags:
-   - streamsite
-   - nginx
+    - streamsite
+    - nginx
 
-- name: configure conf.d items
-  template:
+- name: Configure conf.d items
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/nginx/conf.d/{{ item | basename }}"
+    dest: /etc/nginx/conf.d/{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/nginx_confd/*
+    - templates/nginx_confd/*
   notify:
-   - restart nginx
+    - restart nginx
   tags:
-   - streamsite
-   - nginx
+    - streamsite
+    - nginx
 
-
-- name: configure nginx sites as available
-  template:
+- name: Configure nginx sites as available
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/nginx/sites-available/{{ item | basename }}"
+    dest: /etc/nginx/sites-available/{{ item | basename }}
     mode: 0644
   with_fileglob:
-   - templates/vhosts/*
+    - templates/vhosts/*
   notify:
-   - restart nginx
+    - restart nginx
   tags:
-   - streamsite
-   - nginx
-   - nginx_sites
+    - streamsite
+    - nginx
+    - nginx_sites
 
 - name: Configure nginx sites as enabled
-  file:
-    path: "/etc/nginx/sites-enabled/{{ item | basename }}"
-    src: "../sites-available/{{ item | basename }}"
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/{{ item | basename }}
+    src: ../sites-available/{{ item | basename }}
     state: link
     mode: 0644
   with_fileglob:
-   - templates/vhosts/*
+    - templates/vhosts/*
   notify:
-   - restart nginx
+    - restart nginx
   tags:
-     - streamsite
-     - nginx_sites
+    - streamsite
+    - nginx_sites
 
 - name: Configure dead nginx sites as disabled
-  file:
-    path: "/etc/nginx/sites-enabled/{{ item | basename }}"
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/{{ item | basename }}
     state: absent
   with_fileglob:
-   - templates/deleted_vhosts/*
+    - templates/deleted_vhosts/*
   notify:
-   - restart nginx
+    - restart nginx
   tags:
-     - streamsite
-     - nginx_sites
+    - streamsite
+    - nginx_sites
 
 - name: Configure dead nginx sites as unavailable
-  file:
-    path: "/etc/nginx/sites-available/{{ item | basename }}"
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/{{ item | basename }}
     state: absent
   with_fileglob:
-   - templates/deleted_vhosts/*
+    - templates/deleted_vhosts/*
   notify:
-   - restart nginx
+    - restart nginx
   tags:
-     - streamsite
-     - nginx_sites
+    - streamsite
+    - nginx_sites
 
 - name: Streamsite Basic Auth
-  htpasswd:
+  community.general.htpasswd:
     path: /etc/nginx/streamsite.htpass
     name: "{{ item.user }}"
     password: "{{ item.password }}"
@@ -112,23 +112,22 @@
     - streamsite
     - nginx_sites
 
-
 - name: Configure nginx redirects
-  template:
+  ansible.builtin.template:
     src: config/redirects.nginx.j2
     dest: /etc/nginx/conf.d/www_redirects.conf
     mode: 0644
   vars:
     add_www:
-    - aquarionics.com
-    - cleartextcontent.co.uk
-    - carcosadreams.co.uk
-    - deathuntodarkness.org
+      - aquarionics.com
+      - cleartextcontent.co.uk
+      - carcosadreams.co.uk
+      - deathuntodarkness.org
     remove_www:
-    - ludoistic.com
-    - omnyom.com
-    - factionfiction.net
-    - warehousebasement.com
-    - hubris.house
+      - ludoistic.com
+      - omnyom.com
+      - factionfiction.net
+      - warehousebasement.com
+      - hubris.house
   notify:
-   - restart nginx
+    - restart nginx

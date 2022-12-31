@@ -1,9 +1,10 @@
 ---
-
-- include_tasks: dns.yml
+- name: Do DNSy things
+  ansible.builtin.include_tasks: dns.yml
   tags:
     - aws
 
-- include_tasks: iam.yml
+- name: Do IAM things
+  ansible.builtin.include_tasks: iam.yml
   tags:
     - aws

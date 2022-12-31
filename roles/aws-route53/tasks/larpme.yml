@@ -1,41 +1,42 @@
+---
 - name: Larpme DNS - larpme root
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "larp.me"
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: larp.me
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - MX
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "larp.me"
-      type: "MX"
-      ttl: "300"
-      value: 1 ASPMX.L.GOOGLE.COM.,10 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: larp.me
+    type: MX
+    ttl: "300"
+    value: 1 ASPMX.L.GOOGLE.COM.,10 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - NS
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "larp.me"
-      type: "NS"
-      ttl: "172800"
-      value: ns-377.awsdns-47.com.,ns-1181.awsdns-19.org.,ns-1976.awsdns-55.co.uk.,ns-527.awsdns-01.net.
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: larp.me
+    type: NS
+    ttl: "172800"
+    value: ns-377.awsdns-47.com.,ns-1181.awsdns-19.org.,ns-1976.awsdns-55.co.uk.,ns-527.awsdns-01.net.
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
-#- name: Larpme DNS - SOA
-#  route53:
+# - name: Larpme DNS - SOA
+#  amazon.aws.route53:
 #      overwrite: true
 #      command: "create"
 #      zone: "larp.me"
@@ -45,145 +46,145 @@
 #      value: "ns-377.awsdns-47.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
 #
 - name: Larpme DNS - SPF
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "larp.me"
-      type: "SPF"
-      ttl: "300"
-      value: '"v=spf1 a mx include:smtp1.uservoice.com include:_spf.google.com include:spf.mtasv.net ~all"'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: larp.me
+    type: SPF
+    ttl: "300"
+    value: '"v=spf1 a mx include:smtp1.uservoice.com include:_spf.google.com include:spf.mtasv.net ~all"'
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - DKIM
-  route53:
+  amazon.aws.route53:
     overwrite: true
-    command: "create"
-    zone: "larp.me"
-    record: "20170201160036pm._domainkey.larp.me"
-    type: "TXT"
+    command: create
+    zone: larp.me
+    record: 20170201160036pm._domainkey.larp.me
+    type: TXT
     ttl: 300
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNNNCDLsEMUlCnWkjtJ9pQnWAACeQHJG8PYBhfiZPb7XRtWf5eK0XRKSGJzTOJFaS8b+PBaB3cT6VWvTSNYJqQGtfdhLnE6xh5yaiBssdCNQZgeO/OffFVZRB/yyBNSjoXNSTTHXeonLLKxpaZTs7s2MBTJvpE5nl5kM5haRbwVwIDAQAB"'
-    aws_access_key: '{{ aqcom_aws_key }}'
-    aws_secret_key: '{{ aqcom_aws_secret }}'
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Prod API
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "api.larp.me"
-      type: "CNAME"
-      ttl: "300"
-      value: 'www.larp.me'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: api.larp.me
+    type: CNAME
+    ttl: "300"
+    value: www.larp.me
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Fic
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "fic.larp.me"
-      type: "CNAME"
-      ttl: "300"
-      value: 'www.larp.me'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: fic.larp.me
+    type: CNAME
+    ttl: "300"
+    value: www.larp.me
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Blog
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "blog.larp.me"
-      type: "CNAME"
-      ttl: "300"
-      value: 'domains.tumblr.com'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: blog.larp.me
+    type: CNAME
+    ttl: "300"
+    value: domains.tumblr.com
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Dev
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "dev.larp.me"
-      type: "A"
-      ttl: "300"
-      value: '127.0.0.1'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: dev.larp.me
+    type: A
+    ttl: "300"
+    value: 127.0.0.1
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Prod WWW
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "www.larp.me"
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: www.larp.me
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Local Dev
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "local.larp.me"
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: local.larp.me
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Staging
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "staging.larp.me"
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: staging.larp.me
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - Staging API
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "api.staging.larp.me"
-      type: "CNAME"
-      ttl: "300"
-      value: 'staging.larp.me'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: api.staging.larp.me
+    type: CNAME
+    ttl: "300"
+    value: staging.larp.me
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - WIKI
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "wiki.larp.me"
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: wiki.larp.me
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"
 
 - name: Larpme DNS - LOCATIONS
-  route53:
-      overwrite: true
-      command: "create"
-      zone: "larp.me"
-      record: "locations.larp.me"
-      type: "A"
-      ttl: "300"
-      value: '{{ loadbalancer_ip }}'
-      aws_access_key: '{{ aqcom_aws_key }}'
-      aws_secret_key: '{{ aqcom_aws_secret }}'
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me
+    record: locations.larp.me
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_access_key: "{{ aqcom_aws_key }}"
+    aws_secret_key: "{{ aqcom_aws_secret }}"

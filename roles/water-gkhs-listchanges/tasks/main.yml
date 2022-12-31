@@ -1,14 +1,13 @@
-
-
+---
 - name: Install System Packages
-  apt: pkg=apt-listchanges state=present
+  ansible.builtin.apt: pkg=apt-listchanges state=present
   tags:
     - listchanges
 
 - name: Config list-changes
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/apt/listchanges.conf
-    regexp: '^email_address'
-    line: "email_address='nicholas+{{ ansible_hostname }}cron@aquarionics.com'"
+    regexp: ^email_address
+    line: email_address='nicholas+{{ ansible_hostname }}cron@aquarionics.com'
   tags:
     - listchanges
