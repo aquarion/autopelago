@@ -27,7 +27,7 @@
 #   with_fileglob:
 #    - templates/nginx_root/*
 #   notify:
-#    - restart nginx
+#    - Restart nginx
 #   tags:
 #    - streamsite
 #    - nginx

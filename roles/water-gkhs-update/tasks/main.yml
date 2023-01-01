@@ -1,10 +1,15 @@
 ---
 - name: Safe Upgrade
-  ansible.builtin.apt: update_cache=yes cache_valid_time=21600 upgrade=safe autoremove=yes
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 21600
+    upgrade: safe
+    autoremove: true
   tags:
     - patch
 
 - name: Safe Remove
-  ansible.builtin.apt: autoremove=yes
+  ansible.builtin.apt:
+    autoremove: true
   tags:
     - patch

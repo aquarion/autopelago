@@ -1,4 +1,11 @@
 ---
+- name: Install Boto
+  ansible.builtin.pip:
+    state: present
+    name:
+      - boto
+      - botocore
+
 - name: Aquarionics DNS
   ansible.builtin.include_tasks: aquarionics.yml
   tags:

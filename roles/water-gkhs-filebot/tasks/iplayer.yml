@@ -18,7 +18,7 @@
     group: plex
     mode: 0644
     create: true
-  register: iPlayerUpdate
+  register: iplayer_updated
   tags:
     - media
     - iplayer
@@ -31,7 +31,7 @@
     owner: root
     group: root
     mode: 0755
-  when: iPlayerUpdate.changed
+  when: iplayer_updated.changed
   tags:
     - media
     - iplayer
@@ -64,20 +64,34 @@
     state: absent
 
 - name: Add update iplayer script to bin
-  ansible.builtin.template: src=download_iplayer.sh dest={{ plex_home }}/bin/download_iplayer.sh mode=0755 owner=plex
+  ansible.builtin.template:
+    src: download_iplayer.sh
+    dest: "{{ plex_home }}/bin/download_iplayer.sh"
+    mode: "0755"
+    owner: plex
   tags:
     - media
     - iplayer
 
 - name: Add download_iplayer cron job
-  ansible.builtin.cron: name="download_iplayer" minute="15" hour=2 user="plex" job="{{ plex_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ plex_remote_syslog_host
-    }} --port={{ plex_remote_syslog_port }}" cron_file=download_iplayer state=present
+  ansible.builtin.cron:
+    name: download_iplayer
+    minute: "15"
+    hour: 2
+    user: plex
+    job: "{{ plex_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
+    cron_file: download_iplayer
+    state: present
   tags:
     - media
     - iplayer
 
 - name: Make sure plex has a .get_iplayer directory
-  ansible.builtin.file: path={{ plex_home }}/.get_iplayer state=directory owner=plex mode=0755
+  ansible.builtin.file:
+    path: "{{ plex_home }}/.get_iplayer"
+    state: directory
+    owner: plex
+    mode: 0755
   tags:
     - media
     - iplayer

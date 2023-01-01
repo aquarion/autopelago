@@ -40,7 +40,7 @@
     mode: 0644
   when: nginx_installed.stat.exists
   notify:
-    - restart nginx
+    - Restart nginx
 
 - name: "Apache: check for installation"
   register: apache_installed

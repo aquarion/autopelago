@@ -37,7 +37,11 @@
     - water-gkhs-exim
     - b2-backup
     - github-cli
-    - { role: aws-route53, become: false, connection: local }
+    - name: aws-route53
+      role: aws-route53
+      become: false
+      connection: local
+      tags: route53
     - { role: aws-pdforums, tags: pdforum }
     - { role: elastic.elasticsearch, tags: elastic }
 

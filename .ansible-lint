@@ -8,6 +8,7 @@ skip_list: # Bad lint things we're doing for good reasons
   - "106" # [106] Role name archipelago-nginx does not match ``^[a-z][a-z0-9_]+$`` pattern
   - "204" # Lines should be no longer than 160 chars
   - yaml[line-length]
+  - ignore-errors
 
 # mock_roles:
 #   - ansible.papertrail

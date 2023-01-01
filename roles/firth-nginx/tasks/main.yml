@@ -18,7 +18,7 @@
   with_fileglob:
     - templates/ssl/*
   notify:
-    - restart nginx
+    - Restart nginx
   tags:
     - streamsite
     - nginx
@@ -31,7 +31,7 @@
   with_fileglob:
     - templates/nginx_root/*
   notify:
-    - restart nginx
+    - Restart nginx
   tags:
     - streamsite
     - nginx
@@ -44,7 +44,7 @@
   with_fileglob:
     - templates/nginx_confd/*
   notify:
-    - restart nginx
+    - Restart nginx
   tags:
     - streamsite
     - nginx
@@ -57,7 +57,7 @@
   with_fileglob:
     - templates/vhosts/*
   notify:
-    - restart nginx
+    - Restart nginx
   tags:
     - streamsite
     - nginx
@@ -72,7 +72,7 @@
   with_fileglob:
     - templates/vhosts/*
   notify:
-    - restart nginx
+    - Restart nginx
   tags:
     - streamsite
     - nginx_sites
@@ -84,7 +84,7 @@
   with_fileglob:
     - templates/deleted_vhosts/*
   notify:
-    - restart nginx
+    - Restart nginx
   tags:
     - streamsite
     - nginx_sites
@@ -96,7 +96,7 @@
   with_fileglob:
     - templates/deleted_vhosts/*
   notify:
-    - restart nginx
+    - Restart nginx
   tags:
     - streamsite
     - nginx_sites
@@ -130,4 +130,4 @@
       - warehousebasement.com
       - hubris.house
   notify:
-    - restart nginx
+    - Restart nginx

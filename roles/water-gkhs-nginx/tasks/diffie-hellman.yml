@@ -9,7 +9,7 @@
     cmd: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
     creates: /etc/ssl/certs/dhparam.pem
   notify:
-    - restart nginx
+    - Restart nginx
 
 - name: Comment out ssl protocols in default config
   ansible.builtin.replace:
@@ -31,4 +31,4 @@
     group: root
     mode: 0644
   notify:
-    - restart nginx
+    - Restart nginx

@@ -1,6 +1,8 @@
 ---
 - name: Install System Packages
-  ansible.builtin.apt: pkg=apt-listchanges state=present
+  ansible.builtin.apt:
+    pkg: apt-listchanges
+    state: present
   tags:
     - listchanges
 

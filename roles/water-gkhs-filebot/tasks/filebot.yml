@@ -6,7 +6,7 @@
     regexp: ^etag
     line: etag {{ filebot_version }}
     owner: plex
-    ansible.builtin.group: plex
+    group: plex
     mode: 0644
     create: true
   register: did_filebot_update
@@ -14,14 +14,18 @@
     - filebot
 
 - name: Setup |  deb | download installer
-  ansible.builtin.get_url: url="{{ filebot_deb_url }}" dest="{{ filebot_deb_tmp }}"
+  ansible.builtin.get_url:
+    url: "{{ filebot_deb_url }}"
+    dest: "{{ filebot_deb_tmp }}"
+    mode: ug=rw,o=r
   when: did_filebot_update.changed
   tags:
     - filebot
 
 - name: Setup |  deb | run the installer
   become: true
-  ansible.builtin.apt: deb="{{ filebot_deb_tmp }}"
+  ansible.builtin.apt:
+    deb: "{{ filebot_deb_tmp }}"
   when: did_filebot_update.changed
   tags:
     - filebot
@@ -36,7 +40,7 @@
     src: Filebot_Licence.psm
     dest: "{{ plex_home }}/.filebot_license.psm"
     owner: plex
-    ansible.builtin.group: plex
+    group: plex
     mode: 0644
   notify:
     - register filebot

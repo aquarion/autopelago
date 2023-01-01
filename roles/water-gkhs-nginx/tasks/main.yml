@@ -15,7 +15,7 @@
     group: root
     mode: 0664
   notify:
-    - restart nginx
+    - Restart nginx
 
 - name: Configure letsencrypt config for misc
   ansible.builtin.template:
@@ -36,7 +36,7 @@
   vars:
     cert_id: foip.me
   notify:
-    - restart nginx
+    - Restart nginx
 
 - name: Configure letsencrypt config for istic
   ansible.builtin.template:
@@ -47,7 +47,7 @@
   vars:
     cert_id: istic.net
   notify:
-    - restart nginx
+    - Restart nginx
 
 - name: Configure letsencrypt config for carcosadreams
   ansible.builtin.template:
@@ -60,7 +60,7 @@
   tags:
     - carcosadreams
   notify:
-    - restart nginx
+    - Restart nginx
 
 - name: Configure letsencrypt config for hubris.house
   ansible.builtin.template:
@@ -73,7 +73,7 @@
   tags:
     - hubris.house
   notify:
-    - restart nginx
+    - Restart nginx
 
 - name: Configure letsencrypt config for bromioscreations.com
   ansible.builtin.template:
@@ -86,4 +86,4 @@
   tags:
     - bromioscreations
   notify:
-    - restart nginx
+    - Restart nginx

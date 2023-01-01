@@ -34,7 +34,9 @@
     - certbot
 
 - name: Package list update
-  ansible.builtin.apt: update_cache=yes cache_valid_time=21600
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 21600
 
 - name: Install System Packages
   ansible.builtin.apt:
@@ -98,10 +100,10 @@
 
 - name: Determine remote Python version.
   ansible.builtin.set_fact:
-    python_version: "{% if 'python3' in ansible_python_interpreter|default('') %}python3{% else %}python{% endif %}"
+    python_version: "{% if 'python3' in ansible_python_interpreter | default('') %}python3{% else %}python{% endif %}"
   tags: aws
 
-- name: Ensure Python libraries that ansible needs aree installed.
+- name: Ensure Python libraries that ansible needs are installed.
   ansible.builtin.apt:
     state: present
     pkg:

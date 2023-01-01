@@ -7,7 +7,9 @@
   ansible.builtin.command: filebot --license {{ plex_home }}/.filebot_license.psm
 
 - name: Update APT
-  ansible.builtin.apt: update_cache=yes cache_valid_time=21600
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 21600
 
 - name: Get running processes
   ansible.builtin.shell: ps -ef | grep -v grep | grep -w filebot_inotify.fifo | grep inotifywait | awk '{print $2}'

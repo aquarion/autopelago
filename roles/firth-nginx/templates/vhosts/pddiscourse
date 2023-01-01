@@ -14,7 +14,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name pdforums.casu.istic.net forums.profounddecisions.co.uk pdforums.larp.me.uk;
-    include /etc/nginx/snippets//pddiscourse_ssl.conf;
+    include /etc/nginx/snippets/pddiscourse_ssl.conf;
 
   add_header X-WhyAmI pddiscourse;
 
