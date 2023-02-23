@@ -4,5 +4,5 @@
     name: fail2ban
     state: restarted
 
-- name: Sysctl
+- name: Kick sysctl
   ansible.builtin.command: sysctl -p

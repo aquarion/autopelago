@@ -24,7 +24,7 @@
     line: fs.protected_hardlinks = 0
     state: present
     dest: /etc/sysctl.conf
-  notify: sysctl
+  notify: Kick sysctl
   tags:
     - media
 # Sync non-TV shows to their own libraries

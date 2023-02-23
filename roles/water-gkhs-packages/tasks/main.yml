@@ -96,7 +96,7 @@
     path: /etc/fail2ban/fail2ban.conf
     regexp: ^logtarget
     line: logtarget = SYSLOG
-  notify: restart fail2ban
+  notify: Restart fail2ban
 
 - name: Determine remote Python version.
   ansible.builtin.set_fact:
@@ -119,5 +119,5 @@
     state: present
     dest: /etc/sysctl.conf
     regexp: ^fs.inotify.max_user_watches
-  notify: sysctl
+  notify: Kick sysctl
   tags: sysctl

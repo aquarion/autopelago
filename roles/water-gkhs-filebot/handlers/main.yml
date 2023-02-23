@@ -1,5 +1,5 @@
 ---
-- name: Sysctl
+- name: Kick sysctl
   ansible.builtin.command: sysctl -p
 
 - name: Register filebot
