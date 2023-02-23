@@ -5,7 +5,7 @@
     state: present
   loop:
     - nginx
-    - python-passlib
+    - python3-passlib
     - libnginx-mod-http-fancyindex
   tags:
     - streamsite
