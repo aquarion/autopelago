@@ -3,9 +3,12 @@
 
 - name: Install pip transmissionrpc package
   ansible.builtin.pip:
-    name: transmissionrpc
+    name: "{{ item }}"
     virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
     virtualenv_python: python3
+  loop:
+ #   - encodings
+    - transmissionrpc
   tags:
     - flexget
 
