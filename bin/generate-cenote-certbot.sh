@@ -12,7 +12,7 @@ live.dailyphoto.aquarionics.com,\
 fourrivers.foip.me,larp.me.uk,www.larp.me.uk,ornithocracy.aqxs.net,forgotten.foip.me,\
 maelfroth.org,lampstand.maelfroth.org,obviouslyfakeurl.foip.me,rickroll.maelfroth.org,wiki.maelfroth.org,www.maelfroth.org,\
 ludo.istic.net,\
-www.contrarythoughts.com,contrarythoughts.com,michael.conterio.co.uk,\
+conterio.co.uk,www.conterio.co.uk,michael.conterio.co.uk,\
 www.grantabruggehamstery.co.uk,grantabruggehamstery.co.uk,\
 www.pinsandneedlescostume.co.uk,pinsandneedlescostume.co.uk,\
 thomwillis.uk,thomwillis.uk,\
