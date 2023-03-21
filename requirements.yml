@@ -1,11 +1,9 @@
 ---
 roles:
-  - src: elastic.elasticsearch
-    version: v7.16.3
   - src: geerlingguy.java
-    version: 2.2.0
+    version: 2.3.0
   - src: elboletaire.transmission
-    version: 2.0.2
+    version: 2.0.3
   - src: https://github.com/aquarion/ansible-papertrail
     name: ansible.papertrail
 

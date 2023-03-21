@@ -43,7 +43,7 @@
       connection: local
       tags: route53
     - { role: aws-pdforums, tags: pdforum }
-    - { role: elastic.elasticsearch, tags: elastic }
+      #- { role: elastic.elasticsearch, tags: elastic }
 
 - name: Hello Atoll
   hosts: atoll
