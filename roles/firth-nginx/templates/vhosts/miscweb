@@ -1,5 +1,16 @@
 # {{ ansible_managed }}
-upstream container-php { server 127.0.0.1:4080; }
+
+upstream docker-php7 { server 127.0.0.1:4080; }
+upstream docker-php8 { server 127.0.0.1:5080; }
+
+#  ____   ___  ____ _____    ___   ___  
+# |  _ \ / _ \|  _ \_   _|  ( _ ) / _ \ 
+# | |_) | | | | |_) || |    / _ \| | | |
+# |  __/| |_| |  _ < | |   | (_) | |_| |
+# |_|    \___/|_| \_\|_|    \___/ \___/ 
+                                      
+
+
 server {
   listen      80;
   listen [::]:80;
@@ -22,6 +33,26 @@ server {
   return 301 https://$host$request_uri;
 }
 
+#  ____  _   _ ____    _____ 
+# |  _ \| | | |  _ \  |___  |
+# | |_) | |_| | |_) |    / / 
+# |  __/|  _  |  __/    / /  
+# |_|   |_| |_|_|      /_/   
+                           
+
+#  _    _   _    
+# (_)__| |_(_)__ 
+# | (_-<  _| / _|
+# |_/__/\__|_\__|
+
+server {
+    listen              443 ssl proxy_protocol;
+    listen              80;
+    server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
+    return 301 $scheme://istic.co$uri;
+   add_header X-WhyAmI "miscweb istic redirect";
+}
+
 server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
@@ -41,11 +72,31 @@ server {
     add_header X-WhyAmI miscweb;
 
   location    / {
-    proxy_pass http://container-php;
+    proxy_pass http://docker-php7;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
 }
+
+#  _         _     _    _   _    
+# | |_  _ __| |___(_)__| |_(_)__ 
+# | | || / _` / _ \ (_-<  _| / _|
+# |_|\_,_\__,_\___/_/__/\__|_\__|
+                              
+
+server {
+    listen              443 ssl proxy_protocol;
+    listen              80;
+    server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
+   add_header X-WhyAmI "miscweb ludoistic";
+    return 301 $scheme://ludoistic.com;
+}
+
+#        _                   _    
+#  _ __ (_)___ ____ __ _____| |__ 
+# | '  \| (_-</ _\ V  V / -_) '_ \
+# |_|_|_|_/__/\__|\_/\_/\___|_.__/
+                                
 
 server {
     listen 443 ssl;
@@ -59,47 +110,17 @@ server {
     access_log /var/log/nginx/miscweb.access.log;
 
   location    / {
-    proxy_pass http://container-php;
+    proxy_pass http://docker-php7;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
 }
 
-server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.istic.net;
-    include /etc/nginx/snippets/istic_ssl.conf;
+#       _    _        _                                _ _ 
+#  _ _ (_)__| |_  ___| |__ _ ___ __ ___ _____ _ _  ___| | |
+# | ' \| / _| ' \/ _ \ / _` (_-</ _` \ V / -_) ' \/ -_) | |
+# |_||_|_\__|_||_\___/_\__,_/__/\__,_|\_/\___|_||_\___|_|_|
 
-   add_header X-WhyAmI "miscweb istic.net";
-
-    error_log  /var/log/nginx/istic.error.log;
-    access_log /var/log/nginx/istic.access.log;
-
-  location    / {
-    proxy_pass http://container-php;
-    include /etc/nginx/proxy_params;
-  }
-  include /etc/nginx/snippets/errors.conf;
-}
-
-server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.istic.dev istic.dev;
-    include /etc/nginx/snippets/istic_dev_ssl.conf;
-
-   add_header X-WhyAmI "miscweb istic.dev";
-
-    error_log  /var/log/nginx/istic.error.log;
-    access_log /var/log/nginx/istic.access.log;
-
-  location    / {
-    proxy_pass http://container-php;
-    include /etc/nginx/proxy_params;
-  }
-  include /etc/nginx/snippets/errors.conf;
-}
 
 server {
     listen 443 ssl proxy_protocol;
@@ -113,11 +134,18 @@ server {
     access_log /var/log/nginx/nicholasavenell.access.log;
 
   location    / {
-    proxy_pass http://container-php;
+    proxy_pass http://docker-php7;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
 }
+
+#  _                  _                          _   _             
+# | |__ _ _ ___ _ __ (_)___ ___  __ _ _ ___ __ _| |_(_)___ _ _  ___
+# | '_ \ '_/ _ \ '  \| / _ (_-< / _| '_/ -_) _` |  _| / _ \ ' \(_-<
+# |_.__/_| \___/_|_|_|_\___/__/ \__|_| \___\__,_|\__|_\___/_||_/__/
+                                                                 
+
 
 server {
     listen 443 ssl proxy_protocol;
@@ -126,11 +154,17 @@ server {
     include /etc/nginx/snippets/bromioscreations_ssl.conf;
    add_header X-WhyAmI "miscweb bromios";
   location    / {
-    proxy_pass http://container-php;
+    proxy_pass http://docker-php7;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
 }
+
+#  _  _      _        _    
+# | || |_  _| |__ _ _(_)___
+# | __ | || | '_ \ '_| (_-<
+# |_||_|\_,_|_.__/_| |_/__/
+                         
 
 server {
     listen 443 ssl proxy_protocol;
@@ -140,11 +174,18 @@ server {
    add_header X-WhyAmI "miscweb hubris";
 
   location    / {
-    proxy_pass http://container-php;
+    proxy_pass http://docker-php7;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
 }
+
+#  ___    _        __  __     
+# | __|__(_)_ __  |  \/  |___ 
+# | _/ _ \ | '_ \_| |\/| / -_)
+# |_|\___/_| .__(_)_|  |_\___|
+#          |_|                
+
 
 server {
     listen 443 ssl proxy_protocol;
@@ -154,24 +195,67 @@ server {
    add_header X-WhyAmI "miscweb foipme";
 
   location    / {
-    proxy_pass http://container-php;
+    proxy_pass http://docker-php7;
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
 }
 
-server {
-    listen              443 ssl proxy_protocol;
-    listen              80;
-    server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
-    return 301 $scheme://istic.co$uri;
-   add_header X-WhyAmI "miscweb istic redirect";
-}
+
+#######################################################
+#  ____  _   _ ____     ___  
+# |  _ \| | | |  _ \   ( _ ) 
+# | |_) | |_| | |_) |  / _ \ 
+# |  __/|  _  |  __/  | (_) |
+# |_|   |_| |_|_|      \___/ 
+#                            
+
+#         _    _   _               _   
+# _/\_   (_)__| |_(_)__   _ _  ___| |_ 
+# >  <  _| (_-<  _| / _|_| ' \/ -_)  _|
+#  \/  (_)_/__/\__|_\__(_)_||_\___|\__|
+                                     
+
 
 server {
-    listen              443 ssl proxy_protocol;
-    listen              80;
-    server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
-   add_header X-WhyAmI "miscweb ludoistic";
-    return 301 $scheme://ludoistic.com;
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name *.istic.net;
+    include /etc/nginx/snippets/istic_ssl.conf;
+
+   add_header X-WhyAmI "miscweb istic.net";
+
+    error_log  /var/log/nginx/istic.error.log;
+    access_log /var/log/nginx/istic.access.log;
+
+  location    / {
+    proxy_pass http://docker-php8;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+#         _    _   _         _         
+# _/\_   (_)__| |_(_)__   __| |_____ __
+# >  <  _| (_-<  _| / _|_/ _` / -_) V /
+#  \/  (_)_/__/\__|_\__(_)__,_\___|\_/ 
+                                     
+                        
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name *.istic.dev istic.dev;
+    include /etc/nginx/snippets/istic_dev_ssl.conf;
+
+   add_header X-WhyAmI "miscweb istic.dev";
+
+    error_log  /var/log/nginx/istic.error.log;
+    access_log /var/log/nginx/istic.access.log;
+
+  location    / {
+    proxy_pass http://docker-php8;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
 }
