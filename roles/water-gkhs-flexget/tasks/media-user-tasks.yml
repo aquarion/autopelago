@@ -26,7 +26,7 @@
     path: "{{ plex_home }}/.flexget"
     state: directory
     owner: plex
-    mode: 0755
+    mode: "0755"
   tags:
     - flexget
 
@@ -34,7 +34,7 @@
 - name: Create flexget config
   ansible.builtin.copy:
     dest: "{{ plex_home }}/.flexget/config.yml"
-    mode: 0660
+    mode: "0660"
     owner: plex
     content: "{{ flexget_tasks | to_nice_yaml }}"
   tags:

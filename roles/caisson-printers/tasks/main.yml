@@ -79,7 +79,7 @@
 - name: Add a build directory
   ansible.builtin.file:
     path: /usr/src/zj-58/build
-    mode: 0755
+    mode: "0755"
     state: directory
 
 - name: Prepare Thermal Printer Drivers build environment
@@ -107,7 +107,7 @@
   ansible.builtin.file:
     path: /usr/src/hplip
     state: directory
-    mode: 0755
+    mode: "0755"
 
 # ### <HP41>From https://github.com/HP41/ansible-cups
 - name: Install Expect
@@ -139,7 +139,7 @@
     dest: /etc/cups/printers.conf
     owner: root
     group: lp
-    mode: 0664
+    mode: "0664"
   check_mode: true
   register: test_config
 
@@ -149,7 +149,7 @@
     dest: /etc/cups/ppd/Receipt.ppd
     owner: root
     group: lp
-    mode: 0664
+    mode: "0664"
     remote_src: true
   check_mode: true
   register: test_receipt
@@ -160,7 +160,7 @@
     dest: /etc/cups/LaserJet.ppd
     owner: root
     group: lp
-    mode: 0664
+    mode: "0664"
   check_mode: true
   register: test_laserjet
 
@@ -177,7 +177,7 @@
     backup: true
     owner: root
     group: lp
-    mode: 0664
+    mode: "0664"
   notify:
     - restart cups
 
@@ -188,7 +188,7 @@
     backup: true
     owner: root
     group: lp
-    mode: 0664
+    mode: "0664"
     remote_src: true
   notify:
     - restart cups
@@ -199,7 +199,7 @@
     dest: /etc/cups/ppd/LaserJet.ppd
     owner: root
     group: lp
-    mode: 0664
+    mode: "0664"
   notify:
     - restart cups
 

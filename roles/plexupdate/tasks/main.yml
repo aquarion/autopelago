@@ -9,13 +9,13 @@
   ansible.builtin.template:
     src: plexupdate.cron.conf
     dest: /etc/plexupdate.cron.conf
-    mode: 0644
+    mode: "0644"
 
 - name: Set public plexupdate preferences
   ansible.builtin.template:
     src: plexupdate.conf
     dest: /etc/plexupdate.conf
-    mode: 0644
+    mode: "0644"
 
 - name: Install plex
   ansible.builtin.command:

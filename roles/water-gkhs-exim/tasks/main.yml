@@ -21,7 +21,7 @@
     dest: /etc/exim4//update-exim4.conf.conf
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"
     # validate: "update-exim4.conf --check %s"
   tags:
     - exim
@@ -32,7 +32,7 @@
     dest: /etc/exim4/conf.d/main/00_water_gkhs_custom
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"
     # validate: "update-exim4.conf --check %s"
   vars:
     cert_id: "{{ letsencrypt_dir }}"
@@ -43,7 +43,7 @@
   ansible.builtin.copy:
     dest: /etc/mailname
     content: "{{ hostname }}"
-    mode: 0644
+    mode: "0644"
   tags:
     - exim
 

@@ -16,7 +16,7 @@
     line: etag {{ get_iplayer_version }}
     owner: plex
     group: plex
-    mode: 0644
+    mode: "0644"
     create: true
   register: iplayer_updated
   tags:
@@ -30,7 +30,7 @@
     dest: /usr/local/bin/get_iplayer
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   when: iplayer_updated.changed
   tags:
     - media
@@ -91,7 +91,7 @@
     path: "{{ plex_home }}/.get_iplayer"
     state: directory
     owner: plex
-    mode: 0755
+    mode: "0755"
   tags:
     - media
     - iplayer
@@ -102,7 +102,7 @@
     regexp: ^tvmode
     line: tvmode best
     create: true
-    mode: 0644
+    mode: "0644"
   tags:
     - media
     - iplayer
@@ -113,7 +113,7 @@
     regexp: ^subdirformat
     line: subdirformat <nameshort>
     create: true
-    mode: 0644
+    mode: "0644"
   tags:
     - media
     - iplayer
@@ -124,7 +124,7 @@
     regexp: ^subtitles
     line: subtitles 1
     create: true
-    mode: 0644
+    mode: "0644"
   tags:
     - media
     - iplayer
@@ -135,7 +135,7 @@
     regexp: ^proxy
     line: proxy http://{{ nordvpn_username }}:{{ nordvpn_password }}@{{ nordvpn_server }}.nordvpn.com:80
     create: true
-    mode: 0644
+    mode: "0644"
   tags:
     - media
     - iplayer
@@ -146,7 +146,7 @@
     regexp: ^fileprefix
     line: fileprefix - S<00seriesnum>E<00episodenum>
     create: true
-    mode: 0644
+    mode: "0644"
   tags:
     - media
     - iplayer
@@ -157,7 +157,7 @@
     regexp: ^output
     line: output {{ transmission_complete }}/completed/
     create: true
-    mode: 0644
+    mode: "0644"
   tags:
     - media
     - iplayer
@@ -168,7 +168,7 @@
     regexp: ^whitespace
     line: whitespace 1
     create: true
-    mode: 0644
+    mode: "0644"
   tags:
     - media
     - iplayer

@@ -25,7 +25,7 @@
     src: /usr/src/LCD-show/usr/99-calibration.conf-35-180
     dest: /etc/X11/xorg.conf.d/99-calibration.conf
     remote_src: true
-    mode: 0644
+    mode: "0644"
   register: rotato
 
 - name: Add overscan L to config

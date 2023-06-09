@@ -12,7 +12,7 @@
     line: etag {{ backblaze_key_changed }}
     owner: plex
     group: plex
-    mode: 0644
+    mode: "0644"
     create: true
   notify: reauthorize backblaze
   tags:
@@ -22,7 +22,7 @@
   ansible.builtin.template:
     src: media-backup.bash.j2
     dest: "{{ plex_home }}/bin/media-backup.sh"
-    mode: 0770
+    mode: "0770"
     owner: plex
   tags:
     - b2backup
@@ -30,7 +30,7 @@
 - name: Setup B2 backup of Media (Cron)
   ansible.builtin.cron:
     name: b2backup
-    hour: 04
+    hour: "04"
     minute: "46"
     user: plex
     job: "{{ plex_home }}/bin/media-backup.sh"

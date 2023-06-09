@@ -14,7 +14,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: /etc/nginx/snippets/{{ item | basename }}
-    mode: 0644
+    mode: "0644"
   with_fileglob:
     - templates/ssl/*
   notify:
@@ -27,7 +27,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: /etc/nginx/{{ item | basename }}
-    mode: 0644
+    mode: "0644"
   with_fileglob:
     - templates/nginx_root/*
   notify:
@@ -40,7 +40,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: /etc/nginx/conf.d/{{ item | basename }}
-    mode: 0644
+    mode: "0644"
   with_fileglob:
     - templates/nginx_confd/*
   notify:
@@ -53,7 +53,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: /etc/nginx/sites-available/{{ item | basename }}
-    mode: 0644
+    mode: "0644"
   with_fileglob:
     - templates/vhosts/*
   notify:
@@ -68,7 +68,7 @@
     path: /etc/nginx/sites-enabled/{{ item | basename }}
     src: ../sites-available/{{ item | basename }}
     state: link
-    mode: 0644
+    mode: "0644"
   with_fileglob:
     - templates/vhosts/*
   notify:
@@ -106,7 +106,7 @@
     path: /etc/nginx/streamsite.htpass
     name: "{{ item.user }}"
     password: "{{ item.password }}"
-    mode: 0644
+    mode: "0644"
   loop: "{{ streamsite_users }}"
   tags:
     - streamsite
@@ -116,7 +116,7 @@
   ansible.builtin.template:
     src: config/redirects.nginx.j2
     dest: /etc/nginx/conf.d/www_redirects.conf
-    mode: 0644
+    mode: "0644"
   vars:
     add_www:
       - aquarionics.com

@@ -7,7 +7,7 @@
     line: etag {{ filebot_version }}
     owner: plex
     group: plex
-    mode: 0644
+    mode: "0644"
     create: true
   register: did_filebot_update
   tags:
@@ -41,7 +41,7 @@
     dest: "{{ plex_home }}/.filebot_license.psm"
     owner: plex
     group: plex
-    mode: 0644
+    mode: "0644"
   notify:
     - register filebot
   tags:

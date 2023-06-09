@@ -147,7 +147,7 @@
   ansible.builtin.template:
     src: media_logrotate.j2
     dest: /etc/logrotate.d/media_logrotate
-    mode: 0644
+    mode: "0644"
     owner: root
   tags:
     - logrotate
