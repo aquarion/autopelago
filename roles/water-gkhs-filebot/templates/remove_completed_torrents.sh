@@ -16,13 +16,14 @@ do
     # check if torrent download is completed
     DL_COMPLETED=`echo $INFO | grep "Done: 100%\|Done: 99\..%"`
     # check torrents current state is
-    STATE_STOPPED=`echo $INFO | grep "State: Seeding\|State: Stopped\|State: Finished\|State: Idle"`
+    #STATE_STOPPED=`echo $INFO | grep "State: Seeding\|State: Stopped\|State: Finished\|State: Idle"`
+    STATE_STOPPED=`echo $INFO | grep "State: Finished"`
 
     # if the torrent is "Stopped", "Finished", or "Idle after downloading 100%"
     if [ "$DL_COMPLETED" ] && [ "$STATE_STOPPED" ]; then
         echo "Torrent #$TORRENTID is completed. Removing torrent from list."
         transmission-remote $SERVER --torrent $TORRENTID --remove
-    else
-        echo "Torrent #$TORRENTID is not completed. It is`transmission-remote $SERVER --torrent $TORRENTID --info | grep "Done:"` Ignoring."
+    #else
+    #    echo "Torrent #$TORRENTID is not completed. It is`transmission-remote $SERVER --torrent $TORRENTID --info | grep "Done:"` Ignoring."
     fi
 done
