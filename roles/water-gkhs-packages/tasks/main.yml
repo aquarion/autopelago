@@ -52,6 +52,7 @@
       - fail2ban
       - dnsutils
       - acl
+      - unattended-upgrades
 
 - name: Install Debian System Packages
   when: ansible_distribution == 'Debian'
