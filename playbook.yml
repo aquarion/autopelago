@@ -1,4 +1,20 @@
 ---
+
+
+- name: AWS Roles
+  hosts: all:!localactions
+  roles:
+    - name: aws-route53
+      role: aws-route53
+      become: false
+      connection: local
+      tags: route53
+      run_once: true
+    - role: aws-pdforums
+      run_once: true
+      tags: pdforum
+
+
 - name: Actions on all hosts
   hosts: all:!localactions
   become: true
@@ -12,7 +28,7 @@
     - { role: water-gkhs-web-errors, tags: nginx }
 
 - name: Actions on all non-local hosts
-  hosts: external_hosts
+  hosts: all:!localactions
   become: true
   roles:
     - { role: water-gkhs-mysql-backup, tags: mysql }
@@ -37,12 +53,6 @@
     - water-gkhs-exim
     - b2-backup
     - github-cli
-    - name: aws-route53
-      role: aws-route53
-      become: false
-      connection: local
-      tags: route53
-    - { role: aws-pdforums, tags: pdforum }
 
 - name: Hello Atoll
   hosts: atoll

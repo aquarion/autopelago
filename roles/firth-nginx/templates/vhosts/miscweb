@@ -15,19 +15,20 @@ server {
   listen      80;
   listen [::]:80;
   server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
-  warehousebasement.com
-  dagon.church live.dagon.church wiki.dagon.church wiki.aquarionics.com
-  firth.water.gkhs.net
-  istic.co
-  old.aquarionics.com panopticon.aquarionics.com
-  www.deathuntodarkness.org
-  ludoistic.com
-  *.istic.net
-  *.istic.dev
-  *.foip.me
-  *.bromioscreations.com
-  *.hubris.house
-  *.deadbadgerdesigns.co.uk;
+    warehousebasement.com
+    dagon.church live.dagon.church wiki.dagon.church
+    live.dailyphoto.aquarionics.com
+    firth.water.gkhs.net
+    istic.co
+    www.deathuntodarkness.org
+    ludoistic.com
+    *.istic.net
+    *.istic.dev
+    *.foip.me
+    *.bromioscreations.com
+    *.aquarionics.com
+    *.hubris.house
+    *.deadbadgerdesigns.co.uk;
 
   add_header X-WhyAmI "miscweb redirect";
   return 301 https://$host$request_uri;
@@ -57,13 +58,14 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
-    warehousebasement.com
-    dagon.church live.dagon.church wiki.dagon.church
-    istic.co
-    old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
-    www.deathuntodarkness.org
-    ludoistic.com
-    deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
+      warehousebasement.com
+      dagon.church live.dagon.church wiki.dagon.church
+      istic.co
+      old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
+      live.dailyphoto.aquarionics.com dailyphoto.aquarionics.com
+      www.deathuntodarkness.org
+      ludoistic.com
+      deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
 
