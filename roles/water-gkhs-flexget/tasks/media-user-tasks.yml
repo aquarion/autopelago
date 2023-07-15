@@ -7,7 +7,7 @@
     virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
     virtualenv_python: python3
   loop:
- #   - encodings
+    #   - encodings
     - transmissionrpc
   tags:
     - flexget
