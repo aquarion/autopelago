@@ -409,3 +409,16 @@
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
+
+    - name: Aquarionics.com. - BlueSky Validation
+      amazon.aws.route53:
+        overwrite: true
+        command: create
+        zone: aquarionics.com
+        record: _atproto.aquarionics.com
+        aws_access_key: "{{ aqcom_aws_key }}"
+        aws_secret_key: "{{ aqcom_aws_secret }}"
+        type: TXT
+        ttl: "300"
+        value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
+
