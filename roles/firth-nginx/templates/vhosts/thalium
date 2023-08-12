@@ -25,8 +25,8 @@ server {
     access_log /var/log/nginx/thalium.access.log;
     index index.php index.html;
 
-    auth_basic           "Thalium";
-    auth_basic_user_file  /etc/nginx/streamsite.htpass;
+    # auth_basic           "Thalium";
+    # auth_basic_user_file  /etc/nginx/streamsite.htpass;
 
     root /home/aquarion/code/thalium/public/;
     #root /var/www/public;
@@ -48,13 +48,29 @@ server {
         gzip_static on;
     }
 
+    location /register {
+        try_files $uri $uri/ /index.php?$query_string;
+        gzip_static on;
+        auth_basic           "Thalium";
+        auth_basic_user_file  /etc/nginx/streamsite.htpass;
+    }
+
     location /_libris/ {
         alias /home/library/RPG/Systems/;
         gzip_static on;
+        auth_request /_authcheck;
     }
     location /_thumbnails/ {
         alias /home/aquarion/code/thalium/storage/app/thumbnails/;
         gzip_static on;
+    }
+
+    location /_authcheck {
+        internal;
+        proxy_pass https://thalium.aquarionics.com/auth/checkLogin;
+        proxy_pass_request_body off;
+        proxy_set_header        Content-Length "";
+        proxy_set_header        X-Original-URI $request_uri;
     }
 
 	include /etc/nginx/snippets/errors.conf;
