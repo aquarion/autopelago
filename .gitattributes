@@ -1,2 +1,3 @@
 host_vars/*net.yml diff=ansible-vault merge=binary
 group_vars/*.yml diff=ansible-vault merge=binary
+**.vault.??? diff=ansible-vault merge=binary
