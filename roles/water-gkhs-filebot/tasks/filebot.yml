@@ -43,6 +43,6 @@
     group: plex
     mode: "0644"
   notify:
-    - register filebot
+    - Register filebot
   tags:
     - filebot

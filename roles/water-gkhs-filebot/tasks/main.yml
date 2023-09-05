@@ -13,6 +13,7 @@
   ansible.builtin.include_tasks: filebot.yml
   tags:
     - media
+    - filebot
 
 - name: Install get_iplayer
   ansible.builtin.include_tasks: iplayer.yml
