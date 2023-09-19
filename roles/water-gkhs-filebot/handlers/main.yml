@@ -3,6 +3,7 @@
   ansible.builtin.command: sysctl -p
 
 - name: Register filebot
+  become: true
   become_user: plex
   ansible.builtin.command: filebot --license {{ plex_home }}/.filebot_license.psm
 

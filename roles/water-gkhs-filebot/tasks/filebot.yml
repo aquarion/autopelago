@@ -37,7 +37,7 @@
 
 - name: Register licence
   ansible.builtin.copy:
-    src: Filebot_Licence.psm
+    src: Filebot_Licence.psm.vault
     dest: "{{ plex_home }}/.filebot_license.psm"
     owner: plex
     group: plex

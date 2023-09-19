@@ -10,7 +10,6 @@
   ansible.builtin.apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
     state: present
-    keyring: /etc/apt/trusted.gpg.d/docker.gpg
   tags:
     - docker
 
