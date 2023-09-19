@@ -50,6 +50,7 @@
     - water-gkhs-exim
     - b2-backup
     - github-cli
+    - jellyfin
 
 - name: Hello Atoll
   hosts: atoll

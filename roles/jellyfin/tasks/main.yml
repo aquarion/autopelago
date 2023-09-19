@@ -1,0 +1,32 @@
+---
+- name: Add GPG key
+  ansible.builtin.apt_key:
+    url: "https://repo.jellyfin.org/{{ ansible_distribution|lower }}/jellyfin_team.gpg.key"
+    state: present
+    keyring: /etc/apt/keyrings/jellyfin.gpg
+  tags:
+    - jellyfin
+
+
+- name: Jellyfin Repo
+  ansible.builtin.deb822_repository:
+    name: jellyfin
+    uris: "https://repo.jellyfin.org/{{ ansible_distribution|lower }}"
+    suites: "{{ ansible_distribution_release }}"
+    state: present
+    signed_by: /etc/apt/keyrings/jellyfin.gpg
+    components: main
+
+  tags:
+    - jellyfin
+
+- name: Install jellyfin
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 21600
+  loop:
+    - jellyfin
+  tags:
+    - jellyfin
