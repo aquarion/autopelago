@@ -1,7 +1,7 @@
 ---
 exclude_paths:
   - ./galaxy-roles # Don't bother checking upstream code
-  - .github/workflows/ansible-lint.yml
+  - .github/workflows
   - ./.github # Don't try to ansible-lint github workflows.
 skip_list: # Bad lint things we're doing for good reasons
   - "305" # Use shell only when shell functionality is required
