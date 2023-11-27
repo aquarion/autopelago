@@ -43,7 +43,7 @@
     - firth-packages
     - firth-users
     - firth-docker
-    - plexupdate
+    - plexupdate-uninstall
     - { role: firth-nginx, tags: nginx }
     - water-gkhs-filebot
     - water-gkhs-flexget

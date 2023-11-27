@@ -277,18 +277,6 @@
         ttl: "86400"
         value: "{{ loadbalancer_ip }}"
 
-    - name: Plex. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: aquarionics.com
-        record: "{{ plex_domain }}."
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
-        type: A
-        ttl: "86400"
-        value: "{{ loadbalancer_ip }}"
-
     - name: Old.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
