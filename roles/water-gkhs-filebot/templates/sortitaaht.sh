@@ -16,12 +16,11 @@ fi
 
 export JAVA_OPTS=-Xmx1024m
 filebot -script fn:amc \
-        --output "{{ media_home }}" \
-        --log-file {{ plex_home }}/Logs/amc.log \
-        --def excludeList={{ plex_home }}/Logs/amc_seen.txt \
-        --def discord={{ discord_webhook_plex }}  \
+        --output "{{ media_library }}" \
+        --log-file {{ media_home }}/Logs/amc.log \
+        --def excludeList={{ media_home }}/Logs/amc_seen.txt \
+        --def discord={{ discord_webhook_medialibrary }}  \
         --def clean=y \
-        --def plex=localhost:{{ plex_token }} \
         --action hardlink \
         --conflict override -non-strict \
         --def music=y subtitles=en artwork=y extras=y \
@@ -30,6 +29,6 @@ filebot -script fn:amc \
                 "animeFormat=Anime/{n}/{fn}" \
                 "movieFormat=Movies/{n} {y}/{fn}" \
                 "musicFormat=Music/{n}/{fn}" \
-        "$FILEPATH" {{ verbose }} > {{ plex_home }}/Logs/amc.stdout.log
+        "$FILEPATH" {{ verbose }} > {{ media_home }}/Logs/amc.stdout.log
 
 ~/bin/sync_or_swim.sh

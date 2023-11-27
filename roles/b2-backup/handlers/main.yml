@@ -3,4 +3,4 @@
   ansible.builtin.command:
     cmd: b2 authorize-account {{ backblaze_b2_app }} {{ backblaze_b2_key }}
   become: true
-  become_user: plex
+  become_user: "{{ media_user }}"

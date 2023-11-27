@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-{{ plex_home }}/Logs/*.log {
+{{ media_home }}/Logs/*.log {
     weekly
     rotate 4
     compress
@@ -8,7 +8,7 @@
     missingok
 }
 
-{{ plex_home }}/.filebot/logs/*.log {
+{{ media_home }}/.filebot/logs/*.log {
     weekly
     rotate 4
     compress

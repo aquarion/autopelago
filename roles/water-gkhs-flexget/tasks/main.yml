@@ -13,7 +13,7 @@
 - name: Do things as the media centre user
   ansible.builtin.import_tasks: media-user-tasks.yml
   become: true
-  become_user: plex
+  become_user: "{{ media_user }}"
   tags:
     - flexget
     - media
@@ -22,8 +22,8 @@
   ansible.builtin.cron:
     name: flexget
     minute: 16,46
-    user: plex
-    job: "{{ plex_home }}/.virtualenvs/flexget/bin/python {{ plex_home }}/.virtualenvs/flexget/bin/flexget --cron execute"
+    user: "{{ media_user }}"
+    job: "{{ media_home }}/.virtualenvs/flexget/bin/python {{ media_home }}/.virtualenvs/flexget/bin/flexget --cron execute"
     cron_file: flexget
   tags:
     - flexget

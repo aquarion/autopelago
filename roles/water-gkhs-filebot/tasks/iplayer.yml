@@ -11,11 +11,11 @@
 
 - name: Check iPlayer Version
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.ansible_iplayer_reg"
+    path: "{{ media_home }}/.ansible_iplayer_reg"
     regexp: ^etag
     line: etag {{ get_iplayer_version }}
-    owner: plex
-    group: plex
+    owner: "{{ media_user }}"
+    group: "{{ media_user }}"
     mode: "0644"
     create: true
   register: iplayer_updated
@@ -60,15 +60,15 @@
 
 - name: Delete old iplayer script
   ansible.builtin.file:
-    path: "{{ plex_home }}/bin/update_iplayer.sh"
+    path: "{{ media_home }}/bin/update_iplayer.sh"
     state: absent
 
 - name: Add update iplayer script to bin
   ansible.builtin.template:
     src: download_iplayer.sh
-    dest: "{{ plex_home }}/bin/download_iplayer.sh"
+    dest: "{{ media_home }}/bin/download_iplayer.sh"
     mode: "0755"
-    owner: plex
+    owner: "{{ media_user }}"
   tags:
     - media
     - iplayer
@@ -78,19 +78,19 @@
     name: download_iplayer
     minute: "15"
     hour: 2
-    user: plex
-    job: "{{ plex_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }}"
+    user: "{{ media_user }}"
+    job: "{{ media_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port }}"
     cron_file: download_iplayer
     state: present
   tags:
     - media
     - iplayer
 
-- name: Make sure plex has a .get_iplayer directory
+- name: Make sure media user has a .get_iplayer directory
   ansible.builtin.file:
-    path: "{{ plex_home }}/.get_iplayer"
+    path: "{{ media_home }}/.get_iplayer"
     state: directory
-    owner: plex
+    owner: "{{ media_user }}"
     mode: "0755"
   tags:
     - media
@@ -98,7 +98,7 @@
 
 - name: Add iplayer quality config
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.get_iplayer/options"
+    path: "{{ media_home }}/.get_iplayer/options"
     regexp: ^tvmode
     line: tvmode best
     create: true
@@ -109,7 +109,7 @@
 
 - name: Add subdirformat config
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.get_iplayer/options"
+    path: "{{ media_home }}/.get_iplayer/options"
     regexp: ^subdirformat
     line: subdirformat <nameshort>
     create: true
@@ -120,7 +120,7 @@
 
 - name: Add subtitles config
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.get_iplayer/options"
+    path: "{{ media_home }}/.get_iplayer/options"
     regexp: ^subtitles
     line: subtitles 1
     create: true
@@ -131,7 +131,7 @@
 
 - name: Add subdirformat config
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.get_iplayer/options"
+    path: "{{ media_home }}/.get_iplayer/options"
     regexp: ^proxy
     line: proxy http://{{ nordvpn_username }}:{{ nordvpn_password }}@{{ nordvpn_server }}.nordvpn.com:80
     create: true
@@ -142,7 +142,7 @@
 
 - name: Add fileprefix config
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.get_iplayer/options"
+    path: "{{ media_home }}/.get_iplayer/options"
     regexp: ^fileprefix
     line: fileprefix - S<00seriesnum>E<00episodenum>
     create: true
@@ -153,7 +153,7 @@
 
 - name: Add output config
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.get_iplayer/options"
+    path: "{{ media_home }}/.get_iplayer/options"
     regexp: ^output
     line: output {{ transmission_complete }}/completed/
     create: true
@@ -164,7 +164,7 @@
 
 - name: Add whitespace config
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.get_iplayer/options"
+    path: "{{ media_home }}/.get_iplayer/options"
     regexp: ^whitespace
     line: whitespace 1
     create: true

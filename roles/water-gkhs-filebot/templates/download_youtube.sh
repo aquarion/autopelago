@@ -22,7 +22,7 @@ unlock()            { _lock u; }   # drop a lock
 
 
 exec 2>&1
-exec > >(logger --tag Youtube --server={{ plex_remote_syslog_host }} --port={{ plex_remote_syslog_port }})
+exec > >(logger --tag Youtube --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port }})
 
 
 function dienow {
@@ -37,7 +37,7 @@ exlock_now || dienow
 # Remember! Lock file is removed when one of the scripts exits and it is
 #           the only script holding the lock or lock is not acquired at all.
 
-DIR={{ media_home }}/Youtube
+DIR={{ media_library }}/Youtube
 SCRATCH=$HOME/yt_scratch
 
 
@@ -87,4 +87,3 @@ function download {
 
 {{ download_playlists }}
 
-curl -q http://{{ plex_domain }}:32400/library/sections/{{ plex_youtube_library }}/refresh?X-Plex-Token={{ plex_token }}

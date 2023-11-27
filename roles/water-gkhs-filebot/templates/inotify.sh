@@ -28,7 +28,7 @@ exlock_now || exit 1
 #           the only script holding the lock or lock is not acquired at all.
 
 
-HOME={{ plex_home }}
+HOME={{ media_home }}
 WATCH_PATH={{ transmission_complete }}/completed
 LOGFILE=$HOME/Logs/filebot_inotify.log
 WATCHFILE=$HOME/.filebot_inotify.fifo

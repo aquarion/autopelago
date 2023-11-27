@@ -8,11 +8,11 @@
     - jellyfin
 
 - name: Get DEB architecture
-  shell: dpkg --print-architecture
+  ansible.builtin.shell: dpkg --print-architecture
   register: deb_architecture
   tags:
     - jellyfin
-  
+
 - name: Jellyfin Repo
   ansible.builtin.deb822_repository:
     name: jellyfin

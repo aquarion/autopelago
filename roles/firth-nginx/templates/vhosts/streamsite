@@ -18,7 +18,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
 
-    root {{ media_home }};
+    root {{ media_library }};
 
 	include /etc/nginx/snippets/errors.conf;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;

@@ -1,7 +1,7 @@
 #!/bin/bash
 # {{ ansible_managed }}
 
-MEDIAHOME="{{ media_home }}"
+MEDIAHOME="{{ media_library }}"
 
 function debug_out {
     [ ! -z "$VERBOSE" ] && echo $@
@@ -22,7 +22,7 @@ then
     echo "Sync non-TV shows to their own libraries"
     echo "Usage:"
     echo " -h - This"
-    echo " -d - Directory to start at. Defaults to {{ media_home }}"
+    echo " -d - Directory to start at. Defaults to {{ media_library }}"
     echo " -v - Be noisy about it"
     exit 4
 fi

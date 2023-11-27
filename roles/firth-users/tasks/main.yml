@@ -4,8 +4,7 @@
   ansible.builtin.user:
     name: "{{ item }}"
   with_items:
-    - larpfic
-    - plex
+    - medialibrary
   tags:
     - users
 
@@ -18,6 +17,7 @@
   with_items:
     - arkserver
     - factorio
+    - larpfic
   tags:
     - users
 
@@ -26,9 +26,7 @@
     user: "{{ item }}"
     key: "{{ lookup('file', 'files/aquarion.keys') }}"
   with_items:
-    - larpfic
-    - plex
+    - medialibrary
   tags:
-    - larpfic
-    - plex
+    - medialibrary
     - users

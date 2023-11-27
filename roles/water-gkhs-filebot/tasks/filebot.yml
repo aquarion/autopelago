@@ -2,11 +2,11 @@
 # Based on https://github.com/cmprescott/ansible-role-filebot
 - name: Check Filebot Version
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.ansible_filebot_reg"
+    path: "{{ media_home }}/.ansible_filebot_reg"
     regexp: ^etag
     line: etag {{ filebot_version }}
-    owner: plex
-    group: plex
+    owner: "{{ media_user }}"
+    group: "{{ media_user }}"
     mode: "0644"
     create: true
   register: did_filebot_update
@@ -38,9 +38,9 @@
 - name: Register licence
   ansible.builtin.copy:
     src: Filebot_Licence.psm.vault
-    dest: "{{ plex_home }}/.filebot_license.psm"
-    owner: plex
-    group: plex
+    dest: "{{ media_home }}/.filebot_license.psm"
+    owner: "{{ media_user }}"
+    group: "{{ media_user }}"
     mode: "0644"
   notify:
     - Register filebot

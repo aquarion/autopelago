@@ -6,29 +6,12 @@ flexget_tasks:
 
 # ####
 # Transmission configuration
-millpond_transmission_user: something
-millpond_transmission_pass: redacted
+transmission_user: something
+transmission_pass: redacted
 
 # ####
 # nginx config
 letsencrypt_dir: /etc/letsencrypt/live/[certname]
-
-# ####
-# plex update settings
-plex_email: user@example.com
-plex_password: s3cret
-
-# ####
-# Retort (Kettle controller)
-
-# Allows IPs that start with these numbers
-retort_allow_ip:
-  - "192.168"
-  - 82.6.184.52
-
-retort_server_name: kettle.supersecret-dynamicdns-name.net
-retort_server_alias: kettle.local
-retort_htaccess: /etc/apache2/users
 
 # ####
 # Filebot install version

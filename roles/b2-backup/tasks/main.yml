@@ -7,11 +7,11 @@
 
 - name: Check B2 authorisation
   ansible.builtin.lineinfile:
-    path: "{{ plex_home }}/.b2_auth_date"
+    path: "{{ media_home }}/.b2_auth_date"
     regexp: ^etag
     line: etag {{ backblaze_key_changed }}
-    owner: plex
-    group: plex
+    owner: "{{ media_user }}"
+    group: "{{ media_user }}"
     mode: "0644"
     create: true
   notify: reauthorize backblaze
@@ -21,9 +21,9 @@
 - name: Setup B2 backup of Media (Script)
   ansible.builtin.template:
     src: media-backup.bash.j2
-    dest: "{{ plex_home }}/bin/media-backup.sh"
+    dest: "{{ media_home }}/bin/media-backup.sh"
     mode: "0770"
-    owner: plex
+    owner: "{{ media_user }}"
   tags:
     - b2backup
 
@@ -32,8 +32,8 @@
     name: b2backup
     hour: "04"
     minute: "46"
-    user: plex
-    job: "{{ plex_home }}/bin/media-backup.sh"
+    user: "{{ media_user }}"
+    job: "{{ media_home }}/bin/media-backup.sh"
     cron_file: b2backup
   tags:
     - b2backup

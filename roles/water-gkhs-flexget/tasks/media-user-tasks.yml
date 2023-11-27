@@ -4,7 +4,7 @@
 - name: Install pip transmissionrpc package
   ansible.builtin.pip:
     name: "{{ item }}"
-    virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
+    virtualenv: "{{ media_home }}/.virtualenvs/flexget"
     virtualenv_python: python3
   loop:
     #   - encodings
@@ -15,7 +15,7 @@
 - name: Install Flexget
   ansible.builtin.pip:
     name: flexget
-    virtualenv: "{{ plex_home }}/.virtualenvs/flexget"
+    virtualenv: "{{ media_home }}/.virtualenvs/flexget"
     virtualenv_python: python3
     version: "{{ flexget_version }}"
   tags:
@@ -23,19 +23,19 @@
 
 - name: Make sure flexget config dir exists
   ansible.builtin.file:
-    path: "{{ plex_home }}/.flexget"
+    path: "{{ media_home }}/.flexget"
     state: directory
-    owner: plex
+    owner: "{{ media_user }}"
     mode: "0755"
   tags:
     - flexget
 
-# - ansible.builtin.template: src=flexget.yml dest={{ plex_home }}/.flexget/config.yml mode=0660 owner=plex
+# - ansible.builtin.template: src=flexget.yml dest={{ media_home }}/.flexget/config.yml mode=0660 owner="{{ media_user }}"
 - name: Create flexget config
   ansible.builtin.copy:
-    dest: "{{ plex_home }}/.flexget/config.yml"
+    dest: "{{ media_home }}/.flexget/config.yml"
     mode: "0660"
-    owner: plex
+    owner: "{{ media_user }}"
     content: "{{ flexget_tasks | to_nice_yaml }}"
   tags:
     - flexget

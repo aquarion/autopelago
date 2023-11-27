@@ -4,8 +4,8 @@
 
 - name: Register filebot
   become: true
-  become_user: plex
-  ansible.builtin.command: filebot --license {{ plex_home }}/.filebot_license.psm
+  become_user: "{{ media_user }}"
+  ansible.builtin.command: filebot --license {{ media_home }}/.filebot_license.psm
 
 - name: Update APT
   ansible.builtin.apt:
@@ -39,6 +39,6 @@
 
 - name: Restart inotify
   listen: restart filebot inotify
-  ansible.builtin.command: "{{ plex_home }}/bin/inotify.sh"
+  ansible.builtin.command: "{{ media_home }}/bin/inotify.sh"
   async: 1000
   poll: 0
