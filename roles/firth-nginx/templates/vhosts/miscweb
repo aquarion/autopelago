@@ -21,7 +21,6 @@ server {
     firth.water.gkhs.net
     istic.co
     www.deathuntodarkness.org
-    ludoistic.com
     *.istic.net
     *.istic.dev
     *.foip.me
@@ -64,7 +63,6 @@ server {
       old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
       live.dailyphoto.aquarionics.com dailyphoto.aquarionics.com
       www.deathuntodarkness.org
-      ludoistic.com
       deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
     include /etc/nginx/snippets/letsencrypt_ssl.conf;
 
@@ -78,20 +76,6 @@ server {
     include /etc/nginx/proxy_params;
   }
   include /etc/nginx/snippets/errors.conf;
-}
-
-#  _         _     _    _   _    
-# | |_  _ __| |___(_)__| |_(_)__ 
-# | | || / _` / _ \ (_-<  _| / _|
-# |_|\_,_\__,_\___/_/__/\__|_\__|
-                              
-
-server {
-    listen              443 ssl proxy_protocol;
-    listen              80;
-    server_name ludo.istic.co www.ludoistic.com ludoistic.net www.ludoistic.net;
-   add_header X-WhyAmI "miscweb ludoistic";
-    return 301 $scheme://ludoistic.com;
 }
 
 #        _                   _    
