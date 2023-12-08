@@ -31,6 +31,13 @@
 # Sync non-TV shows to their own libraries
 
 - name: Add sync_or_swim script to bin
+  ansible.builtin.debug:
+    msg: "{{ media_home }}/bin/sync_or_swim.sh"
+  tags:
+    - media
+    - sortitaaht
+
+- name: Add sync_or_swim script to bin
   ansible.builtin.template:
     src: sync_or_swim.sh
     dest: "{{ media_home }}/bin/sync_or_swim.sh"
@@ -38,13 +45,14 @@
     owner: "{{ media_user }}"
   tags:
     - media
+    - sortitaaht
 
 # Sort It Ahht
 
 - name: Add sortitaaht script to bin
   ansible.builtin.template:
     src: sortitaaht.sh
-    dest: "{{ media_home }}/bin/sortitaaht.sh "
+    dest: "{{ media_home }}/bin/sortitaaht.sh"
     mode: "0755"
     owner: "{{ media_user }}"
   tags:
@@ -53,7 +61,7 @@
 - name: Add verbose sortitaaht script to bin
   ansible.builtin.template:
     src: sortitaaht.sh
-    dest: "{{ media_home }}/bin/sortitaaht_verbose.sh "
+    dest: "{{ media_home }}/bin/sortitaaht_verbose.sh"
     mode: "0755"
     owner: "{{ media_user }}"
   tags:
@@ -64,7 +72,7 @@
 - name: Add Clear Bullshit script to bin
   ansible.builtin.template:
     src: clear_bullshit.sh
-    dest: "{{ media_home }}/bin/clear_bullshit.sh "
+    dest: "{{ media_home }}/bin/clear_bullshit.sh"
     mode: "0755"
     owner: "{{ media_user }}"
   tags:
@@ -92,7 +100,7 @@
 - name: Add download_youtube script to bin
   ansible.builtin.template:
     src: download_youtube.sh
-    dest: "{{ media_home }}/bin/download_youtube.sh "
+    dest: "{{ media_home }}/bin/download_youtube.sh"
     mode: "0755"
     owner: "{{ media_user }}"
   tags:
@@ -126,7 +134,7 @@
 - name: Add remove_completed_torrents script to bin
   ansible.builtin.template:
     src: remove_completed_torrents.sh
-    dest: "{{ media_home }}/bin/remove_completed_torrents.sh "
+    dest: "{{ media_home }}/bin/remove_completed_torrents.sh"
     mode: "0755"
     owner: "{{ media_user }}"
   tags:

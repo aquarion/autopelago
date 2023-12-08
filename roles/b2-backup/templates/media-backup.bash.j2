@@ -8,4 +8,4 @@ if ! flock -n 9  ; then
 fi
 
 export PATH=$PATH:/usr/local/bin
-time b2 sync --delete --replaceNewer {{ media_home }}/Media b2://millpond-media
+time b2 sync --delete --replaceNewer {{ media_library }} b2://millpond-media

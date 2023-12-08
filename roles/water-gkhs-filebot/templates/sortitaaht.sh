@@ -31,4 +31,4 @@ filebot -script fn:amc \
                 "musicFormat=Music/{n}/{fn}" \
         "$FILEPATH" {{ verbose }} > {{ media_home }}/Logs/amc.stdout.log
 
-~/bin/sync_or_swim.sh
+{{ media_home }}/bin/sync_or_swim.sh

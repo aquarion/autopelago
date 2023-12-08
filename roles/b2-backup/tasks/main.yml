@@ -14,7 +14,7 @@
     group: "{{ media_user }}"
     mode: "0644"
     create: true
-  notify: reauthorize backblaze
+  notify: Reauthorize backblaze
   tags:
     - b2backup
 
