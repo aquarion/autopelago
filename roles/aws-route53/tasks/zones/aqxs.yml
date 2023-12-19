@@ -5,8 +5,7 @@
     command: create
     zone: aqxs.net
     record: aqxs.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "3600"
     value: "{{ cenote_ip }}"
@@ -17,8 +16,7 @@
     command: create
     zone: aqxs.net
     record: aqxs.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: NS
     ttl: "172800"
     value: ns-1408.awsdns-48.org.,ns-685.awsdns-21.net.,ns-40.awsdns-05.com.,ns-1866.awsdns-41.co.uk.
@@ -41,8 +39,7 @@
     command: create
     zone: aqxs.net
     record: aqxs.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: TXT
     ttl: "300"
     value:
@@ -55,8 +52,7 @@
     command: create
     zone: aqxs.net
     record: "*.aqxs.net."
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "3600"
     value: "{{ cenote_ip }}"
@@ -67,8 +63,7 @@
     command: create
     zone: aqxs.net
     record: 20151026232244.pm._domainkey.aqxs.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: TXT
     ttl: "300"
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGF2/JFx7pvFw7RU1wXzqtMohMaSZTEbeLscHSrvzrKKtH2M1zTY8YwIZpjFCjbCbQ2aW28bLzzhd2e1klZorwWV++CYoXnnGgVtz1241ToVPgKyKepmBn6E+3DaJZWsj17jINgEkxYoZ3hvp34y+NSFxlMR4bD9V3EetoxUAYgQIDAQAB"'
@@ -79,8 +74,7 @@
     command: delete
     zone: aqxs.net
     record: lists.aqxs.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: MX
     ttl: "3600"
     value: 10 aspmx2.googlemail.com.,10 aspmx3.googlemail.com.,5 alt1.aspmx.l.google.com.,5 alt2.aspmx.l.google.com.,1 aspmx.l.google.com.
@@ -91,8 +85,7 @@
     command: create
     zone: aqxs.net
     record: pmbounce.aqxs.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: CNAME
     ttl: "300"
     value: pm.mtasv.net

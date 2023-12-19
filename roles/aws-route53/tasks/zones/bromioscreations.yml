@@ -5,8 +5,7 @@
     command: create
     zone: bromioscreations.com
     record: bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "86400"
     value: "{{ loadbalancer_ip }}"
@@ -17,8 +16,7 @@
     command: create
     zone: bromioscreations.com
     record: bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: AAAA
     ttl: "300"
     value: "{{ ansible_default_ipv6.address }}"
@@ -29,8 +27,7 @@
     command: create
     zone: bromioscreations.com
     record: bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: MX
     ttl: "300"
     value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM.
@@ -65,8 +62,7 @@
     command: create
     zone: bromioscreations.com
     record: bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: SPF
     ttl: "86400"
     value: '"v=spf1 include:aspmx.googlemail.com ~all"'
@@ -77,8 +73,7 @@
     command: create
     zone: bromioscreations.com
     record: bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: TXT
     ttl: "300"
     value: '"v=spf1 include:aspmx.googlemail.com ~all"'
@@ -89,8 +84,7 @@
     command: create
     zone: bromioscreations.com
     record: google._domainkey.bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: TXT
     ttl: "300"
     value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
@@ -101,8 +95,7 @@
     command: create
     zone: bromioscreations.com
     record: cdn.bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: CNAME
     ttl: "300"
     value: d2r0e8lumqw3g1.cloudfront.net
@@ -137,8 +130,7 @@
     command: create
     zone: bromioscreations.com
     record: "*.cdn.bromioscreations.com."
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: CNAME
     ttl: "3600"
     value: d2r0e8lumqw3g1.cloudfront.net
@@ -149,8 +141,7 @@
     command: create
     zone: bromioscreations.com
     record: mail.bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: CNAME
     ttl: "86400"
     value: ghs.google.com
@@ -161,8 +152,7 @@
     command: create
     zone: bromioscreations.com
     record: www.bromioscreations.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"

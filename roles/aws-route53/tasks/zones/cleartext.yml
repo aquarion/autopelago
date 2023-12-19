@@ -5,8 +5,7 @@
     command: create
     zone: cleartextcontent.co.uk
     record: cleartextcontent.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
@@ -17,8 +16,7 @@
     command: create
     zone: cleartextcontent.co.uk
     record: cleartextcontent.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: MX
     ttl: "300"
     value: 10 cenote.gkhs.net
@@ -29,8 +27,7 @@
     command: create
     zone: cleartextcontent.co.uk
     record: cleartextcontent.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: NS
     ttl: "172800"
     value: ns-797.awsdns-35.net.,ns-39.awsdns-04.com.,ns-2024.awsdns-61.co.uk.,ns-1219.awsdns-24.org.
@@ -53,8 +50,7 @@
     command: create
     zone: cleartextcontent.co.uk
     record: www.cleartextcontent.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"

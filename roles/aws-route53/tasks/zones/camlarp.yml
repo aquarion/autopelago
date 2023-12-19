@@ -5,8 +5,7 @@
     command: create
     zone: camlarp.co.uk
     record: camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -17,8 +16,7 @@
     command: create
     zone: camlarp.co.uk
     record: camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: NS
     ttl: "172800"
     value: ns-422.awsdns-52.com,ns-617.awsdns-13.net,ns-1181.awsdns-19.org,ns-1809.awsdns-34.co.uk
@@ -41,8 +39,7 @@
     command: create
     zone: camlarp.co.uk
     record: citadel.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -53,8 +50,7 @@
     command: create
     zone: camlarp.co.uk
     record: obscura.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -65,8 +61,7 @@
     command: create
     zone: camlarp.co.uk
     record: bw.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -77,8 +72,7 @@
     command: create
     zone: camlarp.co.uk
     record: refs.bw.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -89,8 +83,7 @@
     command: create
     zone: camlarp.co.uk
     record: nfnc.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -101,8 +94,7 @@
     command: create
     zone: camlarp.co.uk
     record: darkmoon.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -113,8 +105,7 @@
     command: create
     zone: camlarp.co.uk
     record: refs.nfnc.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -125,8 +116,7 @@
     command: create
     zone: camlarp.co.uk
     record: wiki.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -137,8 +127,7 @@
     command: create
     zone: camlarp.co.uk
     record: www.camlarp.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"

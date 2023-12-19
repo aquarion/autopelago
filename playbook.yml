@@ -2,6 +2,12 @@
 - name: AWS Roles
   hosts: all:!localactions
   roles:
+    - name: aws-profiles
+      role: aws-profiles
+      become: false
+      connection: local
+      tags: aws
+      run_once: true
     - name: aws-route53
       role: aws-route53
       become: false
@@ -9,8 +15,11 @@
       tags: route53
       run_once: true
     - role: aws-pdforums
+      become: false
+      connection: local
+      tags: aws
       run_once: true
-      tags: pdforum
+      tags: aws
 
 - name: Actions on all hosts
   hosts: all:!localactions

@@ -5,8 +5,7 @@
     command: create
     zone: nicholasavenell.com
     record: nicholasavenell.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "86400"
     value: "{{ loadbalancer_ip }}"
@@ -17,8 +16,7 @@
     command: create
     zone: nicholasavenell.com
     record: nicholasavenell.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: AAAA
     ttl: "300"
     value: "{{ ansible_default_ipv6.address }}"
@@ -29,8 +27,7 @@
     command: create
     zone: nicholasavenell.com
     record: www.nicholasavenell.com.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
@@ -43,8 +40,7 @@
     command: create
     zone: nicholasavenell.net
     record: nicholasavenell.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "86400"
     value: "{{ loadbalancer_ip }}"
@@ -55,8 +51,7 @@
     command: create
     zone: nicholasavenell.net
     record: nicholasavenell.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: AAAA
     ttl: "300"
     value: "{{ ansible_default_ipv6.address }}"
@@ -67,8 +62,7 @@
     command: create
     zone: nicholasavenell.net
     record: www.nicholasavenell.net.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"

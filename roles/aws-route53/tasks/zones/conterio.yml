@@ -4,8 +4,7 @@
     state: present
     zone: conterio.co.uk.
     comment: Michael Conterio
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
   tags:
     - conterio
 
@@ -15,8 +14,7 @@
     command: create
     zone: conterio.co.uk
     record: conterio.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -53,8 +51,7 @@
     command: create
     zone: conterio.co.uk
     record: michael.conterio.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
@@ -67,8 +64,7 @@
     command: create
     zone: conterio.co.uk
     record: www.conterio.co.uk.
-    aws_access_key: "{{ aqcom_aws_key }}"
-    aws_secret_key: "{{ aqcom_aws_secret }}"
+    aws_profile: aqcom
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"

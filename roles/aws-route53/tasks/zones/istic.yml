@@ -8,8 +8,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -22,8 +21,7 @@
     type: MX
     ttl: "300"
     value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -36,8 +34,7 @@
     type: TXT
     ttl: "300"
     value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -50,8 +47,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -64,8 +60,7 @@
     type: CNAME
     ttl: "300"
     value: _9d6bae07c4db71b24db2d17cb58ea979.hkvuiqjoua.acm-validations.aws.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -78,8 +73,7 @@
     type: TXT
     ttl: "300"
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -92,8 +86,7 @@
     type: CNAME
     ttl: "300"
     value: _d552617b8e3e9ba74015bf5b057a9992.hkvuiqjoua.acm-validations.aws.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -106,8 +99,7 @@
     type: CNAME
     ttl: "300"
     value: dh1k06lb8zbki.cloudfront.net
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -120,8 +112,7 @@
     type: CNAME
     ttl: "300"
     value: _de5f022e01ad630db13679900d38e2f7.hkvuiqjoua.acm-validations.aws.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -134,8 +125,7 @@
     type: CNAME
     ttl: "300"
     value: d1anqtv8ak8qyd.cloudfront.net
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -148,8 +138,7 @@
     type: CNAME
     ttl: "300"
     value: ghs.google.com
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -162,8 +151,7 @@
     type: CNAME
     ttl: "300"
     value: ghs.google.com
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -176,8 +164,7 @@
     type: CNAME
     ttl: "300"
     value: ghs.google.com
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -190,8 +177,7 @@
     type: CNAME
     ttl: "300"
     value: ghs.google.com
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -204,8 +190,7 @@
     type: CNAME
     ttl: "300"
     value: cenote.water.gkhs.net
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -218,8 +203,7 @@
     type: MX
     ttl: "300"
     value: 10 mxa.mailgun.org.,20 mxb.mailgun.org.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -232,8 +216,7 @@
     type: TXT
     ttl: "300"
     value: '"v=spf1 include:mailgun.org ~all"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -246,8 +229,7 @@
     type: TXT
     ttl: "300"
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOWpy/f9cllyHPGjHDivg4y9BVxHNZsiB147x4aL1G4ojfB9QY8XmM9AUUhcwuIG0U8Vb9y1kV3AMER4gb0jSWkjv0PQ4a5FXB5iuG8+OScJbLJkDyCK+IePZwwQ5HzH3ERCDN6uDfj14tprXA7wzYFtIvCpWgMqLmtFsrZ1x+iQIDAQAB"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -260,8 +242,7 @@
     type: CNAME
     ttl: "300"
     value: mailgun.org
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -274,8 +255,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -288,8 +268,7 @@
     type: A
     ttl: "300"
     value: 127.0.0.1
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -302,8 +281,7 @@
     type: CNAME
     ttl: "300"
     value: istic.net.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -318,8 +296,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -332,8 +309,7 @@
     type: MX
     ttl: "300"
     value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -346,8 +322,7 @@
     type: SPF
     ttl: "300"
     value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -360,8 +335,7 @@
     type: TXT
     ttl: "300"
     value: '"google-site-verification=s0yW3bT4lr3noX5rosTZKsF02ETS8ny7OzLO2TBQck4"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -374,8 +348,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -388,8 +361,7 @@
     type: TXT
     ttl: "300"
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -402,8 +374,7 @@
     type: CNAME
     ttl: "300"
     value: istic.net
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -418,8 +389,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -432,8 +402,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
 
@@ -448,8 +417,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
     - istic_sys
@@ -463,8 +431,7 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
     - istic_sys
@@ -478,8 +445,7 @@
     type: A
     ttl: "300"
     value: "{{ cenote_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
     - istic_sys
@@ -493,8 +459,7 @@
     type: A
     ttl: "300"
     value: "{{ archipelago_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
     - istic_sys
@@ -508,8 +473,7 @@
     type: A
     ttl: "300"
     value: "{{ firth_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
     - istic_sys
@@ -523,8 +487,7 @@
     type: A
     ttl: "300"
     value: "{{ firth_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
+    aws_profile: istic
   tags:
     - istic_net
     - istic_sys

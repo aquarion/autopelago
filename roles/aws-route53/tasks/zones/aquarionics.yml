@@ -11,8 +11,7 @@
         command: create
         zone: aquarionics.com
         record: aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "86400"
         value: "{{ loadbalancer_ip }}"
@@ -23,8 +22,7 @@
         command: create
         zone: aquarionics.com
         record: aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: AAAA
         ttl: "300"
         value: "{{ ansible_default_ipv6.address }}"
@@ -35,8 +33,7 @@
         command: create
         zone: aquarionics.com
         record: aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: MX
         ttl: "300"
         value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM.
@@ -47,8 +44,7 @@
         command: create
         zone: aquarionics.com
         record: aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: NS
         ttl: "172800"
         value: ns-1103.awsdns-09.org.,ns-1667.awsdns-16.co.uk.,ns-275.awsdns-34.com.,ns-1004.awsdns-61.net.
@@ -71,8 +67,7 @@
         command: create
         zone: aquarionics.com
         record: aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: SPF
         ttl: "86400"
         value: '"v=spf1 include:aspmx.googlemail.com ~all"'
@@ -83,8 +78,7 @@
         command: create
         zone: aquarionics.com
         record: aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: TXT
         ttl: "300"
         value: '"v=spf1 include:aspmx.googlemail.com ~all"'
@@ -95,8 +89,7 @@
         command: create
         zone: aquarionics.com
         record: google._domainkey.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: TXT
         ttl: "300"
         value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
@@ -107,8 +100,7 @@
         command: create
         zone: aquarionics.com
         record: stream.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "300"
         value: www.aquarionics.com
@@ -119,8 +111,7 @@
         command: create
         zone: aquarionics.com
         record: live.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "300"
         value: www.aquarionics.com
@@ -131,8 +122,7 @@
         command: create
         zone: aquarionics.com
         record: cdn.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "300"
         value: d2r0e8lumqw3g1.cloudfront.net
@@ -143,8 +133,7 @@
         command: create
         zone: aquarionics.com
         record: _718a5f89a82bf1a5111be33a782c832a.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "300"
         value: _02827ed4ad6fed8455c7ece69808224e.hkvuiqjoua.acm-validations.aws.
@@ -155,8 +144,7 @@
         command: create
         zone: aquarionics.com
         record: _7ca693a0f8f72e0865bf5335a6877adb.cdn.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "300"
         value: _a610429fde9cdbee8f486a8f8ee9c28e.hkvuiqjoua.acm-validations.aws.
@@ -167,8 +155,7 @@
         command: create
         zone: aquarionics.com
         record: "*.cdn.aquarionics.com."
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "3600"
         value: d2r0e8lumqw3g1.cloudfront.net
@@ -179,8 +166,7 @@
         command: delete
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         value: d2r0e8lumqw3g1.cloudfront.net
         type: CNAME
 
@@ -191,8 +177,7 @@
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         value: d2r0e8lumqw3g1.cloudfront.net
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
 
     - name: 3.cdn.aquarionics.com. - CNAME
@@ -202,8 +187,7 @@
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         value: d2r0e8lumqw3g1.cloudfront.net
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
 
     - name: 4.cdn.aquarionics.com. - CNAME
@@ -213,8 +197,7 @@
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         value: d2r0e8lumqw3g1.cloudfront.net
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
 
     - name: Dailyphoto.aquarionics.com. - CNAME
@@ -223,8 +206,7 @@
         command: create
         zone: aquarionics.com
         record: dailyphoto.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "300"
         value: dc80vpukp1283.cloudfront.net
@@ -235,8 +217,7 @@
         command: create
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
@@ -247,8 +228,7 @@
         command: create
         zone: aquarionics.com
         record: feeds.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "3600"
         value: y0bpo.feedproxy.ghs.google.com
@@ -259,8 +239,7 @@
         command: create
         zone: aquarionics.com
         record: mail.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "86400"
         value: ghs.google.com
@@ -271,8 +250,7 @@
         command: create
         zone: aquarionics.com
         record: thalium.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "86400"
         value: "{{ loadbalancer_ip }}"
@@ -283,8 +261,7 @@
         command: create
         zone: aquarionics.com
         record: old.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "86400"
         value: "{{ loadbalancer_ip }}"
@@ -295,8 +272,7 @@
         command: create
         zone: aquarionics.com
         record: old.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: AAAA
         ttl: "300"
         value: "{{ ansible_default_ipv6.address }}"
@@ -307,8 +283,7 @@
         command: create
         zone: aquarionics.com
         record: tumblr.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "3600"
         value: domains.tumblr.com
@@ -319,8 +294,7 @@
         command: delete
         zone: aquarionics.com
         record: wiki.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: AAAA
         ttl: "300"
         value: "{{ ansible_default_ipv6.address }}"
@@ -331,16 +305,14 @@
         command: delete
         zone: aquarionics.com
         record: wiki.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: CNAME
         ttl: "86400"
         value: aquarion.github.io
 
     - name: Wiki.aquarionics.com. - A
       amazon.aws.route53:
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "86400"
         zone: aquarionics.com
@@ -354,8 +326,7 @@
         command: create
         zone: aquarionics.com
         record: www.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
@@ -366,8 +337,7 @@
         command: create
         zone: aquarionics.com
         record: wywo.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
@@ -378,8 +348,7 @@
         command: create
         zone: aquarionics.com
         record: vis.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
@@ -392,8 +361,7 @@
         command: create
         zone: aquarionics.com
         record: panopticon.aquarionics.com.
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
@@ -404,8 +372,7 @@
         command: create
         zone: aquarionics.com
         record: _atproto.aquarionics.com
-        aws_access_key: "{{ aqcom_aws_key }}"
-        aws_secret_key: "{{ aqcom_aws_secret }}"
+        aws_profile: aqcom
         type: TXT
         ttl: "300"
         value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
