@@ -10,8 +10,8 @@ jobs:
     steps:
     # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v4
-      # - name: Drop ansible.cfg file
-      #   run: rm ansible.cfg
-
+        # We drop the ansible.cfg file to unset the vault_password_file option
+      - name: Drop ansible.cfg file
+        run: rm ansible.cfg
       - name: Lint Ansible Playbook
         uses: ansible/ansible-lint@v6
