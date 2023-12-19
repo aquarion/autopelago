@@ -19,7 +19,6 @@
       connection: local
       tags: aws
       run_once: true
-      tags: aws
 
 - name: Actions on all hosts
   hosts: all:!localactions

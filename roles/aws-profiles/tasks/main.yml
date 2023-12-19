@@ -1,5 +1,3 @@
-
-
 - name: AWS Config - Aqcom - Region
   community.general.ini_file:
     path: ~/.aws/config
@@ -8,7 +6,7 @@
     value: "{{ aqcom_aws_default_region }}"
     mode: '0600'
     backup: true
-  tags: 
+  tags:
     - aws
 
 - name: AWS Creds - Aqcom - Key
@@ -19,7 +17,7 @@
     value: "{{ aqcom_aws_key }}"
     mode: '0600'
     backup: true
-  tags: 
+  tags:
     - aws
 
 - name: AWS Creds - Aqcom - Secret
@@ -30,7 +28,7 @@
     value: "{{ aqcom_aws_secret }}"
     mode: '0600'
     backup: true
-  tags: 
+  tags:
     - aws
 
 
@@ -42,7 +40,7 @@
     value: "{{ aqcom_aws_default_region }}"
     mode: '0600'
     backup: true
-  tags: 
+  tags:
     - aws
 
 - name: AWS Creds - istic - Key
@@ -53,7 +51,7 @@
     value: "{{ istic_aws_key }}"
     mode: '0600'
     backup: true
-  tags: 
+  tags:
     - aws
 
 - name: AWS Creds - istic - Secret
@@ -64,5 +62,5 @@
     value: "{{ istic_aws_secret }}"
     mode: '0600'
     backup: true
-  tags: 
+  tags:
     - aws

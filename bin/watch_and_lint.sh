@@ -16,4 +16,4 @@ inotifywait -m -r -e modify -e create $TARGET --format="%f" \
                         # mv "$TARGET/$FILENAME" "$PROCESSED/$FILENAME"
                         # gzip "$PROCESSED/$FILENAME"
                 done
-                
+               

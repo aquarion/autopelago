@@ -4,7 +4,7 @@ upstream container-ludoistic-wordpress { server 127.0.0.1:2180; }
 server {
     listen      80;
     listen [::]:80;
-    server_name 
+    server_name
       ludoistic.com ludoistic.net
       *.ludoistic.com *.ludoistic.net;
     include /etc/nginx/snippets/errors.conf;
@@ -17,7 +17,7 @@ server {
 server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
-    server_name 
+    server_name
       ludoistic.com ludoistic.net
       *.ludoistic.com *.ludoistic.net;
     add_header X-WhyAmI ludoistic-wordpress;
