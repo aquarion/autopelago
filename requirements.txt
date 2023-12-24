@@ -38,6 +38,6 @@ s3transfer==0.9.0
 six==1.16.0
 subprocess-tee==0.4.1
 tomli==2.0.1
-urllib3==1.26.13
+urllib3==1.26.18
 wcmatch==8.4.1
 yamllint==1.32.0
