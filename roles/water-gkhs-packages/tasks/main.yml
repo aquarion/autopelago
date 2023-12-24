@@ -71,6 +71,7 @@
   tags:
     - certbot
 
+
 - name: Python-is-python3
   ansible.builtin.file:
     dest: /usr/bin/python
@@ -91,6 +92,17 @@
       - apticron
       - moreutils
       - rzip
+
+
+- name: Install certbot packages
+  ansible.builtin.apt:
+    state: present
+    pkg:
+      - certbot
+      - python3-certbot-dns-route53
+      - python3-certbot-nginx
+  tags:
+    - certbot
 
 - name: Config fail2ban
   ansible.builtin.lineinfile:
