@@ -11,3 +11,4 @@ collections:
   - amazon.aws
   - community.general
   - community.mysql
+  - ansible.posix
