@@ -1,0 +1,6 @@
+---
+# handlers file for firth-dovecot
+- name: Restart Dovecot
+  ansible.builtin.systemd:
+    name: dovecot
+    state: restarted

@@ -46,11 +46,20 @@
 
 - name: Send admin emails to aquarion
   ansible.builtin.copy:
-    content: nicholas+{{ inventory_hostname_short }}-cron@aquarionics.com
+    content: aquarion
     dest: ~{{ item }}/.forward
     mode: a=rw
   with_items:
-    - aquarion
     - root
+  tags:
+    - users
+
+
+- name: Delete ~/.forward file
+  ansible.builtin.file:
+    path: "~{{ item }}/.forward"
+    state: absent
+  with_items:
+    - aquarion
   tags:
     - users

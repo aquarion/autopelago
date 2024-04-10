@@ -1,0 +1,3 @@
+{% for user in dovecot_users %}
+{{ user.user }}:{{ user.pwencoded }}
+{% endfor %}

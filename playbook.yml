@@ -60,6 +60,12 @@
     - github-cli
     - jellyfin
 
+- name: Hello Firth & Cenote
+  hosts: firth:cenote
+  become: true
+  roles:
+    - water-gkhs-dovecot
+
 - name: Hello Atoll
   hosts: atoll
   become: true
@@ -67,9 +73,3 @@
     - water-gkhs-nginx
     - water-gkhs-exim
     - github-cli
-
-- name: Hello Caisson
-  hosts: caisson
-  become: true
-  roles:
-    - water-gkhs-nginx

@@ -1,0 +1,33 @@
+
+instance_name = {{ ansible_fqdn }}
+
+mail_home=~/Mail
+mail_location=mbox:~/Mail:INBOX=/var/spool/mail/%u
+
+## this is sometimes needed
+#first_valid_uid = uid-of-vmail-user
+
+# if you want to use system users
+#passdb {
+#  driver = pam
+#}
+
+
+passdb {
+  driver = passwd-file
+  args = /etc/dovecot/passwd
+}
+
+userdb {
+  driver = passwd
+  args = blocking=no
+  # override_fields = uid=vmail gid=vmail
+}
+
+
+ssl=required
+ssl_cert=</etc/letsencrypt/live/{{ letsencrypt_dir }}/fullchain.pem
+ssl_key=</etc/letsencrypt/live/{{ letsencrypt_dir }}/privkey.pem
+# if you are using v2.3.0-v2.3.2.1 (or want to support non-ECC DH algorithms)
+# since v2.3.3 this setting has been made optional.
+#ssl_dh=</path/to/dh.pem

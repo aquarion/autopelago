@@ -1,0 +1,37 @@
+---
+# tasks file for firth-dovecot
+- name: Install Dovecot
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  tags: dovecot
+  with_items:
+    - dovecot-imapd
+    - dovecot-pop3d
+  notify: Restart Dovecot
+
+
+- name: Dovecot Auth
+  ansible.builtin.template:
+    src: passwd.j2
+    dest: /etc/dovecot/passwd
+    mode: "0644"
+    owner: dovecot
+    group: dovecot
+  tags: dovecot
+
+
+- name: Add Dovecot user to certbot_access group
+  ansible.builtin.user:
+    name: dovecot
+    groups: certbot_access
+    append: true
+  tags: dovecot
+
+- name: Configure Dovecot
+  ansible.builtin.template:
+    src: dovecot.conf.j2
+    dest: /etc/dovecot/local.conf
+    mode: "0644"
+  notify: Restart Dovecot
+  tags: dovecot

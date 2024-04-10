@@ -36,3 +36,15 @@
     - jellyfin
   tags:
     - jellyfin
+
+
+- name: Send admin emails to admin
+  ansible.builtin.copy:
+    content: "{{ forward_emails_to }}"
+    dest: ~{{ item }}/.forward
+    mode: a=rw
+  with_items:
+    - jellyfin
+  tags:
+    - users
+  when: forward_emails_to is defined
