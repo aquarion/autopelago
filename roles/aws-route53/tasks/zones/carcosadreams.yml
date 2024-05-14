@@ -1,352 +1,389 @@
 ---
-- name: CarcosaDreams.co.uk
-  amazon.aws.route53_zone:
-    zone: carcosadreams.co.uk
-    comment: CarcosaDreams
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
-
-- name: CarcosaDreams.uk
-  amazon.aws.route53_zone:
-    zone: carcosadreams.uk
-    comment: CarcosaDreams
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
 - name: CarcosaDreams.com
-  amazon.aws.route53_zone:
-    zone: carcosadreams.com
-    comment: CarcosaDreams
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
   tags:
     - carcosadreams
+  block:
+    - name: CarcosaDreams.co.uk
+      amazon.aws.route53_zone:
+        zone: carcosadreams.co.uk
+        comment: CarcosaDreams
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.co.uk
-    record: carcosadreams.co.uk.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Carcosadreams.com. - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: carcosadreams.com.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: CarcosaDreams.uk
+      amazon.aws.route53_zone:
+        zone: carcosadreams.uk
+        comment: CarcosaDreams
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.uk
-    record: carcosadreams.uk.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Www.carcosadreams.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.co.uk
-    record: www.carcosadreams.co.uk.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: CarcosaDreams.com
+      amazon.aws.route53_zone:
+        zone: carcosadreams.com
+        comment: CarcosaDreams
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Www.carcosadreams.com. - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: www.carcosadreams.com.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Www.carcosadreams.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.uk
-    record: www.carcosadreams.uk.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: Carcosadreams.co.uk. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.co.uk
+        record: carcosadreams.co.uk.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: "*.carcosadreams.co.uk. - A"
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.co.uk
-    record: "*.carcosadreams.co.uk."
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: "*.carcosadreams.com. - A"
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: "*.carcosadreams.com."
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: Carcosadreams.com. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: carcosadreams.com.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.com old records
-  amazon.aws.route53:
-    overwrite: true
-    command: absent
-    zone: carcosadreams.com
-    record: "{{ item }}"
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
-  with_items:
-    # Add any records to delete to this.
-    - wiki.carcosadreams.com
 
-- name: Carcosadreams.co.uk. - MX
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.co.uk
-    record: carcosadreams.co.uk
-    type: MX
-    ttl: "300"
-    value: "0 carcosadreams-co-uk.mail.protection.outlook.com."
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: Carcosadreams.uk. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.uk
+        record: carcosadreams.uk.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.com. - MX
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: carcosadreams.com
-    type: MX
-    ttl: "300"
-    value: "0 carcosadreams-com.mail.protection.outlook.com."
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Carcosadreams.com. - autodiscover
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: autodiscover.carcosadreams.com
-    type: CNAME
-    ttl: "300"
-    value: autodiscover.outlook.com.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: Www.carcosadreams.co.uk. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.co.uk
+        record: www.carcosadreams.co.uk.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.co.uk. - autodiscover
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.co.uk
-    record: autodiscover.carcosadreams.co.uk
-    type: CNAME
-    ttl: "300"
-    value: autodiscover.outlook.com.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Carcosadreams.com. - sipdir
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: sip.carcosadreams.com
-    type: CNAME
-    ttl: "300"
-    value: sipdir.online.lync.com.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: Www.carcosadreams.com. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: www.carcosadreams.com.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.com. - sipdir.TLS
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: _sip._tls.carcosadreams.com
-    type: SRV
-    ttl: "300"
-    value: 100 1 443 sipdir.online.lync.com.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Carcosadreams.com. - sipdir.Federated
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: _sipfederationtls._tcp.carcosadreams.com
-    type: SRV
-    ttl: "300"
-    value: 100 1 5061 sipfed.online.lync.com.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: Www.carcosadreams.uk. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.uk
+        record: www.carcosadreams.uk.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.com. - lyncdiscover
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: lyncdiscover.carcosadreams.com
-    type: CNAME
-    ttl: "300"
-    value: webdir.online.lync.com.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Carcosadreams.com. - enterpriseregistration
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: enterpriseregistration.carcosadreams.com
-    type: CNAME
-    ttl: "300"
-    value: enterpriseregistration.windows.net.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: "*.carcosadreams.co.uk. - A"
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.co.uk
+        record: "*.carcosadreams.co.uk."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.com. - enterpriseenrollment
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: enterpriseenrollment.carcosadreams.com
-    type: CNAME
-    ttl: "300"
-    value: enterpriseenrollment.manage.microsoft.com.
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Carcosadreams.com. - SPF
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: carcosadreams.com
-    type: TXT
-    ttl: "300"
-    value: '"v=spf1 include:spf.protection.outlook.com -all"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: "*.carcosadreams.com. - A"
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: "*.carcosadreams.com."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.co.uk. - SPF
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.co.uk
-    record: carcosadreams.co.uk
-    type: TXT
-    ttl: "300"
-    value: '"v=spf1 include:spf.protection.outlook.com -all"'
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
 
-- name: Carcosadreams.com. - Mailchimp Domainkey
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: k2._domainkey.carcosadreams.com
-    type: CNAME
-    ttl: "300"
-    value: dkim2.mcsv.net
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+    - name: Carcosadreams.com old records
+      amazon.aws.route53:
+        overwrite: true
+        command: absent
+        zone: carcosadreams.com
+        record: "{{ item }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
 
-- name: Carcosadreams.com. - Mailchimp Domainkey 2
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: carcosadreams.com
-    record: k3._domainkey.carcosadreams.com
-    type: CNAME
-    ttl: "300"
-    value: dkim3.mcsv.net
-    aws_access_key: "{{ istic_aws_key }}"
-    aws_secret_key: "{{ istic_aws_secret }}"
-  tags:
-    - carcosadreams
+      with_items:
+        # Add any records to delete to this.
+        - wiki.carcosadreams.com
+
+    - name: Carcosadreams.co.uk. - MX
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.co.uk
+        record: carcosadreams.co.uk
+        type: MX
+        ttl: "300"
+        value: "0 carcosadreams-co-uk.mail.protection.outlook.com."
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - MX
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: carcosadreams.com
+        type: MX
+        ttl: "300"
+        value: "0 carcosadreams-com.mail.protection.outlook.com."
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - autodiscover
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: autodiscover.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: autodiscover.outlook.com.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.co.uk. - autodiscover
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.co.uk
+        record: autodiscover.carcosadreams.co.uk
+        type: CNAME
+        ttl: "300"
+        value: autodiscover.outlook.com.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - sipdir
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: sip.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: sipdir.online.lync.com.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - sipdir.TLS
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: _sip._tls.carcosadreams.com
+        type: SRV
+        ttl: "300"
+        value: 100 1 443 sipdir.online.lync.com.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - sipdir.Federated
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: _sipfederationtls._tcp.carcosadreams.com
+        type: SRV
+        ttl: "300"
+        value: 100 1 5061 sipfed.online.lync.com.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - lyncdiscover
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: lyncdiscover.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: webdir.online.lync.com.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - enterpriseregistration
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: enterpriseregistration.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: enterpriseregistration.windows.net.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - enterpriseenrollment
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: enterpriseenrollment.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: enterpriseenrollment.manage.microsoft.com.
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - SPF
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: carcosadreams.com
+        type: TXT
+        ttl: "300"
+        value: '"v=spf1 include:spf.protection.outlook.com -all"'
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.co.uk. - SPF
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.co.uk
+        record: carcosadreams.co.uk
+        type: TXT
+        ttl: "300"
+        value: '"v=spf1 include:spf.protection.outlook.com -all"'
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - Mailchimp Domainkey
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: k2._domainkey.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: dkim2.mcsv.net
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - Mailchimp Domainkey 2
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: k3._domainkey.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: dkim3.mcsv.net
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Carcosadreams.com. - Mailchimp Domainkey 2
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: k3._domainkey.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: dkim3.mcsv.net
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+
+    - name: Freshdesk DKIM 1/4
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: zuda3._domainkey.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: wl698619s1.domainkey.freshemail.io
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+    - name: Freshdesk DKIM 2/4
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: zc1p2._domainkey.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: wl698619s2.domainkey.freshemail.io
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+    - name: Freshdesk DKIM 3/4
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: 1s3._domainkey.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: wl698619s3.domainkey.freshemail.io
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+    - name: Freshdesk DKIM 4/4
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: fwdkim1.carcosadreams.com
+        type: CNAME
+        ttl: "300"
+        value: spfmx1.domainkey.freshemail.io
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
