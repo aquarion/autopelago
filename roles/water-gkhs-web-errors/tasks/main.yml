@@ -1,57 +1,58 @@
----
-# - name: Install nginx
-#  apt: pkg=nginx state=installed
+- name: Configure web errors
+  tags:
+    - web_errors
+  block:
 
-- name: Create www errors directory
-  ansible.builtin.file:
-    path: /var/www/errors
-    state: directory
-    mode: "0755"
+    - name: Create www errors directory
+      ansible.builtin.file:
+        path: /var/www/errors
+        state: directory
+        mode: "0755"
 
-- name: Create www directory
-  ansible.builtin.file:
-    path: /var/www/html
-    state: directory
-    mode: "0755"
+    - name: Create www directory
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        mode: "0755"
 
-- name: Configure istic error pages
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: /var/www/errors/{{ item | basename }}
-    mode: "0644"
-  with_fileglob:
-    - templates/errors/*
+    - name: Configure istic error pages
+      ansible.builtin.template:
+        src: "{{ item }}"
+        dest: /var/www/errors/{{ item | basename }}
+        mode: "0644"
+      with_fileglob:
+        - templates/errors/*
 
-- name: Configure web base page
-  ansible.builtin.template:
-    src: errors/404_host.html
-    dest: /var/www/html/index.html
-    mode: "0644"
+    - name: Configure web base page
+      ansible.builtin.template:
+        src: errors/404_host.html
+        dest: /var/www/html/index.html
+        mode: "0644"
 
-- name: "Nginx: check for installation"
-  register: nginx_installed
-  ansible.builtin.stat:
-    path: /etc/nginx/nginx.conf
+    - name: "Nginx: check for installation"
+      register: nginx_installed
+      ansible.builtin.stat:
+        path: /etc/nginx/nginx.conf
 
-- name: Configure nginx error pages
-  ansible.builtin.template:
-    src: config/errors_nginx.conf
-    dest: /etc/nginx/snippets/errors.conf
-    mode: "0644"
-  when: nginx_installed.stat.exists
-  notify:
-    - Restart nginx
+    - name: Configure nginx error pages
+      ansible.builtin.template:
+        src: config/errors_nginx.conf
+        dest: /etc/nginx/snippets/errors.conf
+        mode: "0644"
+      when: nginx_installed.stat.exists
+      notify:
+        - Restart nginx
 
-- name: "Apache: check for installation"
-  register: apache_installed
-  ansible.builtin.stat:
-    path: /etc/apache2/apache2.conf
+    - name: "Apache: check for installation"
+      register: apache_installed
+      ansible.builtin.stat:
+        path: /etc/apache2/apache2.conf
 
-- name: Configure apache error pages
-  ansible.builtin.template:
-    src: config/errors_apache.conf
-    dest: /etc/apache2/conf-enabled/errors.conf
-    mode: "0644"
-  when: apache_installed.stat.exists
-  notify:
-    - restart apache
+    - name: Configure apache error pages
+      ansible.builtin.template:
+        src: config/errors_apache.conf
+        dest: /etc/apache2/conf-enabled/errors.conf
+        mode: "0644"
+      when: apache_installed.stat.exists
+      notify:
+        - restart apache
