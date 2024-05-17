@@ -354,6 +354,7 @@
         value: wl698619s1.domainkey.freshemail.io
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
+
     - name: Freshdesk DKIM 2/4
       amazon.aws.route53:
         overwrite: true
@@ -365,6 +366,7 @@
         value: wl698619s2.domainkey.freshemail.io
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
+
     - name: Freshdesk DKIM 3/4
       amazon.aws.route53:
         overwrite: true
@@ -376,6 +378,7 @@
         value: wl698619s3.domainkey.freshemail.io
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
+
     - name: Freshdesk DKIM 4/4
       amazon.aws.route53:
         overwrite: true
