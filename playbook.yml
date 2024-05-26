@@ -8,8 +8,8 @@
       connection: local
       tags: aws
       run_once: true
-    - name: aws-route53
-      role: aws-route53
+    - name: firth-dns
+      role: firth-dns
       become: false
       connection: local
       tags: route53
