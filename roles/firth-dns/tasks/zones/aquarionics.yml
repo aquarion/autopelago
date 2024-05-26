@@ -38,16 +38,16 @@
         ttl: "300"
         value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM.
 
-    - name: Aquarionics.com. - NS
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: aquarionics.com
-        record: aquarionics.com.
-        aws_profile: aqcom
-        type: NS
-        ttl: "172800"
-        value: ns-1103.awsdns-09.org.,ns-1667.awsdns-16.co.uk.,ns-275.awsdns-34.com.,ns-1004.awsdns-61.net.
+    # - name: Aquarionics.com. - NS
+    #   amazon.aws.route53:
+    #     overwrite: true
+    #     command: create
+    #     zone: aquarionics.com
+    #     record: aquarionics.com.
+    #     aws_profile: aqcom
+    #     type: NS
+    #     ttl: "172800"
+    #     value: ns-1103.awsdns-09.org.,ns-1667.awsdns-16.co.uk.,ns-275.awsdns-34.com.,ns-1004.awsdns-61.net.
 
     # - name: Aquarionics.com. - SOA
     #  amazon.aws.route53:
