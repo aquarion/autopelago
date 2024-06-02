@@ -101,6 +101,23 @@
       - certbot
       - python3-certbot-dns-route53
       - python3-certbot-nginx
+      - python3-certbot-dns-cloudflare
+  tags:
+    - certbot
+
+- name: Create secrets directory
+  ansible.builtin.file:
+    path: /root/.secrets
+    state: directory
+    mode: '0700'
+  tags:
+    - certbot
+
+- name: Configure Cloudflare Secrets
+  ansible.builtin.template:
+    src: cloudflare.ini.j2
+    dest: /root/.secrets/cloudflare.ini
+    mode: '0400'
   tags:
     - certbot
 
