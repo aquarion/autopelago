@@ -34,6 +34,9 @@ deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk
 
 # sudo certbot -n -t certonly --expand --nginx --cert-name nicholasavenell.com --domains nicholasavenell.com,www.nicholasavenell.com,nicholasavenell.net,www.nicholasavenell.net
 
+sudo certbot certonly --cert-name socksandpuppets.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d socksandpuppets.com,*.socksandpuppets.com --preferred-challenges dns-01
+sudo certbot certonly --cert-name aquarionics.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d aquarionics.com,*.aquarionics.com --preferred-challenges dns-01
+
 ## Istic wildcards
 
 export AWS_PROFILE=istic-r53
