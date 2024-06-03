@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Nicholas Avenell <nicholas@istic.net>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -38,7 +39,7 @@ pygments = "==2.15.*"
 pyrsistent = "==0.19.*"
 python-dateutil = "==2.8.*"
 pyyaml = "==6.*"
-requests = "==2.32.*"
+requests = "==2.32.3"
 resolvelib = "==0.8.*"
 rich = "==13.0.*"
 ruamel-yaml = "==0.18.*"
