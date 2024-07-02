@@ -29,7 +29,7 @@
     suites: "{{ ansible_distribution_release }}"
     state: present
     signed_by: /etc/apt/keyrings/docker.gpg
-    components: main
+    components: stable
     architectures: "{{ deb_architecture.stdout }}"
 
   tags:
