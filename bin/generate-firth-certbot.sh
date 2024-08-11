@@ -13,7 +13,7 @@ sevenmirrors.foip.me,\
 istic.co,istic.systems,istic.network,\
 casu.istic.net,wildfeathers.casu.istic.net,pdforums.casu.istic.net,\
 themonthlymoon.com,\
-ludo.istic.co,ludoistic.com,www.ludoistic.com,\
+ludo.istic.co,\
 imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,\
 live.art.istic.net,imperial.istic.net,material.istic.net,\
 warehousebasement.com,www.warehousebasement.com,\
