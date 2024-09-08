@@ -1,5 +1,5 @@
 {
   "ansible.executionEnvironment.enabled": false,
-  "ansible.python.interpreterPath": "",
+  "ansible.python.interpreterPath": "/bin/python",
   "ansible.python.activationScript": ".ansible-plugin-env"
 }
