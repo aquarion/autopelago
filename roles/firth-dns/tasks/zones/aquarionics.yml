@@ -355,6 +355,19 @@
       tags:
         - streamsite
 
+    - name: vtt.aquarionics.com. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: create
+        zone: aquarionics.com
+        record: vtt.aquarionics.com.
+        aws_profile: aqcom
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+      tags:
+        - foundryvtt
+
     - name: Panopticon.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
