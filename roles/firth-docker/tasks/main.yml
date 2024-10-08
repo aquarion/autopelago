@@ -1,8 +1,7 @@
 ---
-
 - name: Add GPG key
   ansible.builtin.apt_key:
-    url: "https://download.docker.com/linux/ubuntu/gpg"
+    url: https://download.docker.com/linux/ubuntu/gpg
     state: present
     keyring: /etc/apt/keyrings/docker.gpg
   tags:
@@ -21,11 +20,10 @@
   tags:
     - docker
 
-
 - name: Docker Repo
   ansible.builtin.deb822_repository:
     name: docker
-    uris: "https://download.docker.com/linux/ubuntu"
+    uris: https://download.docker.com/linux/ubuntu
     suites: "{{ ansible_distribution_release }}"
     state: present
     signed_by: /etc/apt/keyrings/docker.gpg
@@ -34,7 +32,6 @@
 
   tags:
     - docker
-
 
 - name: Install docker
   ansible.builtin.apt:

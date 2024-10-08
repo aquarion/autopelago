@@ -10,7 +10,6 @@
     - dovecot-pop3d
   notify: Restart Dovecot
 
-
 - name: Dovecot Auth
   ansible.builtin.template:
     src: passwd.j2
@@ -19,7 +18,6 @@
     owner: dovecot
     group: dovecot
   tags: dovecot
-
 
 - name: Add Dovecot user to certbot_access group
   ansible.builtin.user:

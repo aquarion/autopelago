@@ -54,10 +54,9 @@
   tags:
     - users
 
-
 - name: Delete ~/.forward file
   ansible.builtin.file:
-    path: "~{{ item }}/.forward"
+    path: ~{{ item }}/.forward
     state: absent
   with_items:
     - aquarion

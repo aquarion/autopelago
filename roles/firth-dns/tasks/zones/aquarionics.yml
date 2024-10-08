@@ -355,7 +355,7 @@
       tags:
         - streamsite
 
-    - name: vtt.aquarionics.com. - A
+    - name: Vtt.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
         command: create

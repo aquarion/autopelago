@@ -1,8 +1,8 @@
+---
 - name: Configure web errors
   tags:
     - web_errors
   block:
-
     - name: Create www errors directory
       ansible.builtin.file:
         path: /var/www/errors

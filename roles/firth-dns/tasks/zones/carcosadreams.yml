@@ -1,5 +1,4 @@
 ---
-
 - name: CarcosaDreams.com
   tags:
     - carcosadreams
@@ -11,7 +10,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: CarcosaDreams.uk
       amazon.aws.route53_zone:
         zone: carcosadreams.uk
@@ -19,14 +17,12 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: CarcosaDreams.com
       amazon.aws.route53_zone:
         zone: carcosadreams.com
         comment: CarcosaDreams
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.co.uk. - A
       amazon.aws.route53:
@@ -40,7 +36,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.com. - A
       amazon.aws.route53:
         overwrite: true
@@ -52,7 +47,6 @@
         value: "{{ loadbalancer_ip }}"
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.uk. - A
       amazon.aws.route53:
@@ -66,7 +60,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Www.carcosadreams.co.uk. - A
       amazon.aws.route53:
         overwrite: true
@@ -78,7 +71,6 @@
         value: "{{ loadbalancer_ip }}"
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Www.carcosadreams.com. - A
       amazon.aws.route53:
@@ -92,7 +84,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Www.carcosadreams.uk. - A
       amazon.aws.route53:
         overwrite: true
@@ -104,7 +95,6 @@
         value: "{{ loadbalancer_ip }}"
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: "*.carcosadreams.co.uk. - A"
       amazon.aws.route53:
@@ -118,7 +108,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: "*.carcosadreams.com. - A"
       amazon.aws.route53:
         overwrite: true
@@ -130,7 +119,6 @@
         value: "{{ loadbalancer_ip }}"
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.com old records
       amazon.aws.route53:
@@ -160,7 +148,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.com. - MX
       amazon.aws.route53:
         overwrite: true
@@ -172,7 +159,6 @@
         value: "0 carcosadreams-com.mail.protection.outlook.com."
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.com. - autodiscover
       amazon.aws.route53:
@@ -186,7 +172,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.co.uk. - autodiscover
       amazon.aws.route53:
         overwrite: true
@@ -198,7 +183,6 @@
         value: autodiscover.outlook.com.
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.com. - sipdir
       amazon.aws.route53:
@@ -212,7 +196,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.com. - sipdir.TLS
       amazon.aws.route53:
         overwrite: true
@@ -224,7 +207,6 @@
         value: 100 1 443 sipdir.online.lync.com.
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.com. - sipdir.Federated
       amazon.aws.route53:
@@ -238,7 +220,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.com. - lyncdiscover
       amazon.aws.route53:
         overwrite: true
@@ -250,7 +231,6 @@
         value: webdir.online.lync.com.
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.com. - enterpriseregistration
       amazon.aws.route53:
@@ -264,7 +244,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.com. - enterpriseenrollment
       amazon.aws.route53:
         overwrite: true
@@ -276,7 +255,6 @@
         value: enterpriseenrollment.manage.microsoft.com.
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.com. - SPF
       amazon.aws.route53:
@@ -290,7 +268,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.co.uk. - SPF
       amazon.aws.route53:
         overwrite: true
@@ -302,7 +279,6 @@
         value: '"v=spf1 include:spf.protection.outlook.com -all"'
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Carcosadreams.com. - Mailchimp Domainkey
       amazon.aws.route53:
@@ -316,7 +292,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.com. - Mailchimp Domainkey 2
       amazon.aws.route53:
         overwrite: true
@@ -329,7 +304,6 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
-
     - name: Carcosadreams.com. - Mailchimp Domainkey 2
       amazon.aws.route53:
         overwrite: true
@@ -341,7 +315,6 @@
         value: dkim3.mcsv.net
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
-
 
     - name: Freshdesk DKIM 1/4
       amazon.aws.route53:

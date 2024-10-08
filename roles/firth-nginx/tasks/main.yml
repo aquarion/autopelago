@@ -23,18 +23,30 @@
     - streamsite
     - nginx
 
-
 - name: Cloudflare IP Whitelist
   tags:
     - cloudflare
     - cloudflare_ips
   block:
     - name: Make sure /etc/nginx/tmp/ exists
-      file: path=/etc/nginx/tmp state=directory owner=root group=root mode=0755
+      ansible.builtin.file:
+        path: /etc/nginx/tmp
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
     - name: Download IPv4 list
-      get_url: url=https://www.cloudflare.com/ips-v4 dest=/etc/nginx/tmp/ip4.txt force=yes
+      ansible.builtin.get_url:
+        url: https://www.cloudflare.com/ips-v4
+        dest: /etc/nginx/tmp/ip4.txt
+        force: "yes"
+        mode: "0755"
     - name: Download IPv6 list
-      get_url: url=https://www.cloudflare.com/ips-v6 dest=/etc/nginx/tmp/ip6.txt force=yes
+      ansible.builtin.get_url:
+        url: https://www.cloudflare.com/ips-v6
+        dest: /etc/nginx/tmp/ip6.txt
+        force: "yes"
+        mode: "0755"
     - name: Slurp IP4 list
       ansible.builtin.slurp:
         src: /etc/nginx/tmp/ip4.txt
@@ -45,15 +57,16 @@
       register: ipv6list
 
     - name: Update /etc/nginx/snippets/cloudflare-ips.nginx.conf
-      copy:
-        content: "# Ansible Managed\n{{ (ipv4list['content'] | b64decode + '\n' + ipv6list['content'] | b64decode) | regex_replace('([0-9a-f.:/]+)', 'allow \\1;') + '\nallow 127.0.0.1;\nallow ::1;\ndeny all;\n' }}"
-        dest: "/etc/nginx/snippets/cloudflare-ips.nginx.conf"
-        force: yes
-        mode: 0644
+      ansible.builtin.copy:
+        content: "# Ansible Managed\n{{ (ipv4list['content'] | b64decode + '\n' + ipv6list['content'] | b64decode) | regex_replace('([0-9a-f.:/]+)', 'allow \\1;')
+          + '\nallow 127.0.0.1;\nallow ::1;\ndeny all;\n' }}"
+        dest: /etc/nginx/snippets/cloudflare-ips.nginx.conf
+        force: true
+        mode: "0644"
         owner: root
         group: root
         remote_src: true
-      notify: reload nginx
+      notify: Reload nginx
 
 - name: Configure config overrides
   ansible.builtin.template:

@@ -71,7 +71,6 @@
   tags:
     - certbot
 
-
 - name: Python-is-python3
   ansible.builtin.file:
     dest: /usr/bin/python
@@ -93,7 +92,6 @@
       - moreutils
       - rzip
 
-
 - name: Install certbot packages
   ansible.builtin.apt:
     state: present
@@ -109,7 +107,7 @@
   ansible.builtin.file:
     path: /root/.secrets
     state: directory
-    mode: '0700'
+    mode: "0700"
   tags:
     - certbot
 
@@ -117,7 +115,7 @@
   ansible.builtin.template:
     src: cloudflare.ini.j2
     dest: /root/.secrets/cloudflare.ini
-    mode: '0400'
+    mode: "0400"
   tags:
     - certbot
 

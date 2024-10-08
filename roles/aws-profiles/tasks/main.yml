@@ -1,10 +1,11 @@
+---
 - name: AWS Config - Aqcom - Region
   community.general.ini_file:
     path: ~/.aws/config
     section: profile aqcom
     option: region
     value: "{{ aqcom_aws_default_region }}"
-    mode: '0600'
+    mode: "0600"
     backup: true
   tags:
     - aws
@@ -15,7 +16,7 @@
     section: aqcom
     option: aws_access_key_id
     value: "{{ aqcom_aws_key }}"
-    mode: '0600'
+    mode: "0600"
     backup: true
   tags:
     - aws
@@ -26,11 +27,10 @@
     section: aqcom
     option: aws_secret_access_key
     value: "{{ aqcom_aws_secret }}"
-    mode: '0600'
+    mode: "0600"
     backup: true
   tags:
     - aws
-
 
 - name: AWS Config - Istic - Region
   community.general.ini_file:
@@ -38,7 +38,7 @@
     section: profile istic
     option: region
     value: "{{ aqcom_aws_default_region }}"
-    mode: '0600'
+    mode: "0600"
     backup: true
   tags:
     - aws
@@ -49,7 +49,7 @@
     section: istic
     option: aws_access_key_id
     value: "{{ istic_aws_key }}"
-    mode: '0600'
+    mode: "0600"
     backup: true
   tags:
     - aws
@@ -60,7 +60,7 @@
     section: istic
     option: aws_secret_access_key
     value: "{{ istic_aws_secret }}"
-    mode: '0600'
+    mode: "0600"
     backup: true
   tags:
     - aws
