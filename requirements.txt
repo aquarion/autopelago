@@ -1,7 +1,7 @@
-ansible==9.2.*
-ansible-lint==24.2.*
-boto==2.49.*
-boto3==1.34.*
-poetry==1.8.*
-poetry-plugin-export==1.8.*
-virtualenv==20.26.*
+ansible==10.4.*
+ansible-lint==24.*
+boto==2.*
+boto3==1.*
+poetry==1.*
+poetry-plugin-export==1.*
+virtualenv==20.*
