@@ -248,3 +248,20 @@ server {
   }
   include /etc/nginx/snippets/errors.conf;
 }
+
+
+
+## Socks & Puppets
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name *.socksandpuppets.com socksandpuppets.com;
+    include /etc/nginx/snippets/socksandpuppets_ssl.conf;
+   add_header X-WhyAmI "miscweb socksandpuppets";
+  location    / {
+    proxy_pass http://docker-php8;
+    include /etc/nginx/proxy_params;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
