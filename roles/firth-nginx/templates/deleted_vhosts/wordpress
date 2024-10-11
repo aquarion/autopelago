@@ -63,7 +63,7 @@ server {
     server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
     add_header X-WhyAmI wordpress;
     add_header Access-Control-Allow-Origin https://*.aquarionics.com/;
-    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
     error_log  /var/log/nginx/wordpress.error.log;
     access_log /var/log/nginx/wordpress.access.log;
@@ -86,7 +86,7 @@ server {
     listen [::]:443 ssl proxy_protocol;
     server_name blogs.istic.network *.blogs.istic.network
     add_header X-WhyAmI "wordpress blogs.istic.net";
-    include /etc/nginx/snippets/istic.conf;
+    include /etc/nginx/snippets/ssl/istic_ssl.conf;
 
     error_log  /var/log/nginx/wordpress.error.log;
     access_log /var/log/nginx/wordpress.access.log;

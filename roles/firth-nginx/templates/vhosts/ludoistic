@@ -22,7 +22,7 @@ server {
       *.ludoistic.com *.ludoistic.net;
     add_header X-WhyAmI ludoistic-wordpress;
     add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
-    include /etc/nginx/snippets/ludoistic_ssl.conf;
+    include /etc/nginx/snippets/ssl/ludoistic_ssl.conf;
 
     error_log  /var/log/nginx/ludoistic-wordpress.error.log;
     access_log /var/log/nginx/ludoistic-wordpress.access.log;

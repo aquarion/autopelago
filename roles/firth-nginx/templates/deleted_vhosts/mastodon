@@ -15,7 +15,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name voyeur.istic.net;
-    include /etc/nginx/snippets/istic_ssl.conf;
+    include /etc/nginx/snippets/ssl/istic_ssl.conf;
 
 
     error_log  /var/log/nginx/mastodon.error.log;

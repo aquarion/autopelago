@@ -10,10 +10,52 @@
   tags:
     - streamsite
 
+- name: Ensure /etc/nginx/snippets exists
+  ansible.builtin.file:
+    path: /etc/nginx/snippets
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags:
+    - nginx
+
+- name: Ensure /etc/nginx/snippets/ssl exists
+  ansible.builtin.file:
+    path: /etc/nginx/snippets/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags:
+    - nginx
+
+- name: Delete old ssl config snippits
+  ansible.builtin.file:
+    path: /etc/nginx/snippets/{{ item | basename }}
+    state: absent
+  with_fileglob:
+    - templates/ssl/*
+  notify:
+    - Reload nginx
+  tags:
+    - streamsite
+    - nginx
+
+- name: Delete old proxy_params snippits
+  ansible.builtin.file:
+    path: /etc/nginx/proxy_params
+    state: absent
+  notify:
+    - Reload nginx
+  tags:
+    - streamsite
+    - nginx
+    
 - name: Configure ssl config snippits
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: /etc/nginx/snippets/{{ item | basename }}
+    dest: /etc/nginx/snippets/ssl/{{ item | basename }}
     mode: "0644"
   with_fileglob:
     - templates/ssl/*
@@ -22,6 +64,8 @@
   tags:
     - streamsite
     - nginx
+
+
 
 - name: Cloudflare IP Whitelist
   tags:
@@ -71,12 +115,12 @@
 - name: Configure config overrides
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: /etc/nginx/{{ item | basename }}
+    dest: /etc/nginx/snippets/{{ item | basename }}
     mode: "0644"
   with_fileglob:
-    - templates/nginx_root/*
+    - templates/nginx_snippets/*
   notify:
-    - Restart nginx
+    - Reload nginx
   tags:
     - streamsite
     - nginx

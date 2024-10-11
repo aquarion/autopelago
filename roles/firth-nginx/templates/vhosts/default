@@ -11,7 +11,7 @@ server {
     root /var/www/html;
 
 	include /etc/nginx/snippets/errors.conf;
-    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
 
     index index.html index.htm index.nginx-debian.html;

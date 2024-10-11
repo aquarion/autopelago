@@ -34,7 +34,7 @@ server {
 	listen 443 ssl proxy_protocol;
 	listen [::]:443 ssl proxy_protocol;
  	return 301 https://larpfic.com$request_uri;
-	include /etc/nginx/snippets/letsencrypt_ssl.conf;
+	include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
  	include /etc/nginx/snippets/errors.conf;
     add_header X-WhyAmI "larpfic ssl redirect";
 }
@@ -45,7 +45,7 @@ server {
     access_log /var/log/nginx/larpfic_stage.access.log;
 	listen 443 ssl proxy_protocol;
 	listen [::]:443 ssl proxy_protocol;
-	include /etc/nginx/snippets/letsencrypt_ssl.conf;
+	include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
  	include /etc/nginx/snippets/errors.conf;
 	location / {
 		proxy_pass http://larpfic_staging;
@@ -58,7 +58,7 @@ server {
     listen [::]:443 ssl proxy_protocol;
     server_name larpfic.com;
     add_header X-WhyAmI "larpfic docker";
-    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
 
     error_log  /var/log/nginx/larpfic_prod.error.log;

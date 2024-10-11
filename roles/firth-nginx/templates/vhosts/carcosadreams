@@ -18,7 +18,7 @@ server {
     server_name www.carcosadreams.co.uk carcosadreams.com carcosadreams.co.uk;
     return 301 $scheme://www.carcosadreams.com$request_uri;
 
-    include /etc/nginx/snippets/carcosadreams_ssl.conf;
+    include /etc/nginx/snippets/ssl/carcosadreams_ssl.conf;
     add_header X-WhyAmI "carcosa host redirect";
 }
 
@@ -28,7 +28,7 @@ server {
     server_name sisyphus.carcosadreams.com;
     return 301 https://the-sisyphus.carcosadreams.com$request_uri;
 
-    include /etc/nginx/snippets/carcosadreams_ssl.conf;
+    include /etc/nginx/snippets/ssl/carcosadreams_ssl.conf;
     add_header X-WhyAmI "carcosa sisyphus redirect";
 }
 
@@ -37,7 +37,7 @@ server {
     listen              80;
     server_name *.carcosadreams.co.uk;
     return 301 $scheme://www.carcosadreams.com;
-    include /etc/nginx/snippets/carcosadreams_ssl.conf;
+    include /etc/nginx/snippets/ssl/carcosadreams_ssl.conf;
     add_header X-WhyAmI "carcosa www redirect";
 }
 
@@ -45,7 +45,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name www.carcosadreams.com *.carcosadreams.com;
-    include /etc/nginx/snippets/carcosadreams_ssl.conf;
+    include /etc/nginx/snippets/ssl/carcosadreams_ssl.conf;
 
     error_log  /var/log/nginx/carcosadreams.error.log;
     access_log /var/log/nginx/carcosadreams.access.log;

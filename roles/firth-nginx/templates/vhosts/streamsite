@@ -21,7 +21,7 @@ server {
     root {{ media_library }};
 
 	include /etc/nginx/snippets/errors.conf;
-    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
   add_header X-WhyAmI vis;
 

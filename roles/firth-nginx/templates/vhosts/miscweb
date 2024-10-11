@@ -64,7 +64,7 @@ server {
       live.dailyphoto.aquarionics.com dailyphoto.aquarionics.com
       www.deathuntodarkness.org
       deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
-    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
 
     error_log  /var/log/nginx/miscweb.error.log;
@@ -73,7 +73,7 @@ server {
 
   location    / {
     proxy_pass http://docker-php7;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
@@ -90,7 +90,7 @@ server {
     listen 8443 ssl;
     listen [::]:8443 ssl;
     server_name firth.water.gkhs.net;
-    include /etc/nginx/snippets/letsencrypt_ssl.conf;
+    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
    add_header X-WhyAmI "miscweb firth";
 
@@ -99,7 +99,7 @@ server {
 
   location    / {
     proxy_pass http://docker-php7;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
 
   include /etc/nginx/snippets/errors.conf;
@@ -115,7 +115,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.com nicholasavenell.net;
-    include /etc/nginx/snippets/nicholasavenell_ssl.conf;
+    include /etc/nginx/snippets/ssl/nicholasavenell_ssl.conf;
 
    add_header X-WhyAmI "miscweb nacom";
 
@@ -124,7 +124,7 @@ server {
 
   location    / {
     proxy_pass http://docker-php7;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
@@ -140,11 +140,11 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name *.bromioscreations.com bromioscreations.com;
-    include /etc/nginx/snippets/bromioscreations_ssl.conf;
+    include /etc/nginx/snippets/ssl/bromioscreations_ssl.conf;
    add_header X-WhyAmI "miscweb bromios";
   location    / {
     proxy_pass http://docker-php7;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
@@ -159,12 +159,12 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name *.hubris.house hubris.house;
-    include /etc/nginx/snippets/hubris_ssl.conf;
+    include /etc/nginx/snippets/ssl/hubris_ssl.conf;
    add_header X-WhyAmI "miscweb hubris";
 
   location    / {
     proxy_pass http://docker-php7;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
@@ -180,12 +180,12 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name *.foip.me;
-    include /etc/nginx/snippets/foipme_ssl.conf;
+    include /etc/nginx/snippets/ssl/foipme_ssl.conf;
    add_header X-WhyAmI "miscweb foipme";
 
   location    / {
     proxy_pass http://docker-php7;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
@@ -210,7 +210,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name *.istic.net;
-    include /etc/nginx/snippets/istic_ssl.conf;
+    include /etc/nginx/snippets/ssl/istic_ssl.conf;
 
    add_header X-WhyAmI "miscweb istic.net";
 
@@ -219,7 +219,7 @@ server {
 
   location    / {
     proxy_pass http://docker-php8;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
@@ -235,7 +235,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name *.istic.dev istic.dev;
-    include /etc/nginx/snippets/istic_dev_ssl.conf;
+    include /etc/nginx/snippets/ssl/istic_dev_ssl.conf;
 
    add_header X-WhyAmI "miscweb istic.dev";
 
@@ -244,7 +244,7 @@ server {
 
   location    / {
     proxy_pass http://docker-php8;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
@@ -257,11 +257,12 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name *.socksandpuppets.com socksandpuppets.com;
-    include /etc/nginx/snippets/socksandpuppets_ssl.conf;
+    include /etc/nginx/snippets/ssl/socksandpuppets_ssl.conf;
    add_header X-WhyAmI "miscweb socksandpuppets";
   location    / {
     proxy_pass http://docker-php8;
-    include /etc/nginx/proxy_params;
+    include /etc/nginx/snippets/cloudflare-ips.nginx.conf;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
 }
