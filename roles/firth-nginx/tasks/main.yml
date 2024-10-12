@@ -51,7 +51,7 @@
   tags:
     - streamsite
     - nginx
-    
+
 - name: Configure ssl config snippits
   ansible.builtin.template:
     src: "{{ item }}"
@@ -64,8 +64,6 @@
   tags:
     - streamsite
     - nginx
-
-
 
 - name: Cloudflare IP Whitelist
   tags:
