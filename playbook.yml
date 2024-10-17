@@ -71,5 +71,7 @@
   become: true
   roles:
     - water-gkhs-nginx
+    - atoll-nginx
     - water-gkhs-exim
     - github-cli
+    - aws-profiles

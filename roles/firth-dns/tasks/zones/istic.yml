@@ -1,493 +1,571 @@
 ---
-- name: Istic.net - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: istic.net.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
+- name: Istic DNS
   tags:
-    - istic_net
-
-- name: Istic.net - MX
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: istic.net.
-    type: MX
-    ttl: "300"
-    value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Istic.net - TXT
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: istic.net.
-    type: TXT
-    ttl: "300"
-    value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"'
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Wildcard.istic.net - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: "*.istic.net."
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: _0ed69ff5c31a07f040dcb35337eb4a66.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: _0ed69ff5c31a07f040dcb35337eb4a66.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: _9d6bae07c4db71b24db2d17cb58ea979.hkvuiqjoua.acm-validations.aws.
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: 20131117185804.pm._domainkey.istic.net - TXT
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: 20131117185804.pm._domainkey.istic.net.
-    type: TXT
-    ttl: "300"
-    value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: _f3745362c222f5b3b80d97e5e65e1e5d.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: _f3745362c222f5b3b80d97e5e65e1e5d.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: _d552617b8e3e9ba74015bf5b057a9992.hkvuiqjoua.acm-validations.aws.
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Art.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: art.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: dh1k06lb8zbki.cloudfront.net
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: _e30ae5c849fa50c37f4ad7471b665d56.art.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: _e30ae5c849fa50c37f4ad7471b665d56.art.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: _de5f022e01ad630db13679900d38e2f7.hkvuiqjoua.acm-validations.aws.
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Webcdn.art.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: webcdn.art.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: d1anqtv8ak8qyd.cloudfront.net
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Cal.g.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: cal.g.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: ghs.google.com
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Docs.g.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: docs.g.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: ghs.google.com
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Mail.g.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: mail.g.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: ghs.google.com
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Test.g.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: test.g.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: ghs.google.com
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Ludo.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: ludo.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: cenote.water.gkhs.net
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Mailgun.istic.net - MX
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: mailgun.istic.net.
-    type: MX
-    ttl: "300"
-    value: 10 mxa.mailgun.org.,20 mxb.mailgun.org.
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Mailgun.istic.net - TXT
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: mailgun.istic.net.
-    type: TXT
-    ttl: "300"
-    value: '"v=spf1 include:mailgun.org ~all"'
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Pic._domainkey.mailgun.istic.net - TXT
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: pic._domainkey.mailgun.istic.net.
-    type: TXT
-    ttl: "300"
-    value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOWpy/f9cllyHPGjHDivg4y9BVxHNZsiB147x4aL1G4ojfB9QY8XmM9AUUhcwuIG0U8Vb9y1kV3AMER4gb0jSWkjv0PQ4a5FXB5iuG8+OScJbLJkDyCK+IePZwwQ5HzH3ERCDN6uDfj14tprXA7wzYFtIvCpWgMqLmtFsrZ1x+iQIDAQAB"'
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Email.mailgun.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: email.mailgun.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: mailgun.org
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Material.istic.net - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: material.istic.net.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Wildcard.melior.istic.net - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: "*.melior.istic.net."
-    type: A
-    ttl: "300"
-    value: 127.0.0.1
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Www.istic.net - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.net
-    record: www.istic.net.
-    type: CNAME
-    ttl: "300"
-    value: istic.net.
-    aws_profile: istic
-  tags:
-    - istic_net
-
-# Istic.co
-
-- name: Istic.co - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.co
-    record: istic.co.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Istic.co - MX
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.co
-    record: istic.co.
-    type: MX
-    ttl: "300"
-    value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Istic.co - SPF
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.co
-    record: istic.co.
-    type: SPF
-    ttl: "300"
-    value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"'
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Istic.co - TXT
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.co
-    record: istic.co.
-    type: TXT
-    ttl: "300"
-    value: '"google-site-verification=s0yW3bT4lr3noX5rosTZKsF02ETS8ny7OzLO2TBQck4"'
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Wildcard.istic.co - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.co
-    record: "*.istic.co."
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: 20131117185804.pm._domainkey.istic.co - TXT
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.co
-    record: 20131117185804.pm._domainkey.istic.co.
-    type: TXT
-    ttl: "300"
-    value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Www.istic.co - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.co
-    record: www.istic.co.
-    type: CNAME
-    ttl: "300"
-    value: istic.net
-    aws_profile: istic
-  tags:
-    - istic_net
-
-# Istic.systems
-
-- name: Istic.network - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.network
-    record: istic.network.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-
-- name: Www.istic.network - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.network
-    record: www.istic.network.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-
-# Istic.systems
-
-- name: Istic.systems - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.systems
-    record: istic.systems.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
+    - aws
     - istic_sys
-
-- name: Www.istic.systems - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.systems
-    record: www.istic.systems.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
     - istic_net
-    - istic_sys
+  block:
+    - name: Istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: istic.net.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
 
-- name: Cenote.li-lon1.istic.systems - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.systems
-    record: cenote.hz-fsn1.istic.systems.
-    type: A
-    ttl: "300"
-    value: "{{ cenote_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-    - istic_sys
+    - name: Istic.net - MX
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: istic.net.
+        type: MX
+        ttl: "300"
+        value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
+        aws_profile: istic
+      tags:
+        - istic_net
 
-- name: Archipelago.hz-fsn1.istic.systems - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.systems
-    record: archipelago.hz-fsn1.istic.systems.
-    type: A
-    ttl: "300"
-    value: "{{ archipelago_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-    - istic_sys
+    - name: Istic.net - TXT
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: istic.net.
+        type: TXT
+        ttl: "300"
+        value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"'
+        aws_profile: istic
+      tags:
+        - istic_net
 
-- name: Firth.hz-fsn1.istic.systems - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.systems
-    record: firth.hz-fsn1.istic.systems.
-    type: A
-    ttl: "300"
-    value: "{{ firth_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-    - istic_sys
+    - name: Wildcard.istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: "*.istic.net."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
 
-- name: Tributary.hz-fsn1.istic.systems - A
-  amazon.aws.route53:
-    overwrite: true
-    command: present
-    zone: istic.systems
-    record: tributary.hz-fsn1.istic.systems.
-    type: A
-    ttl: "300"
-    value: "{{ firth_ip }}"
-    aws_profile: istic
-  tags:
-    - istic_net
-    - istic_sys
+    - name: _0ed69ff5c31a07f040dcb35337eb4a66.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: _0ed69ff5c31a07f040dcb35337eb4a66.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: _9d6bae07c4db71b24db2d17cb58ea979.hkvuiqjoua.acm-validations.aws.
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: 20131117185804.pm._domainkey.istic.net - TXT
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: 20131117185804.pm._domainkey.istic.net.
+        type: TXT
+        ttl: "300"
+        value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: _f3745362c222f5b3b80d97e5e65e1e5d.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: _f3745362c222f5b3b80d97e5e65e1e5d.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: _d552617b8e3e9ba74015bf5b057a9992.hkvuiqjoua.acm-validations.aws.
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Art.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: art.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: dh1k06lb8zbki.cloudfront.net
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: _e30ae5c849fa50c37f4ad7471b665d56.art.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: _e30ae5c849fa50c37f4ad7471b665d56.art.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: _de5f022e01ad630db13679900d38e2f7.hkvuiqjoua.acm-validations.aws.
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Webcdn.art.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: webcdn.art.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: d1anqtv8ak8qyd.cloudfront.net
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Cal.g.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: cal.g.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: ghs.google.com
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Docs.g.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: docs.g.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: ghs.google.com
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Mail.g.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: mail.g.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: ghs.google.com
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Test.g.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: test.g.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: ghs.google.com
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Ludo.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: ludo.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: cenote.water.gkhs.net
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Mailgun.istic.net - MX
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: mailgun.istic.net.
+        type: MX
+        ttl: "300"
+        value: 10 mxa.mailgun.org.,20 mxb.mailgun.org.
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Mailgun.istic.net - TXT
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: mailgun.istic.net.
+        type: TXT
+        ttl: "300"
+        value: '"v=spf1 include:mailgun.org ~all"'
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Pic._domainkey.mailgun.istic.net - TXT
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: pic._domainkey.mailgun.istic.net.
+        type: TXT
+        ttl: "300"
+        value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOWpy/f9cllyHPGjHDivg4y9BVxHNZsiB147x4aL1G4ojfB9QY8XmM9AUUhcwuIG0U8Vb9y1kV3AMER4gb0jSWkjv0PQ4a5FXB5iuG8+OScJbLJkDyCK+IePZwwQ5HzH3ERCDN6uDfj14tprXA7wzYFtIvCpWgMqLmtFsrZ1x+iQIDAQAB"'
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Email.mailgun.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: email.mailgun.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: mailgun.org
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Material.istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: material.istic.net.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: voyeur.istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: voyeur.istic.net.
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Wildcard.melior.istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: "*.melior.istic.net."
+        type: A
+        ttl: "300"
+        value: 127.0.0.1
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Www.istic.net - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: www.istic.net.
+        type: CNAME
+        ttl: "300"
+        value: istic.net.
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    # Istic.co
+
+    - name: Istic.co - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.co
+        record: istic.co.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Istic.co - MX
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.co
+        record: istic.co.
+        type: MX
+        ttl: "300"
+        value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Istic.co - SPF
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.co
+        record: istic.co.
+        type: SPF
+        ttl: "300"
+        value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"'
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Istic.co - TXT
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.co
+        record: istic.co.
+        type: TXT
+        ttl: "300"
+        value: '"google-site-verification=s0yW3bT4lr3noX5rosTZKsF02ETS8ny7OzLO2TBQck4"'
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Wildcard.istic.co - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.co
+        record: "*.istic.co."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: 20131117185804.pm._domainkey.istic.co - TXT
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.co
+        record: 20131117185804.pm._domainkey.istic.co.
+        type: TXT
+        ttl: "300"
+        value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Www.istic.co - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.co
+        record: www.istic.co.
+        type: CNAME
+        ttl: "300"
+        value: istic.net
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    # Istic.systems
+
+    - name: Istic.network - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.network
+        record: istic.network.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Www.istic.network - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.network
+        record: www.istic.network.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    # Istic.systems
+
+    - name: Istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Www.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: www.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    # old istic.systems records
+    - name: Cenote.li-lon1.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: absent
+        zone: istic.systems
+        record: cenote.hz-fsn1.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ cenote_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Archipelago.hz-fsn1.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: absent
+        zone: istic.systems
+        record: archipelago.hz-fsn1.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Firth.hz-fsn1.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: absent
+        zone: istic.systems
+        record: firth.hz-fsn1.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Tributary.hz-fsn1.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: absent
+        zone: istic.systems
+        record: tributary.hz-fsn1.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    # New istic.systems records
+
+    - name: Cenote.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: cenote.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ cenote_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Atoll.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: atoll.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Firth.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: firth.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Tributary.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: tributary.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
