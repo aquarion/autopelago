@@ -31,7 +31,7 @@
       become: true
       become_user: stream-delta
 
-- name: install stream-delta dependencies
+- name: Install stream-delta dependencies
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
@@ -49,17 +49,17 @@
     - stream-delta
     - dependencies
 
-- name: create stream-delta user
+- name: Create stream-delta user
   ansible.builtin.user:
     name: stream-delta
     shell: /bin/bash
     home: /opt/stream-delta
-    system: yes
+    system: true
   tags:
     - stream-delta
     - user
 
-- name: create stream-delta ssh key directory
+- name: Create stream-delta ssh key directory
   ansible.builtin.file:
     path: /opt/stream-delta/.ssh
     state: directory
@@ -69,7 +69,7 @@
   tags:
     - stream-delta
 
-- name: copy stream-delta deploy key
+- name: Copy stream-delta deploy key
   ansible.builtin.copy:
     src: files/keys/stream-delta-deploy
     dest: /opt/stream-delta/.ssh/deploy_key
@@ -79,7 +79,7 @@
   tags:
     - stream-delta
 
-- name: checkout stream-delta
+- name: Checkout stream-delta
   ansible.builtin.git:
     repo: git@github.com:aquarion/stream-delta.git
     dest: /opt/stream-delta/stream-delta
@@ -110,7 +110,7 @@
   community.general.composer:
     command: install
     working_dir: /opt/stream-delta/stream-delta
-  become: yes
+  become: true
   become_user: stream-delta
   tags:
     - stream-delta
@@ -121,7 +121,7 @@
 - name: Install packages based on package.json.
   community.general.npm:
     path: /opt/stream-delta/stream-delta
-  become: yes
+  become: true
   become_user: stream-delta
   tags:
     - stream-delta
@@ -130,7 +130,7 @@
     - Restart supervisor
 
 - name: Create stream-delta database
-  ansible.builtin.mysql_db:
+  community.mysql.mysql_db:
     name: stream_delta
     state: present
     login_user: root
@@ -140,8 +140,8 @@
     - mysql
 
 - name: Run build
-  shell: npm run build
-  become: yes
+  ansible.builtin.shell: npm run build
+  become: true
   become_user: stream-delta
   args:
     chdir: /opt/stream-delta/stream-delta/
@@ -152,10 +152,10 @@
     - Restart supervisor
 
 - name: Create stream-delta database user
-  ansible.builtin.mysql_user:
+  community.mysql.mysql_user:
     name: stream_delta
     password: "{{ stream_delta_db_password }}"
-    priv: "stream_delta.*:ALL"
+    priv: stream_delta.*:ALL
     host: localhost
     state: present
     login_user: root

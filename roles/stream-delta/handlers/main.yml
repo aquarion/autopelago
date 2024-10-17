@@ -1,3 +1,4 @@
+---
 - name: Restart supervisor
   ansible.builtin.systemd:
     name: supervisor
