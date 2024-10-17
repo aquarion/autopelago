@@ -265,7 +265,7 @@
       tags:
         - istic_net
 
-    - name: voyeur.istic.net - A
+    - name: Voyeur.istic.net - A
       amazon.aws.route53:
         overwrite: true
         command: present

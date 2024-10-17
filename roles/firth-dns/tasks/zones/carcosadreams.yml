@@ -144,7 +144,7 @@
         record: carcosadreams.co.uk
         type: MX
         ttl: "300"
-        value: "0 carcosadreams-co-uk.mail.protection.outlook.com."
+        value: 0 carcosadreams-co-uk.mail.protection.outlook.com.
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
@@ -156,7 +156,7 @@
         record: carcosadreams.com
         type: MX
         ttl: "300"
-        value: "0 carcosadreams-com.mail.protection.outlook.com."
+        value: 0 carcosadreams-com.mail.protection.outlook.com.
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 

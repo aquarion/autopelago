@@ -1,7 +1,7 @@
 ---
 - name: Install B2
   ansible.builtin.pip:
-    name: "b2=={{ b2_version }}"
+    name: b2=={{ b2_version }}
   tags:
     - b2backup
 
