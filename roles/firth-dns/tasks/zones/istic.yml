@@ -278,6 +278,19 @@
       tags:
         - istic_net
 
+    - name: Ws.voyeur.istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: ws.voyeur.istic.net.
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
     - name: Wildcard.melior.istic.net - A
       amazon.aws.route53:
         overwrite: true

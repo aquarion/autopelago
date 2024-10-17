@@ -1,0 +1,34 @@
+
+[program:octane]
+command=php /opt/stream-delta/stream-delta/artisan octane:start
+user=stream-delta
+stdout_logfile=/opt/stream-delta/stream-delta/storage/logs/octane_stdout.log
+stderr_logfile=/opt/stream-delta/stream-delta/storage/logs/octane_stderr.log
+
+
+[program:reverb]
+command=php /opt/stream-delta/stream-delta/artisan reverb:start --host="127.0.0.1" --port=8080
+autostart=true
+autorestart=true
+user=stream-delta
+redirect_stderr=true
+stdout_logfile=/opt/stream-delta/stream-delta/storage/logs/reverb_stdout.log
+
+
+[program:scheduler]
+command=php /opt/stream-delta/stream-delta/artisan schedule:work
+autostart=true
+autorestart=true
+user=stream-delta
+redirect_stderr=true
+stdout_logfile=/opt/stream-delta/stream-delta/storage/logs/schedule_stdout.log
+
+
+[program:horizon]
+command=php /opt/stream-delta/stream-delta/artisan horizon
+autostart=true
+autorestart=true
+user=stream-delta
+redirect_stderr=true
+stdout_logfile=/opt/stream-delta/stream-delta/storage/logs/horizon_stdout.log
+

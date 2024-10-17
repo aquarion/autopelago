@@ -1,0 +1,177 @@
+---
+- name: Ensure Github is present in known_host
+  tags:
+    - stream-delta
+  block:
+    - name: Ensure jq and curl are present
+      ansible.builtin.package:
+        name:
+          - jq
+          - curl
+        state: present
+      become: true
+    - name: Fetch github hostkeys
+      ansible.builtin.shell: >
+        set -o pipefail && curl --silent {{ add_github_hostkeys_api_endpoint }} | jq --raw-output '"github.com "+.ssh_keys[]'
+      changed_when: false
+      args:
+        executable: /bin/bash
+      check_mode: false
+      register: fetched_github_hostkeys
+
+    - name: Add github hostkeys to stream-delta known_hosts
+      ansible.builtin.known_hosts:
+        name: github.com
+        key: "{{ known_host }}"
+        state: present
+        path: /opt/stream-delta/.ssh/known_hosts
+      loop: "{{ fetched_github_hostkeys.stdout_lines }}"
+      loop_control:
+        loop_var: known_host
+      become: true
+      become_user: stream-delta
+
+- name: install stream-delta dependencies
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - supervisor
+    - composer
+    - git
+    - php-cli
+    - php-xml
+    - php-redis
+    - mariadb-server
+    - redis-server
+    - npm
+  tags:
+    - stream-delta
+    - dependencies
+
+- name: create stream-delta user
+  ansible.builtin.user:
+    name: stream-delta
+    shell: /bin/bash
+    home: /opt/stream-delta
+    system: yes
+  tags:
+    - stream-delta
+    - user
+
+- name: create stream-delta ssh key directory
+  ansible.builtin.file:
+    path: /opt/stream-delta/.ssh
+    state: directory
+    owner: stream-delta
+    group: stream-delta
+    mode: "0700"
+  tags:
+    - stream-delta
+
+- name: copy stream-delta deploy key
+  ansible.builtin.copy:
+    src: files/keys/stream-delta-deploy
+    dest: /opt/stream-delta/.ssh/deploy_key
+    owner: stream-delta
+    group: stream-delta
+    mode: "0600"
+  tags:
+    - stream-delta
+
+- name: checkout stream-delta
+  ansible.builtin.git:
+    repo: git@github.com:aquarion/stream-delta.git
+    dest: /opt/stream-delta/stream-delta
+    version: main
+    key_file: /opt/stream-delta/.ssh/deploy_key
+  become: true
+  become_user: stream-delta
+  tags:
+    - stream-delta
+    - git
+    - checkout
+  register: stream_delta_checkout
+  notify:
+    - Restart supervisor
+
+- name: Copy stream delta environment file
+  ansible.builtin.template:
+    src: templates/production.env.j2
+    dest: /opt/stream-delta/stream-delta/.env
+    mode: "0600"
+    owner: stream-delta
+  tags:
+    - stream-delta
+  notify:
+    - Restart supervisor
+
+- name: Install PHP dependencies
+  community.general.composer:
+    command: install
+    working_dir: /opt/stream-delta/stream-delta
+  become: yes
+  become_user: stream-delta
+  tags:
+    - stream-delta
+  when: stream_delta_checkout.changed
+  notify:
+    - Restart supervisor
+
+- name: Install packages based on package.json.
+  community.general.npm:
+    path: /opt/stream-delta/stream-delta
+  become: yes
+  become_user: stream-delta
+  tags:
+    - stream-delta
+  when: stream_delta_checkout.changed
+  notify:
+    - Restart supervisor
+
+- name: Create stream-delta database
+  ansible.builtin.mysql_db:
+    name: stream_delta
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags:
+    - stream-delta
+    - mysql
+
+- name: Run build
+  shell: npm run build
+  become: yes
+  become_user: stream-delta
+  args:
+    chdir: /opt/stream-delta/stream-delta/
+  when: stream_delta_checkout.changed
+  tags:
+    - stream-delta
+  notify:
+    - Restart supervisor
+
+- name: Create stream-delta database user
+  ansible.builtin.mysql_user:
+    name: stream_delta
+    password: "{{ stream_delta_db_password }}"
+    priv: "stream_delta.*:ALL"
+    host: localhost
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags:
+    - stream-delta
+    - mysql
+
+- name: Configure supervisord for stream-delta
+  ansible.builtin.template:
+    src: templates/supervisord/stream-delta.conf.j2
+    dest: /etc/supervisor/conf.d/stream-delta.conf
+    mode: "0644"
+  notify:
+    - Restart supervisor
+  tags:
+    - stream-delta
+    - supervisord
+    - stream-delta_supervisord

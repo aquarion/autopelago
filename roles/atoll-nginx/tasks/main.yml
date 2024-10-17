@@ -107,14 +107,3 @@
   tags:
     - streamsite
     - nginx_sites
-
-- name: Streamsite Basic Auth
-  community.general.htpasswd:
-    path: /etc/nginx/streamsite.htpass
-    name: "{{ item.user }}"
-    password: "{{ item.password }}"
-    mode: "0644"
-  loop: "{{ streamsite_users }}"
-  tags:
-    - streamsite
-    - nginx_sites
