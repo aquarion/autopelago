@@ -1,6 +1,13 @@
 ---
+- name: Make sure pipx is installed
+  ansible.builtin.package:
+    name: pipx
+    state: present
+  tags:
+    - b2backup
+
 - name: Install B2
-  ansible.builtin.pip:
+  community.general.pipx:
     name: b2=={{ b2_version }}
   tags:
     - b2backup
