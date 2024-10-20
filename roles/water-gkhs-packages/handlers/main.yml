@@ -4,5 +4,10 @@
     name: fail2ban
     state: restarted
 
+- name: Restart redis
+  ansible.builtin.service:
+    name: redis
+    state: restarted
+
 - name: Kick sysctl
   ansible.builtin.command: sysctl -p

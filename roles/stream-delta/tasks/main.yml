@@ -175,3 +175,14 @@
     - stream-delta
     - supervisord
     - stream-delta_supervisord
+
+- name: Configure Redis streamdelta user password
+  ansible.builtin.lineinfile:
+    path: /etc/redis/users.acl
+    line: user streamdelta on +@all -DEBUG ~* >{{ stream_delta_redis_password }}
+    regex: ^user streamdelta
+  notify:
+    - Reload redis
+  tags:
+    - stream-delta
+    - redis

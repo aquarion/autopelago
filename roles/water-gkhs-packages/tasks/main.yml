@@ -149,3 +149,37 @@
     regexp: ^fs.inotify.max_user_watches
   notify: Kick sysctl
   tags: sysctl
+
+- name: Install and setup Redis
+  tags: redis
+  block:
+    - name: Install Redis
+      ansible.builtin.apt:
+        state: present
+        pkg:
+          - redis-server
+          - redis-tools
+
+    - name: Configure Redis acl
+      ansible.builtin.lineinfile:
+        path: /etc/redis/redis.conf
+        line: aclfile /etc/redis/users.acl
+        regex: ^aclfile
+      notify:
+        - Restart redis
+
+    - name: Ensure redis acl file exists
+      ansible.builtin.file:
+        path: /etc/redis/users.acl
+        state: file
+        mode: "0600"
+        owner: redis
+        group: redis
+
+    - name: Configure Redis default user password
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        line: user default on +@all -DEBUG ~* >{{ redis_password }}
+        regex: ^user default
+      notify:
+        - Restart redis

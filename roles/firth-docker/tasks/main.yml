@@ -53,7 +53,7 @@
   tags:
     - docker
   notify:
-    - restart redis
+    - Restart redis
 
 - name: Make sure docker can access MariaDB
   ansible.builtin.copy:
@@ -77,3 +77,14 @@
     - ccooke
   tags:
     - docker
+
+- name: Configure Redis dockersites user password
+  ansible.builtin.lineinfile:
+    path: /etc/redis/users.acl
+    line: user dockersites on +@all -DEBUG ~* >{{ dockersites_redis_password }}
+    regex: ^user dockersites
+  notify:
+    - Reload redis
+  tags:
+    - docker
+    - redis
