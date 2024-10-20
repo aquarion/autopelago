@@ -1,6 +1,9 @@
 ---
 - name: AWS Roles
   hosts: all:!localactions
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   roles:
     - name: aws-profiles
       role: aws-profiles
@@ -22,6 +25,9 @@
 
 - name: Actions on all hosts
   hosts: all:!localactions
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
     - water-gkhs-packages
@@ -34,18 +40,27 @@
 
 - name: Actions on all non-local hosts
   hosts: all:!localactions
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
     - { role: water-gkhs-mysql-backup, tags: mysql }
 
 - name: Actions on all hosts running NGINX
   hosts: nginx_hosts
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
     - { role: water-gkhs-nginx, tags: nginx }
 
 - name: Hello Firth
   hosts: firth
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
     - firth-packages
@@ -68,6 +83,9 @@
 
 - name: Hello Atoll
   hosts: atoll
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
     - water-gkhs-nginx
