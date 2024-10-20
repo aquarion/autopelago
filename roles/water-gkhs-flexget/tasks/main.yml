@@ -23,7 +23,8 @@
     name: flexget
     minute: 16,46
     user: "{{ media_user }}"
-    job: "{{ media_home }}/.virtualenvs/flexget/bin/python {{ media_home }}/.virtualenvs/flexget/bin/flexget --cron execute"
+    job: "{{ media_home }}/.virtualenvs/flexget_{{ ansible_python_version }}/bin/python {{ media_home }}/.virtualenvs/flexget_{{ ansible_python_version }}/bin/flexget
+      --cron execute"
     cron_file: flexget
   tags:
     - flexget

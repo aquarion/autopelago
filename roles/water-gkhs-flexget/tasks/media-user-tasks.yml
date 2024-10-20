@@ -1,10 +1,10 @@
 ---
 # Tasks performed as media user
 
-- name: Install pip transmissionrpc package
+- name: Install flexget support packages
   ansible.builtin.pip:
     name: "{{ item }}"
-    virtualenv: "{{ media_home }}/.virtualenvs/flexget"
+    virtualenv: "{{ media_home }}/.virtualenvs/flexget_{{ ansible_python_version }}_{{ ansible_python_version }}"
     virtualenv_python: python3
   loop:
     #   - encodings
@@ -16,7 +16,7 @@
 - name: Install Flexget
   ansible.builtin.pip:
     name: flexget
-    virtualenv: "{{ media_home }}/.virtualenvs/flexget"
+    virtualenv: "{{ media_home }}/.virtualenvs/flexget_{{ ansible_python_version }}"
     virtualenv_python: python3
     version: "{{ flexget_version }}"
   tags:
