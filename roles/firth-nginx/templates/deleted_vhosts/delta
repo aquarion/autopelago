@@ -25,7 +25,7 @@ server {
     # auth_basic           "Thalium";
     # auth_basic_user_file  /etc/nginx/streamsite.htpass;
 
-    root /home/aquarion/code/stream-delta/public/;
+    root {{ stream_delta_install_dir }}/public/;
     #root /var/www/public;
 
     location ~ \.php$ {

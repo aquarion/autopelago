@@ -24,7 +24,7 @@
         name: github.com
         key: "{{ known_host }}"
         state: present
-        path: /opt/stream-delta/.ssh/known_hosts
+        path: "{{ stream_delta_home }}/.ssh/known_hosts"
       loop: "{{ fetched_github_hostkeys.stdout_lines }}"
       loop_control:
         loop_var: known_host
@@ -53,15 +53,24 @@
   ansible.builtin.user:
     name: stream-delta
     shell: /bin/bash
-    home: /opt/stream-delta
+    home: "{{ stream_delta_home }}"
     system: true
+  tags:
+    - stream-delta
+    - user
+
+- name: Make stream-delta user a member of www-data group
+  ansible.builtin.user:
+    name: stream-delta
+    groups: www-data
+    append: yes
   tags:
     - stream-delta
     - user
 
 - name: Create stream-delta ssh key directory
   ansible.builtin.file:
-    path: /opt/stream-delta/.ssh
+    path: "{{ stream_delta_home }}/.ssh"
     state: directory
     owner: stream-delta
     group: stream-delta
@@ -72,7 +81,7 @@
 - name: Copy stream-delta deploy key
   ansible.builtin.copy:
     src: files/keys/stream-delta-deploy
-    dest: /opt/stream-delta/.ssh/deploy_key
+    dest: "{{ stream_delta_home }}/.ssh/deploy_key"
     owner: stream-delta
     group: stream-delta
     mode: "0600"
@@ -82,9 +91,9 @@
 - name: Checkout stream-delta
   ansible.builtin.git:
     repo: git@github.com:aquarion/stream-delta.git
-    dest: /opt/stream-delta/stream-delta
+    dest: "{{ stream_delta_install_dir }}"
     version: main
-    key_file: /opt/stream-delta/.ssh/deploy_key
+    key_file: "{{ stream_delta_home }}/.ssh/deploy_key"
   become: true
   become_user: stream-delta
   tags:
@@ -95,10 +104,18 @@
   notify:
     - Restart supervisor
 
+- name: change ownership of stream-delta directory
+  file:
+    path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
+    owner: "stream-delta"
+    group: "www-data"
+    state: directory
+    recurse: yes
+
 - name: Copy stream delta environment file
   ansible.builtin.template:
     src: templates/production.env.j2
-    dest: /opt/stream-delta/stream-delta/.env
+    dest: "{{ stream_delta_install_dir }}/.env"
     mode: "0600"
     owner: stream-delta
   tags:
@@ -109,7 +126,7 @@
 - name: Install PHP dependencies
   community.general.composer:
     command: install
-    working_dir: /opt/stream-delta/stream-delta
+    working_dir: "{{ stream_delta_install_dir }}"
   become: true
   become_user: stream-delta
   tags:
@@ -120,7 +137,7 @@
 
 - name: Install packages based on package.json.
   community.general.npm:
-    path: /opt/stream-delta/stream-delta
+    path: "{{ stream_delta_install_dir }}"
   become: true
   become_user: stream-delta
   tags:
@@ -144,7 +161,7 @@
   become: true
   become_user: stream-delta
   args:
-    chdir: /opt/stream-delta/stream-delta/
+    chdir: "{{ stream_delta_install_dir }}/"
   when: stream_delta_checkout.changed
   tags:
     - stream-delta
