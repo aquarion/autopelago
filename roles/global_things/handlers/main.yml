@@ -1,5 +1,5 @@
 ---
-- name: Reload redis
+- name: Reload Redis ACL
   ansible.builtin.command:
     cmd: redis-cli -u redis://localhost:6379 ACL LOAD
   environment:

@@ -84,7 +84,7 @@
     line: user dockersites on +@all -DEBUG ~* >{{ dockersites_redis_password }}
     regex: ^user dockersites
   notify:
-    - Reload redis
+    - Reload Redis ACL
   tags:
     - docker
     - redis

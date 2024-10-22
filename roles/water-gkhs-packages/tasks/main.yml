@@ -182,4 +182,4 @@
         line: user default on +@all -DEBUG ~* >{{ redis_password }}
         regex: ^user default
       notify:
-        - Restart redis
+        - Reload Redis ACL
