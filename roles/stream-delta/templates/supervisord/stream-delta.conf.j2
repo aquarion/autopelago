@@ -2,6 +2,8 @@
 [program:octane]
 command=php /opt/stream-delta/stream-delta/artisan octane:start
 user=stream-delta
+autostart=true
+autorestart=true
 stdout_logfile=/opt/stream-delta/stream-delta/storage/logs/octane_stdout.log
 stderr_logfile=/opt/stream-delta/stream-delta/storage/logs/octane_stderr.log
 
