@@ -63,7 +63,7 @@
   ansible.builtin.user:
     name: stream-delta
     groups: www-data
-    append: yes
+    append: true
   tags:
     - stream-delta
     - user
@@ -104,13 +104,13 @@
   notify:
     - Restart supervisor
 
-- name: change ownership of stream-delta directory
-  file:
+- name: Change ownership of stream-delta directory
+  ansible.builtin.file:
     path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
-    owner: "stream-delta"
-    group: "www-data"
+    owner: stream-delta
+    group: www-data
     state: directory
-    recurse: yes
+    recurse: true
 
 - name: Copy stream delta environment file
   ansible.builtin.template:
