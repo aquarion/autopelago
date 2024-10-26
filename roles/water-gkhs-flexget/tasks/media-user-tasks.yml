@@ -4,7 +4,7 @@
 - name: Install flexget support packages
   ansible.builtin.pip:
     name: "{{ item }}"
-    virtualenv: "{{ media_home }}/.virtualenvs/flexget_{{ ansible_python_version }}_{{ ansible_python_version }}"
+    virtualenv: "{{ media_home }}/.virtualenvs/flexget_{{ ansible_python_version }}"
     virtualenv_python: python3
   loop:
     #   - encodings
