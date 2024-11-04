@@ -1,7 +1,11 @@
 # {{ ansible_managed }}
 
-upstream docker-php7 { server 127.0.0.1:4080; }
-upstream docker-php8 { server 127.0.0.1:5080; }
+upstream docker-php7 {
+  server 127.0.0.1:4080;
+}
+upstream docker-php8 {
+  server 127.0.0.1:5080;
+}
 
 #  ____   ___  ____ _____    ___   ___
 # |  _ \ / _ \|  _ \_   _|  ( _ ) / _ \
@@ -9,25 +13,23 @@ upstream docker-php8 { server 127.0.0.1:5080; }
 # |  __/| |_| |  _ < | |   | (_) | |_| |
 # |_|    \___/|_| \_\|_|    \___/ \___/
 
-
-
 server {
-  listen      80;
+  listen 80;
   listen [::]:80;
   server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
-    warehousebasement.com
-    dagon.church live.dagon.church wiki.dagon.church
-    live.dailyphoto.aquarionics.com
-    firth.water.gkhs.net
-    istic.co
-    www.deathuntodarkness.org
-    *.istic.net
-    *.istic.dev
-    *.foip.me
-    *.bromioscreations.com
-    *.aquarionics.com
-    *.hubris.house
-    *.deadbadgerdesigns.co.uk;
+  warehousebasement.com
+  dagon.church live.dagon.church wiki.dagon.church
+  live.dailyphoto.aquarionics.com
+  firth.water.gkhs.net
+  istic.co
+  www.deathuntodarkness.org
+  *.istic.net
+  *.istic.dev
+  *.foip.me
+  *.bromioscreations.com
+  *.aquarionics.com
+  *.hubris.house
+  *.deadbadgerdesigns.co.uk;
 
   add_header X-WhyAmI "miscweb redirect";
   return 301 https://$host$request_uri;
@@ -39,39 +41,37 @@ server {
 # |  __/|  _  |  __/    / /
 # |_|   |_| |_|_|      /_/
 
-
 #  _    _   _
 # (_)__| |_(_)__
 # | (_-<  _| / _|
 # |_/__/\__|_\__|
-
 server {
-    listen              443 ssl proxy_protocol;
-    listen              80;
-    server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
-    return 301 $scheme://istic.co$uri;
-   add_header X-WhyAmI "miscweb istic redirect";
+  listen 443 ssl proxy_protocol;
+  listen 80;
+  server_name istic.network www.istic.co www.istic.network www.istic.net istic.net;
+  return 301 $scheme://istic.co$uri;
+  add_header X-WhyAmI "miscweb istic redirect";
 }
 
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
-      warehousebasement.com
-      dagon.church live.dagon.church wiki.dagon.church
-      istic.co
-      old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
-      live.dailyphoto.aquarionics.com dailyphoto.aquarionics.com
-      www.deathuntodarkness.org
-      deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
-    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
+  warehousebasement.com
+  dagon.church live.dagon.church wiki.dagon.church
+  istic.co
+  old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
+  live.dailyphoto.aquarionics.com dailyphoto.aquarionics.com
+  www.deathuntodarkness.org
+  deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
+  include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
 
-    error_log  /var/log/nginx/miscweb.error.log;
-    access_log /var/log/nginx/miscweb.access.log;
-    add_header X-WhyAmI miscweb;
+  error_log /var/log/nginx/miscweb.error.log;
+  access_log /var/log/nginx/miscweb.access.log;
+  add_header X-WhyAmI miscweb;
 
-  location    / {
+  location / {
     proxy_pass http://docker-php7;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -83,21 +83,20 @@ server {
 # | '  \| (_-</ _\ V  V / -_) '_ \
 # |_|_|_|_/__/\__|\_/\_/\___|_.__/
 
-
 server {
-    listen 443 proxy_protocol;
-    listen [::]:443 proxy_protocol;
-    listen 8443 ssl;
-    listen [::]:8443 ssl;
-    server_name firth.water.gkhs.net;
-    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
+  listen 443 proxy_protocol;
+  listen [::]:443 proxy_protocol;
+  listen 8443 ssl;
+  listen [::]:8443 ssl;
+  server_name firth.water.gkhs.net;
+  include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
-   add_header X-WhyAmI "miscweb firth";
+  add_header X-WhyAmI "miscweb firth";
 
-    error_log  /var/log/nginx/miscweb.error.log;
-    access_log /var/log/nginx/miscweb.access.log;
+  error_log /var/log/nginx/miscweb.error.log;
+  access_log /var/log/nginx/miscweb.access.log;
 
-  location    / {
+  location / {
     proxy_pass http://docker-php7;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -110,19 +109,18 @@ server {
 # | ' \| / _| ' \/ _ \ / _` (_-</ _` \ V / -_) ' \/ -_) | |
 # |_||_|_\__|_||_\___/_\__,_/__/\__,_|\_/\___|_||_\___|_|_|
 
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.com nicholasavenell.net;
-    include /etc/nginx/snippets/ssl/nicholasavenell_ssl.conf;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.com nicholasavenell.net;
+  include /etc/nginx/snippets/ssl/nicholasavenell_ssl.conf;
 
-   add_header X-WhyAmI "miscweb nacom";
+  add_header X-WhyAmI "miscweb nacom";
 
-    error_log  /var/log/nginx/nicholasavenell.error.log;
-    access_log /var/log/nginx/nicholasavenell.access.log;
+  error_log /var/log/nginx/nicholasavenell.error.log;
+  access_log /var/log/nginx/nicholasavenell.access.log;
 
-  location    / {
+  location / {
     proxy_pass http://docker-php7;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -134,15 +132,13 @@ server {
 # | '_ \ '_/ _ \ '  \| / _ (_-< / _| '_/ -_) _` |  _| / _ \ ' \(_-<
 # |_.__/_| \___/_|_|_|_\___/__/ \__|_| \___\__,_|\__|_\___/_||_/__/
 
-
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.bromioscreations.com bromioscreations.com;
-    include /etc/nginx/snippets/ssl/bromioscreations_ssl.conf;
-   add_header X-WhyAmI "miscweb bromios";
-  location    / {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.bromioscreations.com bromioscreations.com;
+  include /etc/nginx/snippets/ssl/bromioscreations_ssl.conf;
+  add_header X-WhyAmI "miscweb bromios";
+  location / {
     proxy_pass http://docker-php7;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -154,15 +150,14 @@ server {
 # | __ | || | '_ \ '_| (_-<
 # |_||_|\_,_|_.__/_| |_/__/
 
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.hubris.house hubris.house;
-    include /etc/nginx/snippets/ssl/hubris_ssl.conf;
-   add_header X-WhyAmI "miscweb hubris";
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.hubris.house hubris.house;
+  include /etc/nginx/snippets/ssl/hubris_ssl.conf;
+  add_header X-WhyAmI "miscweb hubris";
 
-  location    / {
+  location / {
     proxy_pass http://docker-php7;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -175,15 +170,14 @@ server {
 # |_|\___/_| .__(_)_|  |_\___|
 #          |_|
 
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.foip.me;
-    include /etc/nginx/snippets/ssl/foipme_ssl.conf;
-   add_header X-WhyAmI "miscweb foipme";
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.foip.me;
+  include /etc/nginx/snippets/ssl/foipme_ssl.conf;
+  add_header X-WhyAmI "miscweb foipme";
 
-  location    / {
+  location / {
     proxy_pass http://docker-php7;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -198,26 +192,22 @@ server {
 # |  __/|  _  |  __/  | (_) |
 # |_|   |_| |_|_|      \___/
 #
-
 #         _    _   _               _
 # _/\_   (_)__| |_(_)__   _ _  ___| |_
 # >  <  _| (_-<  _| / _|_| ' \/ -_)  _|
 #  \/  (_)_/__/\__|_\__(_)_||_\___|\__|
-
-
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.istic.net;
-    include /etc/nginx/snippets/ssl/istic_ssl.conf;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.istic.net;
+  include /etc/nginx/snippets/ssl/istic_ssl.conf;
 
-   add_header X-WhyAmI "miscweb istic.net";
+  add_header X-WhyAmI "miscweb istic.net";
 
-    error_log  /var/log/nginx/istic.error.log;
-    access_log /var/log/nginx/istic.access.log;
+  error_log /var/log/nginx/istic.error.log;
+  access_log /var/log/nginx/istic.access.log;
 
-  location    / {
+  location / {
     proxy_pass http://docker-php8;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -229,20 +219,18 @@ server {
 # >  <  _| (_-<  _| / _|_/ _` / -_) V /
 #  \/  (_)_/__/\__|_\__(_)__,_\___|\_/
 
-
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.istic.dev istic.dev;
-    include /etc/nginx/snippets/ssl/istic_dev_ssl.conf;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.istic.dev istic.dev;
+  include /etc/nginx/snippets/ssl/istic_dev_ssl.conf;
 
-   add_header X-WhyAmI "miscweb istic.dev";
+  add_header X-WhyAmI "miscweb istic.dev";
 
-    error_log  /var/log/nginx/istic.error.log;
-    access_log /var/log/nginx/istic.access.log;
+  error_log /var/log/nginx/istic.error.log;
+  access_log /var/log/nginx/istic.access.log;
 
-  location    / {
+  location / {
     proxy_pass http://docker-php8;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
@@ -250,19 +238,18 @@ server {
 }
 
 
-
 ## Socks & Puppets
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name *.socksandpuppets.com socksandpuppets.com;
-    include /etc/nginx/snippets/ssl/socksandpuppets_ssl.conf;
-   add_header X-WhyAmI "miscweb socksandpuppets";
-  location    / {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.socksandpuppets.com socksandpuppets.com;
+  include /etc/nginx/snippets/ssl/socksandpuppets_ssl.conf;
+  add_header X-WhyAmI "miscweb socksandpuppets";
+  location / {
     proxy_pass http://docker-php8;
     include /etc/nginx/snippets/cloudflare-ips.nginx.conf;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
+  client_max_body_size 100M;
 }
