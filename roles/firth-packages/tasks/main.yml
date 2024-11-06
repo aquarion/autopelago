@@ -6,3 +6,40 @@
       - mariadb-server
       - irssi
       - exim4
+
+- name: Add PHP PPA
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+  tags: php
+
+
+- name: Remove old PHP Packages
+  ansible.builtin.apt:
+    state: absent
+    pkg:
+      - "{{ item }}"
+      - "{{ item }}-*"
+  loop: "{{ remove_php_versions }}"
+  ignore_errors: yes
+  tags: php
+
+
+- name: Install PHP With Required Extensions
+  ansible.builtin.apt:
+    state: present
+    pkg:
+      - "{{ php_version }}"
+      - "{{ php_version }}-bcmath"
+      - "{{ php_version }}-cgi"
+      - "{{ php_version }}-cli"
+      - "{{ php_version }}-common"
+      - "{{ php_version }}-curl"
+      - "{{ php_version }}-gd"
+      - "{{ php_version }}-intl"
+      - "{{ php_version }}-mbstring"
+      - "{{ php_version }}-mysql"
+      - "{{ php_version }}-opcache"
+      - "{{ php_version }}-readline"
+      - "{{ php_version }}-xml"
+  tags: php
