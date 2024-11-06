@@ -13,7 +13,6 @@
     state: present
   tags: php
 
-
 - name: Remove old PHP Packages
   ansible.builtin.apt:
     state: absent
@@ -21,9 +20,8 @@
       - "{{ item }}"
       - "{{ item }}-*"
   loop: "{{ remove_php_versions }}"
-  ignore_errors: yes
+  ignore_errors: true
   tags: php
-
 
 - name: Install PHP With Required Extensions
   ansible.builtin.apt:
