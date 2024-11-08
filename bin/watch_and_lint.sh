@@ -12,7 +12,7 @@ inotifywait -m -r -e modify -e create $TARGET --format="%f" \
                 do
                         clear
                         echo Detected $FILENAME
-                        ansible-lint --write
+                        ansible-lint --write playbook.yml
                         # mv "$TARGET/$FILENAME" "$PROCESSED/$FILENAME"
                         # gzip "$PROCESSED/$FILENAME"
                 done
