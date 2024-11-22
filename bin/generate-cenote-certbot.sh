@@ -2,7 +2,6 @@
 
 sudo certbot -n -t certonly --expand --apache --cert-name cenote.gkhs.net --domains \
 cenote.gkhs.net,cenote.water.gkhs.net,\
-comicpress.socksandpuppets.com,comic.socksandpuppets.com,ahdok.aqxs.net,socksandpuppets.com,www.socksandpuppets.com,\
 treasuretrap.co.uk,nfnc.treasuretrap.co.uk,www.treasuretrap.co.uk,\
 emptytables.org,www.emptytables.org,\
 nanocountdown.com,www.nanocountdown.com,\
