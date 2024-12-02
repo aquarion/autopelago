@@ -15,7 +15,8 @@ www.grantabruggehamstery.co.uk,grantabruggehamstery.co.uk,\
 www.pinsandneedlescostume.co.uk,pinsandneedlescostume.co.uk,\
 thomwillis.uk,thomwillis.uk,\
 comeoutandplay.games,\
-dhmstark.co.uk,www.dhmstark.co.uk,kastark.co.uk,www.kastark.co.uk
+dhmstark.co.uk,www.dhmstark.co.uk,kastark.co.uk,www.kastark.co.uk,\
+www.socksandpuppets.com
 
 sudo certbot certonly -n --expand --dns-route53 -d *.aqxs.net && sudo service apache2 restart
 sudo certbot certonly -n --expand --cert-name camlarp.co.uk --dns-route53 -d *.camlarp.co.uk -d camlarp.co.uk -d *.refs.camlarp.co.uk && sudo service apache2 restart
