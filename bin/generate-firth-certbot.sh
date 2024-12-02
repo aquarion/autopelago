@@ -1,6 +1,7 @@
 #!/bin/bash
 
-sudo certbot -n -t certonly --expand --nginx --cert-name firth.water.gkhs.net --domains firth.water.gkhs.net,\
+sudo certbot -n -t certonly --expand --nginx  --deploy-hook "service dovecot restart" --cert-name firth.water.gkhs.net \
+--domains firth.water.gkhs.net,\
 istic.net,\
 stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,\
 panopticon.aquarionics.com,thalium.aquarionics.com,wiki.aquarionics.com,vtt.aquarionics.com,\
