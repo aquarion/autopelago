@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo certbot -n -t certonly --expand --apache --cert-name cenote.gkhs.net --domains \
+sudo certbot -n -t certonly --expand --apache --deploy-hook "service dovecot restart" --cert-name cenote.gkhs.net --domains \
 cenote.gkhs.net,cenote.water.gkhs.net,\
 treasuretrap.co.uk,nfnc.treasuretrap.co.uk,www.treasuretrap.co.uk,\
 emptytables.org,www.emptytables.org,\
