@@ -88,9 +88,10 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
+    - github-cli
+    - { role: firth-nginx, tags: nginx }
     - water-gkhs-nginx
     - atoll-nginx
     - water-gkhs-exim
-    - github-cli
     - aws-profiles
     - stream-delta
