@@ -12,7 +12,7 @@ ansible = "==10.7.*"
 ansible-lint = { version = "==24.*", markers = "platform_system != 'Windows'" }
 boto = "==2.*"
 boto3 = "==1.*"
-poetry = "==1.*"
+poetry = "==2.*"
 poetry-plugin-export = "==1.*"
 virtualenv = "==20.*"
 
