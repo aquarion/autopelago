@@ -103,10 +103,10 @@
     password: "{{ item.password }}"
     mode: "0644"
   loop: "{{ streamsite_users }}"
+  no_log: true
   tags:
     - streamsite
     - apache_sites
-
 # - name: Configure apache redirects
 #   ansible.builtin.template:
 #     src: config/redirects.apache.j2

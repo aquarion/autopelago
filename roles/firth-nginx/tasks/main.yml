@@ -115,6 +115,7 @@
     password: "{{ item.password }}"
     mode: "0644"
   loop: "{{ streamsite_users }}"
+  no_log: true
   tags:
     - streamsite
     - nginx_sites
