@@ -1,96 +1,98 @@
 # {{ ansible_managed }}
-upstream container-wordpress { server 127.0.0.1:2080; }
-
-server {
-    listen              443 ssl proxy_protocol;
-    listen              80;
-    server_name herodiaries.blogs.water.gkhs.net;
-    return 301 $scheme://herodiaries.foip.me;
-    add_header X-WhyAmI "wordpress heroediaries redirect";
+upstream container-wordpress {
+  server 127.0.0.1:2080;
 }
 
 server {
-    listen      80;
-    listen [::]:80;
-    server_name
-      wywo.aquarionics.com
-      www.aquarionics.com
-      factionfiction.net
-      blogs.water.gkhs.net       *.blogs.water.gkhs.net
-      omnyom.com
-      www.cleartextcontent.co.uk
-      herodiaries.foip.me
-      themonthlymoon.com
-      idlespeculation.foip.me
-      www.iglooteas.com
-      blogs.istic.network *.blogs.istic.network;
-    return 301 https://$host$request_uri;
-    include /etc/nginx/snippets/errors.conf;
-    client_max_body_size 32M;
-    add_header X-WhyAmI "wordpress redirect";
+  listen 443 ssl proxy_protocol;
+  listen 80;
+  server_name herodiaries.blogs.water.gkhs.net;
+  return 301 $scheme://herodiaries.foip.me;
+  add_header X-WhyAmI "wordpress heroediaries redirect";
 }
 
 server {
-    listen              443 ssl proxy_protocol;
-    listen              80;
-    server_name herodiaries.blogs.water.gkhs.net
-    add_header X-WhyAmI "wordpress redirect ssl";
-    return 301 $scheme://herodiaries.foip.me;
+  listen 80;
+  listen [::]:80;
+  server_name
+  wywo.aquarionics.com
+  feeds.aquarionics.com
+  www.aquarionics.com
+  factionfiction.net
+  blogs.water.gkhs.net *.blogs.water.gkhs.net
+  omnyom.com
+  www.cleartextcontent.co.uk
+  herodiaries.foip.me
+  themonthlymoon.com
+  idlespeculation.foip.me
+  www.iglooteas.com
+  blogs.istic.network *.blogs.istic.network;
+  return 301 https://$host$request_uri;
+  include /etc/nginx/snippets/errors.conf;
+  client_max_body_size 32M;
+  add_header X-WhyAmI "wordpress redirect";
 }
 
 server {
-    listen              80;
-    server_name live.aquarionics.com;
-    add_header X-WhyAmI "wordpress aquarionics live";
+  listen 443 ssl proxy_protocol;
+  listen 80;
+  server_name herodiaries.blogs.water.gkhs.net
+  add_header X-WhyAmI "wordpress redirect ssl";
+  return 301 $scheme://herodiaries.foip.me;
+}
 
-    location    / {
-        proxy_pass http://container-wordpress;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host www.aquarionics.com;
-        proxy_set_header X-Forwarded-For $remote_addr;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-    include /etc/nginx/snippets/errors.conf;
-    client_max_body_size 32M;
+server {
+  listen 80;
+  server_name live.aquarionics.com;
+  add_header X-WhyAmI "wordpress aquarionics live";
+
+  location / {
+    proxy_pass http://container-wordpress;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host www.aquarionics.com;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  include /etc/nginx/snippets/errors.conf;
+  client_max_body_size 32M;
 }
 
 
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
-    add_header X-WhyAmI wordpress;
-    add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
-    include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me www.iglooteas.com;
+  add_header X-WhyAmI wordpress;
+  add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
+  include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
-    error_log  /var/log/nginx/wordpress.error.log;
-    access_log /var/log/nginx/wordpress.access.log;
+  error_log /var/log/nginx/wordpress.error.log;
+  access_log /var/log/nginx/wordpress.access.log;
 
-  location    / {
+  location / {
     proxy_pass http://container-wordpress;
     proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
   }
   include /etc/nginx/snippets/errors.conf;
-   client_max_body_size 32M;
+  client_max_body_size 32M;
 }
 
 
-
 server {
-    listen 443 ssl proxy_protocol;
-    listen [::]:443 ssl proxy_protocol;
-    server_name blogs.istic.network *.blogs.istic.network
-    add_header X-WhyAmI "wordpress blogs.istic.net";
-    include /etc/nginx/snippets/ssl/istic_ssl.conf;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name blogs.istic.network *.blogs.istic.network
+  add_header X-WhyAmI "wordpress blogs.istic.net";
+  include /etc/nginx/snippets/ssl/istic_ssl.conf;
 
-    error_log  /var/log/nginx/wordpress.error.log;
-    access_log /var/log/nginx/wordpress.access.log;
+  error_log /var/log/nginx/wordpress.error.log;
+  access_log /var/log/nginx/wordpress.access.log;
 
-  location    / {
+  location / {
     proxy_pass http://container-wordpress;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
@@ -100,7 +102,19 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
   include /etc/nginx/snippets/errors.conf;
-   client_max_body_size 32M;
+  client_max_body_size 32M;
 }
 
 
+#### Feeds
+server {
+  server_name feeds.aquarionics.com;
+  charset UTF-8;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  root /var/www/;
+  include /etc/nginx/snippets/errors.conf;
+  include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
+  add_header X-WhyAmI "feeds redirect";
+  return 301 https://www.aquarionics.com/feed/;
+}

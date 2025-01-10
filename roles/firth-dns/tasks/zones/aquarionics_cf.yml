@@ -281,7 +281,7 @@
             api_token: "{{ cloudflare_api_key }}"
             type: CNAME
             ttl: "3600"
-            value: y0bpo.feedproxy.ghs.google.com
+            value: "{{ loadbalancer_domain }}"
 
         - name: (CF) Mail.aquarionics.com. - CNAME
           community.general.cloudflare_dns:

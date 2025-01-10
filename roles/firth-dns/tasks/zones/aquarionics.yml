@@ -231,7 +231,7 @@
         aws_profile: aqcom
         type: CNAME
         ttl: "3600"
-        value: y0bpo.feedproxy.ghs.google.com
+        value: "{{ loadbalancer_domain }}"
 
     - name: Mail.aquarionics.com. - CNAME
       amazon.aws.route53:

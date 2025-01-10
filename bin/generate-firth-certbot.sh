@@ -6,6 +6,7 @@ istic.net,\
 stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,\
 panopticon.aquarionics.com,thalium.aquarionics.com,wiki.aquarionics.com,vtt.aquarionics.com,\
 dailyphoto.aquarionics.com,live.dailyphoto.aquarionics.com,\
+feeds.aquarionics.com,\
 wywo.aquarionics.com,\
 factionfiction.net,www.factionfiction.net,\
 idlespeculation.foip.me,\
