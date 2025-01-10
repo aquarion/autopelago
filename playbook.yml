@@ -89,7 +89,6 @@
   become: true
   roles:
     - github-cli
-    - { role: firth-nginx, tags: nginx }
     - water-gkhs-nginx
     - atoll-nginx
     - water-gkhs-exim
