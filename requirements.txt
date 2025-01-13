@@ -2,7 +2,7 @@ ansible==10.4.*
 ansible-lint==24.*
 boto==2.*
 boto3==1.*
-poetry==1.*
+poetry==2.*
 poetry-plugin-export==1.*
 virtualenv==20.*
 PyMySQL==1.1.1
