@@ -30,6 +30,7 @@
           community.general.cloudflare_dns:
             state: present
             zone: aquarionics.com
+            proxied: true
             record: "@"
             api_token: "{{ cloudflare_api_key }}"
             type: A
@@ -40,6 +41,7 @@
           community.general.cloudflare_dns:
             state: present
             zone: aquarionics.com
+            proxied: true
             record: "@"
             api_token: "{{ cloudflare_api_key }}"
             type: AAAA
@@ -282,6 +284,7 @@
             type: CNAME
             ttl: "3600"
             value: "{{ loadbalancer_domain }}"
+            proxied: true
 
         - name: (CF) Mail.aquarionics.com. - CNAME
           community.general.cloudflare_dns:
@@ -302,6 +305,7 @@
             type: A
             ttl: "86400"
             value: "{{ loadbalancer_ip }}"
+            proxied: true
 
         - name: (CF) Old.aquarionics.com. - A
           community.general.cloudflare_dns:
@@ -312,6 +316,7 @@
             type: A
             ttl: "86400"
             value: "{{ loadbalancer_ip }}"
+            proxied: true
 
         - name: (CF) Old.aquarionics.com. - AAAA
           community.general.cloudflare_dns:
@@ -322,6 +327,7 @@
             type: AAAA
             ttl: "300"
             value: "{{ ansible_default_ipv6.address }}"
+            proxied: true
 
         - name: (CF) Tumblr.aquarionics.com. - CNAME
           community.general.cloudflare_dns:
@@ -332,6 +338,7 @@
             type: CNAME
             ttl: "3600"
             value: domains.tumblr.com
+            proxied: true
 
         - name: (CF) Wiki.aquarionics.com. - AAAA
           community.general.cloudflare_dns:
@@ -341,17 +348,18 @@
             api_token: "{{ cloudflare_api_key }}"
             type: AAAA
             ttl: "300"
-            value: "{{ ansible_default_ipv6.address }}"
+            value: "publish-main.obsidian.md"
 
         - name: (CF) Wiki.aquarionics.com. - CNAME
           community.general.cloudflare_dns:
-            state: absent
+            state: present
             zone: aquarionics.com
             record: wiki
             api_token: "{{ cloudflare_api_key }}"
             type: CNAME
             ttl: "86400"
-            value: aquarion.github.io
+            value: "publish-main.obsidian.md"
+            proxied: true
 
         - name: (CF) Wiki.aquarionics.com. - A
           community.general.cloudflare_dns:
@@ -361,7 +369,7 @@
             zone: aquarionics.com
             record: wiki
             value: "{{ loadbalancer_ip }}"
-            state: present
+            state: absent
 
         - name: (CF) Www.aquarionics.com. - A
           community.general.cloudflare_dns:
@@ -372,6 +380,7 @@
             type: A
             ttl: "300"
             value: "{{ loadbalancer_ip }}"
+            proxied: true
 
         - name: (CF) Wywo.aquarionics.com. - A
           community.general.cloudflare_dns:
@@ -382,6 +391,7 @@
             type: A
             ttl: "300"
             value: "{{ loadbalancer_ip }}"
+            proxied: true
 
         - name: (CF) Vis.aquarionics.com. - A
           community.general.cloudflare_dns:
@@ -392,6 +402,7 @@
             type: A
             ttl: "300"
             value: "{{ loadbalancer_ip }}"
+            proxied: true
           tags:
             - streamsite
 
@@ -404,6 +415,7 @@
             type: A
             ttl: "300"
             value: "{{ loadbalancer_ip }}"
+            proxied: true
 
         - name: (CF) VTT.aquarionics.com. - A
           community.general.cloudflare_dns:
