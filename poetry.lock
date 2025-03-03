@@ -16,13 +16,13 @@ ansible-core = ">=2.17.7,<2.18.0"
 
 [[package]]
 name = "ansible-compat"
-version = "25.1.1"
+version = "25.1.4"
 description = "Ansible compatibility goodies"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "ansible_compat-25.1.1-py3-none-any.whl", hash = "sha256:76147025c82c92433feb8317d3fa513026f557dc1b64abd0b2565ffa09a57725"},
-    {file = "ansible_compat-25.1.1.tar.gz", hash = "sha256:b4e4609bb9b91588758be4d26ff25ff46d7ce83e6b8f2cc58cf77d736ec1f1ab"},
+    {file = "ansible_compat-25.1.4-py3-none-any.whl", hash = "sha256:25acf1bb49d8072e2737fc109fa9aa981ca9fed17b075af3c812635dad48ba2a"},
+    {file = "ansible_compat-25.1.4.tar.gz", hash = "sha256:ebf8620021dd25c2d7c3e8e9382efbe7328db58ea396cbbe688ebef80dc8f8ae"},
 ]
 
 [package.dependencies]
@@ -56,17 +56,17 @@ resolvelib = ">=0.5.3,<1.1.0"
 
 [[package]]
 name = "ansible-lint"
-version = "25.1.1"
+version = "25.1.3"
 description = "Checks playbooks for practices and behavior that could potentially be improved"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "ansible_lint-25.1.1-py3-none-any.whl", hash = "sha256:a417c04a94640302f73ad5b96ba3f09a77b24861fd5441d04245549cf3dc2ac9"},
-    {file = "ansible_lint-25.1.1.tar.gz", hash = "sha256:52ded593ba69831bf8f2882fea9118f96657f115e75904cac9afe1ea931bf0ab"},
+    {file = "ansible_lint-25.1.3-py3-none-any.whl", hash = "sha256:b68b2149423246ec6369be86df2b79e3555b2b71507e4f7915671ec77381fa2b"},
+    {file = "ansible_lint-25.1.3.tar.gz", hash = "sha256:ff92b31c83a2366381907e21c9a9d4de57f0cd7574e9943ea1b7e32b371f31a2"},
 ]
 
 [package.dependencies]
-ansible-compat = ">=25.1.0"
+ansible-compat = ">=25.1.3"
 ansible-core = ">=2.16.0"
 black = ">=24.3.0"
 filelock = ">=3.8.2"
@@ -75,6 +75,7 @@ jsonschema = ">=4.10.0"
 packaging = ">=22.0"
 pathspec = ">=0.10.3"
 pyyaml = ">=6.0.2"
+referencing = ">=0.36.2"
 "ruamel.yaml" = ">=0.18.5,<0.18.7 || >0.18.7,<0.18.8 || >0.18.8"
 subprocess-tee = ">=0.4.1"
 wcmatch = [
@@ -1489,18 +1490,19 @@ all = ["numpy"]
 
 [[package]]
 name = "referencing"
-version = "0.35.1"
+version = "0.36.2"
 description = "JSON Referencing + Python"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "referencing-0.35.1-py3-none-any.whl", hash = "sha256:eda6d3234d62814d1c64e305c1331c9a3a6132da475ab6382eaa997b21ee75de"},
-    {file = "referencing-0.35.1.tar.gz", hash = "sha256:25b42124a6c8b632a425174f24087783efb348a6f1e0008e63cd4466fedf703c"},
+    {file = "referencing-0.36.2-py3-none-any.whl", hash = "sha256:e8699adbbf8b5c7de96d8ffa0eb5c158b3beafce084968e2ea8bb08c6794dcd0"},
+    {file = "referencing-0.36.2.tar.gz", hash = "sha256:df2e89862cd09deabbdba16944cc3f10feb6b3e6f18e902f7cc25609a34775aa"},
 ]
 
 [package.dependencies]
 attrs = ">=22.2.0"
 rpds-py = ">=0.7.0"
+typing-extensions = {version = ">=4.4.0", markers = "python_version < \"3.13\""}
 
 [[package]]
 name = "requests"
