@@ -14,6 +14,7 @@
       - mariadb-server
       - moreutils
       - python3-mysqldb
+      - python3-pymysql
   tags: mysql_user
 
 # Set root password

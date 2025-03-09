@@ -45,6 +45,7 @@
     - mariadb-server
     - redis-server
     - npm
+    - python3-pymysql
   tags:
     - stream-delta
     - dependencies
@@ -177,6 +178,8 @@
     state: present
     login_user: root
     login_password: "{{ mysql_root_password }}"
+    column_case_sensitive: true
+
   tags:
     - stream-delta
     - mysql
