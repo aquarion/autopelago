@@ -8,5 +8,7 @@ for host in firth cenote atoll;
     echo "Updating autopelago on $host.istic.systems";
     ssh -A $host.istic.systems cd code/autopelago/bin/ && git pull;
     echo "Updating certbot on $host.istic.systems";
-    ssh $host.istic.systems code/autopelago/bin/generate-$host-certbot.sh;
+    ssh $host.istic.systems code/autopelago/bin/generate-$host-certbot.sh &
 done
+
+wait
