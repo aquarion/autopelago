@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo certbot -n -t certonly --expand --nginx  --deploy-hook "service dovecot restart" --cert-name firth.water.gkhs.net \
---domains firth.water.gkhs.net,\
+ --domains firth.water.gkhs.net,\
 istic.net,\
 stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,\
 panopticon.aquarionics.com,thalium.aquarionics.com,vtt.aquarionics.com,\
@@ -36,8 +36,8 @@ deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk
 
 # sudo certbot -n -t certonly --expand --nginx --cert-name nicholasavenell.com --domains nicholasavenell.com,www.nicholasavenell.com,nicholasavenell.net,www.nicholasavenell.net
 
-sudo certbot certonly --cert-name socksandpuppets.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d socksandpuppets.com,*.socksandpuppets.com --preferred-challenges dns-01
-sudo certbot certonly --cert-name aquarionics.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d aquarionics.com,*.aquarionics.com --preferred-challenges dns-01
+sudo certbot certonly --non-interactive --cert-name socksandpuppets.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d socksandpuppets.com,*.socksandpuppets.com --preferred-challenges dns-01
+sudo certbot certonly --non-interactive --cert-name aquarionics.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d aquarionics.com,*.aquarionics.com --preferred-challenges dns-01
 
 ## Istic wildcards
 
