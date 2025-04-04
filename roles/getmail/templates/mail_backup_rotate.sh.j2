@@ -20,5 +20,8 @@ if [ -f $BACKUP_DIR/{{ item.profile }}-backup.mbox ]; then
     #echo "Renamed $BACKUP_DIR/{{ item.profile }}-backup.mbox to $BACKUP_DIR/{{ item.profile }}-backup.mbox.$DATE"
     touch $BACKUP_DIR/{{ item.profile }}-backup.mbox
   fi
+  pushd $BACKUP_DIR/{{ item.profile }}
+  bzip2 -q *
+  popd
 fi
 {% endfor %}
