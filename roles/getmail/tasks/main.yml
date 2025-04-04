@@ -66,3 +66,26 @@
     cron_file: mail-backup
   tags:
     - getmail
+
+- name: Template for monthly mail archive script
+  template:
+    src: mail_backup_rotate.sh.j2
+    dest: "{{ getmail_config_dir }}/mail_backup_rotate.sh"
+    owner: "{{ getmail_user }}"
+    group: "{{ getmail_user }}"
+    mode: "0700"
+    backup: yes
+  tags:
+    - getmail
+
+- name: Setup monthly mail archive script cron job
+  ansible.builtin.cron:
+    name: mail-backup-rotate
+    day: "1"
+    hour: "0"
+    minute: "46"
+    user: "{{ getmail_user }}"
+    job: "{{ getmail_config_dir }}/mail_backup_rotate.sh"
+    cron_file: mail-backup-rotate
+  tags:
+    - getmail

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+DATE=`date +%Y-%m -d "-1 day"`
+BACKUP_DIR="{{ getmail_backup_dir }}"
+if [ ! -d $BACKUP_DIR ]; then
+  echo "Error: Backup directory $BACKUP_DIR does not exist."
+  exit 1
+fi
+
+
+{% for item in getmail_accounts %}
+# Archive the mbox file for {{ item.profile }}
+mkdir -p -m 700 $BACKUP_DIR/{{ item.profile }}
+if [ -f $BACKUP_DIR/{{ item.profile }}-backup.mbox ]; then
+  mv -n $BACKUP_DIR/{{ item.profile }}-backup.mbox $BACKUP_DIR/{{ item.profile }}-backup.mbox.$DATE
+  if [[ $? -ne 0 ]]; then
+    echo "Error: Failed to rename $BACKUP_DIR/{{ item.profile }}-backup.mbox to $BACKUP_DIR/{{ item.profile }}-backup.mbox.$DATE"
+    exit 1
+  else
+    #echo "Renamed $BACKUP_DIR/{{ item.profile }}-backup.mbox to $BACKUP_DIR/{{ item.profile }}-backup.mbox.$DATE"
+    touch $BACKUP_DIR/{{ item.profile }}-backup.mbox
+  fi
+fi
+{% endfor %}
