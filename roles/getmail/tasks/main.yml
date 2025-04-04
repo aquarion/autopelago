@@ -89,3 +89,23 @@
     cron_file: mail-backup-rotate
   tags:
     - getmail
+
+- name: Install awscli
+  community.general.pipx:
+    name: awscli
+    state: present
+  become: true
+  become_user: "{{ getmail_user }}"
+  tags:
+    - getmail
+
+- name: Setup AWS S3 bucket archive for mail backups
+  ansible.builtin.cron:
+    name: mail-backup-offsite
+    hour: "3"
+    minute: "12"
+    user: "{{ getmail_user }}"
+    job: "/home/{{ getmail_user }}/.local/bin/aws s3 sync {{ getmail_backup_dir }} s3://{{ getmail_s3_bucket }}/ --quiet --profile={{ getmail_s3_profile }}"
+    cron_file: mail-backup-offsite
+  tags:
+    - getmail
