@@ -1,3 +1,30 @@
+- name: Install getmail
+  ansible.builtin.package:
+    name: getmail6
+    state: present
+  tags:
+    - getmail
+
+- name: Create getmail configuration directory
+  file:
+    path: "{{ getmail_config_dir }}"
+    state: directory
+    owner: "{{ getmail_user }}"
+    group: "{{ getmail_user }}"
+    mode: "0700"
+  tags:
+    - getmail
+
+- name: Create getmail backup directory
+  file:
+    path: "{{ getmail_backup_dir }}"
+    state: directory
+    owner: "{{ getmail_user }}"
+    group: "{{ getmail_user }}"
+    mode: "0700"
+  tags:
+    - getmail
+
 - name: Template for getmail configuration
   template:
     src: getmail.conf.j2
@@ -18,7 +45,7 @@
   tags:
     - getmail
 
-- name: Template for shell script
+- name: Template for getmail shell script
   template:
     src: mail_backup.sh.j2
     dest: "{{ getmail_config_dir }}/mail_backup.sh"
