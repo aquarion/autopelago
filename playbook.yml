@@ -74,6 +74,7 @@
     - b2-backup
     - github-cli
     - jellyfin
+    - getmail
 
 - name: Hello Firth & Cenote
   hosts: firth:cenote

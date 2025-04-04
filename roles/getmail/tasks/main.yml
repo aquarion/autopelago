@@ -1,0 +1,41 @@
+- name: Template for getmail configuration
+  template:
+    src: getmail.conf.j2
+    dest: "{{ getmail_config_dir }}/getmail-{{ item.profile }}.rc"
+    owner: "{{ getmail_user }}"
+    group: "{{ getmail_user }}"
+    mode: "0600"
+    backup: yes
+    force: yes
+  vars:
+    profile: "{{ item.profile }}"
+    username: "{{ item.username }}"
+    password: "{{ item.password }}"
+    server: "{{ item.server }}"
+  loop: "{{ getmail_accounts }}"
+  loop_control:
+    label: "{{ item.profile }}"
+  tags:
+    - getmail
+
+- name: Template for shell script
+  template:
+    src: mail_backup.sh.j2
+    dest: "{{ getmail_config_dir }}/mail_backup.sh"
+    owner: "{{ getmail_user }}"
+    group: "{{ getmail_user }}"
+    mode: "0700"
+    backup: yes
+  tags:
+    - getmail
+
+- name: Setup getmail cron job
+  ansible.builtin.cron:
+    name: mail-backup
+    hour: "*"
+    minute: "46"
+    user: "{{ getmail_user }}"
+    job: "{{ getmail_config_dir }}/mail_backup.sh"
+    cron_file: mail-backup
+  tags:
+    - getmail

@@ -1,0 +1,19 @@
+[retriever]
+type = SimpleIMAPSSLRetriever
+server = {{ server }}
+username = {{ username }}
+password = {{ password }}
+mailboxes = ("INBOX", "[Gmail]/All Mail")
+
+[destination]
+type = Mboxrd
+path = {{ getmail_backup_dir }}/{{ profile }}-backup.mbox
+
+[options]
+# print messages about each action (verbose = 2)
+# Other options:
+# 0 prints only warnings and errors
+# 1 prints messages about retrieving and deleting messages only
+verbose = 2
+message_log = {{ getmail_backup_dir }}/{{ profile }}-backup.log
+read_all = False
