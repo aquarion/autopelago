@@ -1,3 +1,4 @@
+---
 - name: Install getmail
   ansible.builtin.package:
     name: getmail6
@@ -6,7 +7,7 @@
     - getmail
 
 - name: Create getmail configuration directory
-  file:
+  ansible.builtin.file:
     path: "{{ getmail_config_dir }}"
     state: directory
     owner: "{{ getmail_user }}"
@@ -16,7 +17,7 @@
     - getmail
 
 - name: Create getmail backup directory
-  file:
+  ansible.builtin.file:
     path: "{{ getmail_backup_dir }}"
     state: directory
     owner: "{{ getmail_user }}"
@@ -26,14 +27,14 @@
     - getmail
 
 - name: Template for getmail configuration
-  template:
+  ansible.builtin.template:
     src: getmail.conf.j2
     dest: "{{ getmail_config_dir }}/getmail-{{ item.profile }}.rc"
     owner: "{{ getmail_user }}"
     group: "{{ getmail_user }}"
     mode: "0600"
-    backup: yes
-    force: yes
+    backup: true
+    force: true
   vars:
     profile: "{{ item.profile }}"
     username: "{{ item.username }}"
@@ -46,13 +47,13 @@
     - getmail
 
 - name: Template for getmail shell script
-  template:
+  ansible.builtin.template:
     src: mail_backup.sh.j2
     dest: "{{ getmail_config_dir }}/mail_backup.sh"
     owner: "{{ getmail_user }}"
     group: "{{ getmail_user }}"
     mode: "0700"
-    backup: yes
+    backup: true
   tags:
     - getmail
 
@@ -68,13 +69,13 @@
     - getmail
 
 - name: Template for monthly mail archive script
-  template:
+  ansible.builtin.template:
     src: mail_backup_rotate.sh.j2
     dest: "{{ getmail_config_dir }}/mail_backup_rotate.sh"
     owner: "{{ getmail_user }}"
     group: "{{ getmail_user }}"
     mode: "0700"
-    backup: yes
+    backup: true
   tags:
     - getmail
 
