@@ -3,3 +3,4 @@ galaxy-roles
 certbot.log
 letsencrypt.log
 .direnv
+.DS_Store
