@@ -8,7 +8,7 @@ jobs:
     env:
       ANSIBLE_VAULT_PASSWORD: ${{ secrets.VaultPassword }}
     steps:
-    # Important: This sets up your GITHUB_WORKSPACE environment variable
+      # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v4
         # We drop the ansible.cfg file to unset the vault_password_file option
       - name: Drop ansible.cfg file
