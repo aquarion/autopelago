@@ -4,3 +4,4 @@ certbot.log
 letsencrypt.log
 .direnv
 .DS_Store
+super-linter-output/super-linter-summary.md
