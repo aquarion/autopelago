@@ -18,14 +18,14 @@
     - name: Configure istic error pages
       ansible.builtin.template:
         src: "{{ item }}"
-        dest: /var/www/errors/{{ item | basename }}
+        dest: /var/www/errors/{{ item.rstrip(".j2") | basename }}
         mode: "0644"
       with_fileglob:
         - templates/errors/*
 
     - name: Configure web base page
       ansible.builtin.template:
-        src: errors/404_host.html
+        src: errors/404_host.html.j2
         dest: /var/www/html/index.html
         mode: "0644"
 
@@ -36,7 +36,7 @@
 
     - name: Configure nginx error pages
       ansible.builtin.template:
-        src: config/errors_nginx.conf
+        src: config/errors_nginx.conf.j2
         dest: /etc/nginx/snippets/errors.conf
         mode: "0644"
       when: nginx_installed.stat.exists
@@ -50,7 +50,7 @@
 
     - name: Configure apache error pages
       ansible.builtin.template:
-        src: config/errors_apache.conf
+        src: config/errors_apache.conf.j2
         dest: /etc/apache2/conf-enabled/errors.conf
         mode: "0644"
       when: apache_installed.stat.exists
