@@ -7,13 +7,11 @@ TARGET=roles
 clear
 ansible-lint
 
-inotifywait -m -r -e modify -e create $TARGET --format="%f" \
-        | while read FILENAME
-                do
-                        clear
-                        echo Detected $FILENAME
-                        ansible-lint --write playbook.yml
-                        # mv "$TARGET/$FILENAME" "$PROCESSED/$FILENAME"
-                        # gzip "$PROCESSED/$FILENAME"
-                done
-               
+inotifywait -m -r -e modify -e create $TARGET --format="%f" |
+	while read FILENAME; do
+		clear
+		echo Detected $FILENAME
+		ansible-lint --write playbook.yml
+		# mv "$TARGET/$FILENAME" "$PROCESSED/$FILENAME"
+		# gzip "$PROCESSED/$FILENAME"
+	done

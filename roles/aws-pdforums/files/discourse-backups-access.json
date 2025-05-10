@@ -4,16 +4,16 @@
     {
       "Effect": "Allow",
       "Action": [
-               "s3:List*",
-               "s3:Get*",
-               "s3:AbortMultipartUpload",
-               "s3:DeleteObject",
-               "s3:PutObject",
-               "s3:PutObjectAcl",
-               "s3:PutObjectVersionAcl",
-               "s3:PutLifecycleConfiguration",
-               "s3:CreateBucket",
-               "s3:*"
+        "s3:List*",
+        "s3:Get*",
+        "s3:AbortMultipartUpload",
+        "s3:DeleteObject",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:PutObjectVersionAcl",
+        "s3:PutLifecycleConfiguration",
+        "s3:CreateBucket",
+        "s3:*"
       ],
       "Resource": [
         "arn:aws:s3:::pdforums-backups/*",
@@ -21,12 +21,9 @@
       ]
     },
     {
-       "Effect": "Allow",
-       "Action": [
-           "s3:ListAllMyBuckets",
-           "s3:HeadBucket"
-       ],
-       "Resource": "*"
+      "Effect": "Allow",
+      "Action": ["s3:ListAllMyBuckets", "s3:HeadBucket"],
+      "Resource": "*"
     }
   ]
 }

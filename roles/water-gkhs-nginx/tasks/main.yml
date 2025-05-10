@@ -62,7 +62,8 @@
 
     - name: Update /etc/nginx/snippets/cloudflare-ips.nginx.conf
       ansible.builtin.copy:
-        content: "# Ansible Managed\n{{ (ipv4list['content'] | b64decode + '\n' + ipv6list['content'] | b64decode) | regex_replace('([0-9a-f.:/]+)', 'allow \\1;')
+        content:
+          "# Ansible Managed\n{{ (ipv4list['content'] | b64decode + '\n' + ipv6list['content'] | b64decode) | regex_replace('([0-9a-f.:/]+)', 'allow \\1;')
           + '\nallow 127.0.0.1;\nallow ::1;\ndeny all;\n' }}"
         dest: /etc/nginx/snippets/cloudflare-ips.nginx.conf
         force: true

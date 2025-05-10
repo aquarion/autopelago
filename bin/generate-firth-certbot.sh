@@ -1,32 +1,7 @@
 #!/bin/bash
 
-sudo certbot -n -t certonly --expand --nginx  --deploy-hook "service dovecot restart" --cert-name firth.water.gkhs.net \
- --domains firth.water.gkhs.net,\
-istic.net,\
-stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,\
-panopticon.aquarionics.com,thalium.aquarionics.com,vtt.aquarionics.com,\
-dailyphoto.aquarionics.com,live.dailyphoto.aquarionics.com,\
-feeds.aquarionics.com,\
-wywo.aquarionics.com,\
-factionfiction.net,www.factionfiction.net,\
-idlespeculation.foip.me,\
-herodiaries.foip.me,\
-sevenmirrors.foip.me,\
-istic.co,istic.systems,istic.network,\
-casu.istic.net,wildfeathers.casu.istic.net,pdforums.casu.istic.net,\
-themonthlymoon.com,\
-ludo.istic.co,\
-imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,\
-live.art.istic.net,imperial.istic.net,material.istic.net,\
-warehousebasement.com,www.warehousebasement.com,\
-dagon.church,live.dagon.church,wiki.dagon.church,\
-mechan.istic.net,\
-larp.me,www.larp.me,\
-optim.istic.net,\
-www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
-www.iglooteas.com,\
-www.deathuntodarkness.org,\
-deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk
+sudo certbot -n -t certonly --expand --nginx --deploy-hook "service dovecot restart" --cert-name firth.water.gkhs.net \
+	--domains firth.water.gkhs.net,istic.net,stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,thalium.aquarionics.com,vtt.aquarionics.com,dailyphoto.aquarionics.com,live.dailyphoto.aquarionics.com,feeds.aquarionics.com,wywo.aquarionics.com,factionfiction.net,www.factionfiction.net,idlespeculation.foip.me,herodiaries.foip.me,sevenmirrors.foip.me,istic.co,istic.systems,istic.network,casu.istic.net,wildfeathers.casu.istic.net,pdforums.casu.istic.net,themonthlymoon.com,ludo.istic.co,imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,live.art.istic.net,imperial.istic.net,material.istic.net,warehousebasement.com,www.warehousebasement.com,dagon.church,live.dagon.church,wiki.dagon.church,mechan.istic.net,larp.me,www.larp.me,optim.istic.net,www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,www.iglooteas.com,www.deathuntodarkness.org,deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk
 
 #forums.profounddecisions.co.uk
 # www.iglooteas.com,\
