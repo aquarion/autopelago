@@ -389,3 +389,9 @@
         type: TXT
         ttl: "300"
         value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
+
+  rescue:
+    - debug:
+        msg: "AWS tasks failed"
+    - command:
+        cmd: "false"

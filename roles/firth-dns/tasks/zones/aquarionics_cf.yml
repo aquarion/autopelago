@@ -18,6 +18,11 @@
       tags:
         - cloudflare
         - aquarionics
+  rescue:
+    - debug:
+        msg: "Cloudflare tasks failed"
+    - command:
+        cmd: "false"
 
     - name: Aquarionics Cloudflare Tasks
       tags:
@@ -438,3 +443,8 @@
             type: TXT
             ttl: "300"
             value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
+  rescue:
+    - debug:
+        msg: "Cloudflare tasks failed"
+    - command:
+        cmd: "false"

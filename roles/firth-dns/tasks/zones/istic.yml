@@ -582,3 +582,9 @@
       tags:
         - istic_net
         - istic_sys
+
+  rescue:
+    - debug:
+        msg: "AWS tasks failed"
+    - command:
+        cmd: "false"

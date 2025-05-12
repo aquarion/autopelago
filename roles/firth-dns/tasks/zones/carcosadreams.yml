@@ -363,3 +363,9 @@
         value: spfmx1.domainkey.freshemail.io
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
+
+  rescue:
+    - debug:
+        msg: "AWS tasks failed"
+    - command:
+        cmd: "false"
