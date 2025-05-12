@@ -6,3 +6,5 @@ letsencrypt.log
 .DS_Store
 super-linter-output
 results.sarif
+.ansible
+*.retry
