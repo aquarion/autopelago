@@ -365,7 +365,9 @@
         aws_secret_key: "{{ istic_aws_secret }}"
 
   rescue:
-    - debug:
+    - name: "Failure warning"
+      ansible.builtin.debug:
         msg: "AWS tasks failed"
-    - command:
+    - name: "Failure execution"
+      ansible.builtin.command:
         cmd: "false"

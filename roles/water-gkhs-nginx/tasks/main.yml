@@ -73,9 +73,11 @@
         remote_src: true
       notify: Reload nginx
   rescue:
-    - debug:
+    - name: "Failure warning"
+      ansible.builtin.debug:
         msg: "AWS tasks failed"
-    - command:
+    - name: "Failure execution"
+      ansible.builtin.command:
         cmd: "false"
 
 - name: Configure config overrides
