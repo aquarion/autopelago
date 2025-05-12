@@ -16,7 +16,7 @@ while getopts d:hv flag; do
 done
 
 if [[ ! -z $SHOWHELP ]]; then
-	echo $0 [-d DIRECTORY]
+	echo "$0" [-d DIRECTORY]
 	echo "Sync non-TV shows to their own libraries"
 	echo "Usage:"
 	echo " -h - This"
@@ -47,11 +47,11 @@ for dir in $MEDIAHOME/*; do
 		continue
 	fi
 	debug_out "Process $dir"
-	find $dir -maxdepth 1 -mindepth 1 -type d | while read showpath; do
+	find "$dir" -maxdepth 1 -mindepth 1 -type d | while read showpath; do
 		show=$(basename "$showpath")
 		# debug_out "   - Is there a " $show " in TV?";
 		if [[ -d "$MEDIAHOME/TV/$show" ]]; then
-			debug_out "   - Syncing " TV/$show " -> " $dir/$show
+			debug_out "   - Syncing " TV/"$show" " -> " "$dir"/"$show"
 			rsync -aWhv --progress --remove-source-files "$MEDIAHOME/TV/$show" "$dir/"
 			find "$MEDIAHOME/TV/$show" -type d -exec rmdir --ignore-fail-on-non-empty "{}" \;
 			# else

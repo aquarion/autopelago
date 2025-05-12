@@ -72,6 +72,11 @@
         group: root
         remote_src: true
       notify: Reload nginx
+  rescue:
+    - debug:
+        msg: "AWS tasks failed"
+    - command:
+        cmd: "false"
 
 - name: Configure config overrides
   ansible.builtin.template:

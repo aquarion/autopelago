@@ -183,3 +183,9 @@
         regex: ^user default
       notify:
         - Reload Redis ACL
+
+  rescue:
+    - debug:
+        msg: "Redis tasks failed"
+    - command:
+        cmd: "false"

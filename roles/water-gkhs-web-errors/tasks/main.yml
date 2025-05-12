@@ -56,3 +56,9 @@
       when: apache_installed.stat.exists
       notify:
         - restart apache
+
+  rescue:
+    - debug:
+        msg: "WWW tasks failed"
+    - command:
+        cmd: "false"

@@ -1,14 +1,14 @@
 #!/bin/bash
 # {{ ansible_managed }}
 
-LOCKFILE="/var/lock/$(basename $0)"
+LOCKFILE="/var/lock/$(basename "$0")"
 LOCKFD=99
 
 # PRIVATE
-_lock() { flock -$1 $LOCKFD; }
+_lock() { flock -"$1" $LOCKFD; }
 _no_more_locking() {
 	_lock u
-	_lock xn && rm -f $LOCKFILE
+	_lock xn && rm -f "$LOCKFILE"
 }
 _prepare_locking() {
 	eval "exec $LOCKFD>\"$LOCKFILE\""
@@ -40,7 +40,7 @@ WATCHFILE=$HOME/.filebot_inotify.fifo
 if [[ -p $WATCHFILE ]]; then
 	true
 else
-	mkfifo $WATCHFILE || exit 5
+	mkfifo "$WATCHFILE" || exit 5
 fi
 
 # Close STDOUT file descriptor
@@ -49,17 +49,17 @@ exec 1<&-
 exec 2<&-
 
 # Open STDOUT as $LOG_FILE file for read and write.
-exec 1<>$LOGFILE
+exec 1<>"$LOGFILE"
 
 # Redirect STDERR to STDOUT
 exec 2>&1
 
-inotifywait -drq -o $WATCHFILE -e create -e moved_to $WATCH_PATH
+inotifywait -drq -o "$WATCHFILE" -e create -e moved_to "$WATCH_PATH"
 
 trap "true" PIPE
-cat $WATCHFILE | while read path action file; do
-	echo Saw $action on $path$file
+cat "$WATCHFILE" | while read path action file; do
+	echo Saw "$action" on "$path""$file"
 	#echo "Saw $action in $path";
-	$HOME/bin/sortitaaht.sh $path$file
+	"$HOME"/bin/sortitaaht.sh "$path""$file"
 done
 trap PIPE

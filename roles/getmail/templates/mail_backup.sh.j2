@@ -18,5 +18,5 @@ trap "{ rm -f $LOCKFILE; exit 0; }" EXIT
 touch $LOCKFILE
 
 {% for item in getmail_accounts %}
-getmail -qr {{ getmail_config_dir }}/getmail-{{ item.profile }}.rc
+getmail -qr "{{ getmail_config_dir }}/getmail-{{ item.profile }}.rc"
 {% endfor %}
