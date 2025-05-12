@@ -18,18 +18,18 @@ sudo certbot certonly --non-interactive --cert-name aquarionics.com --dns-cloudf
 
 export AWS_PROFILE=istic-r53
 
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.net --dns-route53 -d *.istic.net -d *.istic.network -d *.istic.systems -d *.istic.systems
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.dev --dns-route53 -d *.istic.dev
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name carcosadreams.com --dns-route53 -d *.carcosadreams.com -d *.carcosadreams.co.uk
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name ludoistic.com --dns-route53 -d *.ludoistic.com
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.net --dns-route53 -d "*.istic.net" -d "*.istic.network" -d "*.istic.systems" -d "*.istic.systems"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.dev --dns-route53 -d "*.istic.dev"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name carcosadreams.com --dns-route53 -d "*.carcosadreams.com" -d "*.carcosadreams.co.uk"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name ludoistic.com --dns-route53 -d "*.ludoistic.com"
 
 ## AqCom Wildcards
 export AWS_PROFILE=aqcom
 
-sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name nicholasavenell.com -d *.nicholasavenell.com -d *.nicholasavenell.net -d nicholasavenell.com -d nicholasavenell.net
-sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name bromioscreations.com -d *.bromioscreations.com
-sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name foip.me -d *.foip.me
-sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name hubris.house -d hubris.house -d *.hubris.house
+sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name nicholasavenell.com -d "*.nicholasavenell.com" -d "*.nicholasavenell.net" -d nicholasavenell.com -d nicholasavenell.net
+sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name bromioscreations.com -d "*.bromioscreations.com"
+sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name foip.me -d "*.foip.me"
+sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name hubris.house -d hubris.house -d "*.hubris.house"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --nginx --cert-name forums.profounddecisions.co.uk -d forums.profounddecisions.co.uk
 
 sudo chown -R root:certbot_access /etc/letsencrypt

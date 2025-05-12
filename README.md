@@ -1,3 +1,5 @@
+# Autolegalo
+
 This is Autolegalo, automation scripts for my server network.
 
 Originally, this was a set of scripts to automate creation and management of a new public server - archipelago.water.gkhs.net - but it's expanded to manage and automate my home media centre (millpond) and some admin tasks for another server - cenote - to keep things aligned.

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-eval $(ssh-agent -s)
+eval "$(ssh-agent -s)"
 ssh-add
 
 for host in firth cenote atoll; do
