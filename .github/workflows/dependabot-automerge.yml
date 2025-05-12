@@ -6,6 +6,13 @@ on:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      statuses: write
+      checks: write
+      actions: write
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - name: Automerge DependaBot PRs

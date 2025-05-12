@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions: read-all
     env:
       ANSIBLE_VAULT_PASSWORD: ${{ secrets.VaultPassword }}
     steps:
