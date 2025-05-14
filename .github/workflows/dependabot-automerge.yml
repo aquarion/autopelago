@@ -11,8 +11,8 @@ jobs:
       pull-requests: write
       statuses: write
       checks: write
-      actions: write
-      packages: write
+      actions: read
+      packages: read
     steps:
       - uses: actions/checkout@v4
       - name: Automerge DependaBot PRs
