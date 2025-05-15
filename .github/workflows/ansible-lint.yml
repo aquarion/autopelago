@@ -2,6 +2,7 @@
 name: Ansible Lint # feel free to pick your own name
 
 on: [push, pull_request]
+permissions: read-all
 jobs:
   lint:
     runs-on: ubuntu-latest
