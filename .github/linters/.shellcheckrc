@@ -1,3 +1,4 @@
 # Allow opening any 'source'd file, even if not specified as input
 external-sources=false
-disable=SC1083
+# Disable warnings that are caused by jinja syntax
+disable=SC1083,SC1054,SC1056
