@@ -4,6 +4,15 @@
     - aws
     - aquarionics_aws
     - aquarionics
+
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
   block:
     - name: Aquarionics.com. - NS
       amazon.aws.route53:
@@ -438,10 +447,3 @@
             type: TXT
             ttl: "300"
             value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
-  rescue:
-    - name: "Failure warning"
-      ansible.builtin.debug:
-        msg: "Cloudflare tasks failed"
-    - name: "Failure execution"
-      ansible.builtin.command:
-        cmd: "false"
