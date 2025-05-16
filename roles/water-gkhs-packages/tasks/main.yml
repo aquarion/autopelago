@@ -183,3 +183,11 @@
         regex: ^user default
       notify:
         - Reload Redis ACL
+
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "Redis tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"

@@ -582,3 +582,11 @@
       tags:
         - istic_net
         - istic_sys
+
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"

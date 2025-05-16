@@ -1,0 +1,7 @@
+---
+# Don't report passed checks in output
+quiet: true
+skip-path:
+  - galaxy-roles
+  - super-linter-output
+  - .ansible

@@ -2,10 +2,10 @@
 
 # {{ ansible_managed }}
 exec 9>/var/lock/media-backup
-if ! flock -n 9  ; then
- echo "B2 media backup is still running";
- exit 1
+if ! flock -n 9; then
+	echo "B2 media backup is still running"
+	exit 1
 fi
 
 export PATH=$PATH:/usr/local/bin
-time b2 sync --delete --replaceNewer {{ media_library }} b2://millpond-media
+time b2 sync --delete --replaceNewer "{{ media_library }}" b2://millpond-media

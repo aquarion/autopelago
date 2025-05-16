@@ -56,3 +56,11 @@
       when: apache_installed.stat.exists
       notify:
         - restart apache
+
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "WWW tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"

@@ -30,6 +30,13 @@
         loop_var: known_host
       become: true
       become_user: stream-delta
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
 
 - name: Install stream-delta dependencies
   ansible.builtin.package:

@@ -4,437 +4,425 @@
     - aws
     - aquarionics_aws
     - aquarionics
+    - cloudflare
   block:
-    - name: Aquarionics.com. - NS
-      amazon.aws.route53:
-        overwrite: true
-        command: create
+    - name: (CF) Aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
         zone: aquarionics.com
-        record: aquarionics.com.
-        aws_profile: aqcom
-        type: NS
-        ttl: "172800"
-        value: carol.ns.cloudflare.com.,phil.ns.cloudflare.com.
-      tags:
-        - cloudflare
-        - aquarionics
+        proxied: true
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "86400"
+        value: "{{ loadbalancer_ip }}"
 
-    - name: Aquarionics Cloudflare Tasks
-      tags:
-        - cloudflare
-        - aquarionics_aws
-        - aquarionics
+    - name: (CF) Aquarionics.com. - AAAA
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        proxied: true
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: AAAA
+        ttl: "300"
+        value: "{{ ansible_default_ipv6.address }}"
+
+    - name: (CF) Aquarionics.com. - MX 1/5
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        api_token: "{{ cloudflare_api_key }}"
+        type: MX
+        ttl: 3600
+        value: ASPMX.L.GOOGLE.COM.
       ignore_errors: true
-      block:
-        - name: (CF) Aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            proxied: true
-            record: "@"
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "86400"
-            value: "{{ loadbalancer_ip }}"
 
-        - name: (CF) Aquarionics.com. - AAAA
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            proxied: true
-            record: "@"
-            api_token: "{{ cloudflare_api_key }}"
-            type: AAAA
-            ttl: "300"
-            value: "{{ ansible_default_ipv6.address }}"
+    - name: (CF) Aquarionics.com. - MX 2/5
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: MX
+        ttl: "300"
+        value: ALT1.ASPMX.L.GOOGLE.COM
+        priority: 5
+      ignore_errors: true
 
-        - name: (CF) Aquarionics.com. - MX 1/5
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            api_token: "{{ cloudflare_api_key }}"
-            type: MX
-            ttl: 3600
-            value: ASPMX.L.GOOGLE.COM.
-          ignore_errors: true
+    - name: (CF) Aquarionics.com. - MX
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: MX
+        ttl: "300"
+        value: ALT2.ASPMX.L.GOOGLE.COM
+        priority: 5
+      ignore_errors: true
 
-        - name: (CF) Aquarionics.com. - MX 2/5
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: "@"
-            api_token: "{{ cloudflare_api_key }}"
-            type: MX
-            ttl: "300"
-            value: ALT1.ASPMX.L.GOOGLE.COM
-            priority: 5
-          ignore_errors: true
+    - name: (CF) Aquarionics.com. - MX
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: MX
+        ttl: "300"
+        value: ALT3.ASPMX.L.GOOGLE.COM
+        priority: 10
+      ignore_errors: true
 
-        - name: (CF) Aquarionics.com. - MX
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: "@"
-            api_token: "{{ cloudflare_api_key }}"
-            type: MX
-            ttl: "300"
-            value: ALT2.ASPMX.L.GOOGLE.COM
-            priority: 5
-          ignore_errors: true
+    - name: (CF) Aquarionics.com. - MX
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: MX
+        ttl: "300"
+        value: ALT4.ASPMX.L.GOOGLE.COM.
+        priority: 10
+      ignore_errors: true
 
-        - name: (CF) Aquarionics.com. - MX
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: "@"
-            api_token: "{{ cloudflare_api_key }}"
-            type: MX
-            ttl: "300"
-            value: ALT3.ASPMX.L.GOOGLE.COM
-            priority: 10
-          ignore_errors: true
+    # - name: (CF) Aquarionics.com. - NS
+    #   community.general.cloudflare_dns:
+    #     state: present
+    #     zone: aquarionics.com
+    #     record: "@"
+    #     account_email: "{{ cloudflare_api_email }}"
+    #     api_token: "{{ cloudflare_api_key }}"
+    #     type: NS
+    #     ttl: "172800"
+    #     value: ns-1103.awsdns-09.org.,ns-1667.awsdns-16.co.uk.,ns-275.awsdns-34.com.,ns-1004.awsdns-61.net.
 
-        - name: (CF) Aquarionics.com. - MX
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: "@"
-            api_token: "{{ cloudflare_api_key }}"
-            type: MX
-            ttl: "300"
-            value: ALT4.ASPMX.L.GOOGLE.COM.
-            priority: 10
-          ignore_errors: true
+    # - name: (CF) Aquarionics.com. - SOA
+    #  community.general.cloudflare_dns:
+    #      overwrite: true
+    #      command: "create"
+    #      zone: "aquarionics.com"
+    #      record: "
+    #      aws_access_key: '{{ aqcom_aws_key }}'
+    # aws_secret_key: '{{ aqcom_aws_secret }}'
+    # type: "SOA"
+    #      ttl: "900"
+    #      value: 'ns-1103.awsdns-09.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
-        # - name: (CF) Aquarionics.com. - NS
-        #   community.general.cloudflare_dns:
-        #     state: present
-        #     zone: aquarionics.com
-        #     record: "@"
-        #     account_email: "{{ cloudflare_api_email }}"
-        #     api_token: "{{ cloudflare_api_key }}"
-        #     type: NS
-        #     ttl: "172800"
-        #     value: ns-1103.awsdns-09.org.,ns-1667.awsdns-16.co.uk.,ns-275.awsdns-34.com.,ns-1004.awsdns-61.net.
+    # - name: (CF) Aquarionics.com. - SPF
+    #   community.general.cloudflare_dns:
+    #     state: present
+    #     zone: aquarionics.com
+    #     record: "@"
+    #     api_token: "{{ cloudflare_api_key }}"
+    #     type: TXT
+    #     ttl: "86400"
+    #     value: '"v=spf1 include:aspmx.googlemail.com ~all"'
 
-        # - name: (CF) Aquarionics.com. - SOA
-        #  community.general.cloudflare_dns:
-        #      overwrite: true
-        #      command: "create"
-        #      zone: "aquarionics.com"
-        #      record: "
-        #      aws_access_key: '{{ aqcom_aws_key }}'
-        # aws_secret_key: '{{ aqcom_aws_secret }}'
-        # type: "SOA"
-        #      ttl: "900"
-        #      value: 'ns-1103.awsdns-09.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
+    - name: (CF) Aquarionics.com. - TXT
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: TXT
+        ttl: "300"
+        value: '"v=spf1 include:aspmx.googlemail.com ~all"'
 
-        # - name: (CF) Aquarionics.com. - SPF
-        #   community.general.cloudflare_dns:
-        #     state: present
-        #     zone: aquarionics.com
-        #     record: "@"
-        #     api_token: "{{ cloudflare_api_key }}"
-        #     type: TXT
-        #     ttl: "86400"
-        #     value: '"v=spf1 include:aspmx.googlemail.com ~all"'
+    - name: (CF) Google._domainkey.aquarionics.com. - TXT
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: google._domainkey
+        api_token: "{{ cloudflare_api_key }}"
+        type: TXT
+        ttl: "300"
+        value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
 
-        - name: (CF) Aquarionics.com. - TXT
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: "@"
-            api_token: "{{ cloudflare_api_key }}"
-            type: TXT
-            ttl: "300"
-            value: '"v=spf1 include:aspmx.googlemail.com ~all"'
+    - name: (CF) Stream.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: stream
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "300"
+        value: www.aquarionics.com
 
-        - name: (CF) Google._domainkey.aquarionics.com. - TXT
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: google._domainkey
-            api_token: "{{ cloudflare_api_key }}"
-            type: TXT
-            ttl: "300"
-            value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
+    - name: (CF) Live.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: live
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "300"
+        value: www.aquarionics.com
 
-        - name: (CF) Stream.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: stream
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "300"
-            value: www.aquarionics.com
+    - name: (CF) Cdn.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: cdn
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "300"
+        value: d2r0e8lumqw3g1.cloudfront.net
 
-        - name: (CF) Live.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: live
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "300"
-            value: www.aquarionics.com
+    - name: (CF) Amazon DNS Validation for aqcom - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: _718a5f89a82bf1a5111be33a782c832a
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "300"
+        value: _02827ed4ad6fed8455c7ece69808224e.hkvuiqjoua.acm-validations.aws.
 
-        - name: (CF) Cdn.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: cdn
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "300"
-            value: d2r0e8lumqw3g1.cloudfront.net
+    - name: (CF) Amazon DNS Validation for cdn.aqcom - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: _7ca693a0f8f72e0865bf5335a6877adb.cdn
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "300"
+        value: _a610429fde9cdbee8f486a8f8ee9c28e.hkvuiqjoua.acm-validations.aws.
 
-        - name: (CF) Amazon DNS Validation for aqcom - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: _718a5f89a82bf1a5111be33a782c832a
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "300"
-            value: _02827ed4ad6fed8455c7ece69808224e.hkvuiqjoua.acm-validations.aws.
+    - name: (CF) \*.cdn.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: "*.cdn"
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "3600"
+        value: d2r0e8lumqw3g1.cloudfront.net
 
-        - name: (CF) Amazon DNS Validation for cdn.aqcom - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: _7ca693a0f8f72e0865bf5335a6877adb.cdn
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "300"
-            value: _a610429fde9cdbee8f486a8f8ee9c28e.hkvuiqjoua.acm-validations.aws.
+    - name: (CF) 1.cdn.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: absent
+        zone: aquarionics.com
+        record: live.dailyphoto
+        api_token: "{{ cloudflare_api_key }}"
+        value: d2r0e8lumqw3g1.cloudfront.net
+        type: CNAME
 
-        - name: (CF) \*.cdn.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: "*.cdn"
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "3600"
-            value: d2r0e8lumqw3g1.cloudfront.net
+    - name: (CF) 2.cdn.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: absent
+        zone: aquarionics.com
+        record: live.dailyphoto
+        value: d2r0e8lumqw3g1.cloudfront.net
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
 
-        - name: (CF) 1.cdn.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: absent
-            zone: aquarionics.com
-            record: live.dailyphoto
-            api_token: "{{ cloudflare_api_key }}"
-            value: d2r0e8lumqw3g1.cloudfront.net
-            type: CNAME
+    - name: (CF) 3.cdn.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: absent
+        zone: aquarionics.com
+        record: live.dailyphoto
+        value: d2r0e8lumqw3g1.cloudfront.net
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
 
-        - name: (CF) 2.cdn.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: absent
-            zone: aquarionics.com
-            record: live.dailyphoto
-            value: d2r0e8lumqw3g1.cloudfront.net
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
+    - name: (CF) 4.cdn.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: absent
+        zone: aquarionics.com
+        record: live.dailyphoto
+        value: d2r0e8lumqw3g1.cloudfront.net
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
 
-        - name: (CF) 3.cdn.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: absent
-            zone: aquarionics.com
-            record: live.dailyphoto
-            value: d2r0e8lumqw3g1.cloudfront.net
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
+    - name: (CF) Dailyphoto.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: dailyphoto
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "300"
+        value: dc80vpukp1283.cloudfront.net
 
-        - name: (CF) 4.cdn.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: absent
-            zone: aquarionics.com
-            record: live.dailyphoto
-            value: d2r0e8lumqw3g1.cloudfront.net
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
+    - name: (CF) Live.dailyphoto.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: live.dailyphoto
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
 
-        - name: (CF) Dailyphoto.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: dailyphoto
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "300"
-            value: dc80vpukp1283.cloudfront.net
+    - name: (CF) Feeds.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: feeds
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "3600"
+        value: "{{ loadbalancer_domain }}"
+        proxied: true
 
-        - name: (CF) Live.dailyphoto.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: live.dailyphoto
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "300"
-            value: "{{ loadbalancer_ip }}"
+    - name: (CF) Mail.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: mail
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "86400"
+        value: ghs.google.com
 
-        - name: (CF) Feeds.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: feeds
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "3600"
-            value: "{{ loadbalancer_domain }}"
-            proxied: true
+    - name: (CF) Thalium. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: thalium
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "86400"
+        value: "{{ loadbalancer_ip }}"
+        proxied: true
 
-        - name: (CF) Mail.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: mail
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "86400"
-            value: ghs.google.com
+    - name: (CF) Old.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: old
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "86400"
+        value: "{{ loadbalancer_ip }}"
+        proxied: true
 
-        - name: (CF) Thalium. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: thalium
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "86400"
-            value: "{{ loadbalancer_ip }}"
-            proxied: true
+    - name: (CF) Old.aquarionics.com. - AAAA
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: old
+        api_token: "{{ cloudflare_api_key }}"
+        type: AAAA
+        ttl: "300"
+        value: "{{ ansible_default_ipv6.address }}"
+        proxied: true
 
-        - name: (CF) Old.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: old
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "86400"
-            value: "{{ loadbalancer_ip }}"
-            proxied: true
+    - name: (CF) Tumblr.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: tumblr
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "3600"
+        value: domains.tumblr.com
+        proxied: true
 
-        - name: (CF) Old.aquarionics.com. - AAAA
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: old
-            api_token: "{{ cloudflare_api_key }}"
-            type: AAAA
-            ttl: "300"
-            value: "{{ ansible_default_ipv6.address }}"
-            proxied: true
+    - name: (CF) Wiki.aquarionics.com. - AAAA
+      community.general.cloudflare_dns:
+        state: absent
+        zone: aquarionics.com
+        record: wiki
+        api_token: "{{ cloudflare_api_key }}"
+        type: AAAA
+        ttl: "300"
+        value: "publish-main.obsidian.md"
 
-        - name: (CF) Tumblr.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: tumblr
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "3600"
-            value: domains.tumblr.com
-            proxied: true
+    - name: (CF) Wiki.aquarionics.com. - CNAME
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: wiki
+        api_token: "{{ cloudflare_api_key }}"
+        type: CNAME
+        ttl: "86400"
+        value: "publish-main.obsidian.md"
+        proxied: true
 
-        - name: (CF) Wiki.aquarionics.com. - AAAA
-          community.general.cloudflare_dns:
-            state: absent
-            zone: aquarionics.com
-            record: wiki
-            api_token: "{{ cloudflare_api_key }}"
-            type: AAAA
-            ttl: "300"
-            value: "publish-main.obsidian.md"
+    - name: (CF) Wiki.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "86400"
+        zone: aquarionics.com
+        record: wiki
+        value: "{{ loadbalancer_ip }}"
+        state: absent
 
-        - name: (CF) Wiki.aquarionics.com. - CNAME
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: wiki
-            api_token: "{{ cloudflare_api_key }}"
-            type: CNAME
-            ttl: "86400"
-            value: "publish-main.obsidian.md"
-            proxied: true
+    - name: (CF) Www.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: www
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        proxied: true
 
-        - name: (CF) Wiki.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "86400"
-            zone: aquarionics.com
-            record: wiki
-            value: "{{ loadbalancer_ip }}"
-            state: absent
+    - name: (CF) Wywo.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: wywo
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        proxied: true
 
-        - name: (CF) Www.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: www
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "300"
-            value: "{{ loadbalancer_ip }}"
-            proxied: true
+    - name: (CF) Vis.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: vis
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        proxied: true
+      tags:
+        - streamsite
 
-        - name: (CF) Wywo.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: wywo
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "300"
-            value: "{{ loadbalancer_ip }}"
-            proxied: true
+    - name: (CF) Panopticon.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: panopticon
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        proxied: true
 
-        - name: (CF) Vis.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: vis
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "300"
-            value: "{{ loadbalancer_ip }}"
-            proxied: true
-          tags:
-            - streamsite
+    - name: (CF) VTT.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: vtt
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+      tags:
+        - foundryvtt
 
-        - name: (CF) Panopticon.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: panopticon
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "300"
-            value: "{{ loadbalancer_ip }}"
-            proxied: true
+    - name: (CF) Aquarionics.com. - BlueSky Validation
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: _atproto.aquarionics.com
+        api_token: "{{ cloudflare_api_key }}"
+        type: TXT
+        ttl: "300"
+        value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
 
-        - name: (CF) VTT.aquarionics.com. - A
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: vtt
-            api_token: "{{ cloudflare_api_key }}"
-            type: A
-            ttl: "300"
-            value: "{{ loadbalancer_ip }}"
-          tags:
-            - foundryvtt
-
-        - name: (CF) Aquarionics.com. - BlueSky Validation
-          community.general.cloudflare_dns:
-            state: present
-            zone: aquarionics.com
-            record: _atproto.aquarionics.com
-            api_token: "{{ cloudflare_api_key }}"
-            type: TXT
-            ttl: "300"
-            value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
