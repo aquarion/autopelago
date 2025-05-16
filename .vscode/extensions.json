@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "timonwong.shellcheck",
-    "github.vscode-github-actions"
-  ]
+  "recommendations": ["timonwong.shellcheck", "github.vscode-github-actions"]
 }
