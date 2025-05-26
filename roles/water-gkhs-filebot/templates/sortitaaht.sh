@@ -8,7 +8,7 @@
 {% endif %}
 
 if [ -z "$1" ]; then
-	FILEPATH={{ transmission_complete }}
+	FILEPATH="{{ transmission_complete }}"
 else
 	FILEPATH=$1
 fi
@@ -20,6 +20,8 @@ filebot -script fn:amc \
 	--def excludeList={{ media_home }}/Logs/amc_seen.txt \
 	--def discord={{ discord_webhook_medialibrary }} \
 	--def clean=y \
+	--def minLengthMS=60000 \
+	--apply metadata \
 	--action hardlink \
 	--conflict override -non-strict \
 	--def music=y subtitles=en artwork=y \
@@ -28,6 +30,6 @@ filebot -script fn:amc \
 	"animeFormat=Anime/{n}/{fn}" \
 	"movieFormat=Movies/{n} {y}/{fn}" \
 	"musicFormat=Music/{n}/{fn}" \
-	"$FILEPATH" {{ verbose }} media_home }}/Logs/amc.stdout.log >{{
+	"$FILEPATH" {{ verbose }} {{ media_home }}/Logs/amc.stdout.log >
 
 {{ media_home }}/bin/sync_or_swim.sh

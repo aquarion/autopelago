@@ -4,7 +4,7 @@
 MEDIAHOME="{{ media_library }}"
 
 function debug_out {
-	[ ! -z "$VERBOSE" ] && echo $@
+	[ -n "$VERBOSE" ] && echo "$@"
 }
 
 while getopts d:hv flag; do
@@ -47,7 +47,7 @@ for dir in $MEDIAHOME/*; do
 		continue
 	fi
 	debug_out "Process $dir"
-	find "$dir" -maxdepth 1 -mindepth 1 -type d | while read showpath; do
+	find "$dir" -maxdepth 1 -mindepth 1 -type d | while read -r showpath; do
 		show=$(basename "$showpath")
 		# debug_out "   - Is there a " $show " in TV?";
 		if [[ -d "$MEDIAHOME/TV/$show" ]]; then
