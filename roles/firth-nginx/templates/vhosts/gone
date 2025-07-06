@@ -3,7 +3,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name
-    www.larp.me larp.me api.larp.me wiki.larp.me fjord.water.gkhs.net skute.me wf.kabbal.istic.net
+    api.larp.me wiki.larp.me fjord.water.gkhs.net skute.me wf.kabbal.istic.net
     www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
     include /etc/nginx/snippets/errors.conf;
     add_header X-WhyAmI gone;
@@ -36,7 +36,7 @@ server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
     server_name
-    www.larp.me larp.me api.larp.me wiki.larp.me fjord.water.gkhs.net skute.me wf.kabbal.istic.net
+    api.larp.me wiki.larp.me fjord.water.gkhs.net skute.me wf.kabbal.istic.net
     www.larpfic.com larpfic.com www.lrpfic.com lrpfic.com;
 
     include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;

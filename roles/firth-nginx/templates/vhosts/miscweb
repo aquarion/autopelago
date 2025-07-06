@@ -16,7 +16,7 @@ upstream docker-php8 {
 server {
   listen 80;
   listen [::]:80;
-  server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
+  server_name imperial.istic.net live.art.istic.net
   warehousebasement.com
   dagon.church live.dagon.church wiki.dagon.church
   live.dailyphoto.aquarionics.com
@@ -56,7 +56,7 @@ server {
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
-  server_name imperial.istic.net ark.ludo.istic.net live.art.istic.net
+  server_name imperial.istic.net live.art.istic.net
   warehousebasement.com
   dagon.church live.dagon.church wiki.dagon.church
   istic.co
@@ -84,8 +84,8 @@ server {
 # |_|_|_|_/__/\__|\_/\_/\___|_.__/
 
 server {
-  listen 443 proxy_protocol;
-  listen [::]:443 proxy_protocol;
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
   listen 8443 ssl;
   listen [::]:8443 ssl;
   server_name firth.water.gkhs.net;
