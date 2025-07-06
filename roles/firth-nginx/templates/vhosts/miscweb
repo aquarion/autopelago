@@ -29,8 +29,9 @@ server {
   *.bromioscreations.com
   *.aquarionics.com
   *.hubris.house
-  *.deadbadgerdesigns.co.uk;
-
+  *.deadbadgerdesigns.co.uk
+  *.larp.me larp.me *.larp.me.uk larp.me.uk;
+  
   add_header X-WhyAmI "miscweb redirect";
   return 301 https://$host$request_uri;
 }
@@ -256,6 +257,9 @@ server {
 
 
 ## Larpme
+
+
+
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
