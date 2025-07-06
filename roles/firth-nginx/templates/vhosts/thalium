@@ -1,9 +1,7 @@
 # {{ ansible_managed }}
 
 upstream thalium_backend {
-	server unix:/var/run/thalium/thalium.sock;
-#	server unix:/var/run/thalium.sock;
-	# server localhost:3001 fail_timeout=0;
+	server unix:/home/docker/.run/thalium.sock;
 }
 
 server {
