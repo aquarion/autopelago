@@ -7,15 +7,16 @@
 #       - botocore
 #   tags:
 #     - aws
-- name: Install Boto
-  ansible.builtin.apt:
-    state: present
-    name:
-      - python3-boto3
-      - python3-botocore
-  become: true
-  tags:
-    - aws
+# - name: Install Boto
+#   ansible.builtin.apt:
+#     state: present
+#     name:
+#       - python3-boto3
+#       - python3-botocore
+#   become: true
+#   become_method: sudo
+#   tags:
+#     - aws
 
 - name: Aquarionics DNS - AWS
   ansible.builtin.include_tasks: zones/aquarionics.yml
@@ -93,6 +94,7 @@
   tags:
     - aws
     - larpme
+    - larpmeuk
 
 - name: Update Route53 for conterio
   ansible.builtin.include_tasks: zones/conterio.yml

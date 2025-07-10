@@ -173,3 +173,50 @@
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
     aws_profile: aqcom
+
+- name: Larp.me.uk Zone
+  amazon.aws.route53_zone:
+    state: present
+    zone: larp.me.uk
+    aws_profile: aqcom
+  tags:
+    - larpmeuk
+
+- name: Larp.me.uk
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me.uk
+    record: larp.me.uk
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: aqcom
+  tags:
+    - larpmeuk
+
+- name: Larp.me.uk - Prod WWW
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me.uk
+    record: www.larp.me.uk
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: aqcom
+  tags:
+    - larpmeuk
+
+- name: Larp.me.uk - PD Forums
+  amazon.aws.route53:
+    overwrite: true
+    command: create
+    zone: larp.me.uk
+    record: pdforums.larp.me.uk
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: aqcom
+  tags:
+    - larpmeuk
