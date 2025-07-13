@@ -2,7 +2,6 @@
 - name: Istic DNS
   tags:
     - aws
-    - istic_sys
     - istic_net
   block:
     - name: Istic.net - A
@@ -409,9 +408,20 @@
         aws_profile: istic
       tags:
         - istic_net
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
 
     # Istic.systems
-
+- name: Istic.Systems DNS
+  tags:
+    - aws
+    - istic_sys
+  block:
     - name: Istic.network - A
       amazon.aws.route53:
         overwrite: true
@@ -575,6 +585,34 @@
         command: present
         zone: istic.systems
         record: tributary.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: "ElasticSearch DNS"
+      amazon.aws.route53:
+        overwrite: true
+        command: absent
+        zone: istic.systems
+        record: elasticsearch.svc.istic.systems.
+        type: CNAME
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: "ElasticSearch DNS"
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: elasticsearch.svc.istic.systems.
         type: A
         ttl: "300"
         value: "{{ firth_ip }}"
