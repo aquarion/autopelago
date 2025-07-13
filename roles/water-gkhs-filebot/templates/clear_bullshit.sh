@@ -3,13 +3,11 @@
 
 # Remove stray files from downloaded torrents
 
-
 if [ -z "$1" ]; then
 	FILEPATH="{{ transmission_complete }}"
 else
 	FILEPATH=$1
 fi
-
 
 find "$FILEPATH/completed" -iname ".xattr" -type d -exec rm -rf {} \;
 find "$FILEPATH/completed" -links +1 -type f -delete -print
