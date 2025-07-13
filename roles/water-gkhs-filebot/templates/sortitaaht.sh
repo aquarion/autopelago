@@ -30,6 +30,6 @@ filebot -script fn:amc \
 	"animeFormat=Anime/{n}/{fn}" \
 	"movieFormat=Movies/{n} {y}/{fn}" \
 	"musicFormat=Music/{n}/{fn}" \
-	"$FILEPATH" {{ verbose }} {{ media_home }}/Logs/amc.stdout.log >
+	"$FILEPATH" {{ verbose }} > {{ media_home }}/Logs/amc.stdout.log
 
 {{ media_home }}/bin/sync_or_swim.sh
