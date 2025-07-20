@@ -30,6 +30,7 @@ sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cer
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name bromioscreations.com -d "*.bromioscreations.com"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name foip.me -d "*.foip.me"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name larp.me -d "larp.me" -d "*.larp.me" -d "larp.me.uk" -d "*.larp.me.uk"
+sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name camlarp.co.uk -d "camlarp.co.uk" -d "*.camlarp.co.uk"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --nginx --cert-name hubris.house -d hubris.house -d "*.hubris.house"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --nginx --cert-name forums.profounddecisions.co.uk -d forums.profounddecisions.co.uk
 
