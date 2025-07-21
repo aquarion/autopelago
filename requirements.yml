@@ -4,11 +4,10 @@ roles:
     version: 2.3.0
   - src: elboletaire.transmission
     version: 2.0.3
-  - src: https://github.com/aquarion/ansible-papertrail
-    name: ansible.papertrail
 
 collections:
   - amazon.aws
   - community.general
   - community.mysql
   - ansible.posix
+  - datadog.dd
