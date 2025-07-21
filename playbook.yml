@@ -40,12 +40,12 @@
 
 - name: Import the Datadog Agent role
   hosts: all:!localactions
+  become: true
   tasks:
     - name: Import the Datadog Agent role from the Datadog collection
       import_role:
         name: datadog.dd.agent
   vars:
-    datadog_api_key: "{{ datadog_api_key }}"
     datadog_site: "datadoghq.eu"
     datadog_apm_instrumentation_enabled: "host"
     datadog_apm_instrumentation_libraries:
