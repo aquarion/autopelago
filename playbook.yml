@@ -43,7 +43,7 @@
   become: true
   tasks:
     - name: Import the Datadog Agent role from the Datadog collection
-      import_role:
+      ansible.builtin.import_role:
         name: datadog.dd.agent
   vars:
     datadog_site: "datadoghq.eu"
