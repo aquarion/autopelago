@@ -31,7 +31,7 @@ server {
   *.hubris.house
   *.deadbadgerdesigns.co.uk
   *.larp.me larp.me *.larp.me.uk larp.me.uk;
-  
+
   add_header X-WhyAmI "miscweb redirect";
   return 301 https://$host$request_uri;
 }
@@ -239,7 +239,12 @@ server {
 }
 
 
-## Socks & Puppets
+#  ____             _         ___   ____                         _
+# / ___|  ___   ___| | _____ ( _ ) |  _ \ _   _ _ __  _ __   ___| |_ ___
+# \___ \ / _ \ / __| |/ / __|/ _ \/\ |_) | | | | '_ \| '_ \ / _ \ __/ __|
+#  ___) | (_) | (__|   <\__ \ (_>  <  __/| |_| | |_) | |_) |  __/ |_\__ \
+# |____/ \___/ \___|_|\_\___/\___/\/_|    \__,_| .__/| .__/ \___|\__|___/
+#                                              |_|   |_|
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
@@ -256,10 +261,12 @@ server {
 }
 
 
-## Larpme
-
-
-
+#  _
+# | |    __ _ _ __ _ __   _ __ ___   ___
+# | |   / _` | '__| '_ \ | '_ ` _ \ / _ \
+# | |__| (_| | |  | |_) || | | | | |  __/
+# |_____\__,_|_|  | .__(_)_| |_| |_|\___|
+#                 |_|
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
@@ -268,6 +275,26 @@ server {
   add_header X-WhyAmI "miscweb larpme";
   location / {
     proxy_pass http://docker-php8;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
+  }
+  include /etc/nginx/snippets/errors.conf;
+  client_max_body_size 100M;
+}
+
+
+#   ____                _        _    ____  ____
+#  / ___|__ _ _ __ ___ | |      / \  |  _ \|  _ \
+# | |   / _` | '_ ` _ \| |     / _ \ | |_) | |_) |
+# | |__| (_| | | | | | | |___ / ___ \|  _ <|  __/
+#  \____\__,_|_| |_| |_|_____/_/   \_\_| \_\_|
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.camlarp.co.uk camlarp.co.uk;
+  include /etc/nginx/snippets/ssl/camlarp_ssl.conf;
+  add_header X-WhyAmI "miscweb camlarp";
+  location / {
+    proxy_pass http://docker-php7;
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;

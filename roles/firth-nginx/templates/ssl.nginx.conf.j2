@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+ssl_certificate /etc/letsencrypt/live/{{ cert_name }}/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/{{ cert_name }}/privkey.pem;
+ssl_session_cache    shared:SSL:1m;
+ssl_session_timeout 10m;
