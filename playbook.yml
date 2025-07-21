@@ -35,8 +35,26 @@
     - water-gkhs-update
     - water-gkhs-network
     - water-gkhs-users
-    - { role: ansible.papertrail, tags: papertrail }
+    # - { role: ansible.papertrail, tags: papertrail }
     - { role: water-gkhs-web-errors, tags: nginx }
+
+- name: Import the Datadog Agent role
+  hosts: all:!localactions
+  become: true
+  tasks:
+    - name: Import the Datadog Agent role from the Datadog collection
+      ansible.builtin.import_role:
+        name: datadog.dd.agent
+  vars:
+    datadog_site: "datadoghq.eu"
+    datadog_apm_instrumentation_enabled: "host"
+    datadog_apm_instrumentation_libraries:
+      - "java:1"
+      - "python:3"
+      - "js:5"
+      - "php:1"
+      - "dotnet:3"
+  tags: datadog
 
 - name: Actions on all non-local hosts
   hosts: all:!localactions
