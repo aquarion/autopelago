@@ -192,7 +192,7 @@
       ansible.builtin.command:
         cmd: "false"
 
-- name: remove ESM advert
+- name: Remove ESM advert
   ansible.builtin.file:
     path: /etc/apt/apt.conf.d/20apt-esm-hook.conf
     state: absent
