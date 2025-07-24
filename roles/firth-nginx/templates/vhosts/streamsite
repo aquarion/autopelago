@@ -2,14 +2,14 @@
 server {
   listen      80;
   listen [::]:80;
-  server_name netflix.aquarionics.com;
+  server_name flix.aquarionics.com;
 
   add_header X-WhyAmI "vis redirect";
   return 301 https://$host$request_uri;
 }
 
 server {
-    server_name netflix.aquarionics.com;
+    server_name flix.aquarionics.com;
     charset UTF-8;
 
     error_log  /var/log/nginx/vis.error.log;

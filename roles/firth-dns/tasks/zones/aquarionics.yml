@@ -379,6 +379,17 @@
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
 
+    - name: Flix.aquarionics.com. - A
+      amazon.aws.route53:
+        overwrite: true
+        command: create
+        zone: aquarionics.com
+        record: flix.aquarionics.com.
+        aws_profile: aqcom
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+
     - name: Aquarionics.com. - BlueSky Validation
       amazon.aws.route53:
         overwrite: true

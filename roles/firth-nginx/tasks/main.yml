@@ -32,6 +32,21 @@
   tags:
     - nginx
 
+- name: Configure SSL Config
+  ansible.builtin.template:
+    src: ssl.nginx.conf.j2
+    dest: /etc/nginx/snippets/ssl/{{ item.file_name }}_ssl.conf
+    mode: "0644"
+  vars:
+    cert_name: "{{ item.cert_name }}"
+  loop:
+    - { cert_name: "camlarp.co.uk", file_name: "camlarp" }
+  notify:
+    - Restart nginx
+  tags:
+    - nginx
+    - camlarp
+
 - name: Configure config overrides
   ansible.builtin.template:
     src: "{{ item }}"

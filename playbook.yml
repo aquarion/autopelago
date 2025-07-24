@@ -49,7 +49,7 @@
     datadog_site: "datadoghq.eu"
     datadog_apm_instrumentation_enabled: "host"
     datadog_apm_instrumentation_libraries:
-      - "java:1"
+      # - "java:1"
       - "python:3"
       - "js:5"
       - "php:1"
