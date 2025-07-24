@@ -146,3 +146,11 @@
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
+
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
