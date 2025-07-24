@@ -397,6 +397,17 @@
         value: "{{ loadbalancer_ip }}"
         proxied: true
 
+    - name: (CF) Flix.aquarionics.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: flix
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        proxied: true
+
     - name: (CF) VTT.aquarionics.com. - A
       community.general.cloudflare_dns:
         state: present
