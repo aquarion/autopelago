@@ -30,7 +30,7 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - water-gkhs-packages
+    - water-gkhs-common
     - water-gkhs-listchanges
     - water-gkhs-update
     - water-gkhs-network
