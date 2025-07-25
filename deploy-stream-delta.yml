@@ -21,7 +21,7 @@
   roles:
     - { role: water-gkhs-nginx, tags: nginx }
 
-- name: Hello Atoll
+- name: Deploy Stream Delta
   hosts: atoll
   handlers:
     - name: Import global handlers
