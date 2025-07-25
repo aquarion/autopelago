@@ -11,12 +11,6 @@
       connection: local
       tags: aws
       run_once: true
-    # - name: firth-dns
-    #   role: firth-dns
-    #   become: false
-    #   connection: local
-    #   tags: route53
-    #   run_once: true
 
 - name: Actions on all hosts running NGINX
   hosts: nginx_hosts
