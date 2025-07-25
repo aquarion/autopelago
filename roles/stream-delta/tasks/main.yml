@@ -29,6 +29,13 @@
         aws_profile: istic
       tags:
         - istic_net
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
 
 - name: Ensure Github is present in known_host
   tags:
@@ -139,6 +146,7 @@
     - stream-delta
     - git
     - checkout
+    - stream-delta_deploy
   register: stream_delta_checkout
   notify:
     - Restart supervisor
@@ -150,7 +158,9 @@
     group: www-data
     state: directory
     recurse: true
-
+  tags:
+    - stream-delta
+    - stream-delta_deploy
 - name: Copy stream delta environment file
   ansible.builtin.template:
     src: templates/production.env.j2
@@ -159,6 +169,7 @@
     owner: stream-delta
   tags:
     - stream-delta
+    - stream-delta_deploy
   notify:
     - Restart supervisor
 
@@ -170,6 +181,7 @@
   become_user: stream-delta
   tags:
     - stream-delta
+    - stream-delta_deploy
   when: stream_delta_checkout.changed
   notify:
     - Restart supervisor
@@ -181,6 +193,7 @@
   become_user: stream-delta
   tags:
     - stream-delta
+    - stream-delta_deploy
   when: stream_delta_checkout.changed
   notify:
     - Restart supervisor
@@ -204,6 +217,7 @@
   when: stream_delta_checkout.changed
   tags:
     - stream-delta
+    - stream-delta_deploy
   notify:
     - Restart supervisor
 
