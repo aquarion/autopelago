@@ -264,31 +264,7 @@
       tags:
         - istic_net
 
-    - name: Voyeur.istic.net - A
-      amazon.aws.route53:
-        overwrite: true
-        command: present
-        zone: istic.net
-        record: voyeur.istic.net.
-        type: A
-        ttl: "300"
-        value: "{{ atoll_ip }}"
-        aws_profile: istic
-      tags:
-        - istic_net
-
-    - name: Ws.voyeur.istic.net - A
-      amazon.aws.route53:
-        overwrite: true
-        command: present
-        zone: istic.net
-        record: ws.voyeur.istic.net.
-        type: A
-        ttl: "300"
-        value: "{{ atoll_ip }}"
-        aws_profile: istic
-      tags:
-        - istic_net
+    ## Voyeur.istic DNS moved to stream-delta config
 
     - name: Wildcard.melior.istic.net - A
       amazon.aws.route53:
