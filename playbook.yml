@@ -54,6 +54,7 @@
       - "js:5"
       - "php:1"
       - "dotnet:3"
+    datadog_remote_updates: true
   tags: datadog
 
 - name: Actions on all non-local hosts
