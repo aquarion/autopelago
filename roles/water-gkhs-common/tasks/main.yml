@@ -35,15 +35,12 @@
     - certbot
     - ubuntu-sources
 
-#/etc/apt/sources.list.d/archive_ubuntu_com_ubuntu.list
-#/etc/apt/sources.list.d/security_ubuntu_com_ubuntu.list /etc/apt/sources.list.d/security_ubuntu_com_ubuntu.sources
-
 - name: Remove old archive and security sources
   tags: ubuntu-sources
 
   block:
     - name: Check if archive source file exists
-      stat:
+      ansible.builtin.stat:
         path: "/etc/apt/sources.list.d/archive_ubuntu_com_ubuntu.sources"
       register: archive_source_file
 
@@ -54,7 +51,7 @@
       when: archive_source_file.stat.exists
 
     - name: Check if security source file exists
-      stat:
+      ansible.builtin.stat:
         path: "/etc/apt/sources.list.d/security_ubuntu_com_ubuntu.sources"
       register: security_source_file
 
