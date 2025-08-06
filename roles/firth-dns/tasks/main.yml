@@ -28,11 +28,7 @@
 - name: Aquarionics DNS - Cloudflare
   ansible.builtin.include_tasks: zones/aquarionics_cf.yml
   tags:
-    - aws
-    - cloudflare
-    - aquarionics
-    - failing
-    - aquarionics_aws
+    - always
 
 - name: Update Route53 for aqxs
   ansible.builtin.include_tasks: zones/aqxs.yml

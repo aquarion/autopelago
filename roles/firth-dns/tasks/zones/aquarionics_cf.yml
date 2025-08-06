@@ -5,6 +5,7 @@
     - aquarionics_aws
     - aquarionics
     - cloudflare
+    - cloudflare_dns
   block:
     - name: (CF) Aquarionics.com. - A
       community.general.cloudflare_dns:
