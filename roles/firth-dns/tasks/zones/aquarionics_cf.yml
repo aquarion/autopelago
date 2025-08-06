@@ -15,7 +15,7 @@
         record: "@"
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "86400"
+        # ttl: "86400"
         value: "{{ loadbalancer_ip }}"
 
     - name: (CF) Aquarionics.com. - AAAA
@@ -26,7 +26,7 @@
         record: "@"
         api_token: "{{ cloudflare_api_key }}"
         type: AAAA
-        ttl: "300"
+        # ttl: "300"
         value: "{{ ansible_default_ipv6.address }}"
 
     - name: (CF) Aquarionics.com. - MX 1/5
@@ -263,7 +263,7 @@
         record: feeds
         api_token: "{{ cloudflare_api_key }}"
         type: CNAME
-        ttl: "3600"
+        # ttl: 1
         value: "{{ loadbalancer_domain }}"
         proxied: true
 
@@ -284,7 +284,7 @@
         record: thalium
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "86400"
+        # ttl: "86400"
         value: "{{ loadbalancer_ip }}"
         proxied: true
 
@@ -295,7 +295,7 @@
         record: old
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "86400"
+        # ttl: "86400"
         value: "{{ loadbalancer_ip }}"
         proxied: true
 
@@ -306,7 +306,7 @@
         record: old
         api_token: "{{ cloudflare_api_key }}"
         type: AAAA
-        ttl: "300"
+        # ttl: "300" # Don't set ttl on proxied records
         value: "{{ ansible_default_ipv6.address }}"
         proxied: true
 
@@ -319,7 +319,6 @@
         type: CNAME
         ttl: "3600"
         value: domains.tumblr.com
-        proxied: true
 
     - name: (CF) Wiki.aquarionics.com. - AAAA
       community.general.cloudflare_dns:
@@ -338,7 +337,7 @@
         record: wiki
         api_token: "{{ cloudflare_api_key }}"
         type: CNAME
-        ttl: "86400"
+        # ttl: "86400" # Don't set ttl on proxied records
         value: "publish-main.obsidian.md"
         proxied: true
 
@@ -359,7 +358,7 @@
         record: www
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "300"
+        # ttl: "300" # Don't set ttl on proxied records
         value: "{{ loadbalancer_ip }}"
         proxied: true
 
@@ -370,7 +369,7 @@
         record: wywo
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "300"
+        # ttl: "300" # Don't set ttl on proxied records
         value: "{{ loadbalancer_ip }}"
         proxied: true
 
@@ -381,7 +380,7 @@
         record: vis
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "300"
+        # ttl: "300" # Don't set ttl on proxied records
         value: "{{ loadbalancer_ip }}"
         proxied: true
       tags:
@@ -394,7 +393,7 @@
         record: panopticon
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "300"
+        # ttl: "300" # Don't set ttl on proxied records
         value: "{{ loadbalancer_ip }}"
         proxied: true
 
@@ -405,7 +404,7 @@
         record: flix
         api_token: "{{ cloudflare_api_key }}"
         type: A
-        ttl: "300"
+        # ttl: "300" # Don't set ttl on proxied records
         value: "{{ loadbalancer_ip }}"
         proxied: true
 
