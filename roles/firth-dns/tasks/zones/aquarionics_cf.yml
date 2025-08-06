@@ -430,6 +430,16 @@
         ttl: "300"
         value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"'
 
+    - name: (CF) Aquarionics.com. - BlueSky Validation
+      community.general.cloudflare_dns:
+        state: present
+        zone: aquarionics.com
+        record: _atproto.twitch.aquarionics.com
+        api_token: "{{ cloudflare_api_key }}"
+        type: TXT
+        ttl: "300"
+        value: '"did=did:plc:wetrwknoxgx4tik4oewkukkl"'
+
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:
