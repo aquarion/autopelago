@@ -364,6 +364,18 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
+    - name: Bluesky
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: carcosadreams.com
+        record: _atproto.carcosadreams.com
+        type: TXT
+        ttl: "300"
+        value: '"did=did:plc:2ij27abhkpexsfql2xkhqtb4"'
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:
