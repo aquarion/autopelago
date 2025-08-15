@@ -41,6 +41,8 @@
     cert_name: "{{ item.cert_name }}"
   loop:
     - { cert_name: "camlarp.co.uk", file_name: "camlarp" }
+    - { cert_name: "nanocountdown.com", file_name: "nanocountdown.com" }
+    - { cert_name: "novelathon.com", file_name: "novelathon.com" }
   notify:
     - Restart nginx
   tags:

@@ -7,7 +7,7 @@
     record: nanocountdown.com.
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
     aws_profile: istic
   tags:
     - nanocountdown
@@ -20,7 +20,7 @@
     record: dev.nanocountdown.com.
     type: CNAME
     ttl: "300"
-    value: cenote.gkhs.net
+    value: tributary.water.gkhs.net
     aws_profile: istic
   tags:
     - nanocountdown
@@ -33,7 +33,7 @@
     record: dev.nanocountdown.com.
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
     aws_profile: istic
   tags:
     - nanocountdown
@@ -46,7 +46,7 @@
     record: www.nanocountdown.com.
     type: CNAME
     ttl: "300"
-    value: cenote.gkhs.net
+    value: tributary.water.gkhs.net
     aws_profile: istic
   tags:
     - nanocountdown
@@ -59,7 +59,7 @@
     record: www.nanocountdown.com.
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
     aws_profile: istic
   tags:
     - nanocountdown

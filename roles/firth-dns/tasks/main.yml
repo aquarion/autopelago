@@ -123,6 +123,12 @@
     - aws
     - nanocountdown
 
+- name: Update Route53 for novelathon
+  ansible.builtin.include_tasks: zones/novelathon.yml
+  tags:
+    - aws
+    - novelathon
+
 - name: Update Route53 for dagon_church
   ansible.builtin.include_tasks: zones/dagon_church.yml
   tags:

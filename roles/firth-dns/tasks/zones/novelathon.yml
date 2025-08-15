@@ -1,0 +1,91 @@
+---
+- name: novelathon.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: novelathon.com
+    record: novelathon.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - novelathon
+
+- name: Dev.novelathon.com - CNAME - remove
+  amazon.aws.route53:
+    overwrite: true
+    command: absent
+    zone: novelathon.com
+    record: dev.novelathon.com.
+    type: CNAME
+    ttl: "300"
+    value: tributary.water.gkhs.net
+    aws_profile: istic
+  tags:
+    - novelathon
+
+- name: Dev.novelathon.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: novelathon.com
+    record: dev.novelathon.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - novelathon
+
+- name: Www.novelathon.com - CNAME - remove
+  amazon.aws.route53:
+    overwrite: true
+    command: absent
+    zone: novelathon.com
+    record: www.novelathon.com.
+    type: CNAME
+    ttl: "300"
+    value: tributary.water.gkhs.net
+    aws_profile: istic
+  tags:
+    - novelathon
+
+- name: Www.novelathon.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: novelathon.com
+    record: www.novelathon.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - novelathon
+
+- name: widget.novelathon.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: novelathon.com
+    record: widget.novelathon.com.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - novelathon
+
+- name: local.novelathon.com - A
+  amazon.aws.route53:
+    overwrite: true
+    command: present
+    zone: novelathon.com
+    record: local.novelathon.com.
+    type: A
+    ttl: "300"
+    value: 127.0.0.1
+    aws_profile: istic
+  tags:
+    - novelathon
