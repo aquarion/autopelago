@@ -22,6 +22,8 @@ sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name isti
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.dev --dns-route53 -d "*.istic.dev"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name carcosadreams.com --dns-route53 -d "*.carcosadreams.com" -d "*.carcosadreams.co.uk"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name ludoistic.com --dns-route53 -d "*.ludoistic.com"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name nanocountdown.com --dns-route53 -d nanocountdown.com -d "*.nanocountdown.com"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name novelathon.com --dns-route53 -d novelathon.com -d "*.novelathon.com"
 
 ## AqCom Wildcards
 export AWS_PROFILE=aqcom
