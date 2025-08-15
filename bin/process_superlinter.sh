@@ -1,6 +1,10 @@
 #!/bin/bash
 
-for file in super-linter-output/super-linter/super-linter-parallel-command-exit-code-*; do
+OUT=$PWD/super-linter-output/super-linter
+TRASH=$OUT/.Trash
+mkdir -p "$TRASH"
+
+for file in "$OUT/super-linter-parallel-command-exit-code-"*; do
 	echo "$file"
 	echo "$JOB"
 	FILENAME=$(basename "$file")
@@ -8,12 +12,25 @@ for file in super-linter-output/super-linter/super-linter-parallel-command-exit-
 	JOB=$(echo "$FILENAME" | cut -d"-" -f 7)
 	if [[ $(cat "$DIRNAME/$FILENAME") == "0" ]]; then
 		echo "Job $JOB completed successfully"
-		# rm -f "$file"
-		rm -f "super-linter-output/super-linter/super-linter-*-$JOB"
-		rm -f "super-linter-output/super-linter/super-linter-*-$JOB.json"
+		for OUTFILE in \
+			$OUT/super-linter-parallel-stdout-$JOB \
+			$OUT/super-linter-parallel-stderr-$JOB \
+			$OUT/super-linter-worker-results-$JOB.json; do
+			if [[ -f "$OUTFILE" ]]; then
+				echo "Moving $OUTFILE to $TRASH"
+				mv "$OUTFILE" "$TRASH/"
+			fi
+		done
+
+		mv -v "$file" "$TRASH/$FILENAME"
 	else
 		echo "Job $JOB failed"
 		# exit 1
 	fi
 
 done
+
+rm -rf "$TRASH"
+
+cat super-linter-output/super-linter-summary.md
+ls -l "$OUT"
