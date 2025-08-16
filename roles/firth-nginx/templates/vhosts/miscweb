@@ -36,6 +36,9 @@ server {
   *.larp.me *.larp.me.uk
   *.firth.water.gkhs.net
   novelathon.com *.novelathon.com;
+  *.camlarp.co.uk camlarp.co.uk
+  *.larp.me.uk larp.me.uk
+  *.socksandpuppets.com socksandpuppets.com;
 
   add_header X-WhyAmI "miscweb redirect";
   return 301 https://$host$request_uri;
