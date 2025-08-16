@@ -37,115 +37,31 @@
     #      ttl: "900"
     #      value: 'ns-422.awsdns-52.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
 
-    - name: Lovelace.camlarp.co.uk. - A
+    - name: "[event].camlarp.co.uk. - A"
       amazon.aws.route53:
         overwrite: true
         command: create
         zone: camlarp.co.uk
-        record: lovelace.camlarp.co.uk.
+        record: "{{ item }}"
         aws_profile: aqcom
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
+      loop:
+        - bw.camlarp.co.uk.
+        - citadel.camlarp.co.uk.
+        - darkmoon.camlarp.co.uk.
+        - fallingsky.camlarp.co.uk.
+        - lovelace.camlarp.co.uk.
+        - nfnc.camlarp.co.uk.
+        - norseangels.camlarp.co.uk.
+        - obscura.camlarp.co.uk.
+        - refs.bw.camlarp.co.uk.
+        - refs.nfnc.camlarp.co.uk.
+        - uh.camlarp.co.uk.
+        - www.camlarp.co.uk.
 
-    - name: Citadel.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: citadel.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Obscura.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: obscura.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Bw.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: bw.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Refs.bw.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: refs.bw.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Nfnc.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: nfnc.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Darkmoon.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: darkmoon.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Refs.nfnc.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: refs.nfnc.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Wiki.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: wiki.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Www.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        command: create
-        zone: camlarp.co.uk
-        record: www.camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
+  when: loadbalancer_ip is defined
 
   rescue:
     - name: "Failure warning"
