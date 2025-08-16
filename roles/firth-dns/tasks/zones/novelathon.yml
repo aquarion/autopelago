@@ -1,5 +1,5 @@
 ---
-- name: novelathon.com - A
+- name: Novelathon.com - A
   amazon.aws.route53:
     overwrite: true
     command: present
@@ -64,7 +64,7 @@
   tags:
     - novelathon
 
-- name: widget.novelathon.com - A
+- name: Widget.novelathon.com - A
   amazon.aws.route53:
     overwrite: true
     command: present
@@ -77,7 +77,7 @@
   tags:
     - novelathon
 
-- name: local.novelathon.com - A
+- name: Local.novelathon.com - A
   amazon.aws.route53:
     overwrite: true
     command: present

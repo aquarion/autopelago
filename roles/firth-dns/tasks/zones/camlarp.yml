@@ -2,6 +2,8 @@
 - name: Create Camlarp.co.uk DNS records
   tags:
     - camlarp
+  when: loadbalancer_ip is defined
+
   block:
     - name: Camlarp.co.uk. - A
       amazon.aws.route53:
@@ -60,8 +62,6 @@
         - refs.nfnc.camlarp.co.uk.
         - uh.camlarp.co.uk.
         - www.camlarp.co.uk.
-
-  when: loadbalancer_ip is defined
 
   rescue:
     - name: "Failure warning"
