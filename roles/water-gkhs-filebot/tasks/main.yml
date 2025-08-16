@@ -84,7 +84,8 @@
     name: filebot
     minute: 2,32
     user: "{{ media_user }}"
-    job: "{{ media_home }}/bin/sortitaaht.sh 2>&1 | logger --tag Filebot --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port
+    job:
+      "{{ media_home }}/bin/sortitaaht.sh 2>&1 | logger --tag Filebot --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port
       }}"
     cron_file: filebot
     state: present
@@ -116,7 +117,8 @@
     minute: "15"
     hour: 3
     user: "{{ media_user }}"
-    job: "{{ media_home }}/bin/download_youtube.sh 2>&1  | logger --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port }} --tag
+    job:
+      "{{ media_home }}/bin/download_youtube.sh 2>&1  | logger --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port }} --tag
       youtube"
     cron_file: download_youtube
     state: present
@@ -149,7 +151,8 @@
     minute: "15"
     hour: 18
     user: "{{ media_user }}"
-    job: "{{ media_home }}/bin/remove_completed_torrents.sh 2>&1 | logger --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port
+    job:
+      "{{ media_home }}/bin/remove_completed_torrents.sh 2>&1 | logger --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port
       }} --tag torrent_remove"
     cron_file: remove_completed_torrents
     state: present
