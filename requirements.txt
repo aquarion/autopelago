@@ -5,4 +5,4 @@ boto3==1.*
 poetry==2.*
 poetry-plugin-export==1.*
 virtualenv==20.*
-PyMySQL==1.1.1
+PyMySQL==1.1.2
