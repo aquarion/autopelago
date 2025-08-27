@@ -21,7 +21,7 @@ sudo certbot certonly --non-interactive --cert-name aquarionics.com --dns-cloudf
 
 export AWS_PROFILE=istic-r53
 echo "Generating certificates for istic"
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.net --dns-route53 -d "*.istic.net" -d "*.istic.network" -d "*.istic.systems" -d "*.istic.systems"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.net --dns-route53 -d "*.istic.net" -d "*.istic.network" -d "*.blogs.istic.network" -d "*.istic.systems" -d "*.istic.systems"
 echo "Generating certificates for istic.dev"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.dev --dns-route53 -d "*.istic.dev"
 echo "Generating certificates for Carcosa Dreams"
