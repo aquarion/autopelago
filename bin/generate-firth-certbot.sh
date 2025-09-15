@@ -2,7 +2,20 @@
 
 echo "Generating certificates for firth"
 sudo certbot -n -t certonly --expand --nginx --deploy-hook "service dovecot restart" --cert-name firth.water.gkhs.net \
-	--domains firth.water.gkhs.net,istic.net,stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,thalium.aquarionics.com,vtt.aquarionics.com,flix.aquarionics.com,dailyphoto.aquarionics.com,live.dailyphoto.aquarionics.com,feeds.aquarionics.com,wywo.aquarionics.com,factionfiction.net,www.factionfiction.net,idlespeculation.foip.me,herodiaries.foip.me,sevenmirrors.foip.me,istic.co,istic.systems,istic.network,casu.istic.net,wildfeathers.casu.istic.net,pdforums.casu.istic.net,themonthlymoon.com,ludo.istic.co,imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,live.art.istic.net,imperial.istic.net,material.istic.net,warehousebasement.com,www.warehousebasement.com,dagon.church,live.dagon.church,wiki.dagon.church,mechan.istic.net,optim.istic.net,www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,www.iglooteas.com,www.deathuntodarkness.org,deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk
+	--domains firth.water.gkhs.net,\
+		istic.net,\
+		stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,thalium.aquarionics.com,vtt.aquarionics.com,flix.aquarionics.com,dailyphoto.aquarionics.com,live.dailyphoto.aquarionics.com,feeds.aquarionics.com,wywo.aquarionics.com,\
+		factionfiction.net,www.factionfiction.net,\
+		idlespeculation.foip.me,herodiaries.foip.me,sevenmirrors.foip.me,istic.co,\
+		themonthlymoon.com,\
+		ludo.istic.co,imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,live.art.istic.net,imperial.istic.net,material.istic.net,\
+		warehousebasement.com,www.warehousebasement.com,\
+		dagon.church,live.dagon.church,wiki.dagon.church,\
+		mechan.istic.net,optim.istic.net,\
+		www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com,\
+		iglooteas.com,www.iglooteas.com,\
+		deathuntodarkness.org,www.deathuntodarkness.org,\
+		deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk
 
 #forums.profounddecisions.co.uk
 # www.iglooteas.com,\
@@ -21,13 +34,17 @@ sudo certbot certonly --non-interactive --cert-name aquarionics.com --dns-cloudf
 
 export AWS_PROFILE=istic-r53
 echo "Generating certificates for istic"
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.net --dns-route53 -d "*.istic.net" -d "*.istic.network" -d "*.blogs.istic.network" -d "*.istic.systems" -d "*.istic.systems"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.net --dns-route53 \
+	-d "istic.net" -d "*.istic.net" \
+	-d "istic.network" -d "*.istic.network" \
+	-d "*.blogs.istic.network" -d "blogs.istic.network" \
+	-d "*.istic.systems" -d "*.istic.systems"
 echo "Generating certificates for istic.dev"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.dev --dns-route53 -d "*.istic.dev"
 echo "Generating certificates for Carcosa Dreams"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name carcosadreams.com --dns-route53 -d "*.carcosadreams.com" -d "*.carcosadreams.co.uk"
 echo "Generating certificates for ludoistic"
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name ludoistic.com --dns-route53 -d "*.ludoistic.com"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name ludoistic.com --dns-route53 -d "ludoistic.com" -d "*.ludoistic.com"
 echo "Generating certificates for nanocountdown"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name nanocountdown.com --dns-route53 -d nanocountdown.com -d "*.nanocountdown.com"
 echo "Generating certificates for novelathon"
