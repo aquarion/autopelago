@@ -9,7 +9,7 @@ set -o errtrace #Cascade that to all functions
 
 echo "Generating certificates for firth"
 sudo certbot -n -t certonly --expand --nginx --deploy-hook "service dovecot restart" --cert-name firth.water.gkhs.net \
-	--domains firth.water.gkhs.net,\
+	--domains firth.water.gkhs.net\
 		-d "istic.net" \
 		-d "stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,thalium.aquarionics.com,vtt.aquarionics.com,flix.aquarionics.com,dailyphoto.aquarionics.com,live.dailyphoto.aquarionics.com,feeds.aquarionics.com,wywo.aquarionics.com" \
 		-d "factionfiction.net,www.factionfiction.net" \
@@ -20,8 +20,8 @@ sudo certbot -n -t certonly --expand --nginx --deploy-hook "service dovecot rest
 		-d "dagon.church,live.dagon.church,wiki.dagon.church" \
 		-d "mechan.istic.net,optim.istic.net" \
 		-d "www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com" \
-		-d "iglooteas.com,www.iglooteas.com" \
-		-d "deathuntodarkness.org,www.deathuntodarkness.org" \
+		-d "www.iglooteas.com" \
+		-d "www.deathuntodarkness.org" \
 		-d "deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk"
 
 #forums.profounddecisions.co.uk
