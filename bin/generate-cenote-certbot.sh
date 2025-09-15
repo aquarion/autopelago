@@ -1,4 +1,10 @@
 #!/bin/bash
+set -o errexit  # Exit if any line fails
+set -o pipefail # Exit if any piped command fails
+
+# Error with a message if a line fails
+trap 'echo "Aborting due to an error on $0 line $LINENO. Exit code: $?" >&2' ERR
+set -o errtrace #Cascade that to all functions
 
 echo "Generating certificates for cenote"
 sudo certbot -n -t certonly --expand --apache --deploy-hook "service dovecot restart" --cert-name cenote.gkhs.net --domains \
