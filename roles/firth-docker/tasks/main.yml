@@ -88,3 +88,49 @@
   tags:
     - docker
     - redis
+
+- name: Make redis service more robust so it waits for docker to start
+  block:
+    - name: Force redis service to wait longer between restarts
+      community.general.ini_file:
+        path: /etc/systemd/system/redis.service
+        exclusive: false
+        section: Service
+        option: RestartSec
+        value: 30
+        create: yes
+        state: present
+
+    - name: Force redis service to allow more restarts in a time period
+      community.general.ini_file:
+        path: /etc/systemd/system/redis.service
+        exclusive: false
+        section: Unit
+        option: StartLimitInterval
+        value: 300
+        create: yes
+        state: present
+
+    - name: Force redis service to allow more restarts in a time period
+      community.general.ini_file:
+        path: /etc/systemd/system/redis.service
+        exclusive: false
+        section: Unit
+        option: StartLimitBurst
+        value: 10
+        create: yes
+        state: present
+  notify:
+    - Reload systemd
+    - Restart redis
+  tags:
+    - docker
+    - redis
+
+  rescue:
+    - name: Debug failure to modify redis service
+      ansible.builtin.debug:
+        msg: "Failed to modify redis service to be more robust"
+      tags:
+        - docker
+        - redis
