@@ -73,11 +73,15 @@
   ansible.builtin.file:
     path: "{{ media_home }}/bin/sortitaaht.sh"
     state: absent
+  tags:
+    - media
 
 - name: Remove old script name (verbose)
   ansible.builtin.file:
     path: "{{ media_home }}/bin/sortitaaht_verbose.sh"
     state: absent
+  tags:
+    - media
 
 - name: Add Clear Bullshit script to bin
   ansible.builtin.template:
