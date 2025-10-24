@@ -60,6 +60,6 @@ trap "true" PIPE
 cat "$WATCHFILE" | while read path action file; do
 	echo Saw "$action" on "$path""$file"
 	#echo "Saw $action in $path";
-	"$HOME"/bin/sortitaaht.sh "$path""$file"
+	"$HOME"/bin/organise_media_downloads.sh "$path""$file"
 done
 trap PIPE

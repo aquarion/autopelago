@@ -35,7 +35,7 @@
     msg: "{{ media_home }}/bin/sync_or_swim.sh"
   tags:
     - media
-    - sortitaaht
+    - organise_media_downloads
 
 - name: Add sync_or_swim script to bin
   ansible.builtin.template:
@@ -45,29 +45,39 @@
     owner: "{{ media_user }}"
   tags:
     - media
-    - sortitaaht
+    - organise_media_downloads
 
 # Sort It Ahht
 
-- name: Add sortitaaht script to bin
+- name: Add organise_media_downloads script to bin
   ansible.builtin.template:
-    src: sortitaaht.sh
-    dest: "{{ media_home }}/bin/sortitaaht.sh"
+    src: organise_media_downloads.sh
+    dest: "{{ media_home }}/bin/organise_media_downloads.sh"
     mode: "0755"
     owner: "{{ media_user }}"
   tags:
     - media
 
-- name: Add verbose sortitaaht script to bin
+- name: Add verbose organise_media_downloads script to bin
   ansible.builtin.template:
-    src: sortitaaht.sh
-    dest: "{{ media_home }}/bin/sortitaaht_verbose.sh"
+    src: organise_media_downloads.sh
+    dest: "{{ media_home }}/bin/organise_media_downloads_verbose.sh"
     mode: "0755"
     owner: "{{ media_user }}"
   tags:
     - media
   vars:
     verbose: true
+
+- name: Remove old script name
+  ansible.builtin.file:
+    path: "{{ media_home }}/bin/sortitaaht.sh"
+    state: absent
+
+- name: Remove old script name (verbose)
+  ansible.builtin.file:
+    path: "{{ media_home }}/bin/sortitaaht_verbose.sh"
+    state: absent
 
 - name: Add Clear Bullshit script to bin
   ansible.builtin.template:
@@ -79,12 +89,12 @@
     - media
     - clear_bullshit
 
-- name: Add sortitaaht cron job
+- name: Add organise_media_downloads cron job
   ansible.builtin.cron:
     name: filebot
     minute: 2,32
     user: "{{ media_user }}"
-    job: "{{ media_home }}/bin/sortitaaht.sh 2>&1 | ts >> {{ media_logs }}/filebot_sortitaaht.log"
+    job: "{{ media_home }}/bin/organise_media_downloads.sh 2>&1 | ts >> {{ media_logs }}/filebot_organise_media_downloads.log"
     cron_file: filebot
     state: present
   tags:
