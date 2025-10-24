@@ -1,12 +1,4 @@
 ---
-- name: Remove service account for Papertrail
-  user:
-    name: papertrail
-    system: yes
-    home: /var/lib/papertrail
-    shell: /bin/false
-    state: absent
-
 # - name: Download Papertrail PEM
 #   get_url: url="https://papertrailapp.com/tools/papertrail-bundle.pem"
 #            dest="/etc/papertrail-bundle.pem"
@@ -48,3 +40,11 @@
     state: stopped
   notify:
     - Restart remote_syslog
+
+- name: Remove service account for Papertrail
+  user:
+    name: papertrail
+    system: yes
+    home: /var/lib/papertrail
+    shell: /bin/false
+    state: absent
