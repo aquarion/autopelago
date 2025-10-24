@@ -35,8 +35,8 @@
     - water-gkhs-update
     - water-gkhs-network
     - water-gkhs-users
-    # - { role: ansible.papertrail, tags: papertrail }
     - { role: water-gkhs-web-errors, tags: nginx }
+    - { role: remove-papertrail, tags: papertrail }
 
 - name: Import the Datadog Agent role
   hosts: all:!localactions

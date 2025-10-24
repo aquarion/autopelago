@@ -1,0 +1,50 @@
+---
+- name: Remove service account for Papertrail
+  user:
+    name: papertrail
+    system: yes
+    home: /var/lib/papertrail
+    shell: /bin/false
+    state: absent
+
+# - name: Download Papertrail PEM
+#   get_url: url="https://papertrailapp.com/tools/papertrail-bundle.pem"
+#            dest="/etc/papertrail-bundle.pem"
+#            mode=0644
+
+- name: Remove Papertrail PEM
+  file:
+    path: "/etc/papertrail-bundle.pem"
+    state: absent
+
+# - name: Configure Rsyslog to use Papertrail
+#   template: src="90-papertrail.conf.j2"
+#             dest="/etc/rsyslog.d/90-papertrail.conf"
+#   notify:
+#     - Restart Rsyslog
+
+- name: remove Rsyslog Papertrail configuration
+  file:
+    path: "/etc/rsyslog.d/90-papertrail.conf"
+    state: absent
+  notify:
+    - Restart Rsyslog
+
+# - debug: msg="Adding papertrail config at {{ papertrail_remote_syslog_config_paths[ansible_service_mgr].path }}"
+
+# - name: Configure Papertrail service definition
+#   template: src="remote_syslog.{{ ansible_service_mgr }}.conf.j2"
+#             dest="{{ papertrail_remote_syslog_config_paths[ansible_service_mgr].path }}"
+
+- name: Remove Papertrail service definition
+  file:
+    path: "{{ papertrail_remote_syslog_config_paths[ansible_service_mgr].path }}"
+    state: absent
+
+- name: Disable Papertrail service
+  service:
+    name: remote_syslog
+    enabled: false
+    state: stopped
+  notify:
+    - Restart remote_syslog

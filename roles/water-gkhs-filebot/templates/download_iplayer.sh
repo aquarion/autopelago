@@ -1,8 +1,7 @@
 #!/bin/bash
 # "{{ ansible_managed }}"
 
-exec 2>&1
-exec > >(logger --tag iPlayer --server="{{ medialibrary_remote_syslog_host }}" --port="{{ medialibrary_remote_syslog_port }}")
+# Download BBC iPlayer shows using get_iplayer
 
-get_iplayer --no-proxy --refresh | logger --tag iPlayer --server="{{ medialibrary_remote_syslog_host }}" --port="{{ medialibrary_remote_syslog_port }}"
-get_iplayer --pvr | logger --tag iPlayer --server="{{ medialibrary_remote_syslog_host }}" --port="{{ medialibrary_remote_syslog_port }}"
+get_iplayer --no-proxy --refresh | ts >> "{{ media_logs }}/iplayer-refresh.log" 2>&1
+get_iplayer --pvr | ts >> "{{ media_logs }}/iplayer-pvr.log" 2>&1

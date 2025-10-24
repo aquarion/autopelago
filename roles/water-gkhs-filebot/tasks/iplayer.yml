@@ -79,9 +79,7 @@
     minute: "15"
     hour: 2
     user: "{{ media_user }}"
-    job:
-      "{{ media_home }}/bin/download_iplayer.sh | logger --tag Filebot --server={{ medialibrary_remote_syslog_host }} --port={{ medialibrary_remote_syslog_port
-      }}"
+    job: "{{ media_home }}/bin/download_iplayer.sh | ts >> {{ media_logs }}/download_iplayer.log 2>&1"
     cron_file: download_iplayer
     state: present
   tags:
