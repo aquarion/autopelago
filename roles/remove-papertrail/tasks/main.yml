@@ -28,6 +28,9 @@
 #   template: src="remote_syslog.{{ ansible_service_mgr }}.conf.j2"
 #             dest="{{ papertrail_remote_syslog_config_paths[ansible_service_mgr].path }}"
 
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
 - name: Remove Papertrail service definition
   file:
     path: "{{ papertrail_remote_syslog_config_paths[ansible_service_mgr].path }}"
@@ -40,6 +43,7 @@
     state: stopped
   notify:
     - Restart remote_syslog
+  when: "'remote_syslog' in services"
 
 - name: Remove service account for Papertrail
   user:
