@@ -1,3 +1,4 @@
 ; {{ ansible_managed }}
 [mysqld]
-bind-address             = 172.17.0.1
+; Docker & Localhost
+bind-address             = 172.17.0.1,127.0.0.1
