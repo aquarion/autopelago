@@ -1,136 +1,121 @@
 ---
-- name: Add GPG key
-  ansible.builtin.apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-    keyring: /etc/apt/keyrings/docker.gpg
-  tags:
-    - docker
-
-- name: Get DEB architecture
-  ansible.builtin.shell: dpkg --print-architecture
-  register: deb_architecture
-  tags:
-    - docker
-
-- name: Remove old docker repository from apt
-  ansible.builtin.apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-    state: absent
-  tags:
-    - docker
-
-- name: Docker Repo
-  ansible.builtin.deb822_repository:
-    name: docker
-    uris: https://download.docker.com/linux/ubuntu
-    suites: "{{ ansible_distribution_release }}"
-    state: present
-    signed_by: /etc/apt/keyrings/docker.gpg
-    components: stable
-    architectures: "{{ deb_architecture.stdout }}"
-
-  tags:
-    - docker
-
-- name: Install docker
-  ansible.builtin.apt:
-    name: "{{ item }}"
-    state: present
-    update_cache: true
-    cache_valid_time: 21600
-  loop:
-    - docker-ce
-    - docker-ce-cli
-  tags:
-    - docker
-
-- name: Allow docker to access redis
-  ansible.builtin.lineinfile:
-    path: /etc/redis/redis.conf
-    line: bind 127.0.0.1 ::1 172.17.0.1
-    regex: ^bind
-  tags:
-    - docker
-  notify:
-    - Restart redis
-
-- name: Make sure docker can access MariaDB
-  ansible.builtin.copy:
-    src: mysql/docker.cnf
-    dest: /etc/mysql/mariadb.conf.d/60-docker.cnf
-    owner: root
-    mode: "0664"
-  tags:
-    - docker
-  notify:
-    - restart mysql
-
-- name: Add users to docker group
-  # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
-  ansible.builtin.user:
-    name: "{{ item }}"
-    groups: docker
-    append: true
-  with_items:
-    - aquarion
-    - ccooke
-  tags:
-    - docker
-
-- name: Configure Redis dockersites user password
-  ansible.builtin.lineinfile:
-    path: /etc/redis/users.acl
-    line: user dockersites on +@all -DEBUG ~* >{{ dockersites_redis_password }}
-    regex: ^user dockersites
-  notify:
-    - Reload Redis ACL
-  tags:
-    - docker
-    - redis
-
-- name: Make redis service more robust so it waits for docker to start
+- name: Configure Docker installation and services
   block:
-    - name: Force redis service to wait longer between restarts
-      community.general.ini_file:
-        path: /etc/systemd/system/redis.service
-        exclusive: false
-        section: Service
-        option: RestartSec
-        value: 30
-        create: yes
+    - name: Add GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+        keyring: /etc/apt/keyrings/docker.gpg
 
-    - name: Force redis service to allow more restarts in a time period
-      community.general.ini_file:
-        path: /etc/systemd/system/redis.service
-        exclusive: false
-        section: Unit
-        option: StartLimitInterval
-        value: 300
-        create: yes
-        state: present
+    - name: Get DEB architecture
+      ansible.builtin.shell: dpkg --print-architecture
+      register: deb_architecture
 
-    - name: Force redis service to allow more restarts in a time period
-      community.general.ini_file:
-        path: /etc/systemd/system/redis.service
-        exclusive: false
-        section: Unit
-        option: StartLimitBurst
-        value: 10
-        create: yes
+    - name: Remove old docker repository from apt
+      ansible.builtin.apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: absent
+
+    - name: Docker Repo
+      ansible.builtin.deb822_repository:
+        name: docker
+        uris: https://download.docker.com/linux/ubuntu
+        suites: "{{ ansible_distribution_release }}"
         state: present
-  notify:
-    - Reload systemd
-    - Restart redis
+        signed_by: /etc/apt/keyrings/docker.gpg
+        components: stable
+        architectures: "{{ deb_architecture.stdout }}"
+
+    - name: Install docker
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+        cache_valid_time: 21600
+      loop:
+        - docker-ce
+        - docker-ce-cli
+
+    - name: Allow docker to access redis
+      ansible.builtin.lineinfile:
+        path: /etc/redis/redis.conf
+        line: bind 127.0.0.1 ::1 172.17.0.1
+        regex: ^bind
+      notify:
+        - Restart redis
+
+    - name: Make sure docker can access MariaDB
+      ansible.builtin.copy:
+        src: mysql/docker.cnf
+        dest: /etc/mysql/mariadb.conf.d/60-docker.cnf
+        owner: root
+        mode: "0664"
+      notify:
+        - Restart MySQL
+
+    - name: Add users to docker group
+      # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: docker
+        append: true
+      with_items:
+        - aquarion
+        - ccooke
+
+    - name: Configure Redis dockersites user password
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        line: user dockersites on +@all -DEBUG ~* >{{ dockersites_redis_password }}
+        regex: ^user dockersites
+      notify:
+        - Reload Redis ACL
+      tags:
+        - redis
+
+    - name: Make redis service more robust so it waits for docker to start
+      block:
+        - name: Force redis service to wait longer between restarts
+          community.general.ini_file:
+            path: /etc/systemd/system/redis.service
+            exclusive: false
+            section: Service
+            option: RestartSec
+            value: 30
+            create: yes
+            state: present
+
+        - name: Force redis service to allow more restarts in a time period
+          community.general.ini_file:
+            path: /etc/systemd/system/redis.service
+            exclusive: false
+            section: Unit
+            option: StartLimitInterval
+            value: 300
+            create: yes
+            state: present
+
+        - name: Force redis service to allow more restarts in a time period
+          community.general.ini_file:
+            path: /etc/systemd/system/redis.service
+            exclusive: false
+            section: Unit
+            option: StartLimitBurst
+            value: 10
+            create: yes
+            state: present
+      notify:
+        - Reload systemd
+        - Restart redis
+      tags:
+        - redis
+
+      rescue:
+        - name: Debug failure to modify redis service
+          ansible.builtin.debug:
+            msg: "Failed to modify redis service to be more robust"
+          tags:
+            - redis
+
   tags:
     - docker
-    - redis
-
-  rescue:
-    - name: Debug failure to modify redis service
-      ansible.builtin.debug:
-        msg: "Failed to modify redis service to be more robust"
-      tags:
-        - docker
-        - redis

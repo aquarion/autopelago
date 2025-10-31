@@ -10,6 +10,11 @@
     name: redis
     state: restarted
 
+- name: Restart MySQL
+  ansible.builtin.service:
+    name: mysql
+    state: restarted
+
 - name: Reload Nginx
   ansible.builtin.service:
     name: nginx
