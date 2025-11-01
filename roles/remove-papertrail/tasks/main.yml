@@ -5,7 +5,7 @@
 #            mode=0644
 
 - name: Remove Papertrail PEM
-  file:
+  ansible.builtin.file:
     path: "/etc/papertrail-bundle.pem"
     state: absent
 
@@ -15,8 +15,8 @@
 #   notify:
 #     - Restart Rsyslog
 
-- name: remove Rsyslog Papertrail configuration
-  file:
+- name: Remove Rsyslog Papertrail configuration
+  ansible.builtin.file:
     path: "/etc/rsyslog.d/90-papertrail.conf"
     state: absent
   notify:
@@ -32,12 +32,12 @@
   ansible.builtin.service_facts:
 
 - name: Remove Papertrail service definition
-  file:
+  ansible.builtin.file:
     path: "{{ papertrail_remote_syslog_config_paths[ansible_service_mgr].path }}"
     state: absent
 
 - name: Disable Papertrail service
-  service:
+  ansible.builtin.service:
     name: remote_syslog
     enabled: false
     state: stopped
@@ -46,9 +46,9 @@
   when: "'remote_syslog' in services"
 
 - name: Remove service account for Papertrail
-  user:
+  ansible.builtin.user:
     name: papertrail
-    system: yes
+    system: true
     home: /var/lib/papertrail
     shell: /bin/false
     state: absent
