@@ -26,7 +26,7 @@ exlock() { _lock x; }      # obtain an exclusive lock
 shlock() { _lock s; }      # obtain a shared lock
 unlock() { _lock u; }      # drop a lock
 
-exec > >(ts >> "{{ media_logs }}/download_youtube.log" 2>&1)
+exec > >(ts >>"{{ media_logs }}/download_youtube.log" 2>&1)
 
 function dienow {
 	echo "Lock found $LOCKFILE"

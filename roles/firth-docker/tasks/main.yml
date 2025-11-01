@@ -121,3 +121,9 @@
             msg: "Failed to modify redis service to be more robust"
           tags:
             - redis
+  rescue:
+    - name: Debug failure to modify redis service
+      ansible.builtin.debug:
+        msg: "Failed to modify redis service to be more robust"
+      tags:
+        - redis
