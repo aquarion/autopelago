@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: Nichoplas Avenell
+  author: Nicholas Avenell
   description: An Ansible role to deploy an SFTP server using Docker and the atmoz/sftp image.
   company: Istic Co. <https://istic.co>
 
