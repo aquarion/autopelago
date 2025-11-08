@@ -1,38 +1,108 @@
-Role Name
-=========
+# SFTP Docker Role
 
-A brief description of the role goes here.
+An Ansible role that deploys a containerized SFTP server using Docker, with support for multiple chrooted users and SSH key authentication.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Docker and Docker Compose installed on the target host
+- Ansible collections:
+  - `community.docker`
+  - `ansible.posix`
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Required Variables
 
-Dependencies
-------------
+- `docker_root`: Base directory for Docker volumes and configurations (e.g., `/opt/docker`)
+- `sftp_users`: List of SFTP users to create
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+### Optional Variables
 
-Example Playbook
-----------------
+- `sftp_docker_user`: System user for running the Docker container (default: `sftp_docker`)
+- `sftp_docker_group`: System group for the Docker container (default: `sftp_docker`)
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+### SFTP User Configuration
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Each user in `sftp_users` should have the following structure:
 
-License
--------
+```yaml
+sftp_users:
+  - name: username
+    ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vbq... user@domain.com"
+    uid: 1001  # Optional: custom UID for the user
+    gid: 100   # Optional: custom GID for the user
+```
 
-BSD
+## Dependencies
 
-Author Information
-------------------
+This role depends on Docker being installed and configured on the target system. Consider using a Docker installation role before running this role.
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Example Playbook
+
+```yaml
+---
+- name: Deploy SFTP Docker server
+  hosts: sftp_servers
+  become: yes
+  vars:
+    docker_root: /opt/docker
+    sftp_users:
+      - name: client1
+        ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vbq... client1@company.com"
+        uid: 2001
+        gid: 2001
+      - name: client2
+        ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD8xyz... client2@company.com"
+        uid: 2002
+        gid: 2002
+  roles:
+    - firth-sftp-docker
+```
+
+## Directory Structure
+
+The role creates the following directory structure:
+
+```
+{{ docker_root }}/sftp/
+├── docker-compose.yml
+├── etc/
+│   └── users.conf
+├── keys/
+│   ├── ssh_host_rsa_key
+│   ├── ssh_host_rsa_key.pub
+│   └── ... (other host keys)
+├── bin/
+│   └── bind_mounts.sh
+└── home/
+    ├── client1/
+    │   └── .ssh/
+    │       └── authorized_keys
+    └── client2/
+        └── .ssh/
+            └── authorized_keys
+```
+
+## Security Features
+
+- Users are chrooted to their home directories
+- SSH key-only authentication (no passwords)
+- Dedicated system user runs the container
+- Proper file permissions and ownership
+- SSH host key persistence across container restarts
+
+## Testing
+
+Run the included test playbook:
+
+```bash
+ansible-playbook roles/firth-sftp-docker/tests/test.yml
+```
+
+## License
+
+MIT
+
+## Author Information
+
+Created for the Autopelago infrastructure management system.
