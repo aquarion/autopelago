@@ -9,5 +9,6 @@ collections:
   - amazon.aws
   - community.general
   - community.mysql
+  - community.crypto
   - ansible.posix
   - datadog.dd
