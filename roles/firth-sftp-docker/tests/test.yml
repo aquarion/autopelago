@@ -37,7 +37,7 @@
       failed_when: sftp_user_check.msg is defined
 
     - name: Test - Check user shells are set to nologin
-      ansible.builtin.shell: "getent passwd {{ item.name }} | cut -d: -f7"
+      ansible.builtin.shell: "set -o pipefail && getent passwd {{ item.name }} | cut -d: -f7"
       register: user_shell
       loop: "{{ sftp_users }}"
       failed_when: user_shell.stdout != "/usr/sbin/nologin"
@@ -97,7 +97,7 @@
       failed_when: not match_group_check.changed
 
     - name: Test - Verify users cannot login with shell
-      ansible.builtin.shell: "su - {{ item.name }} -c 'whoami'"
+      ansible.builtin.shell: "set -o pipefail && su - {{ item.name }} -c 'whoami'"
       register: shell_login_test
       loop: "{{ sftp_users }}"
       failed_when: shell_login_test.rc == 0
