@@ -1,0 +1,3 @@
+{% for user in sftp_users %}
+{{ user.name }}:{{ user.password }}:e:{{ user.userid }}:{{ user.groupid }}
+{% endfor %}

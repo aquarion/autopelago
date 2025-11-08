@@ -1,0 +1,11 @@
+sftp:
+    image: atmoz/sftp
+    ports:
+        - "2222:22"
+    volumes:
+        - ./etc/users.conf:/etc/sftp/users.conf:ro
+        - ./keys/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key
+        - ./keys/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
+        - ./bin/bind_mounts.sh:/etc/sftp.d/bind_mounts.sh:ro
+        - "{{ docker_root }}/sftp/home:/home:rw"
+    restart: unless-stopped
