@@ -6,7 +6,7 @@
     - sftp
     - docker
 
-  notify: restart sftp docker
+  notify: Restart SFTP Docker
 
   block:
     - name: Create SFTP Docker user
@@ -33,7 +33,7 @@
     - sftp
     - docker
 
-  notify: restart sftp docker
+  notify: Restart SFTP Docker
 
   block:
     - name: Create necessary directories
@@ -78,7 +78,7 @@
   tags:
     - sftp
     - docker
-  notify: restart sftp docker
+  notify: Restart SFTP Docker
 
   block:
     - name: Check for existing SSH host keys
@@ -119,7 +119,7 @@
   tags:
     - sftp
     - docker
-  notify: Restart sftp docker
+  notify: Restart SFTP Docker
 
   block:
     - name: Template bind_mounts.sh for SFTP Docker container
