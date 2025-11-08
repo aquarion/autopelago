@@ -29,8 +29,8 @@ Each user in `sftp_users` should have the following structure:
 sftp_users:
   - name: username
     ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vbq... user@domain.com"
-    uid: 1001  # Optional: custom UID for the user
-    gid: 100   # Optional: custom GID for the user
+    uid: 1001 # Optional: custom UID for the user
+    gid: 100 # Optional: custom GID for the user
 ```
 
 ## Dependencies
@@ -63,7 +63,7 @@ This role depends on Docker being installed and configured on the target system.
 
 The role creates the following directory structure:
 
-```
+```text
 {{ docker_root }}/sftp/
 ├── docker-compose.yml
 ├── etc/

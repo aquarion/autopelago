@@ -3,10 +3,10 @@
 # Just an example (make your own)
 
 function bindmount() {
-    if [ -d "$1" ]; then
-        mkdir -p "$2"
-    fi
-    mount --bind $3 "$1" "$2"
+	if [ -d "$1" ]; then
+		mkdir -p "$2"
+	fi
+	mount --bind $3 "$1" "$2"
 }
 
 # Remember permissions, you may have to fix them:
