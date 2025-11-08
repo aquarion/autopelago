@@ -6,6 +6,8 @@
     - sftp
     - docker
 
+  notify: restart sftp docker
+
   block:
     - name: Create SFTP Docker user
       ansible.builtin.user:
@@ -21,8 +23,6 @@
         system: true
         state: present
 
-  notify: restart sftp docker
-
   rescue:
     - name: Debug failure to create SFTP Docker user/group
       ansible.builtin.debug:
@@ -32,6 +32,9 @@
   tags:
     - sftp
     - docker
+
+  notify: restart sftp docker
+
   block:
     - name: Create necessary directories
       ansible.builtin.file:
@@ -66,8 +69,6 @@
       no_log: true # Prevent logging sensitive info
       loop: "{{ sftp_users | default([]) }}"
 
-  notify: restart sftp docker
-
   rescue:
     - name: Debug failure to create SFTP Docker directories
       ansible.builtin.debug:
@@ -77,6 +78,8 @@
   tags:
     - sftp
     - docker
+  notify: restart sftp docker
+
   block:
     - name: Check for existing SSH host keys
       ansible.builtin.stat:
@@ -107,8 +110,6 @@
       loop_control:
         loop_var: path_item
 
-  notify: restart sftp docker
-
   rescue:
     - name: Debug failure to setup SSH configuration
       ansible.builtin.debug:
@@ -118,6 +119,8 @@
   tags:
     - sftp
     - docker
+  notify: Restart sftp docker
+
   block:
     - name: Template bind_mounts.sh for SFTP Docker container
       ansible.builtin.template:
@@ -142,8 +145,6 @@
         owner: "{{ sftp_docker_user }}"
         group: "{{ sftp_docker_group }}"
         mode: "0644"
-
-  notify: restart sftp docker
 
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
