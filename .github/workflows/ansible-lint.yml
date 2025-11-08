@@ -17,5 +17,3 @@ jobs:
         run: rm ansible.cfg
       - name: Lint Ansible Playbook
         uses: ansible/ansible-lint@v6
-        with:
-          requirements_file: ./requirements.yml
