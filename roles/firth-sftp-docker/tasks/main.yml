@@ -117,7 +117,7 @@
   block:
     - name: Copy SSH public keys for SFTP Docker users
       ansible.builtin.copy:
-        content: "{{ item.ssh_key }}"
+        content: "{{ lookup('file', path_item) }}"
         dest: "{{ docker_root }}/sftp/home/{{ path_item | splitext | basename }}/.ssh/authorized_keys"
         owner: '{{ sftp_docker_user | default("sftp_docker") }}'
         group: '{{ sftp_docker_group | default("sftp_docker") }}'
@@ -143,16 +143,16 @@
       ansible.builtin.template:
         src: bind_mounts.sh.j2
         dest: "{{ docker_root }}/sftp/bin/bind_mounts.sh"
-        owner: "{{ sftp_docker_user }}"
-        group: "{{ sftp_docker_group }}"
+        owner: "{{ sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ sftp_docker_group | default('sftp_docker') }}"
         mode: "0755"
 
     - name: Template users.conf for SFTP Docker container
       ansible.builtin.template:
         src: users.conf.j2
         dest: "{{ docker_root }}/sftp/etc/users.conf"
-        owner: "{{ sftp_docker_user }}"
-        group: "{{ sftp_docker_group }}"
+        owner: "{{ sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ sftp_docker_group | default('sftp_docker') }}"
         mode: "0644"
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
@@ -169,8 +169,8 @@
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: "{{ docker_root }}/sftp/docker-compose.yml"
-        owner: "{{ sftp_docker_user }}"
-        group: "{{ sftp_docker_group }}"
+        owner: "{{ sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ sftp_docker_group | default('sftp_docker') }}"
         mode: "0644"
 
   rescue:
