@@ -94,6 +94,7 @@
     - github-cli
     - jellyfin
     - getmail
+    - firth-sftp-docker
 
 - name: Hello Firth & Cenote
   hosts: firth:cenote
