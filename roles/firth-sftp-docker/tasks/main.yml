@@ -1,0 +1,179 @@
+---
+# tasks file for roles/firth-sftp-docker
+
+- name: Setup SFTP Docker users and groups
+  tags:
+    - sftp
+    - docker
+
+  notify: Restart SFTP Docker
+
+  block:
+    - name: Create SFTP Docker user
+      ansible.builtin.user:
+        name: "{{ sftp_docker_user | default('sftp_docker') }}"
+        system: true
+        create_home: false
+        shell: /sbin/nologin
+        state: present
+
+    - name: Create SFTP Docker group
+      ansible.builtin.group:
+        name: "{{ sftp_docker_group | default('sftp_docker') }}"
+        system: true
+        state: present
+
+  rescue:
+    - name: Debug failure to create SFTP Docker user/group
+      ansible.builtin.debug:
+        msg: "Failed to create SFTP Docker user or group."
+
+- name: Setup SFTP Docker directories
+  tags:
+    - sftp
+    - docker
+
+  notify: Restart SFTP Docker
+
+  block:
+    - name: Create necessary directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: '{{ sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        mode: "0755"
+      loop:
+        - "{{ docker_root }}/sftp"
+        - "{{ docker_root }}/sftp/etc"
+        - "{{ docker_root }}/sftp/keys"
+        - "{{ docker_root }}/sftp/bin"
+
+    - name: Create home directory for SFTP Docker
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "root"
+        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        mode: "0755"
+      loop:
+        - "{{ docker_root }}/sftp/home"
+
+    - name: Create user directories in SFTP Docker home
+      ansible.builtin.file:
+        path: "{{ docker_root }}/sftp/home/{{ item.name }}"
+        state: directory
+        owner: root
+        group: "{{ item.groupid }}"
+        mode: "0755"
+      no_log: true # Prevent logging sensitive info
+      loop: "{{ sftp_users | default([]) }}"
+
+    - name: Create SSH Key directories for SFTP Docker users
+      ansible.builtin.file:
+        path: "{{ docker_root }}/sftp/home/{{ item.name }}/.ssh"
+        state: directory
+        owner: '{{ sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        mode: "0700"
+      no_log: true # Prevent logging sensitive info
+      loop: "{{ sftp_users | default([]) }}"
+
+  rescue:
+    - name: Debug failure to create SFTP Docker directories
+      ansible.builtin.debug:
+        msg: "Failed to create necessary SFTP Docker directories."
+
+- name: Create SSH keys and authorized_keys for SFTP Docker users
+  tags:
+    - sftp
+    - docker
+  notify: Restart SFTP Docker
+
+  block:
+    - name: Generate SSH host keys
+      community.crypto.openssh_keypair:
+        path: "{{ docker_root }}/sftp/keys/ssh_host_{{ key_type }}_key"
+        type: "{{ key_type }}"
+        owner: '{{ sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        mode: "0600"
+      loop:
+        - ed25519
+        - rsa
+      loop_control:
+        loop_var: key_type
+  rescue:
+    - name: Debug failure to generate SSH host keys
+      ansible.builtin.debug:
+        msg: "Failed to generate SSH host keys for SFTP Docker."
+
+- name: Setup SSH configuration
+  tags:
+    - sftp
+    - docker
+  notify: Restart SFTP Docker
+
+  block:
+    - name: Copy SSH public keys for SFTP Docker users
+      ansible.builtin.copy:
+        content: "{{ lookup('file', path_item) }}"
+        dest: "{{ docker_root }}/sftp/home/{{ path_item | splitext | basename }}/.ssh/authorized_keys"
+        owner: '{{ sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        mode: "0600"
+      with_fileglob:
+        - "files/user_keys.d/*.pub"
+      loop_control:
+        loop_var: path_item
+
+  rescue:
+    - name: Debug failure to setup SSH configuration
+      ansible.builtin.debug:
+        msg: "Failed to setup SSH configuration for SFTP Docker."
+
+- name: Setup SFTP Docker configuration
+  tags:
+    - sftp
+    - docker
+  notify: Restart SFTP Docker
+
+  block:
+    - name: Template bind_mounts.sh for SFTP Docker container
+      ansible.builtin.template:
+        src: bind_mounts.sh.j2
+        dest: "{{ docker_root }}/sftp/bin/bind_mounts.sh"
+        owner: "{{ sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ sftp_docker_group | default('sftp_docker') }}"
+        mode: "0755"
+
+    - name: Template users.conf for SFTP Docker container
+      ansible.builtin.template:
+        src: users.conf.j2
+        dest: "{{ docker_root }}/sftp/etc/users.conf"
+        owner: "{{ sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ sftp_docker_group | default('sftp_docker') }}"
+        mode: "0644"
+  rescue:
+    - name: Debug failure to setup SFTP Docker configuration
+      ansible.builtin.debug:
+        msg: "Failed to create necessary SFTP Docker configuration files."
+
+- name: Setup Docker Compose for SFTP Docker container
+  tags:
+    - sftp
+    - docker
+    - sftp_docker_compose
+  block:
+    - name: Template docker-compose.yml for SFTP Docker container
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ docker_root }}/sftp/docker-compose.yml"
+        owner: "{{ sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ sftp_docker_group | default('sftp_docker') }}"
+        mode: "0644"
+
+  rescue:
+    - name: Debug failure to setup Docker Compose for SFTP Docker container
+      ansible.builtin.debug:
+        msg: "Failed to create necessary Docker Compose for SFTP Docker container."

@@ -21,4 +21,4 @@ skip_list: # Bad lint things we're doing for good reasons
 # #  - amazon.aws.iam_user
 # #  - community.general.timezone
 
-# offline: true
+offline: false

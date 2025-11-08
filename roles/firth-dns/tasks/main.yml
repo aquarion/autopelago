@@ -116,6 +116,7 @@
     - aws
     - istic_net
     - istic_sys
+    - sftp
 
 - name: Update Route53 for nanocountdown
   ansible.builtin.include_tasks: zones/nanocountdown.yml

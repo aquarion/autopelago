@@ -1,0 +1,21 @@
+#!/bin/bash
+# File mounted as: /etc/sftp.d/bind_mounts.sh
+# Just an example (make your own)
+
+function bindmount() {
+	if [ -d "$1" ]; then
+		mkdir -p "$2"
+	fi
+	mount --bind $3 "$1" "$2"
+}
+
+# Remember permissions, you may have to fix them:
+# chown -R :users /data/common
+
+{% for user in sftp_users %}
+{% if user.bind_mounts is defined %}
+{% for mount in user.bind_mounts %}
+#bindmount {{ mount.source }} /home/{{ user.name }}/{{ mount.target }} {% if mount.read_only is defined and mount.read_only %}--read-only{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

@@ -1,0 +1,21 @@
+name: SFTP Docker Service
+services:
+  sftp:
+    image: atmoz/sftp
+    ports:
+        - "2222:22"
+    volumes:
+        - ./etc/users.conf:/etc/sftp/users.conf:ro
+        - ./keys/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key
+        - ./keys/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
+        - ./bin/bind_mounts.sh:/etc/sftp.d/bind_mounts.sh:ro
+        - "{{ docker_root }}/sftp/home:/home:rw"
+{% for user in sftp_users %}
+{% if user.bind_mounts is defined %}
+{% for mount in user.bind_mounts %}
+        -  {{ mount.source }}:/home/{{ user.name }}/{{ mount.target }}{% if mount.read_only is defined and mount.read_only %}:ro{% endif %}
+
+{% endfor %}
+{%- endif %}
+{%- endfor %}
+    restart: unless-stopped

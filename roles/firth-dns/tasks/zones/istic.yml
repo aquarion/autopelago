@@ -604,3 +604,37 @@
     - name: "Failure execution"
       ansible.builtin.command:
         cmd: "false"
+
+- name: Add Route53 item for SFTP server
+  tags:
+    - sftp
+    - docker
+    - istic_net
+    - istic_sys
+  block:
+    - name: "SFTP DNS"
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: sftp.svc.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+
+    - name: "SFTP DNS alias"
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: sftp.istic.systems.
+        type: CNAME
+        ttl: "300"
+        value: sftp.svc.istic.systems
+        aws_profile: istic
+
+  rescue:
+    - name: Debug failure to create Route53 record for SFTP server
+      ansible.builtin.debug:
+        msg: "Failed to create Route53 record for SFTP server."
