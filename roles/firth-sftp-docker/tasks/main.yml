@@ -84,7 +84,7 @@
       ansible.builtin.debug:
         msg: "Failed to create necessary SFTP Docker directories."
 
-- name: create SSH keys and authorized_keys for SFTP Docker users
+- name: Create SSH keys and authorized_keys for SFTP Docker users
   tags:
     - sftp
     - docker
@@ -92,7 +92,7 @@
 
   block:
     - name: Generate SSH host keys
-      ansible.builtin.openssh_keypair:
+      community.crypto.openssh_keypair:
         path: "{{ docker_root }}/sftp/keys/ssh_host_{{ key_type }}_key"
         type: "{{ key_type }}"
         owner: '{{ sftp_docker_user | default("sftp_docker") }}'
