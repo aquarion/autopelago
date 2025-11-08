@@ -13,5 +13,5 @@
 #       - source: /data/user1/docs
 #         target: docs
 #         read_only: true
-# Encrypt passwords can be generated with:
+# Encrypted passwords can be generated with:
 #  echo -n "your-password" | docker run -i --rm atmoz/makepasswd --crypt-md5 --clearfrom=-

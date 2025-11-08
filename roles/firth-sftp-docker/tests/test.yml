@@ -2,13 +2,6 @@
 - name: Test firth-sftp-docker role
   hosts: localhost
   remote_user: root
-  roles:
-    - roles/firth-sftp-docker
-
----
-- name: Test firth-sftp-docker role
-  hosts: localhost
-  remote_user: root
   vars:
     sftp_users:
       - name: testuser1
