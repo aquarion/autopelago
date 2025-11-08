@@ -57,7 +57,7 @@
         group: '{{ sftp_docker_group | default("sftp_docker") }}'
         mode: "0755"
       loop:
-        - "{{ docker_root }}/home"
+        - "{{ docker_root }}/sftp/home"
 
     - name: Create user directories in SFTP Docker home
       ansible.builtin.file:
