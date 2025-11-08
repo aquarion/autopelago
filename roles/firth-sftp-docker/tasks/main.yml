@@ -103,6 +103,10 @@
         - rsa
       loop_control:
         loop_var: key_type
+  rescue:
+    - name: Debug failure to generate SSH host keys
+      ansible.builtin.debug:
+        msg: "Failed to generate SSH host keys for SFTP Docker."
 
 - name: Setup SSH configuration
   tags:
@@ -163,7 +167,7 @@
   block:
     - name: Template docker-compose.yml for SFTP Docker container
       ansible.builtin.template:
-        src: docker-compose.j2.yml
+        src: docker-compose.yml.j2
         dest: "{{ docker_root }}/sftp/docker-compose.yml"
         owner: "{{ sftp_docker_user }}"
         group: "{{ sftp_docker_group }}"
