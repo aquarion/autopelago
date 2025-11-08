@@ -49,12 +49,22 @@
         - "{{ docker_root }}/sftp/keys"
         - "{{ docker_root }}/sftp/bin"
 
+    - name: Create home directory for SFTP Docker
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "root"
+        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        mode: "0755"
+      loop:
+        - "{{ docker_root }}/home"
+
     - name: Create user directories in SFTP Docker home
       ansible.builtin.file:
         path: "{{ docker_root }}/sftp/home/{{ item.name }}"
         state: directory
-        owner: '{{ sftp_docker_user | default("sftp_docker") }}'
-        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        owner: root
+        group: "{{ item.groupid }}"
         mode: "0755"
       no_log: true # Prevent logging sensitive info
       loop: "{{ sftp_users | default([]) }}"
@@ -74,6 +84,26 @@
       ansible.builtin.debug:
         msg: "Failed to create necessary SFTP Docker directories."
 
+- name: create SSH keys and authorized_keys for SFTP Docker users
+  tags:
+    - sftp
+    - docker
+  notify: Restart SFTP Docker
+
+  block:
+    - name: Generate SSH host keys
+      ansible.builtin.openssh_keypair:
+        path: "{{ docker_root }}/sftp/keys/ssh_host_{{ key_type }}_key"
+        type: "{{ key_type }}"
+        owner: '{{ sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ sftp_docker_group | default("sftp_docker") }}'
+        mode: "0600"
+      loop:
+        - ed25519
+        - rsa
+      loop_control:
+        loop_var: key_type
+
 - name: Setup SSH configuration
   tags:
     - sftp
@@ -81,23 +111,6 @@
   notify: Restart SFTP Docker
 
   block:
-    - name: Check for existing SSH host keys
-      ansible.builtin.stat:
-        path: "{{ docker_root }}/sftp/keys/ssh_host_rsa_key"
-      register: ssh_host_key
-
-    - name: Generate SSH host keys if they do not exist
-      ansible.builtin.command: ssh-keygen -A
-      args:
-        creates: "{{ docker_root }}/sftp/keys/ssh_host_rsa_key"
-      become: true
-      become_user: '{{ sftp_docker_user | default("sftp_docker") }}'
-      environment:
-        SSH_KEYGEN_OUTPUT_DIR: "{{ docker_root }}/sftp/keys"
-      register: ssh_keygen_result
-      changed_when: ssh_keygen_result.rc == 0
-      when: not ssh_host_key.stat.exists
-
     - name: Copy SSH public keys for SFTP Docker users
       ansible.builtin.copy:
         content: "{{ item.ssh_key }}"
@@ -137,7 +150,17 @@
         owner: "{{ sftp_docker_user }}"
         group: "{{ sftp_docker_group }}"
         mode: "0644"
+  rescue:
+    - name: Debug failure to setup SFTP Docker configuration
+      ansible.builtin.debug:
+        msg: "Failed to create necessary SFTP Docker configuration files."
 
+- name: Setup Docker Compose for SFTP Docker container
+  tags:
+    - sftp
+    - docker
+    - sftp_docker_compose
+  block:
     - name: Template docker-compose.yml for SFTP Docker container
       ansible.builtin.template:
         src: docker-compose.j2.yml
@@ -147,6 +170,6 @@
         mode: "0644"
 
   rescue:
-    - name: Debug failure to setup SFTP Docker configuration
+    - name: Debug failure to setup Docker Compose for SFTP Docker container
       ansible.builtin.debug:
-        msg: "Failed to create necessary SFTP Docker configuration files."
+        msg: "Failed to create necessary Docker Compose for SFTP Docker container."

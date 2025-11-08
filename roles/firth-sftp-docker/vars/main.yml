@@ -1,2 +1,17 @@
 ---
 # vars file for roles/firth-sftp-docker
+
+# sftp_users:
+#   - name: user1
+#     password: pass1
+#     userid: 1001
+#     groupid: 1001
+#     bind_mounts:
+#       - source: /data/user1/files
+#         target: files
+#         read_only: false
+#       - source: /data/user1/docs
+#         target: docs
+#         read_only: true
+# Encrypt passwords can be generated with:
+#  echo -n "your-password" | docker run -i --rm atmoz/makepasswd --crypt-md5 --clearfrom=-
