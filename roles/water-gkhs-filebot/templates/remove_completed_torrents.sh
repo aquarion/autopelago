@@ -15,7 +15,6 @@ if ! hash jq 2>/dev/null; then
 	exit 1
 fi
 
-
 # use transmission-remote to get torrent list from transmission-remote list
 TORRENTLIST=$(transmission-remote --json --list | jq -r '.arguments.torrents[].id')
 
@@ -57,7 +56,7 @@ transmission-remote --json --list | jq -r '.arguments.torrents[].id' | while rea
 	else
 		LAST_ACTIVITY_WORDS=$(date -d @"$LAST_ACTIVITY" +"%Y-%m-%d %H:%M:%S")
 	fi
-	
+
 	echo -en "#$TORRENTID - $NAME - "
 
 	# Check if the torrent is finished
@@ -65,7 +64,7 @@ transmission-remote --json --list | jq -r '.arguments.torrents[].id' | while rea
 		echo -e " is ${GREEN}${TXT_COMPLETE}${NC} Removing."
 		transmission-remote --torrent "$TORRENTID" --remove
 	else
-		if (( AGE > AGE_OUT_CUTOFF )); then
+		if ((AGE > AGE_OUT_CUTOFF)); then
 			echo -e " is ${RED}${TXT_AGEDOUT}${NC}, Last activity $LAST_ACTIVITY_WORDS. Removing."
 			transmission-remote --torrent "$TORRENTID" --remove
 			continue
