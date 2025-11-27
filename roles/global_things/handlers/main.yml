@@ -28,3 +28,8 @@
 - name: Reload systemd
   ansible.builtin.systemd_service:
     daemon_reload: true
+
+- name: Restart datadog-agent
+  ansible.builtin.service:
+    name: datadog-agent
+    state: restarted

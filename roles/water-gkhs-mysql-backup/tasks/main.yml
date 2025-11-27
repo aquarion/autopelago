@@ -99,7 +99,7 @@
     minute: "16"
     hour: "3"
     user: root
-    job: chronic /usr/local/bin/mysql_backup.sh Daily/`date +%A`
+    job: /usr/local/bin/mysql_backup.sh Daily/`date +%A` | ts > /var/log/mysql/mysql_backup.log
     cron_file: mysql_backup_daily
 
 - name: Setup monthly backup
@@ -109,5 +109,58 @@
     hour: "0"
     day: "1"
     user: root
-    job: chronic /usr/local/bin/mysql_backup.sh Monthly/`date +%B`
+    job: /usr/local/bin/mysql_backup.sh Monthly/`date +%B` | ts > /var/log/mysql/mysql_backup.log
     cron_file: mysql_backup_monthly
+
+- name: Ensure MySQL log directory exists
+  ansible.builtin.file:
+    path: /var/log/mysql
+    state: directory
+    mode: "0755"
+    owner: mysql
+    group: mysql
+  tags: mysql_backup
+
+- name: Rotate MySQL backup log
+  ansible.builtin.copy:
+    dest: /etc/logrotate.d/mysql_backup
+    content: |
+      /var/log/mysql/mysql_backup.log {
+          weekly
+          rotate 12
+          compress
+          missingok
+          notifempty
+          create 640 mysql mysql
+          sharedscripts
+          postrotate
+              /usr/bin/killall -HUP mysqld
+          endscript
+      }
+  tags: mysql_backup
+
+- name: Ensure logrotate is installed
+  ansible.builtin.apt:
+    name: logrotate
+    state: present
+  tags: mysql_backup
+
+- name: Ensure ts command is available
+  ansible.builtin.apt:
+    name: moreutils
+    state: present
+  tags: mysql_backup
+
+- name: Send mysql backup log to datadog
+  ansible.builtin.copy:
+    dest: /etc/dd-agent/conf.d/mysql_backup.yaml
+    content: |
+      # Send MySQL backup  logs to Datadog
+      # Managed by Ansible - roles/water-gkhs-mysql-backup/tasks/main.yml
+      logs:
+        - type: file
+          path: /var/log/mysql/mysql_backup.log
+          service: mysql_backup
+          source: mysql_backup
+  notify: Restart datadog-agent
+  tags: mysql_backup
