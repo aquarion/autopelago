@@ -150,19 +150,3 @@
     name: moreutils
     state: present
   tags: mysql_backup
-
-- name: Send mysql backup log to datadog
-  ansible.builtin.copy:
-    dest: /etc/datadog-agent/conf.d/mysql_backup.yaml
-    content: |
-      # Send MySQL backup  logs to Datadog
-      # Managed by Ansible - roles/water-gkhs-mysql-backup/tasks/main.yml
-      logs:
-        - type: file
-          path: /var/log/mysql/mysql_backup.log
-          service: mysql_backup
-          source: mysql_backup
-  notify: Restart datadog-agent
-  tags:
-    - mysql_backup
-    - datadog

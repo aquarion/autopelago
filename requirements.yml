@@ -11,4 +11,3 @@ collections:
   - community.mysql
   - community.crypto
   - ansible.posix
-  - datadog.dd

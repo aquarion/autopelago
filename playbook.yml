@@ -37,27 +37,7 @@
     - water-gkhs-users
     - { role: water-gkhs-web-errors, tags: nginx }
     - { role: remove-papertrail, tags: papertrail }
-
-- name: Import the Datadog Agent role
-  hosts: all:!localactions
-  become: true
-  tasks:
-    - name: Import the Datadog Agent role from the Datadog collection
-      ansible.builtin.import_role:
-        name: datadog.dd.agent
-  vars:
-    datadog_site: "datadoghq.eu"
-    datadog_apm_instrumentation_enabled: "host"
-    datadog_apm_instrumentation_libraries:
-      # - "java:1"
-      - "python:3"
-      - "js:5"
-      - "php:1"
-      - "dotnet:3"
-    datadog_remote_updates: true
-    datadog_logs_enabled: true
-    datadog_process_agent_enabled: true
-  tags: datadog
+    - { role: remove-datadog, tags: datadog }
 
 - name: Actions on all non-local hosts
   hosts: all:!localactions
