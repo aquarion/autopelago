@@ -175,3 +175,28 @@
     owner: root
   tags:
     - logrotate
+
+
+- name: Send media management log to datadog
+  ansible.builtin.copy:
+    dest: /etc/datadog-agent/conf.d/media_management.yaml
+    content: |
+      # Send media management logs to Datadog
+      # Managed by Ansible - roles/water-gkhs-filebot/tasks/main.yml
+      logs:
+        - type: file
+          path: {{ media_logs }}/filebot_organise_media_downloads.log
+          service: media_management
+          source: sortitaaht
+        - type: file
+          path: {{ media_logs }}/download_youtube.log
+          service: media_management
+          source: download_youtube
+        - type: file
+          path: {{ media_logs }}/remove_completed_torrents.log
+          service: media_management
+          source: remove_completed_torrents
+  notify: Restart datadog-agent
+  tags: 
+    - media
+    - datadog
