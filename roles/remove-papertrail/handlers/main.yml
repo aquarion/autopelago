@@ -1,9 +1,0 @@
----
-- name: Restart remote_syslog
-  ansible.builtin.service:
-    name: remote_syslog
-    state: restarted
-- name: Restart Rsyslog
-  ansible.builtin.service:
-    name: rsyslog
-    state: restarted
