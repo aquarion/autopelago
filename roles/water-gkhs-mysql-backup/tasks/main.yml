@@ -167,6 +167,9 @@
                   /usr/bin/killall -HUP mysqld
               endscript
           }
+        owner: root
+        group: root
+        mode: "0644"
 
   rescue:
     - name: Debug MySQL backup setup failure
