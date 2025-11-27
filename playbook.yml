@@ -55,6 +55,8 @@
       - "php:1"
       - "dotnet:3"
     datadog_remote_updates: true
+    datadog_logs_enabled: true
+    datadog_process_agent_enabled: true
   tags: datadog
 
 - name: Actions on all non-local hosts
