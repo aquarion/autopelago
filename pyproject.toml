@@ -7,8 +7,8 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.10"
-ansible = "==10.7.*"
+python = ">=3.12,<4.0"
+ansible = "==13.*"
 ansible-lint = { version = "==25.*", markers = "platform_system != 'Windows'" }
 boto = "==2.*"
 boto3 = "==1.*"
