@@ -135,8 +135,29 @@
     pkg:
       - certbot
       - python3-certbot-dns-route53
-      - python3-certbot-nginx
       - python3-certbot-dns-cloudflare
+  tags:
+    - certbot
+
+- name: Get Service Facts
+  ansible.builtin.service_facts:
+  tags: certbot
+
+- name: Install nginx certbot packages if it's installed
+  when: "'nginx' in services"
+  ansible.builtin.apt:
+    state: present
+    pkg:
+      - python3-certbot-nginx
+  tags:
+    - certbot
+
+- name: Install apache2 certbot packages if it's installed
+  when: "'apache2' in services"
+  ansible.builtin.apt:
+    state: present
+    pkg:
+      - python3-certbot-apache
   tags:
     - certbot
 
