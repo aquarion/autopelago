@@ -1,3 +1,5 @@
+# Docker Compose file for SFTP service
+# {{ ansible_managed }}
 name: SFTP Docker Service
 services:
   sftp:
@@ -10,6 +12,10 @@ services:
         - ./keys/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
         - ./bin/bind_mounts.sh:/etc/sftp.d/bind_mounts.sh:ro
         - "{{ docker_root }}/sftp/home:/home:rw"
+    logging:
+      driver: journald
+      options:
+        tag: '{{.Name}}/{{.ID}}'
 {% for user in sftp_users %}
 {% if user.bind_mounts is defined %}
 {% for mount in user.bind_mounts %}
