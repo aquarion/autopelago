@@ -13,7 +13,7 @@
     state: absent
   notify:
     - Apt Cache Update
-  tags: 
+  tags:
     - php
     - package-sources
 
@@ -27,7 +27,7 @@
   register: ondrej_php_ppa_info
   notify:
     - Apt Cache Update
-  tags: 
+  tags:
     - php
     - package-sources
 
