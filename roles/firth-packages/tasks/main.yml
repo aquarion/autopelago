@@ -7,11 +7,15 @@
       - irssi
       - exim4
 
-- name: Add PHP PPA
+- name: Remove old PHP PPA
   ansible.builtin.apt_repository:
     repo: ppa:ondrej/php
     state: absent
-  tags: php
+  notify:
+    - Apt Cache Update
+  tags: 
+    - php
+    - package-sources
 
 - name: Get Launchpad PPA Info
   ansible.builtin.uri:
@@ -21,7 +25,11 @@
     headers:
       Accept: "application/json"
   register: ondrej_php_ppa_info
-  tags: php
+  notify:
+    - Apt Cache Update
+  tags: 
+    - php
+    - package-sources
 
 - name: Manage PHP PPA repository (deb822_repository)
   become: true

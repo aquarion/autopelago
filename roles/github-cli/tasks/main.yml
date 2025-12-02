@@ -21,6 +21,9 @@
     state: present
   tags:
     - githubcli
+    - package-sources
+  notify:
+    - Apt Cache Update
 
 - name: Install gh
   ansible.builtin.apt:

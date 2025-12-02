@@ -17,6 +17,10 @@
       ansible.builtin.apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
         state: absent
+      notify:
+        - Apt Cache Update
+      tags:
+        - package-sources
 
     - name: Docker Repo
       ansible.builtin.deb822_repository:
@@ -27,6 +31,8 @@
         signed_by: /etc/apt/keyrings/docker.gpg
         components: stable
         architectures: "{{ deb_architecture.stdout }}"
+      notify:
+        - Apt Cache Update
 
     - name: Install docker
       ansible.builtin.apt:

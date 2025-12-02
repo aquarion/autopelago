@@ -28,3 +28,8 @@
 - name: Reload systemd
   ansible.builtin.systemd_service:
     daemon_reload: true
+
+- name: Apt Cache Update
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
