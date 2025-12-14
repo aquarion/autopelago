@@ -1,5 +1,5 @@
 ---
-# handlers file for roles/firth-sftp-docker
+# handlers file for roles/firth_sftp_docker
 
 - name: Restart SFTP Docker
   ansible.builtin.command: docker compose up -d

@@ -5,8 +5,8 @@
     - name: Import global handlers
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   roles:
-    - name: aws-profiles
-      role: aws-profiles
+    - name: aws_profiles
+      role: aws_profiles
       become: false
       connection: local
       tags: aws
@@ -19,7 +19,7 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - { role: water-gkhs-nginx, tags: nginx }
+    - { role: water_gkhs_nginx, tags: nginx }
 
 - name: Deploy Stream Delta
   hosts: atoll
@@ -28,5 +28,5 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - atoll-nginx
-    - stream-delta
+    - atoll_nginx
+    - stream_delta

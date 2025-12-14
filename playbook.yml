@@ -5,19 +5,19 @@
     - name: Import global handlers
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   roles:
-    - name: aws-profiles
-      role: aws-profiles
+    - name: aws_profiles
+      role: aws_profiles
       become: false
       connection: local
       tags: aws
       run_once: true
-    - name: firth-dns
-      role: firth-dns
+    - name: firth_dns
+      role: firth_dns
       become: false
       connection: local
       tags: route53
       run_once: true
-    - role: aws-pdforums
+    - role: aws_pdforums
       become: false
       connection: local
       tags: aws
@@ -30,12 +30,12 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - water-gkhs-common
-    - water-gkhs-listchanges
-    - water-gkhs-update
-    - water-gkhs-network
-    - water-gkhs-users
-    - { role: water-gkhs-web-errors, tags: nginx }
+    - water_gkhs_common
+    - water_gkhs_listchanges
+    - water_gkhs_update
+    - water_gkhs_network
+    - water_gkhs_users
+    - { role: water_gkhs_web_errors, tags: nginx }
 
 - name: Actions on all non-local hosts
   hosts: all:!localactions
@@ -44,7 +44,7 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - { role: water-gkhs-mysql-backup, tags: mysql }
+    - { role: water_gkhs_mysql_backup, tags: mysql }
 
 - name: Actions on all hosts running NGINX
   hosts: nginx_hosts
@@ -53,7 +53,7 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - { role: water-gkhs-nginx, tags: nginx }
+    - { role: water_gkhs_nginx, tags: nginx }
 
 - name: Hello Firth
   hosts: firth
@@ -62,25 +62,25 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - firth-packages
-    - firth-users
-    - firth-docker
-    - plexupdate-uninstall
-    - { role: firth-nginx, tags: nginx }
-    - water-gkhs-filebot
-    - water-gkhs-flexget
-    - water-gkhs-exim
-    - b2-backup
-    - github-cli
+    - firth_packages
+    - firth_users
+    - firth_docker
+    - plexupdate_uninstall
+    - { role: firth_nginx, tags: nginx }
+    - water_gkhs_filebot
+    - water_gkhs_flexget
+    - water_gkhs_exim
+    - b2_backup
+    - github_cli
     - jellyfin
     - getmail
-    - firth-sftp-docker
+    - firth_sftp_docker
 
 - name: Hello Firth & Cenote
   hosts: firth:cenote
   become: true
   roles:
-    - water-gkhs-dovecot
+    - water_gkhs_dovecot
 
 - name: Hello Atoll
   hosts: atoll
@@ -89,9 +89,9 @@
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
-    - github-cli
-    - water-gkhs-nginx
-    - atoll-nginx
-    - water-gkhs-exim
-    - aws-profiles
-    - stream-delta
+    - github_cli
+    - water_gkhs_nginx
+    - atoll_nginx
+    - water_gkhs_exim
+    - aws_profiles
+    - stream_delta

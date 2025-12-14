@@ -96,7 +96,7 @@ The role creates the following directory structure:
 Run the included test playbook:
 
 ```bash
-ansible-playbook roles/firth-sftp-docker/tests/test.yml
+ansible-playbook roles/firth_sftp_docker/tests/test.yml
 ```
 
 ## License

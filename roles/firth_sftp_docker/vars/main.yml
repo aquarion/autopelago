@@ -1,9 +1,6 @@
 ---
-# defaults file for roles/firth-sftp-docker
+# vars file for roles/firth_sftp_docker
 
-sftp_docker_user: sftp_docker
-sftp_docker_group: sftp_docker
-# Example structure for sftp_users
 # sftp_users:
 #   - name: user1
 #     password: pass1
@@ -16,3 +13,5 @@ sftp_docker_group: sftp_docker
 #       - source: /data/user1/docs
 #         target: docs
 #         read_only: true
+# Encrypted passwords can be generated with:
+#  echo -n "your-password" | docker run -i --rm atmoz/makepasswd --crypt-md5 --clearfrom=-

@@ -35,13 +35,13 @@
   tags:
     - certbot
     - ubuntu-sources
-    
+
 - name: Add deb822-style Repositories for Ubuntu universe
   when: ansible_distribution == 'Ubuntu'
   ansible.builtin.deb822_repository:
     name: ubuntu
     uris: "{{ ubuntu_package_mirror | default('http://archive.ubuntu.com/ubuntu/') }}"
-    suites: 
+    suites:
       - "{{ ansible_distribution_release }}"
       - "{{ ansible_distribution_release }}-updates"
     state: present
@@ -54,13 +54,13 @@
     - certbot
     - ubuntu-sources
     - archive-sources
-    
+
 - name: Add deb822-style Repositories for Ubuntu security
   when: ansible_distribution == 'Ubuntu'
   ansible.builtin.deb822_repository:
     name: security
     uris: "{{ ubuntu_security_mirror | default('http://security.ubuntu.com/ubuntu/') }}"
-    suites: 
+    suites:
       - "{{ ansible_distribution_release }}-security"
     state: present
     components:

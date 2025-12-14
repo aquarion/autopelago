@@ -1,5 +1,5 @@
 ---
-- name: Upload github gpg key
+- name: Upload_github_gpg_key
   ansible.builtin.copy:
     src: githubcli-archive-keyring.gpg
     dest: /etc/apt/trusted.gpg.d/githubcli-archive-keyring.gpg
@@ -9,13 +9,13 @@
   tags:
     - githubcli
 
-- name: Get DEB architecture
+- name: Get_deb_architecture
   ansible.builtin.shell: dpkg --print-architecture
   register: deb_architecture
   tags:
     - githubcli
 
-- name: Remove old sources.list entry
+- name: Remove_old_sources_list_entry
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/cli_github_com_packages.list
     state: absent
@@ -23,7 +23,7 @@
     - githubcli
     - package-sources
 
-- name: Add specified repository into sources list
+- name: Add_specified_repository_into_sources_list
   ansible.builtin.deb822_repository:
     name: github-cli
     types: [deb]
@@ -39,7 +39,7 @@
   notify:
     - Apt Cache Update
 
-- name: Install gh
+- name: Install_gh
   ansible.builtin.apt:
     name: "{{ item }}"
     state: present
