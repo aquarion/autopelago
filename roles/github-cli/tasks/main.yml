@@ -15,9 +15,23 @@
   tags:
     - githubcli
 
+- name: Remove old sources.list entry
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/cli_github_com_packages.list
+    state: absent
+  tags:
+    - githubcli
+    - package-sources
+
 - name: Add specified repository into sources list
-  ansible.builtin.apt_repository:
-    repo: deb [arch={{ deb_architecture.stdout }} signed-by=/etc/apt/trusted.gpg.d/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+  ansible.builtin.deb822_repository:
+    name: github-cli
+    types: [deb]
+    uris: https://cli.github.com/packages
+    suites: [stable]
+    components: [main]
+    architectures: ["{{ deb_architecture.stdout }}"]
+    signed_by: /etc/apt/trusted.gpg.d/githubcli-archive-keyring.gpg
     state: present
   tags:
     - githubcli
