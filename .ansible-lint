@@ -1,10 +1,9 @@
 ---
 exclude_paths:
-  - ./galaxy-roles # Don't bother checking upstream code
-  - .github/workflows
-  - ./.github # Don't try to ansible-lint github workflows.
-  - ./host_vars/ # Don't lint host-specific vars, ansible-lint doesn't handle vaulted files well
-  - ./group_vars/ # Don't lint group-specific vars, ansible-lint doesn't handle vaulted files well
+  - galaxy-roles/ # Don't bother checking upstream code
+  - .github/ # Don't try to ansible-lint github workflows.
+  - host_vars/ # Don't lint host-specific vars, ansible-lint doesn't handle vaulted files well
+  - group_vars/ # Don't lint group-specific vars, ansible-lint doesn't handle vaulted files well
 skip_list: # Bad lint things we're doing for good reasons
   - "305" # Use shell only when shell functionality is required
   - "301" # Commands should not change things if nothing needs doing
@@ -13,13 +12,6 @@ skip_list: # Bad lint things we're doing for good reasons
   - yaml[line-length]
   - ignore-errors
   - var-naming[no-role-prefix]
-# mock_roles:
-#   - elastic.elasticsearch
-#   - geerlingguy.java
-#   - elboletaire.transmission
 
-# # mock_modules:
-# #  - amazon.aws.iam_user
-# #  - community.general.timezone
 
 offline: false
