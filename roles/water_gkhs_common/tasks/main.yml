@@ -80,24 +80,24 @@
     - name: Check if archive source file exists
       ansible.builtin.stat:
         path: "/etc/apt/sources.list.d/archive_ubuntu_com_ubuntu.sources"
-      register: archive_source_file
+      register: water_gkhs_common_archive_source_file
 
     - name: Remove archive source file
       ansible.builtin.file:
         path: /etc/apt/sources.list.d/archive_ubuntu_com_ubuntu.list
         state: absent
-      when: archive_source_file.stat.exists
+      when: water_gkhs_common_archive_source_file.stat.exists
 
     - name: Check if security source file exists
       ansible.builtin.stat:
         path: "/etc/apt/sources.list.d/security_ubuntu_com_ubuntu.sources"
-      register: security_source_file
+      register: water_gkhs_common_security_source_file
 
     - name: Remove security source file
       ansible.builtin.file:
         path: /etc/apt/sources.list.d/security_ubuntu_com_ubuntu.list
         state: absent
-      when: security_source_file.stat.exists
+      when: water_gkhs_common_security_source_file.stat.exists
 
   rescue:
     - name: "Failure warning"
@@ -224,16 +224,16 @@
 
 - name: Determine remote Python version.
   ansible.builtin.set_fact:
-    python_version: "{% if 'python3' in ansible_python_interpreter | default('') %}python3{% else %}python{% endif %}"
+    water_gkhs_common_python_version: "{% if 'python3' in ansible_python_interpreter | default('') %}python3{% else %}python{% endif %}"
   tags: aws
 
 - name: Ensure Python libraries that ansible needs are installed.
   ansible.builtin.apt:
     state: present
     pkg:
-      - "{{ python_version }}-boto3"
-      - "{{ python_version }}-boto"
-      - "{{ python_version }}-passlib"
+      - "{{ water_gkhs_common_python_version }}-boto3"
+      - "{{ water_gkhs_common_python_version }}-boto"
+      - "{{ water_gkhs_common_python_version }}-passlib"
   tags:
     - aws
 

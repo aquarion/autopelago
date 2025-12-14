@@ -14,7 +14,7 @@
 
 - name: Get running processes
   ansible.builtin.shell: set -o pipefail && ps -ef | grep -v grep | grep -w filebot_inotify.fifo | grep inotifywait | awk '{print $2}'
-  register: running_processes
+  register: water_gkhs_filebot_running_processes
   listen: restart filebot inotify
 
 - name: Kill running processes
@@ -28,13 +28,13 @@
     state: absent
   with_items: "{{ running_processes.stdout_lines }}"
   ignore_errors: true
-  register: killed_processes
+  register: water_gkhs_filebot_killed_processes
   listen: restart filebot inotify
 
 - name: Force kill stuck processes
   listen: restart filebot inotify
   ansible.builtin.shell: kill -9 {{ item }}
-  with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
+  with_items: "{{ water_gkhs_filebot_killed_processes.results | select('failed') | map(attribute='item') | list }}"
   ignore_errors: true
 
 - name: Restart inotify

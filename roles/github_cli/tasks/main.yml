@@ -11,7 +11,7 @@
 
 - name: Get_deb_architecture
   ansible.builtin.shell: dpkg --print-architecture
-  register: deb_architecture
+  register: github_cli_deb_architecture
   tags:
     - githubcli
 
@@ -30,7 +30,7 @@
     uris: https://cli.github.com/packages
     suites: [stable]
     components: [main]
-    architectures: ["{{ deb_architecture.stdout }}"]
+    architectures: ["{{ github_cli_deb_architecture.stdout }}"]
     signed_by: /etc/apt/trusted.gpg.d/githubcli-archive-keyring.gpg
     state: present
   tags:

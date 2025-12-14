@@ -10,13 +10,13 @@
   block:
     - name: Determine required MySQL Python libraries.
       ansible.builtin.set_fact:
-        deb_mysql_python_package: "{% if 'python3' in ansible_python_interpreter | default('') %}python3-mysqldb{% else %}python-mysqldb{% endif %}"
+        water_gkhs_mysql_backup_deb_mysql_python_package: "{% if 'python3' in ansible_python_interpreter | default('') %}python3-mysqldb{% else %}python-mysqldb{% endif %}"
 
     - name: Ensure Maria & MySQL Python libraries are installed.
       ansible.builtin.apt:
         state: present
         pkg:
-          - "{{ deb_mysql_python_package }}"
+          - "{{ water_gkhs_mysql_backup_deb_mysql_python_package }}"
           - mariadb-server
           - moreutils
           - python3-mysqldb
@@ -56,12 +56,12 @@
     - name: Check MySQL service status
       ansible.builtin.service:
         name: mariadb
-      register: mysql_service_status
+      register: water_gkhs_mysql_backup_mysql_service_status
       ignore_errors: true
 
     - name: Display MySQL service status
       ansible.builtin.debug:
-        var: mysql_service_status
+        var: water_gkhs_mysql_backup_mysql_service_status
 
 - name: Setup MySQL backup system
   tags:
@@ -179,19 +179,19 @@
     - name: Check backup location permissions
       ansible.builtin.stat:
         path: "{{ mysql_backup_location | default('/var/backups/mysql') }}"
-      register: backup_location_stat
+      register: water_gkhs_mysql_backup_backup_location_stat
       ignore_errors: true
 
     - name: Display backup location info
       ansible.builtin.debug:
-        var: backup_location_stat
+        var: water_gkhs_mysql_backup_backup_location_stat
 
     - name: Check if backup template exists
       ansible.builtin.stat:
         path: "{{ role_path }}/templates/mysql_backup.sh"
-      register: backup_template_stat
+      register: water_gkhs_mysql_backup_backup_template_stat
       ignore_errors: true
 
     - name: Display template status
       ansible.builtin.debug:
-        msg: "Backup template exists: {{ backup_template_stat.stat.exists | default(false) }}"
+        msg: "Backup template exists: {{ water_gkhs_mysql_backup_backup_template_stat.stat.exists | default(false) }}"

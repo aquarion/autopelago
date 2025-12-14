@@ -9,7 +9,7 @@
 
 - name: Get DEB architecture
   ansible.builtin.shell: dpkg --print-architecture
-  register: deb_architecture
+  register: jellyfin_deb_architecture
   tags:
     - jellyfin
 
@@ -21,7 +21,7 @@
     state: present
     signed_by: /etc/apt/keyrings/jellyfin.gpg
     components: main
-    architectures: "{{ deb_architecture.stdout }}"
+    architectures: "{{ jellyfin_deb_architecture.stdout }}"
 
   tags:
     - jellyfin

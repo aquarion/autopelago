@@ -11,7 +11,7 @@
 
     - name: Get DEB architecture
       ansible.builtin.shell: dpkg --print-architecture
-      register: deb_architecture
+      register: firth_docker_deb_architecture
 
     - name: Remove old docker repository from apt
       ansible.builtin.apt_repository:
@@ -30,7 +30,7 @@
         state: present
         signed_by: /etc/apt/keyrings/docker.gpg
         components: stable
-        architectures: "{{ deb_architecture.stdout }}"
+        architectures: "{{ firth_docker_deb_architecture.stdout }}"
       notify:
         - Apt Cache Update
 

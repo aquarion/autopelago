@@ -55,7 +55,7 @@
       args:
         executable: /bin/bash
       check_mode: false
-      register: fetched_github_hostkeys
+      register: stream_delta_fetched_github_hostkeys
 
     - name: Add github hostkeys to stream-delta known_hosts
       ansible.builtin.known_hosts:
@@ -63,7 +63,7 @@
         key: "{{ known_host }}"
         state: present
         path: "{{ stream_delta_home }}/.ssh/known_hosts"
-      loop: "{{ fetched_github_hostkeys.stdout_lines }}"
+      loop: "{{ stream_delta_fetched_github_hostkeys.stdout_lines }}"
       loop_control:
         loop_var: known_host
       become: true

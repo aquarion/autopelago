@@ -37,7 +37,7 @@
     dest: "{{ media_home }}/.flexget/config.yml"
     mode: "0660"
     owner: "{{ media_user }}"
-    content: "{{ flexget_tasks | to_nice_yaml }}"
+    content: "{{ water_gkhs_flexget_flexget_tasks | to_nice_yaml }}"
   tags:
     - flexget
     - flexgetconfig

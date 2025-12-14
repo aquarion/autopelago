@@ -11,7 +11,5 @@ skip_list: # Bad lint things we're doing for good reasons
   - "204" # Lines should be no longer than 160 chars
   - yaml[line-length]
   - ignore-errors
-  - var-naming[no-role-prefix]
-
 
 offline: false

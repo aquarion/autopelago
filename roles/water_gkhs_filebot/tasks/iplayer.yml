@@ -18,7 +18,7 @@
     group: "{{ media_user }}"
     mode: "0644"
     create: true
-  register: iplayer_updated
+  register: water_gkhs_filebot_iplayer_updated
   tags:
     - media
     - iplayer
@@ -31,7 +31,7 @@
     owner: root
     group: root
     mode: "0755"
-  when: iplayer_updated.changed
+  when: water_gkhs_filebot_iplayer_updated.changed
   tags:
     - media
     - iplayer

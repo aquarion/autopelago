@@ -4,29 +4,29 @@
   ansible.builtin.lineinfile:
     path: "{{ media_home }}/.ansible_filebot_reg"
     regexp: ^etag
-    line: etag {{ filebot_version }}
+    line: etag {{ water_gkhs_filebot_filebot_version }}
     owner: "{{ media_user }}"
     group: "{{ media_user }}"
     mode: "0644"
     create: true
-  register: did_filebot_update
+  register: water_gkhs_filebot_did_filebot_update
   tags:
     - filebot
 
 - name: Setup |  deb | download installer
   ansible.builtin.get_url:
-    url: "{{ filebot_deb_url }}"
-    dest: "{{ filebot_deb_tmp }}"
+    url: "{{ water_gkhs_filebot_filebot_deb_url }}"
+    dest: "{{ water_gkhs_filebot_filebot_deb_tmp }}"
     mode: ug=rw,o=r
-  when: did_filebot_update.changed
+  when: water_gkhs_filebot_did_filebot_update.changed
   tags:
     - filebot
 
 - name: Setup |  deb | run the installer
   become: true
   ansible.builtin.apt:
-    deb: "{{ filebot_deb_tmp }}"
-  when: did_filebot_update.changed
+    deb: "{{ water_gkhs_filebot_filebot_deb_tmp }}"
+  when: water_gkhs_filebot_did_filebot_update.changed
   tags:
     - filebot
 
