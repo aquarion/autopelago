@@ -23,10 +23,11 @@
 #    id: 8B48AD6246925553
 #  when: ansible_distribution == 'Debian'
 
-- name: Enable Ubuntu universe repository
+- name: Remove lists files for Ubuntu universe repository
   when: ansible_distribution == 'Ubuntu'
   ansible.builtin.apt_repository:
     repo: "{{ item }}"
+    state: absent
   loop:
     - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe
     - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-updates universe
@@ -34,6 +35,43 @@
   tags:
     - certbot
     - ubuntu-sources
+    
+- name: Add deb822-style Repositories for Ubuntu universe
+  when: ansible_distribution == 'Ubuntu'
+  ansible.builtin.deb822_repository:
+    name: ubuntu
+    uris: "{{ ubuntu_package_mirror | default('http://archive.ubuntu.com/ubuntu/') }}"
+    suites: 
+      - "{{ ansible_distribution_release }}"
+      - "{{ ansible_distribution_release }}-updates"
+    state: present
+    components:
+      - main
+      - restricted
+      - universe
+    signed_by: "{{ ubuntu_mirror_key | default('/usr/share/keyrings/ubuntu-archive-keyring.gpg') }}"
+  tags:
+    - certbot
+    - ubuntu-sources
+    - archive-sources
+    
+- name: Add deb822-style Repositories for Ubuntu security
+  when: ansible_distribution == 'Ubuntu'
+  ansible.builtin.deb822_repository:
+    name: security
+    uris: "{{ ubuntu_security_mirror | default('http://security.ubuntu.com/ubuntu/') }}"
+    suites: 
+      - "{{ ansible_distribution_release }}-security"
+    state: present
+    components:
+      - main
+      - restricted
+      - universe
+    signed_by: "{{ ubuntu_mirror_key | default('/usr/share/keyrings/ubuntu-archive-keyring.gpg') }}"
+  tags:
+    - certbot
+    - ubuntu-sources
+    - archive-sources
 
 - name: Remove old archive and security sources
   tags: ubuntu-sources
