@@ -1,10 +1,4 @@
 ---
-roles:
-  - src: geerlingguy.java
-    version: 2.3.0
-  - src: elboletaire.transmission
-    version: 2.0.3
-
 collections:
   - amazon.aws
   - community.general
