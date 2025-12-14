@@ -5,7 +5,7 @@
   tags:
     - mysql_user
 
-# Setup backups
+  # Setup backups
 
   block:
     - name: Determine required MySQL Python libraries.
