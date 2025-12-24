@@ -11,3 +11,6 @@
 
 - name: Kick sysctl
   ansible.builtin.command: sysctl -p
+
+- name: Update motd
+  ansible.builtin.command: update-motd

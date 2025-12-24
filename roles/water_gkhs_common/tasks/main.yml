@@ -288,7 +288,24 @@
       ansible.builtin.command:
         cmd: "false"
 
-- name: Remove ESM advert
-  ansible.builtin.file:
-    path: /etc/apt/apt.conf.d/20apt-esm-hook.conf
-    state: absent
+- name: Remove ESM Adverts
+  tags: remove_esm_adverts
+  block:
+    - name: Remove ESM advert
+      ansible.builtin.file:
+        path: /etc/apt/apt.conf.d/20apt-esm-hook.conf
+        state: absent
+
+    - name: Disable ESM advert in motd
+      ansible.builtin.file:
+        path: /etc/update-motd.d/90-updates-available
+        state: absent
+      notify:
+        - Update motd
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "ESM advert removal tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
