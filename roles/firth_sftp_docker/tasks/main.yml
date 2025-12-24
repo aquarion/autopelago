@@ -11,7 +11,7 @@
   block:
     - name: Create SFTP Docker user
       ansible.builtin.user:
-        name: "{{ firth_sftp_docker_sftp_docker_user | default('sftp_docker') }}"
+        name: "{{ firth_sftp_docker_user | default('sftp_docker') }}"
         system: true
         create_home: false
         shell: /sbin/nologin
@@ -19,7 +19,7 @@
 
     - name: Create SFTP Docker group
       ansible.builtin.group:
-        name: "{{ firth_sftp_docker_sftp_docker_group | default('sftp_docker') }}"
+        name: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         system: true
         state: present
 
@@ -40,8 +40,8 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: '{{ firth_sftp_docker_sftp_docker_user | default("sftp_docker") }}'
-        group: '{{ firth_sftp_docker_sftp_docker_group | default("sftp_docker") }}'
+        owner: '{{ firth_sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ firth_sftp_docker_group | default("sftp_docker") }}'
         mode: "0755"
       loop:
         - "{{ docker_root }}/sftp"
@@ -54,7 +54,7 @@
         path: "{{ item }}"
         state: directory
         owner: "root"
-        group: '{{ firth_sftp_docker_sftp_docker_group | default("sftp_docker") }}'
+        group: '{{ firth_sftp_docker_group | default("sftp_docker") }}'
         mode: "0755"
       loop:
         - "{{ docker_root }}/sftp/home"
@@ -67,17 +67,17 @@
         group: "{{ item.groupid }}"
         mode: "0755"
       no_log: true # Prevent logging sensitive info
-      loop: "{{ sftp_users | default([]) }}"
+      loop: "{{ firth_sftp_docker_users | default([]) }}"
 
     - name: Create SSH Key directories for SFTP Docker users
       ansible.builtin.file:
         path: "{{ docker_root }}/sftp/home/{{ item.name }}/.ssh"
         state: directory
-        owner: '{{ firth_sftp_docker_sftp_docker_user | default("sftp_docker") }}'
-        group: '{{ firth_sftp_docker_sftp_docker_group | default("sftp_docker") }}'
+        owner: '{{ firth_sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ firth_sftp_docker_group | default("sftp_docker") }}'
         mode: "0700"
       no_log: true # Prevent logging sensitive info
-      loop: "{{ sftp_users | default([]) }}"
+      loop: "{{ firth_sftp_docker_users | default([]) }}"
 
   rescue:
     - name: Debug failure to create SFTP Docker directories
@@ -95,8 +95,8 @@
       community.crypto.openssh_keypair:
         path: "{{ docker_root }}/sftp/keys/ssh_host_{{ key_type }}_key"
         type: "{{ key_type }}"
-        owner: '{{ firth_sftp_docker_sftp_docker_user | default("sftp_docker") }}'
-        group: '{{ firth_sftp_docker_sftp_docker_group | default("sftp_docker") }}'
+        owner: '{{ firth_sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ firth_sftp_docker_group | default("sftp_docker") }}'
         mode: "0600"
       loop:
         - ed25519
@@ -119,8 +119,8 @@
       ansible.builtin.copy:
         content: "{{ lookup('file', path_item) }}"
         dest: "{{ docker_root }}/sftp/home/{{ path_item | splitext | basename }}/.ssh/authorized_keys"
-        owner: '{{ firth_sftp_docker_sftp_docker_user | default("sftp_docker") }}'
-        group: '{{ firth_sftp_docker_sftp_docker_group | default("sftp_docker") }}'
+        owner: '{{ firth_sftp_docker_user | default("sftp_docker") }}'
+        group: '{{ firth_sftp_docker_group | default("sftp_docker") }}'
         mode: "0600"
       with_fileglob:
         - "files/user_keys.d/*.pub"
@@ -143,16 +143,16 @@
       ansible.builtin.template:
         src: bind_mounts.sh.j2
         dest: "{{ docker_root }}/sftp/bin/bind_mounts.sh"
-        owner: "{{ firth_sftp_docker_sftp_docker_user | default('sftp_docker') }}"
-        group: "{{ firth_sftp_docker_sftp_docker_group | default('sftp_docker') }}"
+        owner: "{{ firth_sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         mode: "0755"
 
     - name: Template users.conf for SFTP Docker container
       ansible.builtin.template:
         src: users.conf.j2
         dest: "{{ docker_root }}/sftp/etc/users.conf"
-        owner: "{{ firth_sftp_docker_sftp_docker_user | default('sftp_docker') }}"
-        group: "{{ firth_sftp_docker_sftp_docker_group | default('sftp_docker') }}"
+        owner: "{{ firth_sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         mode: "0644"
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
@@ -169,8 +169,8 @@
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: "{{ docker_root }}/sftp/docker-compose.yml"
-        owner: "{{ firth_sftp_docker_sftp_docker_user | default('sftp_docker') }}"
-        group: "{{ firth_sftp_docker_sftp_docker_group | default('sftp_docker') }}"
+        owner: "{{ firth_sftp_docker_user | default('sftp_docker') }}"
+        group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         mode: "0644"
 
   rescue:

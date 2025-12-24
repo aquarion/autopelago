@@ -1,4 +1,4 @@
 # {{ ansible_managed }}
-{% for user in sftp_users %}
+{% for user in firth_sftp_docker_users %}
 {{ user.name }}:{{ user.password }}:e:{{ user.userid }}:{{ user.groupid }}
 {% endfor %}

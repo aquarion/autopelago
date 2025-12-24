@@ -1,10 +1,10 @@
 ---
 # defaults file for roles/firth_sftp_docker
 
-firth_sftp_docker_sftp_docker_user: sftp_docker
-firth_sftp_docker_sftp_docker_group: sftp_docker
-# Example structure for sftp_users
-# sftp_users:
+firth_sftp_docker_user: sftp_docker
+firth_sftp_docker_group: sftp_docker
+# Example structure for firth_sftp_docker_users
+# firth_sftp_docker_users:
 #   - name: user1
 #     password: pass1
 #     userid: 1001

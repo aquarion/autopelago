@@ -1,7 +1,7 @@
 ---
 # vars file for roles/firth_sftp_docker
 
-# sftp_users:
+# firth_sftp_docker_users:
 #   - name: user1
 #     password: pass1
 #     userid: 1001

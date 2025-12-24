@@ -14,7 +14,7 @@ An Ansible role that deploys a containerized SFTP server using Docker, with supp
 ### Required Variables
 
 - `docker_root`: Base directory for Docker volumes and configurations (e.g., `/opt/docker`)
-- `sftp_users`: List of SFTP users to create
+- `firth_sftp_docker_users`: List of SFTP users to create
 
 ### Optional Variables
 
@@ -23,10 +23,10 @@ An Ansible role that deploys a containerized SFTP server using Docker, with supp
 
 ### SFTP User Configuration
 
-Each user in `sftp_users` should have the following structure:
+Each user in `firth_sftp_docker_users` should have the following structure:
 
 ```yaml
-sftp_users:
+firth_sftp_docker_users:
   - name: username
     ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vbq... user@domain.com"
     uid: 1001 # Optional: custom UID for the user
@@ -46,7 +46,7 @@ This role depends on Docker being installed and configured on the target system.
   become: yes
   vars:
     docker_root: /opt/docker
-    sftp_users:
+    firth_sftp_docker_users:
       - name: client1
         ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vbq... client1@company.com"
         uid: 2001
