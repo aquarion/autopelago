@@ -76,185 +76,323 @@
       ansible.builtin.command:
         cmd: "false"
 
-- name: Install stream-delta dependencies
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - supervisor
-    - composer
-    - git
-    - php-cli
-    - php-xml
-    - php-redis
-    - mariadb-server
-    - redis-server
-    - npm
-    - python3-pymysql
+- name: Package dependencies installation
   tags:
     - stream-delta
     - dependencies
+  block:
+    - name: Install stream-delta dependencies
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - supervisor
+        - composer
+        - git
+        - php-cli
+        - php-xml
+        - php-redis
+        - mariadb-server
+        - redis-server
+        - npm
+        - python3-pymysql
+  rescue:
+    - name: "Package installation failure warning"
+      ansible.builtin.debug:
+        msg: "Package dependencies installation failed"
+    - name: "Package installation failure execution"
+      ansible.builtin.command:
+        cmd: "false"
 
-- name: Create stream-delta user
-  ansible.builtin.user:
-    name: stream-delta
-    shell: /bin/bash
-    home: "{{ stream_delta_home }}"
-    system: true
+- name: User and directory setup
   tags:
     - stream-delta
     - user
+  block:
+    - name: Create stream-delta user
+      ansible.builtin.user:
+        name: stream-delta
+        shell: /bin/bash
+        home: "{{ stream_delta_home }}"
+        system: true
 
-- name: Make stream-delta user a member of www-data group
-  ansible.builtin.user:
-    name: stream-delta
-    groups: www-data
-    append: true
-  tags:
-    - stream-delta
-    - user
+    - name: Make stream-delta user a member of www-data group
+      ansible.builtin.user:
+        name: stream-delta
+        groups: www-data
+        append: true
 
-- name: Create stream-delta ssh key directory
-  ansible.builtin.file:
-    path: "{{ stream_delta_home }}/.ssh"
-    state: directory
-    owner: stream-delta
-    group: stream-delta
-    mode: "0700"
-  tags:
-    - stream-delta
+    - name: Create stream-delta ssh key directory
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/.ssh"
+        state: directory
+        owner: stream-delta
+        group: stream-delta
+        mode: "0700"
 
-- name: Copy stream-delta deploy key
-  ansible.builtin.copy:
-    src: files/keys/stream-delta-deploy
-    dest: "{{ stream_delta_home }}/.ssh/deploy_key"
-    owner: stream-delta
-    group: stream-delta
-    mode: "0600"
-  tags:
-    - stream-delta
+    - name: Copy stream-delta deploy key
+      ansible.builtin.copy:
+        src: files/keys/stream-delta-deploy
+        dest: "{{ stream_delta_home }}/.ssh/deploy_key"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0600"
 
-- name: Checkout stream-delta
-  ansible.builtin.git:
-    repo: git@github.com:aquarion/stream-delta.git
-    dest: "{{ stream_delta_install_dir }}"
-    version: main
-    key_file: "{{ stream_delta_home }}/.ssh/deploy_key"
-  become: true
-  become_user: stream-delta
-  tags:
-    - stream-delta
-    - git
-    - checkout
-    - stream-delta_deploy
-  register: stream_delta_checkout
-  notify:
-    - Restart supervisor
+    # - name: Checkout stream-delta
+    #   ansible.builtin.git:
+    #     repo: git@github.com:aquarion/stream-delta.git
+    #     dest: "{{ stream_delta_install_dir }}"
+    #     version: main
+    #     key_file: "{{ stream_delta_home }}/.ssh/deploy_key"
+    #   become: true
+    #   become_user: stream-delta
+    #   tags:
+    #     - stream-delta
+    #     - git
+    #     - checkout
+    #     - stream-delta_deploy
+    #   register: stream_delta_checkout
+    #   notify:
+    #     - Restart supervisor
 
-- name: Change ownership of stream-delta directory
-  ansible.builtin.file:
-    path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
-    owner: stream-delta
-    group: www-data
-    state: directory
-    recurse: true
-  tags:
-    - stream-delta
-    - stream-delta_deploy
-- name: Copy stream delta environment file
-  ansible.builtin.template:
-    src: templates/production.env.j2
-    dest: "{{ stream_delta_install_dir }}/.env"
-    mode: "0600"
-    owner: stream-delta
-  tags:
-    - stream-delta
-    - stream-delta_deploy
-  notify:
-    - Restart supervisor
+    - name: make sure stream-delta install dir exists
+      ansible.builtin.file:
+        path: "{{ stream_delta_install_dir }}"
+        state: directory
+        owner: stream-delta
+        group: www-data
+        mode: "0755"
 
-- name: Install PHP dependencies
-  community.general.composer:
-    command: install
-    working_dir: "{{ stream_delta_install_dir }}"
-  become: true
-  become_user: stream-delta
-  tags:
-    - stream-delta
-    - stream-delta_deploy
-  when: stream_delta_checkout.changed
-  notify:
-    - Restart supervisor
+    - name: Change ownership of stream-delta directory
+      ansible.builtin.file:
+        path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
+        owner: stream-delta
+        group: www-data
+        state: directory
+        recurse: true
 
-- name: Install packages based on package.json.
-  community.general.npm:
-    path: "{{ stream_delta_install_dir }}"
-  become: true
-  become_user: stream-delta
-  tags:
-    - stream-delta
-    - stream-delta_deploy
-  when: stream_delta_checkout.changed
-  notify:
-    - Restart supervisor
+    # - name: Copy stream delta environment file
+    #   ansible.builtin.template:
+    #     src: templates/production.env.j2
+    #     dest: "{{ stream_delta_install_dir }}/.env"
+    #     mode: "0600"
+    #     owner: stream-delta
+    #   tags:
+    #     - stream-delta_deploy
+    #   notify:
+    #     - Restart supervisor
 
-- name: Create stream-delta database
-  community.mysql.mysql_db:
-    name: stream_delta
-    state: present
-    login_user: root
-    login_password: "{{ mysql_root_password }}"
-  tags:
-    - stream-delta
-    - mysql
+    # - name: Install PHP dependencies
+    #   community.general.composer:
+    #     command: install
+    #     working_dir: "{{ stream_delta_install_dir }}"
+    #   become: true
+    #   become_user: stream-delta
+    #   tags:
+    #     - stream-delta_deploy
+    #   when: stream_delta_checkout.changed
+    #   notify:
+    #     - Restart supervisor
 
-- name: Run build
-  ansible.builtin.shell: npm run build
-  become: true
-  become_user: stream-delta
-  args:
-    chdir: "{{ stream_delta_install_dir }}/"
-  when: stream_delta_checkout.changed
-  tags:
-    - stream-delta
-    - stream-delta_deploy
-  notify:
-    - Restart supervisor
+    # - name: Install packages based on package.json.
+    #   community.general.npm:
+    #     path: "{{ stream_delta_install_dir }}"
+    #   become: true
+    #   become_user: stream-delta
+    #   tags:
+    #     - stream-delta_deploy
+    #   when: stream_delta_checkout.changed
+    #   notify:
+    #     - Restart supervisor
 
-- name: Create stream-delta database user
-  community.mysql.mysql_user:
-    name: stream_delta
-    password: "{{ stream_delta_db_password }}"
-    priv: stream_delta.*:ALL
-    host: localhost
-    state: present
-    login_user: root
-    login_password: "{{ mysql_root_password }}"
-    column_case_sensitive: true
+    # - name: Run build
+    #   ansible.builtin.shell: npm run build
+    #   become: true
+    #   become_user: stream-delta
+    #   args:
+    #     chdir: "{{ stream_delta_install_dir }}/"
+    #   when: stream_delta_checkout.changed
+    #   tags:
+    #     - stream-delta_deploy
+    #   notify:
+    #     - Restart supervisor
+  rescue:
+    - name: "User and directory setup failure warning"
+      ansible.builtin.debug:
+        msg: "User and directory setup failed"
+    - name: "User and directory setup failure execution"
+      ansible.builtin.command:
+        cmd: "false"
 
+- name: Database configuration
   tags:
     - stream-delta
     - mysql
+  block:
+    - name: Create stream-delta database
+      community.mysql.mysql_db:
+        name: stream_delta
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
 
-- name: Configure supervisord for stream-delta
-  ansible.builtin.template:
-    src: templates/supervisord/stream-delta.conf.j2
-    dest: /etc/supervisor/conf.d/stream-delta.conf
-    mode: "0644"
-  notify:
-    - Restart supervisor
+    - name: Create stream-delta database user
+      community.mysql.mysql_user:
+        name: stream_delta
+        password: "{{ stream_delta_db_password }}"
+        priv: stream_delta.*:ALL
+        host: localhost
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        column_case_sensitive: true
+  rescue:
+    - name: "Database configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Database configuration failed"
+    - name: "Database configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Service configuration
   tags:
     - stream-delta
-    - supervisord
-    - stream-delta_supervisord
+    - services
+  block:
+    - name: Configure supervisord for stream-delta
+      ansible.builtin.template:
+        src: templates/supervisord/stream-delta.conf.j2
+        dest: /etc/supervisor/conf.d/stream-delta.conf
+        mode: "0644"
+      notify:
+        - Restart supervisor
+      tags:
+        - supervisord
+        - stream-delta_supervisord
 
-- name: Configure Redis streamdelta user password
-  ansible.builtin.lineinfile:
-    path: /etc/redis/users.acl
-    line: user {{ stream_delta_redis_username }} on +@all -DEBUG ~* >{{ stream_delta_redis_password }}
-    regex: ^user {{ stream_delta_redis_username }}
-  notify:
-    - Reload Redis ACL
+    - name: Allow supervisord to restart supervisor without password
+      # community.general.sudoers:
+      #   name: "stream-delta"
+      #   state: present
+      #   commands:
+      #     - /bin/systemctl restart supervisor
+      #   nopassword: true
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/stream-delta
+        create: yes
+        line: "stream-delta ALL=(ALL) NOPASSWD: /bin/systemctl restart supervisor"
+        state: present
+        validate: 'visudo -cf %s'
+      tags:
+        - supervisord
+        - stream-delta_supervisord
+
+    - name: Configure Redis streamdelta user password
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        line: user {{ stream_delta_redis_username }} on +@all -DEBUG ~* >{{ stream_delta_redis_password }}
+        regex: ^user {{ stream_delta_redis_username }}
+      notify:
+        - Reload Redis ACL
+      tags:
+        - redis
+  rescue:
+    - name: "Service configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Service configuration failed"
+    - name: "Service configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Github repository configuration
   tags:
     - stream-delta
-    - redis
+    - stream_delta_github
+  block:
+    - name: Get github public key for stream-delta repository
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/public-key"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_public_key
+      changed_when: false
+
+    # - name: Load custom filter for encrypting secrets
+    #   ansible.builtin.include_vars:
+    #     file: filters/sodium.py
+    #     name: sodium
+    #   tags:
+    #     - stream-delta
+    #     - stream_delta_github
+
+    - name: add secrets to stream-delta github repository
+
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/{{ item.name }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body: 
+          encrypted_value: "{{ item.value | encrypt_secret(stream_delta_github_public_key.json.key) }}"
+          key_id: "{{ stream_delta_github_public_key.json.key_id }}"
+        body_format: json
+        status_code: 200,201,204
+
+        # repository: aquarion/stream-delta
+        # secret_name: "{{ item.name }}"
+        # secret_value: "{{ item.value }}"
+        # github_token: "{{ streamdelta_github_token }}"
+      loop:
+        - { name: 'stream_delta_db_password', value: '{{ stream_delta_db_password }}' }
+        - { name: 'stream_delta_app_key', value: '{{ stream_delta_app_key }}' }
+        - { name: 'stream_delta_webhook_secret', value: '{{ stream_delta_webhook_secret }}' }
+        - { name: 'stream_delta_twitch_client_id', value: '{{ stream_delta_twitch_client_id }}' }
+        - { name: 'stream_delta_twitch_client_secret', value: '{{ stream_delta_twitch_client_secret }}' }
+        - { name: 'ssh_key', value: file_lookup('files/keys/stream-delta-deploy') }
+
+    - name: Add variables to github actions workflow
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/OWNER/REPO/actions/variables"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          name: "{{ item.name }}"
+          value: "{{ item.value }}"
+        body_format: json
+      loop:
+        - { name: 'stream_delta_db_name', value: '{{ stream_delta_db_name }}' }
+        - { name: 'stream_delta_db_user', value: '{{ stream_delta_db_user }}' }
+        - { name: 'stream_delta_db_host', value: '{{ stream_delta_db_host }}' }
+        - { name: 'stream_delta_db_port', value: '{{ stream_delta_db_port }}' }
+        - { name: 'stream_delta_app_url', value: '{{ stream_delta_app_url }}' }
+        - { name: 'DEPLOY_HOST', value: "{{ hostname }}" }
+        - { name: 'DEPLOY_USER', value: 'stream-delta' }
+        - { name: "DEPLOY_PATH", value: "{{ stream_delta_install_dir }}" }
+        - { name: "DEPLOY_PORT", value: "22" }
+        - { name: "php_version", value: "{{ php_version }}" }
+
+    # - name: Trigger github action to deploy stream-delta
+    #   ansible.builtin.uri:
+    #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
+    #     method: POST
+    #     headers:
+    #       Authorization: "Bearer {{ streamdelta_github_token }}"
+    #       Accept: "application/vnd.github.v3+json"
+    #     body: '{"ref":"main"}'
+    #     body_format: json
+  rescue:
+    - name: "Github repository configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Github repository configuration failed"
+    - name: "Github repository configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
