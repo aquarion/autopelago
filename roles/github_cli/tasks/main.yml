@@ -22,7 +22,7 @@
     state: absent
   tags:
     - githubcli
-    - package-sources
+    - package_sources
 
 - name: Add_specified_repository_into_sources_list
   ansible.builtin.deb822_repository:
@@ -36,7 +36,7 @@
     state: present
   tags:
     - githubcli
-    - package-sources
+    - package_sources
   notify:
     - Apt Cache Update
 

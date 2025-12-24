@@ -1,7 +1,7 @@
 ---
 - name: Stream-Delta DNS setup
   tags:
-    - stream-delta
+    - stream_delta
     - aws
   block:
     - name: Voyeur.istic.net - A
@@ -39,7 +39,7 @@
 
 - name: Ensure Github is present in known_host
   tags:
-    - stream-delta
+    - stream_delta
   block:
     - name: Ensure jq and curl are present
       ansible.builtin.package:
@@ -78,7 +78,7 @@
 
 - name: Package dependencies installation
   tags:
-    - stream-delta
+    - stream_delta
     - dependencies
   block:
     - name: Install stream-delta dependencies
@@ -106,7 +106,8 @@
 
 - name: User and directory setup
   tags:
-    - stream-delta
+    - stream_delta
+    - stream_delta_user
     - user
   block:
     - name: Create stream-delta user
@@ -130,7 +131,7 @@
         group: stream-delta
         mode: "0700"
 
-    - name: Copy stream-delta deploy key
+    - name: Copy stream-delta deploy key - private
       ansible.builtin.copy:
         src: files/keys/stream-delta-deploy
         dest: "{{ stream_delta_home }}/.ssh/deploy_key"
@@ -180,7 +181,7 @@
 
 - name: Database configuration
   tags:
-    - stream-delta
+    - stream_delta
     - mysql
   block:
     - name: Create stream-delta database
@@ -210,7 +211,7 @@
 
 - name: Service configuration
   tags:
-    - stream-delta
+    - stream_delta
     - services
   block:
     - name: Configure supervisord for stream-delta
@@ -222,7 +223,7 @@
         - Restart supervisor
       tags:
         - supervisord
-        - stream-delta_supervisord
+        - stream_delta_supervisord
 
     - name: Allow supervisord to restart supervisor without password
       # community.general.sudoers:
@@ -239,7 +240,7 @@
         validate: 'visudo -cf %s'
       tags:
         - supervisord
-        - stream-delta_supervisord
+        - stream_delta_supervisord
 
     - name: Configure Redis streamdelta user password
       ansible.builtin.lineinfile:
@@ -260,7 +261,7 @@
 
 - name: Github repository configuration
   tags:
-    - stream-delta
+    - stream_delta
     - stream_delta_github
   block:
 
@@ -320,14 +321,6 @@
         return_content: true
       register: stream_delta_github_public_key
       changed_when: false
-
-    # - name: Load custom filter for encrypting secrets
-    #   ansible.builtin.include_vars:
-    #     file: filters/sodium.py
-    #     name: sodium
-    #   tags:
-    #     - stream-delta
-    #     - stream_delta_github
 
     - name: add secrets to stream-delta github repository
 

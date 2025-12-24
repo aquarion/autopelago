@@ -15,7 +15,7 @@
     state: present
     filename: stretch-backports
   when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
-  tags: ubuntu-sources
+  tags: ubuntu_sources
 
 # - name: Install key
 #  apt_key:
@@ -34,7 +34,7 @@
     - deb http://security.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-security universe
   tags:
     - certbot
-    - ubuntu-sources
+    - ubuntu_sources
 
 - name: Add deb822-style Repositories for Ubuntu universe
   when: ansible_distribution == 'Ubuntu'
@@ -52,8 +52,8 @@
     signed_by: "{{ ubuntu_mirror_key | default('/usr/share/keyrings/ubuntu-archive-keyring.gpg') }}"
   tags:
     - certbot
-    - ubuntu-sources
-    - archive-sources
+    - ubuntu_sources
+    - archive_sources
 
 - name: Add deb822-style Repositories for Ubuntu security
   when: ansible_distribution == 'Ubuntu'
@@ -70,11 +70,11 @@
     signed_by: "{{ ubuntu_mirror_key | default('/usr/share/keyrings/ubuntu-archive-keyring.gpg') }}"
   tags:
     - certbot
-    - ubuntu-sources
-    - archive-sources
+    - ubuntu_sources
+    - archive_sources
 
 - name: Remove old archive and security sources
-  tags: ubuntu-sources
+  tags: ubuntu_sources
 
   block:
     - name: Check if archive source file exists
@@ -111,7 +111,7 @@
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 21600
-  tags: ubuntu-sources
+  tags: ubuntu_sources
 
 - name: Install System Packages
   ansible.builtin.apt:

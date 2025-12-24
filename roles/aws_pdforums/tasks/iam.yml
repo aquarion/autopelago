@@ -7,7 +7,7 @@
   with_items:
     - pdforums-discourse
   tags:
-    - pdforums-discourse
+    - pdforums_discourse
     - aws
 
 - name: Attach all-access S3 policy to discourse user
@@ -19,7 +19,7 @@
     policy_json: "{{ lookup('file', 'discourse-bucket-access.json') }}"
     profile: aqcom
   tags:
-    - pdforums-discourse
+    - pdforums_discourse
     - aws
 
 - name: Attach all-access S3 policy to discourse user
@@ -31,5 +31,5 @@
     profile: aqcom
     policy_json: "{{ lookup('file', 'discourse-backups-access.json') }}"
   tags:
-    - pdforums-discourse
+    - pdforums_discourse
     - aws

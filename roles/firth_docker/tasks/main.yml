@@ -21,7 +21,7 @@
       notify:
         - Apt Cache Update
       tags:
-        - package-sources
+        - package_sources
 
     - name: Docker Repo
       ansible.builtin.deb822_repository:

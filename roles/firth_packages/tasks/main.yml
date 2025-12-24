@@ -15,7 +15,7 @@
     - Apt Cache Update
   tags:
     - php
-    - package-sources
+    - package_sources
 
 - name: Get Launchpad PPA Info
   ansible.builtin.uri:
@@ -29,7 +29,7 @@
     - Apt Cache Update
   tags:
     - php
-    - package-sources
+    - package_sources
 
 - name: Manage PHP PPA repository (deb822_repository)
   become: true
