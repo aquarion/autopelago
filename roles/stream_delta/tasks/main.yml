@@ -295,12 +295,15 @@
           value: "{{ item.value | string }}"
         body_format: json
         status_code: 200,201,204
+        register: response
+        changed_when: response.status == 201
       loop:
         - { name: 'DEPLOY_HOST', value: '{{ atoll_ip }}' }
         - { name: 'DEPLOY_PATH', value: '{{ stream_delta_install_dir }}' }
         - { name: 'DEPLOY_PORT', value: '22' }
         - { name: 'DEPLOY_USER', value: 'stream-delta' }
         - { name: 'PHP_VERSION', value: '{{ php_version }}' }
+        - { name: 'NODE_VERSION', value: '{{ stream_delta_node_version }}' }
         - { name: 'STREAM_DELTA_APP_URL', value: '{{ stream_delta_app_url }}' }
         - { name: 'STREAM_DELTA_DB_HOST', value: '{{ stream_delta_db_host }}' }
         - { name: 'STREAM_DELTA_DB_NAME', value: '{{ stream_delta_db_name }}' }
@@ -336,6 +339,8 @@
           key_id: "{{ stream_delta_github_public_key.json.key_id }}"
         body_format: json
         status_code: 200,201,204
+        register: response
+        changed_when: response.status == 201
       no_log: true
       loop:
         - { name: 'STREAM_DELTA_DB_PASSWORD', value: '{{ stream_delta_db_password }}' }
