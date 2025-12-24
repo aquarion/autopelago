@@ -312,8 +312,14 @@
         - { name: "STREAM_DELTA_DB_PORT", value: "{{ stream_delta_db_port }}" }
         - { name: "STREAM_DELTA_DB_USER", value: "{{ stream_delta_db_user }}" }
         - { name: "STREAM_DELTA_APP_ID", value: "{{ stream_delta_app_id }}" }
-        - { name: "STREAM_DELTA_REVERB_HOST", value: "{{ stream_delta_reverb_host }}" }
-        - { name: "STREAM_DELTA_REDIS_USERNAME", value: "{{ stream_delta_redis_username }}" }
+        - {
+            name: "STREAM_DELTA_REVERB_HOST",
+            value: "{{ stream_delta_reverb_host }}",
+          }
+        - {
+            name: "STREAM_DELTA_REDIS_USERNAME",
+            value: "{{ stream_delta_redis_username }}",
+          }
 
     - name: Get github public key for stream-delta repository
       ansible.builtin.uri:
@@ -345,16 +351,43 @@
         changed_when: response.status == 201
       no_log: true
       loop:
-        - { name: "STREAM_DELTA_DB_PASSWORD", value: "{{ stream_delta_db_password }}" }
+        - {
+            name: "STREAM_DELTA_DB_PASSWORD",
+            value: "{{ stream_delta_db_password }}",
+          }
         - { name: "STREAM_DELTA_APP_KEY", value: "{{ stream_delta_app_key }}" }
-        - { name: "STREAM_DELTA_WEBHOOK_SECRET", value: "{{ stream_delta_webhook_secret }}" }
-        - { name: "STREAM_DELTA_TWITCH_CLIENT_ID", value: "{{ stream_delta_twitch_client_id }}" }
-        - { name: "STREAM_DELTA_TWITCH_CLIENT_SECRET", value: "{{ stream_delta_twitch_client_secret }}" }
-        - { name: "SSH_KEY", value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}' }
-        - { name: "STREAM_DELTA_REVERB_APP_KEY", value: "{{ stream_delta_reverb_app_key }}" }
-        - { name: "STREAM_DELTA_REVERB_APP_SECRET", value: "{{ stream_delta_reverb_app_secret }}" }
-        - { name: "STREAM_DELTA_REDIS_PASSWORD", value: "{{ stream_delta_redis_password }}" }
-        - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ streamdelta_github_token }}" }
+        - {
+            name: "STREAM_DELTA_WEBHOOK_SECRET",
+            value: "{{ stream_delta_webhook_secret }}",
+          }
+        - {
+            name: "STREAM_DELTA_TWITCH_CLIENT_ID",
+            value: "{{ stream_delta_twitch_client_id }}",
+          }
+        - {
+            name: "STREAM_DELTA_TWITCH_CLIENT_SECRET",
+            value: "{{ stream_delta_twitch_client_secret }}",
+          }
+        - {
+            name: "SSH_KEY",
+            value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}',
+          }
+        - {
+            name: "STREAM_DELTA_REVERB_APP_KEY",
+            value: "{{ stream_delta_reverb_app_key }}",
+          }
+        - {
+            name: "STREAM_DELTA_REVERB_APP_SECRET",
+            value: "{{ stream_delta_reverb_app_secret }}",
+          }
+        - {
+            name: "STREAM_DELTA_REDIS_PASSWORD",
+            value: "{{ stream_delta_redis_password }}",
+          }
+        - {
+            name: "DEPENDABOT_GITHUB_TOKEN",
+            value: "{{ streamdelta_github_token }}",
+          }
 
   # - name: Trigger github action to deploy stream-delta
   #   ansible.builtin.uri:
