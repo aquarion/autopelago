@@ -138,23 +138,6 @@
         group: stream-delta
         mode: "0600"
 
-    # - name: Checkout stream-delta
-    #   ansible.builtin.git:
-    #     repo: git@github.com:aquarion/stream-delta.git
-    #     dest: "{{ stream_delta_install_dir }}"
-    #     version: main
-    #     key_file: "{{ stream_delta_home }}/.ssh/deploy_key"
-    #   become: true
-    #   become_user: stream-delta
-    #   tags:
-    #     - stream-delta
-    #     - git
-    #     - checkout
-    #     - stream-delta_deploy
-    #   register: stream_delta_checkout
-    #   notify:
-    #     - Restart supervisor
-
     - name: make sure stream-delta install dir exists
       ansible.builtin.file:
         path: "{{ stream_delta_install_dir }}"
@@ -170,52 +153,6 @@
         group: www-data
         state: directory
         recurse: true
-
-    # - name: Copy stream delta environment file
-    #   ansible.builtin.template:
-    #     src: templates/production.env.j2
-    #     dest: "{{ stream_delta_install_dir }}/.env"
-    #     mode: "0600"
-    #     owner: stream-delta
-    #   tags:
-    #     - stream-delta_deploy
-    #   notify:
-    #     - Restart supervisor
-
-    # - name: Install PHP dependencies
-    #   community.general.composer:
-    #     command: install
-    #     working_dir: "{{ stream_delta_install_dir }}"
-    #   become: true
-    #   become_user: stream-delta
-    #   tags:
-    #     - stream-delta_deploy
-    #   when: stream_delta_checkout.changed
-    #   notify:
-    #     - Restart supervisor
-
-    # - name: Install packages based on package.json.
-    #   community.general.npm:
-    #     path: "{{ stream_delta_install_dir }}"
-    #   become: true
-    #   become_user: stream-delta
-    #   tags:
-    #     - stream-delta_deploy
-    #   when: stream_delta_checkout.changed
-    #   notify:
-    #     - Restart supervisor
-
-    # - name: Run build
-    #   ansible.builtin.shell: npm run build
-    #   become: true
-    #   become_user: stream-delta
-    #   args:
-    #     chdir: "{{ stream_delta_install_dir }}/"
-    #   when: stream_delta_checkout.changed
-    #   tags:
-    #     - stream-delta_deploy
-    #   notify:
-    #     - Restart supervisor
   rescue:
     - name: "User and directory setup failure warning"
       ansible.builtin.debug:
@@ -358,8 +295,8 @@
 
     - name: Add variables to github actions workflow
       ansible.builtin.uri:
-        url: "https://api.github.com/repos/OWNER/REPO/actions/variables"
-        method: POST
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables/{{ item.name }}"
+        method: PATCH
         headers:
           Authorization: "Bearer {{ streamdelta_github_token }}"
           Accept: "application/vnd.github.v3+json"
@@ -368,6 +305,7 @@
           name: "{{ item.name }}"
           value: "{{ item.value }}"
         body_format: json
+        status_code: 200,201,204
       loop:
         - { name: 'stream_delta_db_name', value: '{{ stream_delta_db_name }}' }
         - { name: 'stream_delta_db_user', value: '{{ stream_delta_db_user }}' }
@@ -378,7 +316,7 @@
         - { name: 'DEPLOY_USER', value: 'stream-delta' }
         - { name: "DEPLOY_PATH", value: "{{ stream_delta_install_dir }}" }
         - { name: "DEPLOY_PORT", value: "22" }
-        - { name: "php_version", value: "{{ php_version }}" }
+        - { name: "php_package", value: "{{ php_version }}" }
 
     # - name: Trigger github action to deploy stream-delta
     #   ansible.builtin.uri:
