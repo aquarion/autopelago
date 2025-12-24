@@ -1,6 +1,6 @@
 ---
 # Package configuration
-water_gkhs_filebot_filebot_version: 4.7
+water_gkhs_filebot_filebot_version: "{{ filebot_version | default('4.7') }}"
 water_gkhs_filebot_filebot_mirror: https://get.filebot.net/filebot/FileBot_{{ water_gkhs_filebot_filebot_version }}
 
 water_gkhs_filebot_filebot_deb:
