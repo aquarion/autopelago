@@ -146,17 +146,17 @@
         owner: stream-delta
         group: stream-delta
         mode: "0600"
-    
+
     - name: Allow deploy key to log in to atoll
       ansible.builtin.lineinfile:
         path: "{{ stream_delta_home }}/.ssh/authorized_keys"
-        line: "{{ lookup('ansible.builtin.file', 'files/keys/stream-delta-deploy.pub' ) }}"
-        create: yes
+        line: "{{ lookup('ansible.builtin.file', 'files/keys/stream-delta-deploy.pub') }}"
+        create: true
         owner: stream-delta
         group: stream-delta
         mode: "0600"
 
-    - name: make sure stream-delta install dir exists
+    - name: Make sure stream-delta install dir exists
       ansible.builtin.file:
         path: "{{ stream_delta_install_dir }}"
         state: directory
@@ -234,10 +234,13 @@
       #   nopassword: true
       ansible.builtin.lineinfile:
         path: /etc/sudoers.d/stream-delta
-        create: yes
+        create: true
         line: "stream-delta ALL=(ALL) NOPASSWD: /usr/bin/supervisorctl restart all"
         state: present
-        validate: 'visudo -cf %s'
+        validate: "visudo -cf %s"
+        owner: root
+        group: root
+        mode: "0440"
       tags:
         - supervisord
         - stream_delta_supervisord
@@ -264,8 +267,7 @@
     - stream_delta
     - stream_delta_github
   block:
-
-    - name: get list of repository variables
+    - name: Get list of repository variables
       ansible.builtin.uri:
         url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables?per_page=30"
         method: GET
@@ -298,20 +300,20 @@
         register: response
         changed_when: response.status == 201
       loop:
-        - { name: 'DEPLOY_HOST', value: '{{ atoll_ip }}' }
-        - { name: 'DEPLOY_PATH', value: '{{ stream_delta_install_dir }}' }
-        - { name: 'DEPLOY_PORT', value: '22' }
-        - { name: 'DEPLOY_USER', value: 'stream-delta' }
-        - { name: 'PHP_VERSION', value: '{{ php_version }}' }
-        - { name: 'NODE_VERSION', value: '{{ stream_delta_node_version }}' }
-        - { name: 'STREAM_DELTA_APP_URL', value: '{{ stream_delta_app_url }}' }
-        - { name: 'STREAM_DELTA_DB_HOST', value: '{{ stream_delta_db_host }}' }
-        - { name: 'STREAM_DELTA_DB_NAME', value: '{{ stream_delta_db_name }}' }
-        - { name: 'STREAM_DELTA_DB_PORT', value: '{{ stream_delta_db_port }}' }
-        - { name: 'STREAM_DELTA_DB_USER', value: '{{ stream_delta_db_user }}' }
-        - { name: 'STREAM_DELTA_APP_ID', value: '{{ stream_delta_app_id }}'}
-        - { name: 'STREAM_DELTA_REVERB_HOST', value: '{{ stream_delta_reverb_host }}'}
-        - { name: 'STREAM_DELTA_REDIS_USERNAME', value: '{{ stream_delta_redis_username }}'}
+        - { name: "DEPLOY_HOST", value: "{{ atoll_ip }}" }
+        - { name: "DEPLOY_PATH", value: "{{ stream_delta_install_dir }}" }
+        - { name: "DEPLOY_PORT", value: "22" }
+        - { name: "DEPLOY_USER", value: "stream-delta" }
+        - { name: "PHP_VERSION", value: "{{ php_version }}" }
+        - { name: "NODE_VERSION", value: "{{ stream_delta_node_version }}" }
+        - { name: "STREAM_DELTA_APP_URL", value: "{{ stream_delta_app_url }}" }
+        - { name: "STREAM_DELTA_DB_HOST", value: "{{ stream_delta_db_host }}" }
+        - { name: "STREAM_DELTA_DB_NAME", value: "{{ stream_delta_db_name }}" }
+        - { name: "STREAM_DELTA_DB_PORT", value: "{{ stream_delta_db_port }}" }
+        - { name: "STREAM_DELTA_DB_USER", value: "{{ stream_delta_db_user }}" }
+        - { name: "STREAM_DELTA_APP_ID", value: "{{ stream_delta_app_id }}" }
+        - { name: "STREAM_DELTA_REVERB_HOST", value: "{{ stream_delta_reverb_host }}" }
+        - { name: "STREAM_DELTA_REDIS_USERNAME", value: "{{ stream_delta_redis_username }}" }
 
     - name: Get github public key for stream-delta repository
       ansible.builtin.uri:
@@ -325,7 +327,7 @@
       register: stream_delta_github_public_key
       changed_when: false
 
-    - name: add secrets to stream-delta github repository
+    - name: Add secrets to stream-delta github repository
 
       ansible.builtin.uri:
         url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/{{ item.name }}"
@@ -334,7 +336,7 @@
           Authorization: "Bearer {{ streamdelta_github_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
-        body: 
+        body:
           encrypted_value: "{{ item.value | encrypt_secret(stream_delta_github_public_key.json.key) }}"
           key_id: "{{ stream_delta_github_public_key.json.key_id }}"
         body_format: json
@@ -343,26 +345,26 @@
         changed_when: response.status == 201
       no_log: true
       loop:
-        - { name: 'STREAM_DELTA_DB_PASSWORD', value: '{{ stream_delta_db_password }}' }
-        - { name: 'STREAM_DELTA_APP_KEY', value: '{{ stream_delta_app_key }}' }
-        - { name: 'STREAM_DELTA_WEBHOOK_SECRET', value: '{{ stream_delta_webhook_secret }}' }
-        - { name: 'STREAM_DELTA_TWITCH_CLIENT_ID', value: '{{ stream_delta_twitch_client_id }}' }
-        - { name: 'STREAM_DELTA_TWITCH_CLIENT_SECRET', value: '{{ stream_delta_twitch_client_secret }}' }
-        - { name: 'SSH_KEY', value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}' }
-        - { name: 'STREAM_DELTA_REVERB_APP_KEY', value: '{{ stream_delta_reverb_app_key }}'}
-        - { name: 'STREAM_DELTA_REVERB_APP_SECRET', value: '{{ stream_delta_reverb_app_secret }}'}
-        - { name: 'STREAM_DELTA_REDIS_PASSWORD', value: '{{ stream_delta_redis_password }}'}
-        - { name: 'DEPENDABOT_GITHUB_TOKEN', value: '{{ streamdelta_github_token }}'}
+        - { name: "STREAM_DELTA_DB_PASSWORD", value: "{{ stream_delta_db_password }}" }
+        - { name: "STREAM_DELTA_APP_KEY", value: "{{ stream_delta_app_key }}" }
+        - { name: "STREAM_DELTA_WEBHOOK_SECRET", value: "{{ stream_delta_webhook_secret }}" }
+        - { name: "STREAM_DELTA_TWITCH_CLIENT_ID", value: "{{ stream_delta_twitch_client_id }}" }
+        - { name: "STREAM_DELTA_TWITCH_CLIENT_SECRET", value: "{{ stream_delta_twitch_client_secret }}" }
+        - { name: "SSH_KEY", value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}' }
+        - { name: "STREAM_DELTA_REVERB_APP_KEY", value: "{{ stream_delta_reverb_app_key }}" }
+        - { name: "STREAM_DELTA_REVERB_APP_SECRET", value: "{{ stream_delta_reverb_app_secret }}" }
+        - { name: "STREAM_DELTA_REDIS_PASSWORD", value: "{{ stream_delta_redis_password }}" }
+        - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ streamdelta_github_token }}" }
 
-    # - name: Trigger github action to deploy stream-delta
-    #   ansible.builtin.uri:
-    #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
-    #     method: POST
-    #     headers:
-    #       Authorization: "Bearer {{ streamdelta_github_token }}"
-    #       Accept: "application/vnd.github.v3+json"
-    #     body: '{"ref":"main"}'
-    #     body_format: json
+  # - name: Trigger github action to deploy stream-delta
+  #   ansible.builtin.uri:
+  #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
+  #     method: POST
+  #     headers:
+  #       Authorization: "Bearer {{ streamdelta_github_token }}"
+  #       Accept: "application/vnd.github.v3+json"
+  #     body: '{"ref":"main"}'
+  #     body_format: json
   rescue:
     - name: "Github repository configuration failure warning"
       ansible.builtin.debug:
