@@ -277,15 +277,15 @@
       register: stream_delta_github_variables
       changed_when: false
 
-    - name: debug variables list
-      ansible.builtin.debug:
-        var: stream_delta_github_variables.json.variables | map(attribute='name') | list
+    - name: Set variables list as fact for cleaner code
+      ansible.builtin.set_fact:
+        stream_delta_vars: "{{ stream_delta_github_variables.json.variables | map(attribute='name') | list }}"
 
     - name: Add variables to github actions workflow
       ansible.builtin.uri:
-        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables{{ ('/' + item.name) if item.name in (stream_delta_github_variables.json.variables | map(attribute='name') | list ) else '' }}"
-        
-        method: "{{ 'PATCH' if item.name in (stream_delta_github_variables.json.variables | map(attribute='name') | list ) else 'POST' }}"
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables{{ ('/' + item.name) if item.name in stream_delta_vars else '' }}"
+
+        method: "{{ 'PATCH' if item.name in stream_delta_vars else 'POST' }}"
         headers:
           Authorization: "Bearer {{ streamdelta_github_token }}"
           Accept: "application/vnd.github.v3+json"
