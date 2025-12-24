@@ -12,6 +12,7 @@
     - name: Get DEB architecture
       ansible.builtin.shell: dpkg --print-architecture
       register: firth_docker_deb_architecture
+      changed_when: false
 
     - name: Remove old docker repository from apt
       ansible.builtin.apt_repository:

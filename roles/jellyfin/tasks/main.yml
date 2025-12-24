@@ -12,6 +12,7 @@
   register: jellyfin_deb_architecture
   tags:
     - jellyfin
+  changed_when: false
 
 - name: Jellyfin Repo
   ansible.builtin.deb822_repository:

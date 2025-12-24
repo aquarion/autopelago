@@ -14,6 +14,7 @@
   register: github_cli_deb_architecture
   tags:
     - githubcli
+  changed_when: false
 
 - name: Remove_old_sources_list_entry
   ansible.builtin.file:
