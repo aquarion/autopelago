@@ -15,7 +15,7 @@ boto3 = "==1.*"
 poetry = "==2.*"
 poetry-plugin-export = "==1.*"
 virtualenv = "==20.*"
-pynacl = "^1.6.1"
+pynacl = "^1.6.2"
 
 [build-system]
 requires = ["poetry-core"]
