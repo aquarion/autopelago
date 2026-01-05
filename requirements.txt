@@ -1,4 +1,4 @@
-ansible==13.1.*
+ansible==13.2.*
 ansible-lint==25.*
 boto==2.*
 boto3==1.*
