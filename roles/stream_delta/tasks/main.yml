@@ -297,8 +297,8 @@
           value: "{{ item.value | string }}"
         body_format: json
         status_code: 200,201,204
-      register: response
-      changed_when: response.status == 201
+      register: stream_delta_response
+      changed_when: stream_delta_response.status == 201
       loop:
         - { name: "DEPLOY_HOST", value: "{{ atoll_ip }}" }
         - { name: "DEPLOY_PATH", value: "{{ stream_delta_install_dir }}" }
@@ -347,8 +347,8 @@
           key_id: "{{ stream_delta_github_public_key.json.key_id }}"
         body_format: json
         status_code: 200,201,204
-      register: response
-      changed_when: response.status == 201
+      register: stream_delta_secrets_response
+      changed_when: stream_delta_secrets_response.status == 201
       no_log: true
       loop:
         - {
