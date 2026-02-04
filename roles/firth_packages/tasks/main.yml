@@ -70,4 +70,5 @@
       - "{{ php_package }}-opcache"
       - "{{ php_package }}-readline"
       - "{{ php_package }}-xml"
+      - "{{ php_package }}-zip"
   tags: php
