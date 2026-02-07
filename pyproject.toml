@@ -17,7 +17,15 @@ poetry-plugin-export = "==1.*"
 virtualenv = "==20.*"
 pynacl = "^1.6.1"
 
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.19.1"
+pylint = "^4.0.4"
+
+[[tool.mypy.overrides]]
+module = ["untyped_package.*"]
+follow_untyped_imports = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-markers = "platform_system != 'Windows'"
+#markers = "platform_system != 'Windows'"

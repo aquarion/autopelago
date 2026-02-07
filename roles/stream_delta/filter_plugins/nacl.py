@@ -1,10 +1,10 @@
 import os
 
-from ansible.plugins.filter.core import FilterModule
+from ansible.plugins.filter.core import FilterModule as FilterModuleBase
 from nacl import encoding, public
 
 
-class FilterModule(FilterModule):
+class FilterModule(FilterModuleBase):
     """Ansible filter plugin to encrypt secrets for GitHub."""
 
     def filters(self):

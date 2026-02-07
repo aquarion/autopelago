@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # filename: check_my_jinja_recursive.py
 """Check Jinja2 templates for syntax errors recursively in a given directory."""
+
 import argparse
 import os
 import sys
 
 from jinja2 import Environment, FileSystemLoader
-from jinja2.exceptions import TemplateSyntaxError, TemplateError
+from jinja2.exceptions import TemplateError, TemplateSyntaxError
 
 args = argparse.ArgumentParser(
     description="Check Jinja2 templates for syntax errors recursively."
@@ -21,7 +22,7 @@ parsed_args = args.parse_args()
 
 
 def check_directory(path):
-    """ Check a directory for Jinja2 templates and yield their paths. """
+    """Check a directory for Jinja2 templates and yield their paths."""
     for root, dirs, files in os.walk(path):
         for file in files:
             if file.endswith(".j2"):
