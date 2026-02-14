@@ -209,6 +209,131 @@
       ansible.builtin.command:
         cmd: "false"
 
+- name: Install tubular container
+  tags:
+    - stream_delta
+    - tubular
+  block:
+    - name: Pull tubular image from GitHub Container Registry
+      community.docker.docker_image:
+        name: ghcr.io/aquarion/tubular
+        tag: "{{ stream_delta_tubular_version }}"
+        source: pull
+      register: tubular_image_pull_result
+      changed_when: tubular_image_pull_result.changed
+
+    - name: Delete .env file for tubular
+      ansible.builtin.file:
+        path: "/opt/tubular/.env"
+        state: absent
+
+    - name: delete tubular configuration directory
+      ansible.builtin.file:
+        path: "/opt/tubular"
+        state: absent
+
+    - name: Run tubular container
+      community.docker.docker_container:
+        name: tubular
+        image: ghcr.io/aquarion/tubular:{{ stream_delta_tubular_version }}
+        state: started
+        restart_policy: unless-stopped
+        # Required tubular env vars:
+        # - YOUTUBE_API_KEY
+        # - YOUTUBE_CHANNEL_ID
+        # - TUBULAR_WEBHOOK_URL
+        # - TUBULAR_CALLBACK_URL
+        # Optional tubular env vars:
+        # - WEBHOOK_SECRET
+        # - YOUTUBE_POLL_INTERVAL
+        # - YOUTUBE_DISABLE_IDLE_POLLING
+        # - TUBULAR_CALLBACK_PORT
+        # - CALLBACK_BIND_ADDRESS
+        # - REDIS_HOST
+        # - REDIS_PORT
+        # - REDIS_PASSWORD
+        # - REDIS_DB
+        # - TUBULAR_HEARTBEAT_INTERVAL
+        # - TUBULAR_LOG_FILE
+        # - TUBULAR_LOG_MAX_BYTES
+        # - TUBULAR_LOG_BACKUP_COUNT
+        # - TUBULAR_LOG_RETENTION_DAYS
+
+        # YOUTUBE_API_KEY=X
+        # YOUTUBE_CHANNEL_ID=X
+        # TUBULAR_WEBHOOK_URL=${APP_URL}/webhooks/youtube
+        # TUBULAR_CALLBACK_URL=${APP_URL}
+        # TUBULAR_CALLBACK_PORT=9191
+
+        env:
+          YOUTUBE_API_KEY: "{{ stream_delta_youtube_api_key }}"
+          YOUTUBE_CHANNEL_ID: "{{ stream_delta_youtube_channel_id }}"
+          YOUTUBE_DISABLE_IDLE_POLLING: "{{ stream_delta_youtube_disable_idle_polling | default('false') }}"
+          TUBULAR_CALLBACK_PORT: "{{ stream_delta_tubular_port }}"
+          WEBHOOK_SECRET: "{{ stream_delta_webhook_secret }}"
+          # YOUTUBE_POLL_INTERVAL: "{{ stream_delta_youtube_poll_interval | default('60') }}"
+          TUBULAR_CALLBACK_URL: "{{ stream_delta_app_url }}/tubular/callback"
+          TUBULAR_WEBHOOK_URL: "{{ stream_delta_app_url }}/webhooks/youtube"
+          # CALLBACK_BIND_ADDRESS: "{{ stream_delta_tubular_bind_address | default('') }}"
+          REDIS_USERNAME: "{{ stream_delta_tubular_redis_username }}"
+          REDIS_HOST: "{{ stream_delta_tubular_redis_host }}"
+          REDIS_PORT: "{{ stream_delta_tubular_redis_port }}"
+          REDIS_PASSWORD: "{{ stream_delta_tubular_redis_password }}"
+          # REDIS_DB: "{{ stream_delta_tubular_redis_db | default('0') }}"
+          # TUBULAR_HEARTBEAT_INTERVAL: "{{ stream_delta_tubular_heartbeat_interval | default('30') }}"
+          # TUBULAR_LOG_FILE: "{{ stream_delta_tubular_log_file | default('') }}"
+          # TUBULAR_LOG_MAX_BYTES: "{{ stream_delta_tubular_log_max_bytes | default('10485760') }}"
+          # TUBULAR_LOG_BACKUP_COUNT: "{{ stream_delta_tubular_log_backup_count | default('5') }}"
+          # TUBULAR_LOG_RETENTION_DAYS: "{{ stream_delta_tubular_log_retention_days | default('7') }}"
+        published_ports:
+          - "{{ stream_delta_tubular_port }}:{{ stream_delta_tubular_port }}"
+        pull: always
+
+  rescue:
+    - name: "Tubular installation failure warning"
+      ansible.builtin.debug:
+        msg: "Tubular installation failed"
+
+# - name: Install Tubular
+#   tags:
+#     - stream_delta
+#     - tubular
+#   block:
+#     - name: Pull tubular repo from github
+#       ansible.builtin.git:
+#         repo: "https://github.com/aquarion/tubular.git"
+#         dest: "/opt/tubular"
+#         refspec: "tags/v{{ stream_delta_tubular_version }}"
+#         depth: 1
+#         force: true
+#         accept_hostkey: true
+#     - name: Set up virtualenv for tubular
+#       ansible.builtin.command:
+#         cmd: "python3 -m venv /opt/tubular/venv"
+#         creates: "/opt/tubular/venv/bin/activate"
+#     - name: Install tubular dependencies
+#       ansible.builtin.pip:
+#         requirements: "/opt/tubular/requirements.txt"
+#         virtualenv: "/opt/tubular/venv"
+#     - name: Create .env file for tubular
+#       ansible.builtin.template:
+#         src: templates/production.env.j2
+#         dest: "/opt/tubular/.env"
+#         mode: "0644"
+#     - name: Set up systemd service for tubular
+#       ansible.builtin.template:
+#         src: templates/tubular/tubular.service.j2
+#         dest: /etc/systemd/system/tubular.service
+#         mode: "0644"
+#       notify:
+#         - Reload systemd
+#   notify:
+#     - Restart tubular
+#   rescue:
+#     - name: "Tubular installation failure warning"
+#       ansible.builtin.debug:
+#         msg: "Tubular installation failed"
+
 - name: Service configuration
   tags:
     - stream_delta
