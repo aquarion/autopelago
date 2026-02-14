@@ -35,6 +35,9 @@
       notify:
         - Apt Cache Update
 
+    - name: Flush handlers
+      meta: flush_handlers
+
     - name: Install docker
       ansible.builtin.apt:
         name: "{{ item }}"
@@ -62,13 +65,21 @@
       notify:
         - Restart MySQL
 
+    - name: Cron a weekly run of docker system prune
+      ansible.builtin.cron:
+        name: "Weekly Docker System Prune"
+        job: "docker system prune -f"
+        user: root
+        state: present
+        special_time: weekly
+
     - name: Add users to docker group
       # possible ambiguous replacement: user : ansible.builtin.user | awx.awx.user | inspur.sm.user | sensu.sensu_go.user | theforeman.foreman.user
       ansible.builtin.user:
         name: "{{ item }}"
         groups: docker
         append: true
-      with_items:
+      loop:
         - aquarion
         - ccooke
 

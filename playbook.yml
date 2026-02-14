@@ -94,4 +94,5 @@
     - atoll_nginx
     - water_gkhs_exim
     - aws_profiles
+    - firth_docker
     - stream_delta
