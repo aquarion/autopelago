@@ -401,12 +401,12 @@
           Authorization: "Bearer {{ streamdelta_github_token }}"
           X-GitHub-Api-Version: "2022-11-28"
         return_content: true
-      register: stream_delta_github_variables
+      register: stream_delta_github_variables_response
       changed_when: false
 
     - name: Set variables list as fact for cleaner code
       ansible.builtin.set_fact:
-        stream_delta_vars: "{{ stream_delta_github_variables.json.variables | map(attribute='name') | list }}"
+        stream_delta_vars: "{{ stream_delta_github_variables_response.json.variables | map(attribute='name') | list }}"
 
     - name: Add variables to github actions workflow
       ansible.builtin.uri:
