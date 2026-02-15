@@ -33,6 +33,13 @@
     components: [main]
     signed_by: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{  firth_packages_ondrej_php_ppa_info.json.signing_key_fingerprint }}"
   tags: php
+  register: php_ppa_repo
+
+- name: Refresh packages if PHP PPA was changed
+  ansible.builtin.apt:
+    update_cache: true
+  when: php_ppa_repo.changed
+  tags: php
 
 - name: Remove old PHP Packages
   ansible.builtin.apt:
@@ -40,8 +47,7 @@
     pkg:
       - "{{ item }}"
       - "{{ item }}-*"
-  loop: "{{ remove_php_packages }}"
-  exclude: "{{ php_package }}"
+  loop: "{{ remove_php_packages | reject('equalto', php_package) | list }}"
   ignore_errors: true
   tags: php
 
@@ -59,7 +65,6 @@
       - "{{ php_package }}-intl"
       - "{{ php_package }}-mbstring"
       - "{{ php_package }}-mysql"
-      - "{{ php_package }}-opcache"
       - "{{ php_package }}-readline"
       - "{{ php_package }}-xml"
       - "{{ php_package }}-zip"
