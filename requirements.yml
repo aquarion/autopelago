@@ -5,3 +5,5 @@ collections:
   - community.mysql
   - community.crypto
   - ansible.posix
+roles:
+  - geerlingguy.nodejs

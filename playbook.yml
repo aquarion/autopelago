@@ -63,6 +63,7 @@
   become: true
   roles:
     - firth_packages
+    - water_gkhs_php
     - firth_users
     - firth_docker
     - plexupdate_uninstall
@@ -94,5 +95,7 @@
     - atoll_nginx
     - water_gkhs_exim
     - aws_profiles
+    - water_gkhs_php
+    - geerlingguy.nodejs
     - firth_docker
     - stream_delta
