@@ -93,6 +93,8 @@
   args:
     chdir: /usr/local/bin
   when: composer_stat.stat.exists
+  register: composer_update_result
+  changed_when: composer_update_result.rc == 0
   tags:
     - composer
     - php
