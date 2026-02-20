@@ -94,7 +94,6 @@
         - php-redis
         - mariadb-server
         - redis-server
-        - npm
         - python3-pymysql
   rescue:
     - name: "Package installation failure warning"
@@ -156,13 +155,13 @@
         group: stream-delta
         mode: "0600"
 
-    - name: Make sure stream-delta install dir exists
-      ansible.builtin.file:
-        path: "{{ stream_delta_install_dir }}"
-        state: directory
-        owner: stream-delta
-        group: www-data
-        mode: "0755"
+    # - name: Make sure stream-delta install dir exists
+    #   ansible.builtin.file:
+    #     path: "{{ stream_delta_install_dir }}"
+    #     state: directory
+    #     owner: stream-delta
+    #     group: www-data
+    #     mode: "0755"
 
     - name: Change ownership of stream-delta directory
       ansible.builtin.file:
