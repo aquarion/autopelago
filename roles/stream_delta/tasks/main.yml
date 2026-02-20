@@ -199,19 +199,23 @@
       ansible.builtin.command:
         cmd: "false"
 
+- name: Pull tubular image from GitHub Container Registry
+  community.docker.docker_image:
+    name: ghcr.io/aquarion/tubular
+    tag: "{{ stream_delta_tubular_version }}"
+    source: pull
+  register: stream_delta_tubular_image_pull_result
+  changed_when: stream_delta_tubular_image_pull_result.changed
+  tags:
+    - stream_delta
+    - tubular
+
 - name: Install tubular container
   tags:
     - stream_delta
     - tubular
+  when: stream_delta_tubular_image_pull_result.changed
   block:
-    - name: Pull tubular image from GitHub Container Registry
-      community.docker.docker_image:
-        name: ghcr.io/aquarion/tubular
-        tag: "{{ stream_delta_tubular_version }}"
-        source: pull
-      register: stream_delta_tubular_image_pull_result
-      changed_when: stream_delta_tubular_image_pull_result.changed
-
     - name: Delete .env file for tubular
       ansible.builtin.file:
         path: "/opt/tubular/.env"
@@ -283,46 +287,6 @@
     - name: "Tubular installation failure warning"
       ansible.builtin.debug:
         msg: "Tubular installation failed"
-
-# - name: Install Tubular
-#   tags:
-#     - stream_delta
-#     - tubular
-#   block:
-#     - name: Pull tubular repo from github
-#       ansible.builtin.git:
-#         repo: "https://github.com/aquarion/tubular.git"
-#         dest: "/opt/tubular"
-#         refspec: "tags/v{{ stream_delta_tubular_version }}"
-#         depth: 1
-#         force: true
-#         accept_hostkey: true
-#     - name: Set up virtualenv for tubular
-#       ansible.builtin.command:
-#         cmd: "python3 -m venv /opt/tubular/venv"
-#         creates: "/opt/tubular/venv/bin/activate"
-#     - name: Install tubular dependencies
-#       ansible.builtin.pip:
-#         requirements: "/opt/tubular/requirements.txt"
-#         virtualenv: "/opt/tubular/venv"
-#     - name: Create .env file for tubular
-#       ansible.builtin.template:
-#         src: templates/production.env.j2
-#         dest: "/opt/tubular/.env"
-#         mode: "0644"
-#     - name: Set up systemd service for tubular
-#       ansible.builtin.template:
-#         src: templates/tubular/tubular.service.j2
-#         dest: /etc/systemd/system/tubular.service
-#         mode: "0644"
-#       notify:
-#         - Reload systemd
-#   notify:
-#     - Restart tubular
-#   rescue:
-#     - name: "Tubular installation failure warning"
-#       ansible.builtin.debug:
-#         msg: "Tubular installation failed"
 
 - name: Service configuration
   tags:
@@ -471,6 +435,7 @@
   register: stream_delta_installation_stat
   tags:
     - stream_delta
+    - stream_delta_deploy
 
 - name: Deploy stream-delta from Github
   when: not stream_delta_installation_stat.stat.exists
@@ -493,6 +458,24 @@
       ansible.builtin.command: composer install --no-dev --optimize-autoloader
       args:
         chdir: "{{ stream_delta_home }}/releases/github"
+      become: true
+      become_user: stream-delta
+
+    - name: Create .env file for stream-delta
+      ansible.builtin.template:
+        src: templates/stream-delta/production.env.j2
+        dest: "{{ stream_delta_home }}/releases/github/.env"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0644"
+      become: true
+      become_user: stream-delta
+
+    - name: Create deploy archive of stream-delta
+      ansible.builtin.archive:
+        path: "{{ stream_delta_home }}/releases/github/."
+        dest: "{{ stream_delta_home }}/stream-delta-deploy.tar.gz"
+        format: gz
       become: true
       become_user: stream-delta
 
