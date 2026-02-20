@@ -69,3 +69,30 @@
       - "{{ php_package }}-xml"
       - "{{ php_package }}-zip"
   tags: php
+
+- name: Check for Composer
+  ansible.builtin.stat:
+    path: /usr/local/bin/composer
+  register: composer_stat
+  tags:
+    - composer
+    - php
+
+- name: Download and install Composer
+  ansible.builtin.get_url:
+    url: https://getcomposer.org/composer.phar
+    dest: /usr/local/bin/composer
+    mode: "0755"
+  when: not composer_stat.stat.exists
+  tags:
+    - composer
+    - php
+
+- name: Ensure Composer is up to date
+  ansible.builtin.command: composer self-update --quiet
+  args:
+    chdir: /usr/local/bin
+  when: composer_stat.stat.exists
+  tags:
+    - composer
+    - php
