@@ -15,7 +15,7 @@
     method: GET
     headers:
       Accept: "application/json"
-  register: firth_packages_ondrej_php_ppa_info
+  register: water_gkhs_php_ondrej_php_ppa_info
   notify:
     - Apt Cache Update
   tags:
@@ -31,14 +31,14 @@
     uris: [https://ppa.launchpadcontent.net/ondrej/php/ubuntu]
     suites: ["{{ ansible_facts['distribution_release'] }}"]
     components: [main]
-    signed_by: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{  firth_packages_ondrej_php_ppa_info.json.signing_key_fingerprint }}"
+    signed_by: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{  water_gkhs_php_ondrej_php_ppa_info.json.signing_key_fingerprint }}"
   tags: php
-  register: php_ppa_repo
+  register: water_gkhs_php_ondrej_php_ppa_repo
 
 - name: Refresh packages if PHP PPA was changed
   ansible.builtin.apt:
     update_cache: true
-  when: php_ppa_repo.changed
+  when: water_gkhs_php_ondrej_php_ppa_repo.changed
   tags: php
 
 - name: Remove old PHP Packages
@@ -73,7 +73,7 @@
 - name: Check for Composer
   ansible.builtin.stat:
     path: /usr/local/bin/composer
-  register: composer_stat
+  register: water_gkhs_php_composer_installed_stat
   tags:
     - composer
     - php
@@ -83,7 +83,7 @@
     url: https://getcomposer.org/composer.phar
     dest: /usr/local/bin/composer
     mode: "0755"
-  when: not composer_stat.stat.exists
+  when: not water_gkhs_php_composer_installed_stat.stat.exists
   tags:
     - composer
     - php
@@ -92,9 +92,9 @@
   ansible.builtin.command: composer self-update --quiet
   args:
     chdir: /usr/local/bin
-  when: composer_stat.stat.exists
-  register: composer_update_result
-  changed_when: composer_update_result.rc == 0
+  when: water_gkhs_php_composer_installed_stat.stat.exists
+  register: water_gkhs_php_composer_update_result
+  changed_when: water_gkhs_php_composer_update_result.rc == 0
   tags:
     - composer
     - php

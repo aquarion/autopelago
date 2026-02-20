@@ -6,4 +6,4 @@ collections:
   - community.crypto
   - ansible.posix
 roles:
-  - geerlingguy.nodejs
+  - name: geerlingguy.nodejs
