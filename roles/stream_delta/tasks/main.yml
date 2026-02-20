@@ -87,11 +87,10 @@
         state: present
       loop:
         - supervisor
-        - composer
         - git
-        - php-cli
-        - php-xml
-        - php-redis
+        - "{{ php_package }}-cli"
+        - "{{ php_package }}-xml"
+        - "{{ php_package }}-redis"
         - mariadb-server
         - redis-server
         - python3-pymysql
@@ -130,14 +129,6 @@
         group: stream-delta
         mode: "0700"
 
-    - name: Copy stream-delta deploy key - private
-      ansible.builtin.copy:
-        src: files/keys/stream-delta-deploy
-        dest: "{{ stream_delta_home }}/.ssh/deploy_key"
-        owner: stream-delta
-        group: stream-delta
-        mode: "0600"
-
     - name: Copy stream-delta deploy key - public
       ansible.builtin.copy:
         src: files/keys/stream-delta-deploy.pub
@@ -163,13 +154,13 @@
     #     group: www-data
     #     mode: "0755"
 
-    - name: Change ownership of stream-delta directory
-      ansible.builtin.file:
-        path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
-        owner: stream-delta
-        group: www-data
-        state: directory
-        recurse: true
+    # - name: Change ownership of stream-delta directory
+    #   ansible.builtin.file:
+    #     path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
+    #     owner: stream-delta
+    #     group: www-data
+    #     state: directory
+    #     recurse: true
   rescue:
     - name: "User and directory setup failure warning"
       ansible.builtin.debug:
@@ -218,15 +209,15 @@
         name: ghcr.io/aquarion/tubular
         tag: "{{ stream_delta_tubular_version }}"
         source: pull
-      register: tubular_image_pull_result
-      changed_when: tubular_image_pull_result.changed
+      register: stream_delta_tubular_image_pull_result
+      changed_when: stream_delta_tubular_image_pull_result.changed
 
     - name: Delete .env file for tubular
       ansible.builtin.file:
         path: "/opt/tubular/.env"
         state: absent
 
-    - name: delete tubular configuration directory
+    - name: Delete tubular configuration directory
       ansible.builtin.file:
         path: "/opt/tubular"
         state: absent
@@ -456,15 +447,16 @@
       no_log: true
       loop: "{{ stream_delta_github_secrets }}"
 
-  # - name: Trigger github action to deploy stream-delta
-  #   ansible.builtin.uri:
-  #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
-  #     method: POST
-  #     headers:
-  #       Authorization: "Bearer {{ streamdelta_github_token }}"
-  #       Accept: "application/vnd.github.v3+json"
-  #     body: '{"ref":"main"}'
-  #     body_format: json
+    # - name: Trigger github action to deploy stream-delta
+    #   ansible.builtin.uri:
+    #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
+    #     method: POST
+    #     headers:
+    #       Authorization: "Bearer {{ streamdelta_github_token }}"
+    #       Accept: "application/vnd.github.v3+json"
+    #     body: '{"ref":"main"}'
+    #     body_format: json
+
   rescue:
     - name: "Github repository configuration failure warning"
       ansible.builtin.debug:
@@ -472,3 +464,59 @@
     - name: "Github repository configuration failure execution"
       ansible.builtin.command:
         cmd: "false"
+
+- name: Check for current stream-delta installation
+  ansible.builtin.stat:
+    path: "{{ stream_delta_install_dir }}/current"
+  register: stream_delta_installation_stat
+  tags:
+    - stream_delta
+
+- name: Deploy stream-delta from Github
+  when: not stream_delta_installation_stat.stat.exists
+  tags:
+    - stream_delta
+    - stream_delta_deploy
+  block:
+    - name: Download stream-delta repository to stream-delta home
+      ansible.builtin.git:
+        repo: "https://github.com/aquarion/stream-delta.git"
+        dest: "{{ stream_delta_home }}/releases/github"
+        version: main
+        depth: 1
+        force: true
+        accept_hostkey: true
+      become: true
+      become_user: stream-delta
+
+    - name: Run composer install for stream-delta
+      ansible.builtin.command: composer install --no-dev --optimize-autoloader
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github"
+      become: true
+      become_user: stream-delta
+
+    - name: Copy stream-delta deploy key - private
+      ansible.builtin.copy:
+        src: files/keys/stream-delta-deploy
+        dest: "{{ stream_delta_home }}/.ssh/id_rsa"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0600"
+
+    - name: Run laravel envoy for stream-delta
+      ansible.builtin.command: vendor/bin/envoy run deploy --host=localhost --user=stream-delta --deploy_path={{ stream_delta_install_dir }} --app_url={{ stream_delta_app_url }}
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github"
+      become: true
+      become_user: stream-delta
+
+    - name: Clean up github release directory
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/releases/github"
+        state: absent
+
+    - name: Remove stream-delta deploy keys
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/.ssh/id_rsa"
+        state: absent
