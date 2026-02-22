@@ -1,0 +1,100 @@
+- name: Remove old PHP PPA
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+    state: absent
+  notify:
+    - Apt Cache Update
+  tags:
+    - php
+    - package_sources
+
+- name: Get Launchpad PPA Info
+  ansible.builtin.uri:
+    url: "https://api.launchpad.net/devel/~ondrej/+archive/ubuntu/php"
+    return_content: true
+    method: GET
+    headers:
+      Accept: "application/json"
+  register: water_gkhs_php_ondrej_php_ppa_info
+  notify:
+    - Apt Cache Update
+  tags:
+    - php
+    - package_sources
+
+- name: Manage PHP PPA repository (deb822_repository)
+  become: true
+  ansible.builtin.deb822_repository:
+    state: present
+    name: "ondrej-ubuntu-php-{{ ansible_distribution_release }}"
+    types: [deb]
+    uris: [https://ppa.launchpadcontent.net/ondrej/php/ubuntu]
+    suites: ["{{ ansible_facts['distribution_release'] }}"]
+    components: [main]
+    signed_by: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{  water_gkhs_php_ondrej_php_ppa_info.json.signing_key_fingerprint }}"
+  tags: php
+  register: water_gkhs_php_ondrej_php_ppa_repo
+
+- name: Refresh packages if PHP PPA was changed
+  ansible.builtin.apt:
+    update_cache: true
+  when: water_gkhs_php_ondrej_php_ppa_repo.changed
+  tags: php
+
+- name: Remove old PHP Packages
+  ansible.builtin.apt:
+    state: absent
+    pkg:
+      - "{{ item }}"
+      - "{{ item }}-*"
+  loop: "{{ remove_php_packages | reject('equalto', php_package) | list }}"
+  ignore_errors: true
+  tags: php
+
+- name: Install PHP With Required Extensions
+  ansible.builtin.apt:
+    state: present
+    pkg:
+      - "{{ php_package }}"
+      - "{{ php_package }}-bcmath"
+      - "{{ php_package }}-cgi"
+      - "{{ php_package }}-cli"
+      - "{{ php_package }}-common"
+      - "{{ php_package }}-curl"
+      - "{{ php_package }}-gd"
+      - "{{ php_package }}-intl"
+      - "{{ php_package }}-mbstring"
+      - "{{ php_package }}-mysql"
+      - "{{ php_package }}-readline"
+      - "{{ php_package }}-xml"
+      - "{{ php_package }}-zip"
+  tags: php
+
+- name: Check for Composer
+  ansible.builtin.stat:
+    path: /usr/local/bin/composer
+  register: water_gkhs_php_composer_installed_stat
+  tags:
+    - composer
+    - php
+
+- name: Download and install Composer
+  ansible.builtin.get_url:
+    url: https://getcomposer.org/composer.phar
+    dest: /usr/local/bin/composer
+    mode: "0755"
+  when: not water_gkhs_php_composer_installed_stat.stat.exists
+  tags:
+    - composer
+    - php
+
+- name: Ensure Composer is up to date
+  ansible.builtin.command: composer self-update --quiet
+  args:
+    chdir: /usr/local/bin
+  when: water_gkhs_php_composer_installed_stat.stat.exists
+  register: water_gkhs_php_composer_update_result
+  changed_when: water_gkhs_php_composer_update_result.rc == 0
+  tags:
+    - composer
+    - php
