@@ -1,36 +1,36 @@
 
 [program:octane]
-command=php {{ stream_delta_install_dir }}/artisan octane:start
+command=php {{ stream_delta_install_dir }}/current/artisan octane:start
 user=stream-delta
 autostart=true
 autorestart=true
-stdout_logfile={{ stream_delta_install_dir }}/storage/logs/octane_stdout.log
-stderr_logfile={{ stream_delta_install_dir }}/storage/logs/octane_stderr.log
+stdout_logfile={{ stream_delta_install_dir }}/current/storage/logs/octane_stdout.log
+stderr_logfile={{ stream_delta_install_dir }}/current/storage/logs/octane_stderr.log
 
 
 [program:reverb]
-command=php {{ stream_delta_install_dir }}/artisan reverb:start --host="127.0.0.1" --port=8080
+command=php {{ stream_delta_install_dir }}/current/artisan reverb:start --host="127.0.0.1" --port=8080
 autostart=true
 autorestart=true
 user=stream-delta
 redirect_stderr=true
-stdout_logfile={{ stream_delta_install_dir }}/storage/logs/reverb_stdout.log
+stdout_logfile={{ stream_delta_install_dir }}/current/storage/logs/reverb_stdout.log
 
 
 [program:scheduler]
-command=php {{ stream_delta_install_dir }}/artisan schedule:work
+command=php {{ stream_delta_install_dir }}/current/artisan schedule:work
 autostart=true
 autorestart=true
 user=stream-delta
 redirect_stderr=true
-stdout_logfile={{ stream_delta_install_dir }}/storage/logs/schedule_stdout.log
+stdout_logfile={{ stream_delta_install_dir }}/current/storage/logs/schedule_stdout.log
 
 
 [program:horizon]
-command=php {{ stream_delta_install_dir }}/artisan horizon
+command=php {{ stream_delta_install_dir }}/current/artisan horizon
 autostart=true
 autorestart=true
 user=stream-delta
 redirect_stderr=true
-stdout_logfile={{ stream_delta_install_dir }}/storage/logs/horizon_stdout.log
+stdout_logfile={{ stream_delta_install_dir }}/current/storage/logs/horizon_stdout.log
 

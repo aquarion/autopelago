@@ -1,8 +1,5 @@
 #!/bin/bash
 
-eval "$(ssh-agent -s)"
-ssh-add
-
 function update_host {
 	local host=$1
 	echo "Updating $host"
