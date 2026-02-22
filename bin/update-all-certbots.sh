@@ -1,7 +1,7 @@
 #!/bin/bash
 
-eval "$(ssh-agent -s)"
-ssh-add
+#eval "$(ssh-agent -s)"
+#ssh-add
 
 for host in firth cenote atoll; do
 	echo "Updating autopelago on $host.istic.systems"
