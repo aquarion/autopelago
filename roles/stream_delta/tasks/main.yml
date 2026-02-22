@@ -87,14 +87,12 @@
         state: present
       loop:
         - supervisor
-        - composer
         - git
-        - php-cli
-        - php-xml
-        - php-redis
+        - "{{ php_package }}-cli"
+        - "{{ php_package }}-xml"
+        - "{{ php_package }}-redis"
         - mariadb-server
         - redis-server
-        - npm
         - python3-pymysql
   rescue:
     - name: "Package installation failure warning"
@@ -131,14 +129,6 @@
         group: stream-delta
         mode: "0700"
 
-    - name: Copy stream-delta deploy key - private
-      ansible.builtin.copy:
-        src: files/keys/stream-delta-deploy
-        dest: "{{ stream_delta_home }}/.ssh/deploy_key"
-        owner: stream-delta
-        group: stream-delta
-        mode: "0600"
-
     - name: Copy stream-delta deploy key - public
       ansible.builtin.copy:
         src: files/keys/stream-delta-deploy.pub
@@ -156,21 +146,21 @@
         group: stream-delta
         mode: "0600"
 
-    - name: Make sure stream-delta install dir exists
-      ansible.builtin.file:
-        path: "{{ stream_delta_install_dir }}"
-        state: directory
-        owner: stream-delta
-        group: www-data
-        mode: "0755"
+    # - name: Make sure stream-delta install dir exists
+    #   ansible.builtin.file:
+    #     path: "{{ stream_delta_install_dir }}"
+    #     state: directory
+    #     owner: stream-delta
+    #     group: www-data
+    #     mode: "0755"
 
-    - name: Change ownership of stream-delta directory
-      ansible.builtin.file:
-        path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
-        owner: stream-delta
-        group: www-data
-        state: directory
-        recurse: true
+    # - name: Change ownership of stream-delta directory
+    #   ansible.builtin.file:
+    #     path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
+    #     owner: stream-delta
+    #     group: www-data
+    #     state: directory
+    #     recurse: true
   rescue:
     - name: "User and directory setup failure warning"
       ansible.builtin.debug:
@@ -208,6 +198,95 @@
     - name: "Database configuration failure execution"
       ansible.builtin.command:
         cmd: "false"
+
+- name: Pull tubular image from GitHub Container Registry
+  community.docker.docker_image:
+    name: ghcr.io/aquarion/tubular
+    tag: "{{ stream_delta_tubular_version }}"
+    source: pull
+  register: stream_delta_tubular_image_pull_result
+  changed_when: stream_delta_tubular_image_pull_result.changed
+  tags:
+    - stream_delta
+    - tubular
+
+- name: Install tubular container
+  tags:
+    - stream_delta
+    - tubular
+  when: stream_delta_tubular_image_pull_result.changed
+  block:
+    - name: Delete .env file for tubular
+      ansible.builtin.file:
+        path: "/opt/tubular/.env"
+        state: absent
+
+    - name: Delete tubular configuration directory
+      ansible.builtin.file:
+        path: "/opt/tubular"
+        state: absent
+
+    - name: Run tubular container
+      community.docker.docker_container:
+        name: tubular
+        image: ghcr.io/aquarion/tubular:{{ stream_delta_tubular_version }}
+        state: started
+        restart_policy: unless-stopped
+        # Required tubular env vars:
+        # - YOUTUBE_API_KEY
+        # - YOUTUBE_CHANNEL_ID
+        # - TUBULAR_WEBHOOK_URL
+        # - TUBULAR_CALLBACK_URL
+        # Optional tubular env vars:
+        # - WEBHOOK_SECRET
+        # - YOUTUBE_POLL_INTERVAL
+        # - YOUTUBE_DISABLE_IDLE_POLLING
+        # - TUBULAR_CALLBACK_PORT
+        # - CALLBACK_BIND_ADDRESS
+        # - REDIS_HOST
+        # - REDIS_PORT
+        # - REDIS_PASSWORD
+        # - REDIS_DB
+        # - TUBULAR_HEARTBEAT_INTERVAL
+        # - TUBULAR_LOG_FILE
+        # - TUBULAR_LOG_MAX_BYTES
+        # - TUBULAR_LOG_BACKUP_COUNT
+        # - TUBULAR_LOG_RETENTION_DAYS
+
+        # YOUTUBE_API_KEY=X
+        # YOUTUBE_CHANNEL_ID=X
+        # TUBULAR_WEBHOOK_URL=${APP_URL}/webhooks/youtube
+        # TUBULAR_CALLBACK_URL=${APP_URL}
+        # TUBULAR_CALLBACK_PORT=9191
+
+        env:
+          YOUTUBE_API_KEY: "{{ stream_delta_youtube_api_key }}"
+          YOUTUBE_CHANNEL_ID: "{{ stream_delta_youtube_channel_id }}"
+          YOUTUBE_DISABLE_IDLE_POLLING: "{{ stream_delta_youtube_disable_idle_polling | default('false') }}"
+          TUBULAR_CALLBACK_PORT: "{{ stream_delta_tubular_port }}"
+          WEBHOOK_SECRET: "{{ stream_delta_webhook_secret }}"
+          # YOUTUBE_POLL_INTERVAL: "{{ stream_delta_youtube_poll_interval | default('60') }}"
+          TUBULAR_CALLBACK_URL: "{{ stream_delta_app_url }}/tubular/callback"
+          TUBULAR_WEBHOOK_URL: "{{ stream_delta_app_url }}/webhooks/youtube"
+          # CALLBACK_BIND_ADDRESS: "{{ stream_delta_tubular_bind_address | default('') }}"
+          REDIS_USERNAME: "{{ stream_delta_tubular_redis_username }}"
+          REDIS_HOST: "{{ stream_delta_tubular_redis_host }}"
+          REDIS_PORT: "{{ stream_delta_tubular_redis_port }}"
+          REDIS_PASSWORD: "{{ stream_delta_tubular_redis_password }}"
+          # REDIS_DB: "{{ stream_delta_tubular_redis_db | default('0') }}"
+          # TUBULAR_HEARTBEAT_INTERVAL: "{{ stream_delta_tubular_heartbeat_interval | default('30') }}"
+          # TUBULAR_LOG_FILE: "{{ stream_delta_tubular_log_file | default('') }}"
+          # TUBULAR_LOG_MAX_BYTES: "{{ stream_delta_tubular_log_max_bytes | default('10485760') }}"
+          # TUBULAR_LOG_BACKUP_COUNT: "{{ stream_delta_tubular_log_backup_count | default('5') }}"
+          # TUBULAR_LOG_RETENTION_DAYS: "{{ stream_delta_tubular_log_retention_days | default('7') }}"
+        published_ports:
+          - "{{ stream_delta_tubular_port }}:{{ stream_delta_tubular_port }}"
+        pull: always
+
+  rescue:
+    - name: "Tubular installation failure warning"
+      ansible.builtin.debug:
+        msg: "Tubular installation failed"
 
 - name: Service configuration
   tags:
@@ -276,12 +355,12 @@
           Authorization: "Bearer {{ streamdelta_github_token }}"
           X-GitHub-Api-Version: "2022-11-28"
         return_content: true
-      register: stream_delta_github_variables
+      register: stream_delta_github_variables_response
       changed_when: false
 
     - name: Set variables list as fact for cleaner code
       ansible.builtin.set_fact:
-        stream_delta_vars: "{{ stream_delta_github_variables.json.variables | map(attribute='name') | list }}"
+        stream_delta_vars: "{{ stream_delta_github_variables_response.json.variables | map(attribute='name') | list }}"
 
     - name: Add variables to github actions workflow
       ansible.builtin.uri:
@@ -299,27 +378,7 @@
         status_code: 200,201,204
       register: stream_delta_response
       changed_when: stream_delta_response.status == 201
-      loop:
-        - { name: "DEPLOY_HOST", value: "{{ atoll_ip }}" }
-        - { name: "DEPLOY_PATH", value: "{{ stream_delta_install_dir }}" }
-        - { name: "DEPLOY_PORT", value: "22" }
-        - { name: "DEPLOY_USER", value: "stream-delta" }
-        - { name: "PHP_VERSION", value: "{{ php_version }}" }
-        - { name: "NODE_VERSION", value: "{{ stream_delta_node_version }}" }
-        - { name: "STREAM_DELTA_APP_URL", value: "{{ stream_delta_app_url }}" }
-        - { name: "STREAM_DELTA_DB_HOST", value: "{{ stream_delta_db_host }}" }
-        - { name: "STREAM_DELTA_DB_NAME", value: "{{ stream_delta_db_name }}" }
-        - { name: "STREAM_DELTA_DB_PORT", value: "{{ stream_delta_db_port }}" }
-        - { name: "STREAM_DELTA_DB_USER", value: "{{ stream_delta_db_user }}" }
-        - { name: "STREAM_DELTA_APP_ID", value: "{{ stream_delta_app_id }}" }
-        - {
-            name: "STREAM_DELTA_REVERB_HOST",
-            value: "{{ stream_delta_reverb_host }}",
-          }
-        - {
-            name: "STREAM_DELTA_REDIS_USERNAME",
-            value: "{{ stream_delta_redis_username }}",
-          }
+      loop: "{{ stream_delta_github_variables }}"
 
     - name: Get github public key for stream-delta repository
       ansible.builtin.uri:
@@ -350,54 +409,18 @@
       register: stream_delta_secrets_response
       changed_when: stream_delta_secrets_response.status == 201
       no_log: true
-      loop:
-        - {
-            name: "STREAM_DELTA_DB_PASSWORD",
-            value: "{{ stream_delta_db_password }}",
-          }
-        - { name: "STREAM_DELTA_APP_KEY", value: "{{ stream_delta_app_key }}" }
-        - {
-            name: "STREAM_DELTA_WEBHOOK_SECRET",
-            value: "{{ stream_delta_webhook_secret }}",
-          }
-        - {
-            name: "STREAM_DELTA_TWITCH_CLIENT_ID",
-            value: "{{ stream_delta_twitch_client_id }}",
-          }
-        - {
-            name: "STREAM_DELTA_TWITCH_CLIENT_SECRET",
-            value: "{{ stream_delta_twitch_client_secret }}",
-          }
-        - {
-            name: "SSH_KEY",
-            value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}',
-          }
-        - {
-            name: "STREAM_DELTA_REVERB_APP_KEY",
-            value: "{{ stream_delta_reverb_app_key }}",
-          }
-        - {
-            name: "STREAM_DELTA_REVERB_APP_SECRET",
-            value: "{{ stream_delta_reverb_app_secret }}",
-          }
-        - {
-            name: "STREAM_DELTA_REDIS_PASSWORD",
-            value: "{{ stream_delta_redis_password }}",
-          }
-        - {
-            name: "DEPENDABOT_GITHUB_TOKEN",
-            value: "{{ streamdelta_github_token }}",
-          }
+      loop: "{{ stream_delta_github_secrets }}"
 
-  # - name: Trigger github action to deploy stream-delta
-  #   ansible.builtin.uri:
-  #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
-  #     method: POST
-  #     headers:
-  #       Authorization: "Bearer {{ streamdelta_github_token }}"
-  #       Accept: "application/vnd.github.v3+json"
-  #     body: '{"ref":"main"}'
-  #     body_format: json
+    # - name: Trigger github action to deploy stream-delta
+    #   ansible.builtin.uri:
+    #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
+    #     method: POST
+    #     headers:
+    #       Authorization: "Bearer {{ streamdelta_github_token }}"
+    #       Accept: "application/vnd.github.v3+json"
+    #     body: '{"ref":"main"}'
+    #     body_format: json
+
   rescue:
     - name: "Github repository configuration failure warning"
       ansible.builtin.debug:
@@ -405,3 +428,78 @@
     - name: "Github repository configuration failure execution"
       ansible.builtin.command:
         cmd: "false"
+
+- name: Check for current stream-delta installation
+  ansible.builtin.stat:
+    path: "{{ stream_delta_install_dir }}/current"
+  register: stream_delta_installation_stat
+  tags:
+    - stream_delta
+    - stream_delta_deploy
+
+- name: Deploy stream-delta from Github
+  when: not stream_delta_installation_stat.stat.exists
+  tags:
+    - stream_delta
+    - stream_delta_deploy
+  block:
+    - name: Download stream-delta repository to stream-delta home
+      ansible.builtin.git:
+        repo: "https://github.com/aquarion/stream-delta.git"
+        dest: "{{ stream_delta_home }}/releases/github"
+        version: main
+        depth: 1
+        force: true
+        accept_hostkey: true
+      become: true
+      become_user: stream-delta
+
+    - name: Run composer install for stream-delta
+      ansible.builtin.command: composer install --no-dev --optimize-autoloader
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github"
+      become: true
+      become_user: stream-delta
+
+    - name: Create .env file for stream-delta
+      ansible.builtin.template:
+        src: templates/stream-delta/production.env.j2
+        dest: "{{ stream_delta_home }}/releases/github/.env"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0644"
+      become: true
+      become_user: stream-delta
+
+    - name: Create deploy archive of stream-delta
+      ansible.builtin.archive:
+        path: "{{ stream_delta_home }}/releases/github/."
+        dest: "{{ stream_delta_home }}/stream-delta-deploy.tar.gz"
+        format: gz
+      become: true
+      become_user: stream-delta
+
+    - name: Copy stream-delta deploy key - private
+      ansible.builtin.copy:
+        src: files/keys/stream-delta-deploy
+        dest: "{{ stream_delta_home }}/.ssh/id_rsa"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0600"
+
+    - name: Run laravel envoy for stream-delta
+      ansible.builtin.command: vendor/bin/envoy run deploy --host=localhost --user=stream-delta --deploy_path={{ stream_delta_install_dir }} --app_url={{ stream_delta_app_url }}
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github"
+      become: true
+      become_user: stream-delta
+
+    - name: Clean up github release directory
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/releases/github"
+        state: absent
+
+    - name: Remove stream-delta deploy keys
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/.ssh/id_rsa"
+        state: absent

@@ -1,0 +1,74 @@
+---
+# Stream Delta role defaults
+
+# GitHub Actions Variables to set
+stream_delta_github_variables:
+  - { name: "DEPLOY_HOST", value: "{{ atoll_ip }}" }
+  - { name: "DEPLOY_PATH", value: "{{ stream_delta_install_dir }}" }
+  - { name: "DEPLOY_PORT", value: "22" }
+  - { name: "DEPLOY_USER", value: "stream-delta" }
+  - { name: "PHP_VERSION", value: "{{ php_version }}" }
+  - { name: "NODE_VERSION", value: "{{ stream_delta_node_version }}" }
+  - { name: "STREAM_DELTA_APP_URL", value: "{{ stream_delta_app_url }}" }
+  - { name: "STREAM_DELTA_DB_HOST", value: "{{ stream_delta_db_host }}" }
+  - { name: "STREAM_DELTA_DB_NAME", value: "{{ stream_delta_db_name }}" }
+  - { name: "STREAM_DELTA_DB_PORT", value: "{{ stream_delta_db_port }}" }
+  - { name: "STREAM_DELTA_DB_USER", value: "{{ stream_delta_db_user }}" }
+  - { name: "STREAM_DELTA_APP_ID", value: "{{ stream_delta_app_id }}" }
+  - {
+      name: "STREAM_DELTA_REVERB_HOST",
+      value: "{{ stream_delta_reverb_host }}",
+    }
+  - {
+      name: "STREAM_DELTA_REDIS_USERNAME",
+      value: "{{ stream_delta_redis_username }}",
+    }
+  - {
+      name: "STREAM_DELTA_YOUTUBE_CHANNEL_ID",
+      value: "{{ stream_delta_youtube_channel_id }}",
+    }
+  - {
+      name: "STREAM_DELTA_TUBULAR_CALLBACK_PORT",
+      value: "{{ stream_delta_tubular_port }}",
+    }
+
+# GitHub Actions Secrets to set
+stream_delta_github_secrets:
+  - {
+      name: "STREAM_DELTA_DB_PASSWORD",
+      value: "{{ stream_delta_db_password }}",
+    }
+  - { name: "STREAM_DELTA_APP_KEY", value: "{{ stream_delta_app_key }}" }
+  - {
+      name: "STREAM_DELTA_WEBHOOK_SECRET",
+      value: "{{ stream_delta_webhook_secret }}",
+    }
+  - {
+      name: "STREAM_DELTA_TWITCH_CLIENT_ID",
+      value: "{{ stream_delta_twitch_client_id }}",
+    }
+  - {
+      name: "STREAM_DELTA_TWITCH_CLIENT_SECRET",
+      value: "{{ stream_delta_twitch_client_secret }}",
+    }
+  - {
+      name: "SSH_KEY",
+      value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}',
+    }
+  - {
+      name: "STREAM_DELTA_REVERB_APP_KEY",
+      value: "{{ stream_delta_reverb_app_key }}",
+    }
+  - {
+      name: "STREAM_DELTA_REVERB_APP_SECRET",
+      value: "{{ stream_delta_reverb_app_secret }}",
+    }
+  - {
+      name: "STREAM_DELTA_REDIS_PASSWORD",
+      value: "{{ stream_delta_redis_password }}",
+    }
+  - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ streamdelta_github_token }}" }
+  - {
+      name: "STREAM_DELTA_YOUTUBE_API_KEY",
+      value: "{{ stream_delta_youtube_api_key }}",
+    }

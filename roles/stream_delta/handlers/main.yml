@@ -7,3 +7,19 @@
     - supervisord
     - restart
     - supervisor_restart
+
+- name: Restart tubular
+  ansible.builtin.systemd:
+    name: tubular
+    state: restarted
+  tags:
+    - tubular
+    - restart
+    - tubular_restart
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  tags:
+    - systemd
+    - reload
