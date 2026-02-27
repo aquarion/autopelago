@@ -1,3 +1,4 @@
+---
 - name: Remove old PHP PPA
   ansible.builtin.apt_repository:
     repo: ppa:ondrej/php

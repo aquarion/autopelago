@@ -146,21 +146,21 @@
         group: stream-delta
         mode: "0600"
 
-    # - name: Make sure stream-delta install dir exists
-    #   ansible.builtin.file:
-    #     path: "{{ stream_delta_install_dir }}"
-    #     state: directory
-    #     owner: stream-delta
-    #     group: www-data
-    #     mode: "0755"
+  # - name: Make sure stream-delta install dir exists
+  #   ansible.builtin.file:
+  #     path: "{{ stream_delta_install_dir }}"
+  #     state: directory
+  #     owner: stream-delta
+  #     group: www-data
+  #     mode: "0755"
 
-    # - name: Change ownership of stream-delta directory
-    #   ansible.builtin.file:
-    #     path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
-    #     owner: stream-delta
-    #     group: www-data
-    #     state: directory
-    #     recurse: true
+  # - name: Change ownership of stream-delta directory
+  #   ansible.builtin.file:
+  #     path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
+  #     owner: stream-delta
+  #     group: www-data
+  #     state: directory
+  #     recurse: true
   rescue:
     - name: "User and directory setup failure warning"
       ansible.builtin.debug:
@@ -472,10 +472,13 @@
       become_user: stream-delta
 
     - name: Create deploy archive of stream-delta
-      ansible.builtin.archive:
+      community.general.archive:
         path: "{{ stream_delta_home }}/releases/github/."
         dest: "{{ stream_delta_home }}/stream-delta-deploy.tar.gz"
         format: gz
+        owner: stream-delta
+        group: stream-delta
+        mode: "0644"
       become: true
       become_user: stream-delta
 
