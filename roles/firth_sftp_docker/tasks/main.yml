@@ -147,17 +147,71 @@
         group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         mode: "0755"
 
-    - name: Template users.conf for SFTP Docker container
-      ansible.builtin.template:
-        src: users.conf.j2
-        dest: "{{ docker_root }}/sftp/etc/users.conf"
-        owner: "{{ firth_sftp_docker_user | default('sftp_docker') }}"
-        group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
-        mode: "0644"
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
       ansible.builtin.debug:
         msg: "Failed to create necessary SFTP Docker configuration files."
+
+- name: Setup SFTP user sync script and timer
+  tags:
+    - sftp
+    - sftp_sync
+
+  block:
+    - name: Create MySQL user for sftp-sync
+      community.mysql.mysql_user:
+        name: "{{ firth_sftp_docker_db_user }}"
+        password: "{{ firth_sftp_docker_db_password }}"
+        host: localhost
+        priv:
+          "{{ firth_sftp_docker_db_name }}.sftp_users:SELECT": ""
+          "{{ firth_sftp_docker_db_name }}.sftp_sync:SELECT,UPDATE": ""
+        state: present
+
+    - name: Deploy MySQL client config for sftp-sync
+      ansible.builtin.template:
+        src: sftp-sync.cnf.j2
+        dest: /etc/sftp-sync.cnf
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Deploy sftp-sync script
+      ansible.builtin.template:
+        src: sftp-sync.sh.j2
+        dest: /usr/local/bin/sftp-sync.sh
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Deploy sftp-sync systemd service
+      ansible.builtin.template:
+        src: sftp-sync.service.j2
+        dest: /etc/systemd/system/sftp-sync.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Deploy sftp-sync systemd timer
+      ansible.builtin.template:
+        src: sftp-sync.timer.j2
+        dest: /etc/systemd/system/sftp-sync.timer
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Enable and start sftp-sync timer
+      ansible.builtin.systemd:
+        name: sftp-sync.timer
+        enabled: true
+        state: started
+
+  rescue:
+    - name: Debug failure to setup SFTP sync
+      ansible.builtin.debug:
+        msg: "Failed to setup SFTP user sync script or timer."
 
 - name: Setup Docker Compose for SFTP Docker container
   tags:

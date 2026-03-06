@@ -1,0 +1,24 @@
+#!/bin/bash
+# {{ ansible_managed }}
+set -euo pipefail
+
+DEFAULTS_FILE="/etc/sftp-sync.cnf"
+USERS_CONF="{{ docker_root }}/sftp/etc/users.conf"
+SFTP_DIR="{{ docker_root }}/sftp"
+
+mysql() {
+    command mysql --defaults-file="$DEFAULTS_FILE" "$@"
+}
+
+dirty=$(mysql -sNe "SELECT dirty FROM sftp_sync WHERE id = 1;")
+
+if [[ "$dirty" != "1" ]]; then
+    exit 0
+fi
+
+mysql -sNe "SELECT CONCAT(username, ':', password, ':e:', uid, ':', gid) FROM sftp_users;" \
+    > "$USERS_CONF"
+
+docker compose -f "$SFTP_DIR/docker-compose.yml" restart sftp
+
+mysql -e "UPDATE sftp_sync SET dirty = 0, last_synced_at = NOW() WHERE id = 1;"

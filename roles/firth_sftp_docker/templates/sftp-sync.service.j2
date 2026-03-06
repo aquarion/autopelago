@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Sync SFTP users from database to users.conf
+After=network.target mariadb.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/sftp-sync.sh

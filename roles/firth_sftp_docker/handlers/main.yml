@@ -5,3 +5,7 @@
   ansible.builtin.command: docker compose up -d
   args:
     chdir: "{{ docker_root }}/sftp"
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true

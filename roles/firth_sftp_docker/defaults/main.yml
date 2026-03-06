@@ -3,6 +3,12 @@
 
 firth_sftp_docker_user: sftp_docker
 firth_sftp_docker_group: sftp_docker
+
+firth_sftp_docker_db_host: localhost
+firth_sftp_docker_db_port: 3306
+firth_sftp_docker_db_user:
+firth_sftp_docker_db_password:
+firth_sftp_docker_db_name:
 # Example structure for firth_sftp_docker_users
 # firth_sftp_docker_users:
 #   - name: user1
