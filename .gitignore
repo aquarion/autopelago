@@ -9,3 +9,4 @@ results.sarif
 .ansible
 *.retry
 *.pyc
+.claude/settings.local.json

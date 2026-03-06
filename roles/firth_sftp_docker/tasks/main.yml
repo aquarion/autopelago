@@ -160,12 +160,11 @@
   block:
     - name: Create MySQL user for sftp-sync
       community.mysql.mysql_user:
-        name: "{{ firth_sftp_docker_db_user }}"
-        password: "{{ firth_sftp_docker_db_password }}"
+        name: "{{ firth_alchemistic_db_user }}"
+        password: "{{ firth_alchemistic_db_password }}"
         host: localhost
         priv:
-          "{{ firth_sftp_docker_db_name }}.sftp_users:SELECT": ""
-          "{{ firth_sftp_docker_db_name }}.sftp_sync:SELECT,UPDATE": ""
+          "{{ firth_alchemistic_db_name }}.*": ""
         state: present
 
     - name: Deploy MySQL client config for sftp-sync

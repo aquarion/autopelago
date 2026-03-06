@@ -5,6 +5,7 @@ set -euo pipefail
 DEFAULTS_FILE="/etc/sftp-sync.cnf"
 USERS_CONF="{{ docker_root }}/sftp/etc/users.conf"
 SFTP_DIR="{{ docker_root }}/sftp"
+HOME_DIR="{{ docker_root }}/sftp/home"
 
 mysql() {
     command mysql --defaults-file="$DEFAULTS_FILE" "$@"
@@ -16,8 +17,25 @@ if [[ "$dirty" != "1" ]]; then
     exit 0
 fi
 
+# Write users.conf
 mysql -sNe "SELECT CONCAT(username, ':', password, ':e:', uid, ':', gid) FROM sftp_users;" \
     > "$USERS_CONF"
+
+# Sync authorized_keys for each user
+while IFS=$'\t' read -r username uid public_key; do
+    ssh_dir="$HOME_DIR/$username/.ssh"
+    auth_keys="$ssh_dir/authorized_keys"
+
+    if [[ -n "$public_key" ]]; then
+        mkdir -p "$ssh_dir"
+        echo "$public_key" > "$auth_keys"
+        chown -R "$uid:$uid" "$ssh_dir"
+        chmod 700 "$ssh_dir"
+        chmod 600 "$auth_keys"
+    else
+        rm -f "$auth_keys"
+    fi
+done < <(mysql -sNe "SELECT username, uid, COALESCE(public_key, '') FROM sftp_users;")
 
 docker compose -f "$SFTP_DIR/docker-compose.yml" restart sftp
 

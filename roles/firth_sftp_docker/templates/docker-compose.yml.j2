@@ -25,4 +25,11 @@ services:
 {% endfor %}
 {%- endif %}
 {%- endfor %}
+    networks:
+      - firth_services
     restart: unless-stopped
+
+networks:
+  firth_services:
+    external: true
+    name: "{{ firth_services_docker_network | default('firth_services') }}"
