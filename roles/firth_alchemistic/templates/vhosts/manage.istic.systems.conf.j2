@@ -1,0 +1,33 @@
+# {{ ansible_managed }}
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ firth_alchemistic_server_name | default('manage.istic.systems') }};
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name {{ firth_alchemistic_server_name | default('manage.istic.systems') }};
+
+    include /etc/nginx/snippets/ssl/istic_ssl.conf;
+
+    error_log  /var/log/nginx/alchemistic.error.log;
+    access_log /var/log/nginx/alchemistic.access.log;
+
+    add_header X-WhyAmI alchemistic;
+
+    location /build/ {
+        alias {{ docker_root }}/alchemistic/public/build/;
+        expires max;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location / {
+        fastcgi_pass 127.0.0.1:{{ firth_alchemistic_fpm_port }};
+        fastcgi_param SCRIPT_FILENAME /var/www/html/public/index.php;
+        fastcgi_param QUERY_STRING $query_string;
+        include fastcgi_params;
+    }
+}

@@ -1,0 +1,46 @@
+# Docker Compose file for Alchemistic
+# {{ ansible_managed }}
+name: alchemistic
+services:
+  app:
+    image: "{{ firth_alchemistic_image }}:{{ firth_alchemistic_image_tag }}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ firth_alchemistic_fpm_port }}:9000"
+    environment:
+      APP_NAME: Alchemistic
+      APP_ENV: production
+      APP_KEY: "{{ firth_alchemistic_app_key }}"
+      APP_DEBUG: "false"
+      APP_URL: "{{ firth_alchemistic_app_url }}"
+      DB_CONNECTION: mysql
+      DB_HOST: "{{ firth_alchemistic_db_host }}"
+      DB_PORT: "{{ firth_alchemistic_db_port }}"
+      DB_DATABASE: "{{ firth_alchemistic_db_name }}"
+      DB_USERNAME: "{{ firth_alchemistic_db_user }}"
+      DB_PASSWORD: "{{ firth_alchemistic_db_password }}"
+      MAIL_MAILER: smtp
+      MAIL_HOST: "{{ firth_alchemistic_mail_host }}"
+      MAIL_PORT: "{{ firth_alchemistic_mail_port }}"
+      MAIL_USERNAME: "{{ firth_alchemistic_mail_username }}"
+      MAIL_PASSWORD: "{{ firth_alchemistic_mail_password }}"
+      MAIL_FROM_ADDRESS: "{{ firth_alchemistic_mail_from_address }}"
+      MAIL_FROM_NAME: "{{ firth_alchemistic_mail_from_name }}"
+    volumes:
+      - alchemistic_storage:/var/www/html/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
+volumes:
+  alchemistic_storage:
+
+networks:
+  firth_services:
+    external: true
+    name: "{{ firth_services_docker_network }}"

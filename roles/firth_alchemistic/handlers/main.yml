@@ -1,0 +1,12 @@
+---
+# handlers file for roles/firth_alchemistic
+
+- name: Restart Alchemistic
+  ansible.builtin.command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ docker_root }}/alchemistic"
+
+- name: Reload nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded

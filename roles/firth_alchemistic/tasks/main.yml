@@ -1,0 +1,169 @@
+---
+# tasks file for roles/firth_alchemistic
+
+- name: Register manage.istic.systems DNS
+  tags:
+    - alchemistic
+    - dns
+    - aws
+  block:
+    - name: Manage.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.systems
+        record: "{{ firth_alchemistic_server_name | default('manage.istic.systems') }}."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      connection: local
+      become: false
+
+  rescue:
+    - name: Debug failure to create Route53 record for Alchemistic
+      ansible.builtin.debug:
+        msg: "Failed to create Route53 record for Alchemistic. Check loadbalancer_ip and AWS credentials."
+
+- name: Setup Alchemistic database
+  tags:
+    - alchemistic
+    - database
+  block:
+    - name: Ensure python3-mysqldb is installed
+      ansible.builtin.apt:
+        name: python3-mysqldb
+        state: present
+
+    - name: Create Alchemistic database
+      community.mysql.mysql_db:
+        name: "{{ firth_alchemistic_db_name }}"
+        state: present
+        login_host: "{{ firth_alchemistic_mysql_login_host | default('127.0.0.1') }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create Alchemistic database user
+      community.mysql.mysql_user:
+        name: "{{ firth_alchemistic_db_user }}"
+        password: "{{ firth_alchemistic_db_password }}"
+        priv: "{{ firth_alchemistic_db_name }}.*:ALL"
+        host: "%"
+        state: present
+        login_host: "{{ firth_alchemistic_mysql_login_host | default('127.0.0.1') }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+  rescue:
+    - name: Debug failure to setup Alchemistic database
+      ansible.builtin.debug:
+        msg: "Failed to setup Alchemistic database. Check mysql_root_password and firth_alchemistic_db_* variables."
+
+- name: Log in to GitHub Container Registry
+  tags:
+    - alchemistic
+    - docker
+  community.docker.docker_login:
+    registry_url: ghcr.io
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_token }}"
+
+- name: Ensure shared Docker network exists
+  tags:
+    - alchemistic
+    - docker
+  community.docker.docker_network:
+    name: "{{ firth_services_docker_network }}"
+    state: present
+
+- name: Create Alchemistic working directory
+  tags:
+    - alchemistic
+    - docker
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ docker_root }}/alchemistic"
+    - "{{ docker_root }}/alchemistic/public"
+
+- name: Deploy Alchemistic Docker Compose
+  tags:
+    - alchemistic
+    - docker
+  notify: Restart Alchemistic
+  block:
+    - name: Template docker-compose.yml for Alchemistic
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ docker_root }}/alchemistic/docker-compose.yml"
+        owner: root
+        group: docker
+        mode: "0660"
+
+  rescue:
+    - name: Debug failure to deploy Alchemistic Docker Compose
+      ansible.builtin.debug:
+        msg: "Failed to deploy Alchemistic Docker Compose."
+
+- name: Pull Alchemistic image
+  tags:
+    - alchemistic
+    - docker
+  ansible.builtin.command: docker compose pull
+  args:
+    chdir: "{{ docker_root }}/alchemistic"
+  register: firth_alchemistic_pull
+  changed_when: "'Pulled' in firth_alchemistic_pull.stderr"
+  notify: Restart Alchemistic
+
+- name: Start Alchemistic
+  tags:
+    - alchemistic
+    - docker
+  ansible.builtin.command: docker compose up -d
+  args:
+    chdir: "{{ docker_root }}/alchemistic"
+  when: firth_alchemistic_pull.changed
+
+- name: Copy Vite build assets from container to host
+  tags:
+    - alchemistic
+    - docker
+  ansible.builtin.command: docker compose cp app:/var/www/html/public/build public/build
+  args:
+    chdir: "{{ docker_root }}/alchemistic"
+  when: firth_alchemistic_pull.changed
+
+- name: Deploy Alchemistic nginx vhost
+  tags:
+    - alchemistic
+    - nginx
+  block:
+    - name: Deploy nginx vhost to sites-available
+      ansible.builtin.template:
+        src: vhosts/manage.istic.systems.conf.j2
+        dest: /etc/nginx/sites-available/manage.istic.systems.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Enable nginx vhost
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/manage.istic.systems.conf
+        src: ../sites-available/manage.istic.systems.conf
+        state: link
+      notify: Reload nginx
+
+- name: Run database migrations
+  tags:
+    - alchemistic
+    - migrations
+  ansible.builtin.command: >
+    docker compose exec -T app php artisan migrate --force
+  args:
+    chdir: "{{ docker_root }}/alchemistic"

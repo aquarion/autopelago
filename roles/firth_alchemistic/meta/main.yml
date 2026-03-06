@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  author: Nicholas Avenell
+  description: An Ansible role to deploy the Alchemistic user management application.
+  company: Istic Co. <https://istic.co>
+  license: GPL-2.0-or-later
+  min_ansible_version: "2.1"
+  galaxy_tags:
+    - docker
+    - laravel
+
+dependencies: []
