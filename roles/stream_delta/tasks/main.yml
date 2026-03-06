@@ -491,7 +491,8 @@
         mode: "0600"
 
     - name: Run laravel envoy for stream-delta
-      ansible.builtin.command: vendor/bin/envoy run deploy --host=localhost --user=stream-delta --deploy_path={{ stream_delta_install_dir }} --app_url={{ stream_delta_app_url }}
+      ansible.builtin.command: vendor/bin/envoy run deploy --host=localhost --user=stream-delta --deploy_path={{ stream_delta_install_dir }} --app_url={{
+        stream_delta_app_url }}
       args:
         chdir: "{{ stream_delta_home }}/releases/github"
       become: true

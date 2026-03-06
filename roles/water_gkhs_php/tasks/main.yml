@@ -8,6 +8,7 @@
   tags:
     - php
     - package_sources
+  when: ansible_distribution == "Ubuntu"
 
 - name: Get Launchpad PPA Info
   ansible.builtin.uri:
@@ -34,12 +35,27 @@
     components: [main]
     signed_by: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{  water_gkhs_php_ondrej_php_ppa_info.json.signing_key_fingerprint }}"
   tags: php
-  register: water_gkhs_php_ondrej_php_ppa_repo
+  register: water_gkhs_php_repo
+  when: ansible_distribution == "Ubuntu"
+
+- name: Manage PHP PPA repository (deb822_repository)
+  become: true
+  ansible.builtin.deb822_repository:
+    state: present
+    name: "php-sury-{{ ansible_distribution_release }}"
+    types: [deb]
+    uris: [https://packages.sury.org/php/]
+    suites: ["{{ ansible_facts['distribution_release'] }}"]
+    components: [main]
+    signed_by: "https://packages.sury.org/php/apt.gpg"
+  tags: php
+  register: water_gkhs_php_repo
+  when: ansible_distribution == "Debian"
 
 - name: Refresh packages if PHP PPA was changed
   ansible.builtin.apt:
     update_cache: true
-  when: water_gkhs_php_ondrej_php_ppa_repo.changed
+  when: water_gkhs_php_repo.changed
   tags: php
 
 - name: Remove old PHP Packages
@@ -48,6 +64,7 @@
     pkg:
       - "{{ item }}"
       - "{{ item }}-*"
+    purge: true
   loop: "{{ remove_php_packages | reject('equalto', php_package) | list }}"
   ignore_errors: true
   tags: php
