@@ -15,7 +15,7 @@ services:
     logging:
       driver: journald
       options:
-        tag: "${.Name}/${.ID}"
+        tag: "$${.Name}/$${.ID}"
       mounts:
 {% for user in firth_sftp_docker_users %}
 {% if user.bind_mounts is defined %}

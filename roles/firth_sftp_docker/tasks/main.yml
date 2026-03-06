@@ -163,8 +163,7 @@
         name: "{{ firth_alchemistic_db_user }}"
         password: "{{ firth_alchemistic_db_password }}"
         host: localhost
-        priv:
-          "{{ firth_alchemistic_db_name }}.*": ""
+        priv: "{{ firth_alchemistic_db_name }}.*:SELECT"
         state: present
 
     - name: Deploy MySQL client config for sftp-sync
