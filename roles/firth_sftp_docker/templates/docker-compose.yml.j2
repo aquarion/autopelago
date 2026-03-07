@@ -12,19 +12,18 @@ services:
         - ./keys/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
         - ./bin/bind_mounts.sh:/etc/sftp.d/bind_mounts.sh:ro
         - "{{ docker_root }}/sftp/home:/home:rw"
+{% for user in firth_sftp_docker_users %}
+{% if user.bind_mounts is defined %}
+{% for mount in user.bind_mounts %}
+        - {{ mount.source }}:/home/{{ user.name }}/{{ mount.target }}{% if mount.read_only is defined and mount.read_only %}:ro{% endif %}
+
+{% endfor %}
+{% endif %}
+{% endfor %}
     logging:
       driver: journald
       options:
         tag: "$${.Name}/$${.ID}"
-      mounts:
-{% for user in firth_sftp_docker_users %}
-{% if user.bind_mounts is defined %}
-{% for mount in user.bind_mounts %}
-        -  {{ mount.source }}:/home/{{ user.name }}/{{ mount.target }}{% if mount.read_only is defined and mount.read_only %}:ro{% endif %}
-
-{% endfor %}
-{%- endif %}
-{%- endfor %}
     networks:
       - firth_services
     restart: unless-stopped

@@ -37,6 +37,14 @@ while IFS=$'\t' read -r username uid public_key; do
     fi
 done < <(mysql -sNe "SELECT username, uid, COALESCE(public_key, '') FROM sftp_users;")
 
-docker compose -f "$SFTP_DIR/docker-compose.yml" restart sftp
+# Create any new users in the running container (existing users are skipped)
+while IFS= read -r line; do
+    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+        /usr/local/bin/create-sftp-user "$line" || true
+done < "$USERS_CONF"
+
+# Update passwords for all users (handles existing users that were skipped above)
+mysql -sNe "SELECT CONCAT(username, ':', password) FROM sftp_users;" | \
+    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp chpasswd -e
 
 mysql -e "UPDATE sftp_sync SET dirty = 0, last_synced_at = NOW() WHERE id = 1;"
