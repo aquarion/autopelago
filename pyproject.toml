@@ -14,7 +14,7 @@ boto = "==2.*"
 boto3 = "==1.*"
 poetry = "==2.*"
 poetry-plugin-export = "==1.*"
-virtualenv = "==20.*"
+virtualenv = "==21.*"
 pynacl = "^1.6.1"
 
 [tool.poetry.group.dev.dependencies]
