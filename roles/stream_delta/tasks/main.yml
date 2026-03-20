@@ -199,6 +199,15 @@
       ansible.builtin.command:
         cmd: "false"
 
+- name: Log in to GitHub Container Registry
+  tags:
+    - stream_delta
+    - tubular
+  community.docker.docker_login:
+    registry_url: ghcr.io
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_token }}"
+
 - name: Pull tubular image from GitHub Container Registry
   community.docker.docker_image:
     name: ghcr.io/aquarion/tubular
@@ -287,6 +296,25 @@
     - name: "Tubular installation failure warning"
       ansible.builtin.debug:
         msg: "Tubular installation failed"
+
+- name: Run Watchtower to keep tubular up to date
+  tags:
+    - stream_delta
+    - tubular
+    - watchtower
+  community.docker.docker_container:
+    name: watchtower-tubular
+    image: containrrr/watchtower
+    state: started
+    restart_policy: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json
+    env:
+      DOCKER_CONFIG: /config.json
+      WATCHTOWER_POLL_INTERVAL: "3600"
+      WATCHTOWER_CLEANUP: "true"
+    command: tubular
 
 - name: Service configuration
   tags:
