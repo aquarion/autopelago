@@ -72,6 +72,8 @@ echo "Generating certificates for hubris.house"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --nginx --cert-name hubris.house -d hubris.house -d "*.hubris.house"
 echo "Generating certificates for forums.profounddecisions.co.uk"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --nginx --cert-name forums.profounddecisions.co.uk -d forums.profounddecisions.co.uk
+echo "Generating certificates for michael.conterio.co.uk"
+sudo certbot certonly -n --expand --nginx --cert-name michael.conterio.co.uk -d michael.conterio.co.uk -d www.michael.conterio.co.uk -d conterio.co.uk -d www.conterio.co.uk
 
 echo "Setting permissions for /etc/letsencrypt"
 sudo chown -R root:certbot_access /etc/letsencrypt
