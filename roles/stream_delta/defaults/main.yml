@@ -19,6 +19,8 @@ stream_delta_github_variables:
   - { name: "STREAM_DELTA_REDIS_USERNAME", value: "{{ stream_delta_redis_username }}" }
   - { name: "STREAM_DELTA_YOUTUBE_CHANNEL_ID", value: "{{ stream_delta_youtube_channel_id }}" }
   - { name: "STREAM_DELTA_TUBULAR_CALLBACK_PORT", value: "{{ stream_delta_tubular_port }}" }
+  - { name: "STREAM_DELTA_TWITCH_BROADCASTER_ID", value: "{{ stream_delta_twitch_broadcaster_id }}" }
+  - { name: "STREAM_DELTA_TWITCH_BROADCASTER_NAME", value: "{{ stream_delta_twitch_broadcaster_name }}" }
 
 # GitHub Actions Secrets to set
 stream_delta_github_secrets:
