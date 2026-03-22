@@ -34,3 +34,4 @@ stream_delta_github_secrets:
   - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ streamdelta_github_token }}" }
   - { name: "STREAM_DELTA_YOUTUBE_API_KEY", value: "{{ stream_delta_youtube_api_key }}" }
   - { name: "STREAM_DELTA_STEAMGRIDDB_API_KEY", value: "{{ stream_delta_steamgriddb_api_key }}" }
+  - { name: "STREAM_DELTA_KOFI_WEBHOOK_SECRET", value: "{{ stream_delta_kofi_webhook_secret }}" }
