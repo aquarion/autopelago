@@ -21,6 +21,9 @@ stream_delta_github_variables:
   - { name: "STREAM_DELTA_TUBULAR_CALLBACK_PORT", value: "{{ stream_delta_tubular_port }}" }
   - { name: "STREAM_DELTA_TWITCH_BROADCASTER_ID", value: "{{ stream_delta_twitch_broadcaster_id }}" }
   - { name: "STREAM_DELTA_TWITCH_BROADCASTER_NAME", value: "{{ stream_delta_twitch_broadcaster_name }}" }
+  - { name: "STREAM_DELTA_AWS_DEFAULT_REGION", value: "{{ stream_delta_aws_region }}" }
+  - { name: "STREAM_DELTA_AWS_BUCKET", value: "{{ stream_delta_aws_bucket }}" }
+  - { name: "STREAM_DELTA_AWS_URL", value: "{{ stream_delta_aws_url }}" }
 
 # GitHub Actions Secrets to set
 stream_delta_github_secrets:
@@ -37,3 +40,5 @@ stream_delta_github_secrets:
   - { name: "STREAM_DELTA_YOUTUBE_API_KEY", value: "{{ stream_delta_youtube_api_key }}" }
   - { name: "STREAM_DELTA_STEAMGRIDDB_API_KEY", value: "{{ stream_delta_steamgriddb_api_key }}" }
   - { name: "STREAM_DELTA_KOFI_WEBHOOK_SECRET", value: "{{ stream_delta_kofi_webhook_secret }}" }
+  - { name: "STREAM_DELTA_AWS_ACCESS_KEY_ID", value: "{{ stream_delta_aws_access_key_id }}" }
+  - { name: "STREAM_DELTA_AWS_SECRET_ACCESS_KEY", value: "{{ stream_delta_aws_secret_access_key }}" }
