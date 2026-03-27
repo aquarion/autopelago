@@ -10,6 +10,14 @@ repos:
       - id: check-yaml
       - id: check-added-large-files
       - id: detect-private-key
+  - repo: local
+    hooks:
+      - id: check-vault-encrypted
+        name: Check host_vars are vault-encrypted
+        entry: bin/check-vault-encrypted.sh
+        language: script
+        files: ^host_vars/
+        exclude: ^host_vars/_example\.yml$
   - repo: https://github.com/ansible-community/ansible-lint.git
     rev: v26.2.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
     hooks:
