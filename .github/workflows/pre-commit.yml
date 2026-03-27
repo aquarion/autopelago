@@ -15,9 +15,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Drop ansible.cfg to disable vault password file for CI
-        run: rm ansible.cfg
+      - name: Create empty vault password file for CI
+        run: touch /tmp/vault_pass.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
       - uses: pre-commit/action@v3.0.1
+        env:
+          ANSIBLE_VAULT_PASSWORD_FILE: /tmp/vault_pass.txt
