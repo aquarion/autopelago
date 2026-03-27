@@ -25,6 +25,8 @@ stream_delta_github_variables:
   - { name: "STREAM_DELTA_AWS_BUCKET", value: "{{ stream_delta_aws_bucket }}" }
   - { name: "STREAM_DELTA_AWS_URL", value: "{{ stream_delta_aws_url }}" }
 
+stream_delta_aws_iam_user: stream-delta-logos
+
 # GitHub Actions Secrets to set
 stream_delta_github_secrets:
   - { name: "STREAM_DELTA_DB_PASSWORD", value: "{{ stream_delta_db_password }}" }
