@@ -95,27 +95,43 @@
         stream_delta_aws_secret_access_key: "{{ stream_delta_iam_access_key.secret_access_key }}"
       no_log: true
 
-    - name: Stat host_vars directory for owner/permissions
-      ansible.builtin.stat:
-        path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net"
+    - name: Write and vault-encrypt credentials file
       delegate_to: localhost
-      register: stream_delta_hostvars_dir
+      block:
+        - name: Create temp file for plaintext credentials
+          ansible.builtin.tempfile:
+            suffix: .yml
+          register: _stream_delta_creds_tmp
 
-    - name: Read vault password for credential encryption
-      ansible.builtin.set_fact:
-        stream_delta_vault_secret: "{{ lookup('ansible.builtin.file', lookup('ansible.builtin.config', 'DEFAULT_VAULT_PASSWORD_FILE')) | trim }}"
-      delegate_to: localhost
-      no_log: true
+        - name: Write plaintext credentials to temp file
+          ansible.builtin.copy:
+            content: "{{ lookup('ansible.builtin.template', 'stream_delta_aws.yml.j2') }}"
+            dest: "{{ _stream_delta_creds_tmp.path }}"
+            mode: "0600"
+          no_log: true
 
-    - name: Write vault-encrypted credentials file
-      ansible.builtin.copy:
-        content: "{{ lookup('ansible.builtin.template', 'stream_delta_aws.yml.j2') | ansible.builtin.vault(stream_delta_vault_secret) }}"
-        dest: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
-        owner: "{{ stream_delta_hostvars_dir.stat.pw_name }}"
-        group: "{{ stream_delta_hostvars_dir.stat.gr_name }}"
-        mode: "0660"
-      delegate_to: localhost
-      no_log: true
+        - name: Encrypt credentials file with ansible-vault
+          ansible.builtin.command:
+            cmd: >
+              {{ ansible_playbook_python | dirname }}/ansible-vault encrypt
+              --vault-password-file {{ lookup('env', 'HOME') }}/.vault_pass.txt
+              --output {{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml
+              {{ _stream_delta_creds_tmp.path }}
+          changed_when: true
+
+        - name: Set credentials file ownership
+          ansible.builtin.file:
+            path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
+            owner: "{{ lookup('env', 'USER') }}"
+            group: "{{ lookup('env', 'USER') }}"
+            mode: "0660"
+
+      always:
+        - name: Remove temp credentials file
+          ansible.builtin.file:
+            path: "{{ _stream_delta_creds_tmp.path }}"
+            state: absent
+          when: _stream_delta_creds_tmp is defined
 
     - name: Remind operator to commit credentials file
       ansible.builtin.debug:
