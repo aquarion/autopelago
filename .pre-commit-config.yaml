@@ -10,6 +10,9 @@ repos:
       - id: check-yaml
       - id: check-added-large-files
       - id: detect-private-key
+      - id: check-json
+      - id: pretty-format-json
+        args: ["--autofix"]
   - repo: local
     hooks:
       - id: check-vault-encrypted
@@ -18,10 +21,6 @@ repos:
         language: script
         files: ^host_vars/
         exclude: ^host_vars/_example\.yml$
-  - repo: https://github.com/biomejs/pre-commit
-    rev: v0.6.1
-    hooks:
-      - id: biome-check
   - repo: https://github.com/bridgecrewio/checkov
     rev: 3.2.513
     hooks:
