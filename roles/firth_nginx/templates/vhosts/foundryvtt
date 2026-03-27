@@ -13,7 +13,7 @@ server {
 
     # Sets the Max Upload size to 300 MB
     client_max_body_size 300M;
-    
+
     add_header X-WhyAmI FoundryVTT;
     include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 

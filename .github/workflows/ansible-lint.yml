@@ -6,12 +6,15 @@ permissions: read-all
 jobs:
   lint:
     runs-on: ubuntu-latest
-    permissions: read-all
+    permissions:
+      contents: read
     env:
       ANSIBLE_VAULT_PASSWORD: ${{ secrets.VaultPassword }}
     steps:
       # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
         # We drop the ansible.cfg file to unset the vault_password_file option
       - name: Drop ansible.cfg file
         run: rm ansible.cfg
