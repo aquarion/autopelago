@@ -1,0 +1,23 @@
+---
+name: pre-commit
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Drop ansible.cfg to disable vault password file for CI
+        run: rm ansible.cfg
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - uses: pre-commit/action@v3.0.1
