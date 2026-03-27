@@ -137,7 +137,7 @@
           {{ stream_delta_vault_key_id.stdout }}
 
           {{ stream_delta_vault_secret.stdout }}
-        dest: "{{ playbook_dir }}/host_vars/stream-delta-aws-credentials.yml"
+        dest: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
         mode: "0600"
       delegate_to: localhost
       no_log: true
@@ -147,7 +147,7 @@
       ansible.builtin.debug:
         msg: >
           Vault-encrypted credentials written to
-          host_vars/stream-delta-aws-credentials.yml — commit this file.
+          host_vars/atoll.water.gkhs.net/stream_delta_aws.yml — commit this file.
       when: stream_delta_iam_access_key.changed
 
   rescue:
