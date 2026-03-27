@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Create empty vault password file for CI
-        run: touch /tmp/vault_pass.txt
+      - name: Write vault password file for CI
+        run: echo "${{ secrets.VaultPassword }}" > /tmp/vault_pass.txt
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
