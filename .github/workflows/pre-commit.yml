@@ -19,9 +19,6 @@ jobs:
         run: echo "$VAULT_PASSWORD" > /tmp/vault_pass.txt
         env:
           VAULT_PASSWORD: ${{ secrets.VaultPassword }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
