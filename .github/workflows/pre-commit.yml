@@ -16,7 +16,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Write vault password file for CI
-        run: echo "${{ secrets.VaultPassword }}" > /tmp/vault_pass.txt
+        run: echo "$VAULT_PASSWORD" > /tmp/vault_pass.txt
+        env:
+          VAULT_PASSWORD: ${{ secrets.VaultPassword }}
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
