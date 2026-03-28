@@ -24,6 +24,7 @@ stream_delta_github_variables:
   - { name: "STREAM_DELTA_AWS_DEFAULT_REGION", value: "{{ stream_delta_aws_region }}" }
   - { name: "STREAM_DELTA_AWS_BUCKET", value: "{{ stream_delta_aws_bucket }}" }
   - { name: "STREAM_DELTA_AWS_URL", value: "{{ stream_delta_aws_url }}" }
+  - { name: "STREAM_DELTA_TELESCOPE_ENABLED", value: "false" }
 
 stream_delta_aws_iam_user: stream-delta-logos
 stream_delta_aws_url: "https://{{ stream_delta_aws_bucket }}.s3.{{ stream_delta_aws_region }}.amazonaws.com"
