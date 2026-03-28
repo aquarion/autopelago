@@ -1,8 +1,6 @@
 {
-  "Version": "2012-10-17",
   "Statement": [
     {
-      "Effect": "Allow",
       "Action": [
         "s3:List*",
         "s3:Get*",
@@ -15,15 +13,20 @@
         "s3:CreateBucket",
         "s3:*"
       ],
+      "Effect": "Allow",
       "Resource": [
         "arn:aws:s3:::pdforums-backups/*",
         "arn:aws:s3:::pdforums-backups"
       ]
     },
     {
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:HeadBucket"
+      ],
       "Effect": "Allow",
-      "Action": ["s3:ListAllMyBuckets", "s3:HeadBucket"],
       "Resource": "*"
     }
-  ]
+  ],
+  "Version": "2012-10-17"
 }

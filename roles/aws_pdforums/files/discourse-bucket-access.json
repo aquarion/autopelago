@@ -1,8 +1,6 @@
 {
-  "Version": "2012-10-17",
   "Statement": [
     {
-      "Effect": "Allow",
       "Action": [
         "s3:List*",
         "s3:Get*",
@@ -14,15 +12,20 @@
         "s3:PutLifecycleConfiguration",
         "s3:CreateBucket"
       ],
+      "Effect": "Allow",
       "Resource": [
         "arn:aws:s3:::pdforums-upload/*",
         "arn:aws:s3:::pdforums-upload"
       ]
     },
     {
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:HeadBucket"
+      ],
       "Effect": "Allow",
-      "Action": ["s3:ListAllMyBuckets", "s3:HeadBucket"],
       "Resource": "*"
     }
-  ]
+  ],
+  "Version": "2012-10-17"
 }

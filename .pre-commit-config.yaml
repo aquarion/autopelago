@@ -10,6 +10,42 @@ repos:
       - id: check-yaml
       - id: check-added-large-files
       - id: detect-private-key
+      - id: check-json
+      - id: pretty-format-json
+        args: ["--autofix"]
+  - repo: local
+    hooks:
+      - id: check-vault-encrypted
+        name: Check host_vars are vault-encrypted
+        entry: bin/check-vault-encrypted.sh
+        language: script
+        files: ^host_vars/
+        exclude: ^host_vars/_example\.yml$
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: 3.2.513
+    hooks:
+      - id: checkov
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.23.1
+    hooks:
+      - id: zizmor
+        args: ["--config", ".zizmor.yml"]
+  - repo: https://github.com/PyCQA/pylint
+    rev: v4.0.5
+    hooks:
+      - id: pylint
+        args: ["--disable=import-error"]
+        additional_dependencies: ["pynacl", "jinja2"]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.1
+    hooks:
+      - id: mypy
+        args: ["--ignore-missing-imports"]
+        exclude: "roles/stream_delta/filter_plugins/nacl.py"
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.0-1
+    hooks:
+      - id: shfmt
   - repo: https://github.com/ansible-community/ansible-lint.git
     rev: v26.2.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
     hooks:

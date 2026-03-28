@@ -38,7 +38,9 @@ server {
   novelathon.com *.novelathon.com
   *.camlarp.co.uk camlarp.co.uk
   *.larp.me.uk larp.me.uk
-  *.socksandpuppets.com socksandpuppets.com;
+  *.socksandpuppets.com socksandpuppets.com
+  michael.conterio.co.uk www.michael.conterio.co.uk
+  conterio.co.uk www.conterio.co.uk;
 
   add_header X-WhyAmI "miscweb redirect";
   return 301 https://$host$request_uri;
@@ -324,4 +326,32 @@ server {
   }
   include /etc/nginx/snippets/errors.conf;
   client_max_body_size 100M;
+}
+
+
+#                 _            _
+#  __ ___ _ _  _| |_ ___ _ __(_)___
+# / _/ _ \ ' \| |  _/ -_) '__|  / _ \
+# \__\___/_||_|_|\__\___|_|  |_\___/
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name conterio.co.uk www.conterio.co.uk;
+  include /etc/nginx/snippets/ssl/conterio_ssl.conf;
+  add_header X-WhyAmI "miscweb conterio redirect";
+  return 301 https://michael.conterio.co.uk$request_uri;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name michael.conterio.co.uk www.michael.conterio.co.uk;
+  include /etc/nginx/snippets/ssl/conterio_ssl.conf;
+  add_header X-WhyAmI "miscweb conterio";
+  location / {
+    proxy_pass http://docker-miscweb;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
+  }
+  include /etc/nginx/snippets/errors.conf;
 }

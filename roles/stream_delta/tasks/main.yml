@@ -37,6 +37,50 @@
       ansible.builtin.command:
         cmd: "false"
 
+- name: Stream-Delta S3 and IAM setup
+  tags:
+    - stream_delta
+    - aws
+    - s3
+  block:
+    - name: S3 and IAM tasks
+      ansible.builtin.import_tasks: s3_iam.yml
+
+  rescue:
+    - name: Rescue - Remove credentials file if access key was created before failure
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
+        state: absent
+      delegate_to: localhost
+      when: stream_delta_iam_access_key is defined and stream_delta_iam_access_key.changed
+
+    - name: Rescue - Delete IAM access key if it was created before failure
+      amazon.aws.iam_access_key:
+        user_name: "{{ stream_delta_aws_iam_user }}"
+        id: "{{ stream_delta_iam_access_key.access_key.access_key_id }}"
+        state: absent
+        aws_profile: istic
+      no_log: true
+      when: stream_delta_iam_access_key is defined and stream_delta_iam_access_key.changed
+
+    - name: Delete IAM policy if it was created before failure
+      amazon.aws.iam_managed_policy:
+        policy_name: stream-delta-logos-policy
+        state: absent
+        aws_profile: istic
+      when: stream_delta_iam_policy is defined and stream_delta_iam_policy.changed
+
+    - name: Rescue - Delete IAM user if it was created before failure
+      amazon.aws.iam_user:
+        name: "{{ stream_delta_aws_iam_user }}"
+        state: absent
+        aws_profile: istic
+      when: stream_delta_iam_user is defined and stream_delta_iam_user.changed
+
+    - name: Rescue - S3/IAM setup failure
+      ansible.builtin.fail:
+        msg: "S3 and IAM setup failed — rolled back any resources created this run."
+
 - name: Ensure Github is present in known_host
   tags:
     - stream_delta
@@ -199,6 +243,15 @@
       ansible.builtin.command:
         cmd: "false"
 
+- name: Log in to GitHub Container Registry
+  tags:
+    - stream_delta
+    - tubular
+  community.docker.docker_login:
+    registry_url: ghcr.io
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_token }}"
+
 - name: Pull tubular image from GitHub Container Registry
   community.docker.docker_image:
     name: ghcr.io/aquarion/tubular
@@ -214,7 +267,7 @@
   tags:
     - stream_delta
     - tubular
-  when: stream_delta_tubular_image_pull_result.changed
+  # when: stream_delta_tubular_image_pull_result.changed
   block:
     - name: Delete .env file for tubular
       ansible.builtin.file:
@@ -287,6 +340,25 @@
     - name: "Tubular installation failure warning"
       ansible.builtin.debug:
         msg: "Tubular installation failed"
+
+- name: Run Watchtower to keep tubular up to date
+  tags:
+    - stream_delta
+    - tubular
+    - watchtower
+  community.docker.docker_container:
+    name: watchtower-tubular
+    image: containrrr/watchtower
+    state: started
+    restart_policy: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json
+    env:
+      DOCKER_CONFIG: /config.json
+      WATCHTOWER_POLL_INTERVAL: "3600"
+      WATCHTOWER_CLEANUP: "true"
+    command: tubular
 
 - name: Service configuration
   tags:
