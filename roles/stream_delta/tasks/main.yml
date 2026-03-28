@@ -511,6 +511,8 @@
 
 - name: Deploy stream-delta from Github
   when: not stream_delta_installation_stat.stat.exists
+  become: true
+  become_user: stream-delta
   tags:
     - stream_delta
     - stream_delta_deploy
@@ -523,25 +525,42 @@
         depth: 1
         force: true
         accept_hostkey: true
-      become: true
-      become_user: stream-delta
 
     - name: Run composer install for stream-delta
       ansible.builtin.command: composer install --no-dev --optimize-autoloader
       args:
         chdir: "{{ stream_delta_home }}/releases/github"
-      become: true
-      become_user: stream-delta
 
-    - name: Create .env file for stream-delta
+    - name: Fetch template from cloned repository to controller
+      ansible.builtin.fetch:
+        src: "{{ stream_delta_home }}/releases/github/.github/templates/production.env.j2"
+        dest: "/tmp/stream-delta-production.env.j2"
+        flat: true
+      changed_when: false
+
+    - name: Set template variables as individual facts
+      ansible.builtin.set_fact:
+        "{{ item.name }}": "{{ item.value }}"
+      loop: "{{ stream_delta_github_variables + stream_delta_github_secrets }}"
+
+    - name: Create .env file for stream-delta using fetched template
       ansible.builtin.template:
-        src: templates/stream-delta/production.env.j2
+        src: "/tmp/stream-delta-production.env.j2"
         dest: "{{ stream_delta_home }}/releases/github/.env"
         owner: stream-delta
         group: stream-delta
         mode: "0644"
-      become: true
-      become_user: stream-delta
+
+    - name: Clean up template variables from facts
+      ansible.builtin.set_fact:
+        "{{ item.name }}":
+      loop: "{{ stream_delta_github_variables + stream_delta_github_secrets }}"
+
+    - name: Clean up temporary template file
+      ansible.builtin.file:
+        path: "/tmp/stream-delta-production.env.j2"
+        state: absent
+      delegate_to: localhost
 
     - name: Create deploy archive of stream-delta
       community.general.archive:
@@ -551,8 +570,6 @@
         owner: stream-delta
         group: stream-delta
         mode: "0644"
-      become: true
-      become_user: stream-delta
 
     - name: Copy stream-delta deploy key - private
       ansible.builtin.copy:
@@ -567,8 +584,6 @@
         stream_delta_app_url }}
       args:
         chdir: "{{ stream_delta_home }}/releases/github"
-      become: true
-      become_user: stream-delta
 
     - name: Clean up github release directory
       ansible.builtin.file:
