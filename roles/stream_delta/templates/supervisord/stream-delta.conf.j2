@@ -33,3 +33,12 @@ autorestart=true
 user=stream-delta
 redirect_stderr=true
 stdout_logfile={{ stream_delta_install_dir }}/current/storage/logs/horizon_stdout.log
+
+
+[program:discord-monitor]
+command=php {{ stream_delta_install_dir }}/current/artisan discord:monitor
+autostart=true
+autorestart=true
+user=stream-delta
+redirect_stderr=true
+stdout_logfile={{ stream_delta_install_dir }}/current/storage/logs/discord_monitor_stdout.log
