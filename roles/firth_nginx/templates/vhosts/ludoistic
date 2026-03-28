@@ -36,5 +36,3 @@ server {
   include /etc/nginx/snippets/errors.conf;
    client_max_body_size 32M;
 }
-
-

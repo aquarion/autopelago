@@ -1,0 +1,12 @@
+---
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        "*": "ref-pin"
+  secrets-outside-env:
+    disable: true
+  excessive-permissions:
+    disable: true
+  dependabot-cooldown:
+    disable: true
