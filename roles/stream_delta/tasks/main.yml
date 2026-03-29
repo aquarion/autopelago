@@ -536,9 +536,13 @@
       register: stream_delta_env_response
       changed_when: stream_delta_env_response.status == 201
 
+    - name: Set api_endpoint for production environment variables
+      ansible.builtin.set_fact:
+        stream_delta_gh_env_api: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}"
+
     - name: Get list of production environment variables
       ansible.builtin.uri:
-        url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}/variables?per_page=30"
+        url: "{{ stream_delta_gh_env_api }}/variables?per_page=30"
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
@@ -554,8 +558,7 @@
 
     - name: Add variables to production environment
       ansible.builtin.uri:
-        url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}/variables{{ ('/' + item.name) if item.name in
-          stream_delta_production_vars else '' }}"
+        url: "{{ stream_delta_gh_env_api }}/variables{{ ('/' + item.name) if item.name in stream_delta_production_vars else '' }}"
         method: "{{ 'PATCH' if item.name in stream_delta_production_vars else 'POST' }}"
         headers:
           Authorization: "Bearer {{ streamdelta_github_token }}"
@@ -572,7 +575,7 @@
 
     - name: Get github public key for production environment
       ansible.builtin.uri:
-        url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}/secrets/public-key"
+        url: "{{ stream_delta_gh_env_api }}/secrets/public-key"
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
@@ -584,7 +587,7 @@
 
     - name: Add secrets to production environment
       ansible.builtin.uri:
-        url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}/secrets/{{ item.name }}"
+        url: "{{ stream_delta_gh_env_api }}/secrets/{{ item.name }}"
         method: PUT
         headers:
           Authorization: "Bearer {{ streamdelta_github_token }}"
