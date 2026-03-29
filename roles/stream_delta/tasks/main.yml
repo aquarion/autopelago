@@ -437,7 +437,6 @@
     - name: Add variables to github actions workflow
       ansible.builtin.uri:
         url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables{{ ('/' + item.name) if item.name in stream_delta_vars else '' }}"
-
         method: "{{ 'PATCH' if item.name in stream_delta_vars else 'POST' }}"
         headers:
           Authorization: "Bearer {{ streamdelta_github_token }}"
@@ -452,6 +451,20 @@
       changed_when: stream_delta_response.status == 201
       loop: "{{ stream_delta_github_variables }}"
 
+    - name: Remove production-scoped variables from repository scope
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables/{{ item.name }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        status_code: 204,404
+      register: stream_delta_delete_var_response
+      changed_when: stream_delta_delete_var_response.status == 204
+      when: item.name in stream_delta_vars
+      loop: "{{ stream_delta_github_production_variables }}"
+
     - name: Get github public key for stream-delta repository
       ansible.builtin.uri:
         url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/public-key"
@@ -465,7 +478,6 @@
       changed_when: false
 
     - name: Add secrets to stream-delta github repository
-
       ansible.builtin.uri:
         url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/{{ item.name }}"
         method: PUT
@@ -482,6 +494,114 @@
       changed_when: stream_delta_secrets_response.status == 201
       no_log: true
       loop: "{{ stream_delta_github_secrets }}"
+
+    - name: Get list of repository secrets
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets?per_page=30"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_secrets_response
+      changed_when: false
+
+    - name: Remove production-scoped secrets from repository scope
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/{{ item.name }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        status_code: 204,404
+      register: stream_delta_delete_secret_response
+      changed_when: stream_delta_delete_secret_response.status == 204
+      no_log: true
+      when: item.name in (stream_delta_github_secrets_response.json.secrets | map(attribute='name') | list)
+      loop: "{{ stream_delta_github_production_secrets }}"
+
+    - name: Ensure production environment exists
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body: {}
+        body_format: json
+        status_code: 200,201
+      register: stream_delta_env_response
+      changed_when: stream_delta_env_response.status == 201
+
+    - name: Set api_endpoint for production environment variables
+      ansible.builtin.set_fact:
+        stream_delta_gh_env_api: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}"
+
+    - name: Get list of production environment variables
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/variables?per_page=30"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_production_variables_response
+      changed_when: false
+
+    - name: Set production variables list as fact for cleaner code
+      ansible.builtin.set_fact:
+        stream_delta_production_vars: "{{ stream_delta_github_production_variables_response.json.variables | map(attribute='name') | list }}"
+
+    - name: Add variables to production environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/variables{{ ('/' + item.name) if item.name in stream_delta_production_vars else '' }}"
+        method: "{{ 'PATCH' if item.name in stream_delta_production_vars else 'POST' }}"
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          name: "{{ item.name }}"
+          value: "{{ item.value | string }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_production_response
+      changed_when: stream_delta_production_response.status == 201
+      loop: "{{ stream_delta_github_production_variables }}"
+
+    - name: Get github public key for production environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/secrets/public-key"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_production_public_key
+      changed_when: false
+
+    - name: Add secrets to production environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/secrets/{{ item.name }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          encrypted_value: "{{ item.value | encrypt_secret(stream_delta_github_production_public_key.json.key) }}"
+          key_id: "{{ stream_delta_github_production_public_key.json.key_id }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_production_secrets_response
+      changed_when: stream_delta_production_secrets_response.status == 201
+      no_log: true
+      loop: "{{ stream_delta_github_production_secrets }}"
 
     # - name: Trigger github action to deploy stream-delta
     #   ansible.builtin.uri:
@@ -541,7 +661,7 @@
     - name: Set template variables as individual facts
       ansible.builtin.set_fact:
         "{{ item.name }}": "{{ item.value }}"
-      loop: "{{ stream_delta_github_variables + stream_delta_github_secrets }}"
+      loop: "{{ stream_delta_github_variables + stream_delta_github_production_variables + stream_delta_github_secrets + stream_delta_github_production_secrets }}"
 
     - name: Create .env file for stream-delta using fetched template
       ansible.builtin.template:
@@ -554,7 +674,7 @@
     - name: Clean up template variables from facts
       ansible.builtin.set_fact:
         "{{ item.name }}":
-      loop: "{{ stream_delta_github_variables + stream_delta_github_secrets }}"
+      loop: "{{ stream_delta_github_variables + stream_delta_github_production_variables + stream_delta_github_secrets + stream_delta_github_production_secrets }}"
 
     - name: Clean up temporary template file
       ansible.builtin.file:

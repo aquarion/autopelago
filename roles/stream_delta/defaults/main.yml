@@ -1,14 +1,22 @@
 ---
 # Stream Delta role defaults
 
-# GitHub Actions Variables to set
+stream_delta_github_environment: production
+
+# GitHub Actions repository-level variables (not environment-specific)
 stream_delta_github_variables:
+  - { name: "PHP_VERSION", value: "{{ php_version }}" }
+  - { name: "NODE_VERSION", value: "{{ stream_delta_node_version }}" }
+  - { name: "STREAM_DELTA_TWITCH_BROADCASTER_ID", value: "{{ stream_delta_twitch_broadcaster_id }}" }
+  - { name: "STREAM_DELTA_TWITCH_BROADCASTER_NAME", value: "{{ stream_delta_twitch_broadcaster_name }}" }
+  - { name: "DEPLOYED_TAG", value: "ansible_deploy" }
+
+# GitHub Actions production environment variables (server-specific)
+stream_delta_github_production_variables:
   - { name: "DEPLOY_HOST", value: "{{ atoll_ip }}" }
   - { name: "DEPLOY_PATH", value: "{{ stream_delta_install_dir }}" }
   - { name: "DEPLOY_PORT", value: "22" }
   - { name: "DEPLOY_USER", value: "stream-delta" }
-  - { name: "PHP_VERSION", value: "{{ php_version }}" }
-  - { name: "NODE_VERSION", value: "{{ stream_delta_node_version }}" }
   - { name: "STREAM_DELTA_APP_URL", value: "{{ stream_delta_app_url }}" }
   - { name: "STREAM_DELTA_DB_HOST", value: "{{ stream_delta_db_host }}" }
   - { name: "STREAM_DELTA_DB_NAME", value: "{{ stream_delta_db_name }}" }
@@ -19,29 +27,19 @@ stream_delta_github_variables:
   - { name: "STREAM_DELTA_REDIS_USERNAME", value: "{{ stream_delta_redis_username }}" }
   - { name: "STREAM_DELTA_YOUTUBE_CHANNEL_ID", value: "{{ stream_delta_youtube_channel_id }}" }
   - { name: "STREAM_DELTA_TUBULAR_CALLBACK_PORT", value: "{{ stream_delta_tubular_port }}" }
-  - { name: "STREAM_DELTA_TWITCH_BROADCASTER_ID", value: "{{ stream_delta_twitch_broadcaster_id }}" }
-  - { name: "STREAM_DELTA_TWITCH_BROADCASTER_NAME", value: "{{ stream_delta_twitch_broadcaster_name }}" }
   - { name: "STREAM_DELTA_AWS_DEFAULT_REGION", value: "{{ stream_delta_aws_region }}" }
   - { name: "STREAM_DELTA_AWS_BUCKET", value: "{{ stream_delta_aws_bucket }}" }
   - { name: "STREAM_DELTA_AWS_URL", value: "{{ stream_delta_aws_url }}" }
   - { name: "STREAM_DELTA_TELESCOPE_ENABLED", value: "false" }
-  - { name: "DEPLOYED_TAG", value: "ansible_deploy" }
 
 stream_delta_aws_iam_user: stream-delta-logos
 stream_delta_aws_url: "https://{{ stream_delta_aws_bucket }}.s3.{{ stream_delta_aws_region }}.amazonaws.com"
 
-# GitHub Actions Secrets to set
+# GitHub Actions repository-level secrets (not environment-specific)
 stream_delta_github_secrets:
-  - { name: "STREAM_DELTA_DB_PASSWORD", value: "{{ stream_delta_db_password }}" }
-  - { name: "STREAM_DELTA_APP_KEY", value: "{{ stream_delta_app_key }}" }
-  - { name: "STREAM_DELTA_WEBHOOK_SECRET", value: "{{ stream_delta_webhook_secret }}" }
+  - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ streamdelta_github_token }}" }
   - { name: "STREAM_DELTA_TWITCH_CLIENT_ID", value: "{{ stream_delta_twitch_client_id }}" }
   - { name: "STREAM_DELTA_TWITCH_CLIENT_SECRET", value: "{{ stream_delta_twitch_client_secret }}" }
-  - { name: "SSH_KEY", value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}' }
-  - { name: "STREAM_DELTA_REVERB_APP_KEY", value: "{{ stream_delta_reverb_app_key }}" }
-  - { name: "STREAM_DELTA_REVERB_APP_SECRET", value: "{{ stream_delta_reverb_app_secret }}" }
-  - { name: "STREAM_DELTA_REDIS_PASSWORD", value: "{{ stream_delta_redis_password }}" }
-  - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ streamdelta_github_token }}" }
   - { name: "STREAM_DELTA_YOUTUBE_API_KEY", value: "{{ stream_delta_youtube_api_key }}" }
   - { name: "STREAM_DELTA_STEAMGRIDDB_API_KEY", value: "{{ stream_delta_steamgriddb_api_key }}" }
   - { name: "STREAM_DELTA_KOFI_WEBHOOK_SECRET", value: "{{ stream_delta_kofi_webhook_secret }}" }
@@ -50,3 +48,13 @@ stream_delta_github_secrets:
   - { name: "STREAM_DELTA_DISCORD_CLIENT_ID", value: "{{ stream_delta_discord_client_id }}" }
   - { name: "STREAM_DELTA_DISCORD_CLIENT_SECRET", value: "{{ stream_delta_discord_client_secret }}" }
   - { name: "STREAM_DELTA_DISCORD_BOT_TOKEN", value: "{{ stream_delta_discord_bot_token }}" }
+
+# GitHub Actions production environment secrets (server-specific)
+stream_delta_github_production_secrets:
+  - { name: "SSH_KEY", value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}' }
+  - { name: "STREAM_DELTA_DB_PASSWORD", value: "{{ stream_delta_db_password }}" }
+  - { name: "STREAM_DELTA_APP_KEY", value: "{{ stream_delta_app_key }}" }
+  - { name: "STREAM_DELTA_WEBHOOK_SECRET", value: "{{ stream_delta_webhook_secret }}" }
+  - { name: "STREAM_DELTA_REVERB_APP_KEY", value: "{{ stream_delta_reverb_app_key }}" }
+  - { name: "STREAM_DELTA_REVERB_APP_SECRET", value: "{{ stream_delta_reverb_app_secret }}" }
+  - { name: "STREAM_DELTA_REDIS_PASSWORD", value: "{{ stream_delta_redis_password }}" }
