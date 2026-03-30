@@ -243,6 +243,22 @@
       ansible.builtin.command:
         cmd: "false"
 
+- name: Remove tubular container
+  tags:
+    - stream_delta
+    - tubular
+  community.docker.docker_container:
+    name: tubular
+    state: absent
+
+- name: Remove watchtower-tubular container
+  tags:
+    - stream_delta
+    - tubular
+  community.docker.docker_container:
+    name: watchtower-tubular
+    state: absent
+
 - name: Service configuration
   tags:
     - stream_delta
