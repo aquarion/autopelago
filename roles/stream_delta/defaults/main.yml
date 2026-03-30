@@ -26,7 +26,6 @@ stream_delta_github_production_variables:
   - { name: "STREAM_DELTA_REVERB_HOST", value: "{{ stream_delta_reverb_host }}" }
   - { name: "STREAM_DELTA_REDIS_USERNAME", value: "{{ stream_delta_redis_username }}" }
   - { name: "STREAM_DELTA_YOUTUBE_CHANNEL_ID", value: "{{ stream_delta_youtube_channel_id }}" }
-  - { name: "STREAM_DELTA_TUBULAR_CALLBACK_PORT", value: "{{ stream_delta_tubular_port }}" }
   - { name: "STREAM_DELTA_AWS_DEFAULT_REGION", value: "{{ stream_delta_aws_region }}" }
   - { name: "STREAM_DELTA_AWS_BUCKET", value: "{{ stream_delta_aws_bucket }}" }
   - { name: "STREAM_DELTA_AWS_URL", value: "{{ stream_delta_aws_url }}" }
