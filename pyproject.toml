@@ -19,7 +19,7 @@ pynacl = "^1.6.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.20.0"
-pylint = "^4.0.4"
+pylint = "^4.0.5"
 
 [[tool.mypy.overrides]]
 module = ["untyped_package.*"]
