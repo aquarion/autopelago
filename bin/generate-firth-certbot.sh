@@ -18,12 +18,10 @@ sudo certbot -n -t certonly --expand --nginx --deploy-hook "service dovecot rest
 	-d "dagon.church,live.dagon.church,wiki.dagon.church" \
 	-d "mechan.istic.net,optim.istic.net" \
 	-d "www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com" \
-	-d "www.iglooteas.com" \
 	-d "www.deathuntodarkness.org" \
 	-d "deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk"
 
 #forums.profounddecisions.co.uk
-# www.iglooteas.com,\
 # omnyom.com,www.omnyom.com,\
 # www.cleartextcontent.co.uk,cleartextcontent.co.uk,\
 #nicholasavenell.com,www.nicholasavenell.com,\
