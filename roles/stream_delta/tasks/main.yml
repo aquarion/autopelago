@@ -30,22 +30,6 @@
       tags:
         - istic_net
 
-    - name: Archive public domain - A
-      amazon.aws.route53:
-        overwrite: true
-        command: present
-        zone: aquarionics.com
-        record: "{{ stream_delta_archive_public_domain }}."
-        type: A
-        ttl: "300"
-        value: "{{ atoll_ip }}"
-        aws_profile: aqcom
-      when:
-        - stream_delta_archive_public_domain is defined
-        - stream_delta_archive_public_domain | length > 0
-        - stream_delta_archive_public_domain is search('\.aquarionics\.com$')
-      tags:
-        - aqcom
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:
