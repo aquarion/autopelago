@@ -148,7 +148,7 @@
         api_token: "{{ cloudflare_api_key }}"
         type: CNAME
         ttl: "300"
-        value: www.aquarionics.com
+        value: "{{ stream_delta_app_domain }}"
 
     - name: (CF) Live.aquarionics.com. - CNAME
       community.general.cloudflare_dns:

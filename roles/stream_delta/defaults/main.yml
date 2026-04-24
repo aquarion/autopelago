@@ -31,6 +31,7 @@ stream_delta_github_production_variables:
   - { name: "STREAM_DELTA_AWS_URL", value: "{{ stream_delta_aws_url }}" }
   - { name: "STREAM_DELTA_TELESCOPE_ENABLED", value: "false" }
   - { name: "STREAM_DELTA_CURRENCY_NATIVE", value: "{{ stream_delta_currency_native | default('GBP') }}" }
+  - { name: "STREAM_DELTA_ARCHIVE_PUBLIC_DOMAIN", value: "{{ stream_delta_archive_public_domain | default('') }}" }
 
 stream_delta_aws_iam_user: stream-delta-logos
 stream_delta_aws_url: "https://{{ stream_delta_aws_bucket }}.s3.{{ stream_delta_aws_region }}.amazonaws.com"

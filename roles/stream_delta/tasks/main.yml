@@ -29,6 +29,7 @@
         aws_profile: istic
       tags:
         - istic_net
+
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:

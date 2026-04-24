@@ -103,7 +103,7 @@
         aws_profile: aqcom
         type: CNAME
         ttl: "300"
-        value: www.aquarionics.com
+        value: "{{ stream_delta_app_domain }}"
 
     - name: Live.aquarionics.com. - CNAME
       amazon.aws.route53:
