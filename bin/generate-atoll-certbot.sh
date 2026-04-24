@@ -9,7 +9,15 @@ set -o errtrace #Cascade that to all functions
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INVENTORY="$SCRIPT_DIR/../etc/inventory.ini"
 
-ARCHIVE_PUBLIC_DOMAIN="${ARCHIVE_PUBLIC_DOMAIN:-$(ansible-inventory -i "$INVENTORY" --host atoll.water.gkhs.net 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin).get('stream_delta_archive_public_domain',''))" 2>/dev/null || true)}"
+get_host_var() {
+	local host="$1"
+	local var="$2"
+	ansible-inventory -i "$INVENTORY" --host "$host" 2>/dev/null |
+		jq -r --arg v "$var" '.[$v] // ""' ||
+		true
+}
+
+ARCHIVE_PUBLIC_DOMAIN="${ARCHIVE_PUBLIC_DOMAIN:-$(get_host_var atoll.water.gkhs.net stream_delta_archive_public_domain)}"
 
 export AWS_PROFILE=istic-r53
 echo "Generating certificates for atoll"
