@@ -13,7 +13,7 @@ get_host_var() {
 	local host="$1"
 	local var="$2"
 	ansible-inventory -i "$INVENTORY" --host "$host" 2>/dev/null |
-		jq -r --arg v "$var" '.[$v] // ""' ||
+		jq -r --arg v "$var" '.[$v] // ""' 2>/dev/null ||
 		true
 }
 
