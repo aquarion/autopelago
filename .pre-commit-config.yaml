@@ -21,6 +21,11 @@ repos:
         language: script
         files: ^host_vars/
         exclude: ^host_vars/_example\.yml$
+      - id: check-vault-files
+        name: Check *.vault files are vault-encrypted
+        entry: bin/check-vault-encrypted.sh
+        language: script
+        files: \.vault$
   - repo: https://github.com/bridgecrewio/checkov
     rev: 3.2.513
     hooks:

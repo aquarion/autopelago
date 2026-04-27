@@ -305,6 +305,28 @@
         - Reload Redis ACL
       tags:
         - redis
+
+    - name: Create /etc/stream-delta directory
+      ansible.builtin.file:
+        path: /etc/stream-delta
+        state: directory
+        owner: root
+        group: stream-delta
+        mode: "0750"
+      become: true
+      tags:
+        - acrcloud
+
+    - name: Deploy ACRCloud JWT file
+      ansible.builtin.copy:
+        src: files/acrcloud/jwt.vault
+        dest: /etc/stream-delta/acrcloud.jwt
+        owner: root
+        group: stream-delta
+        mode: "0640"
+      become: true
+      tags:
+        - acrcloud
   rescue:
     - name: "Service configuration failure warning"
       ansible.builtin.debug:
