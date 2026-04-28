@@ -319,7 +319,7 @@
 
     - name: Deploy ACRCloud JWT file
       ansible.builtin.copy:
-        src: files/acrcloud/jwt.vault
+        src: files/acrcloud/acrcloud.vault.jwt
         dest: /etc/stream-delta/acrcloud.jwt
         owner: root
         group: stream-delta
@@ -615,7 +615,7 @@
 
     - name: Copy stream-delta deploy key - private
       ansible.builtin.copy:
-        src: files/keys/stream-delta-deploy
+        src: files/keys/stream-delta-deploy.vault.key
         dest: "{{ stream_delta_home }}/.ssh/id_rsa"
         owner: stream-delta
         group: stream-delta
