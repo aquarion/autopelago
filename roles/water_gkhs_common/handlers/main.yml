@@ -14,3 +14,7 @@
 
 - name: Update motd
   ansible.builtin.command: update-motd
+
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true

@@ -280,6 +280,20 @@
       notify:
         - Reload Redis ACL
 
+    - name: Create redis-server systemd drop-in directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/redis-server.service.d
+        state: directory
+        mode: "0755"
+
+    - name: Deploy redis-server restart override
+      ansible.builtin.template:
+        src: redis-server-override.conf.j2
+        dest: /etc/systemd/system/redis-server.service.d/restart-on-failure.conf
+        mode: "0644"
+      notify:
+        - Reload systemd
+
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:
