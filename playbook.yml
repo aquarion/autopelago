@@ -46,6 +46,7 @@
     - water_gkhs_php
     - water_gkhs_dovecot
     - { role: water_gkhs_web_errors, tags: nginx }
+    - water_gkhs_redis
 
 - name: Actions on all non-local hosts
   hosts: all:!localactions
