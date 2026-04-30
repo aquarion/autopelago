@@ -1,0 +1,15 @@
+---
+- name: Restart redis
+  ansible.builtin.service:
+    name: redis
+    state: restarted
+
+- name: Reload Redis ACL
+  ansible.builtin.command:
+    cmd: redis-cli -u redis://localhost:6379 ACL LOAD
+  environment:
+    REDISCLI_AUTH: "{{ redis_password }}"
+
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
