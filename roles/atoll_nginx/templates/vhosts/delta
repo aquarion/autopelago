@@ -12,11 +12,6 @@ server {
 }
 
 
-map $http_upgrade $connection_upgrade {
-    default upgrade;
-    '' close;
-}
-
 server {
     listen 443 ssl;# http2; #http2 can provide a substantial improvement for streaming: https://blog.cloudflare.com/introducing-http2/
     listen [::]:443 ssl;# http2; #http2 can provide a substantial improvement for streaming: https://blog.cloudflare.com/introducing-http2/

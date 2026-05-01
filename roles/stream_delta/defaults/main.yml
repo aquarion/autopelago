@@ -2,6 +2,10 @@
 # Stream Delta role defaults
 
 stream_delta_github_environment: production
+stream_delta_github_staging_environment: staging
+
+stream_delta_staging_octane_port: 8001
+stream_delta_staging_reverb_port: 8081
 
 # GitHub Actions repository-level variables (not environment-specific)
 stream_delta_github_variables:
@@ -36,6 +40,41 @@ stream_delta_github_production_variables:
 
 stream_delta_aws_iam_user: stream-delta-logos
 stream_delta_aws_url: "https://{{ stream_delta_aws_bucket }}.s3.{{ stream_delta_aws_region }}.amazonaws.com"
+
+# GitHub Actions staging environment variables (server-specific)
+stream_delta_github_staging_variables:
+  - { name: "DEPLOY_HOST", value: "{{ atoll_ip }}" }
+  - { name: "DEPLOY_PATH", value: "{{ stream_delta_staging_install_dir }}" }
+  - { name: "DEPLOY_PORT", value: "22" }
+  - { name: "DEPLOY_USER", value: "stream-delta" }
+  - { name: "STREAM_DELTA_APP_URL", value: "{{ stream_delta_staging_app_url }}" }
+  - { name: "STREAM_DELTA_DB_HOST", value: "{{ stream_delta_db_host }}" }
+  - { name: "STREAM_DELTA_DB_NAME", value: "{{ stream_delta_staging_db_name }}" }
+  - { name: "STREAM_DELTA_DB_PORT", value: "{{ stream_delta_db_port }}" }
+  - { name: "STREAM_DELTA_DB_USER", value: "{{ stream_delta_staging_db_user }}" }
+  - { name: "STREAM_DELTA_APP_ID", value: "{{ stream_delta_app_id }}" }
+  - { name: "STREAM_DELTA_REVERB_HOST", value: "ws.voyeur.istic.dev" }
+  - { name: "STREAM_DELTA_REDIS_USERNAME", value: "{{ stream_delta_staging_redis_username }}" }
+  - { name: "STREAM_DELTA_YOUTUBE_CHANNEL_ID", value: "{{ stream_delta_youtube_channel_id }}" }
+  - { name: "STREAM_DELTA_AWS_DEFAULT_REGION", value: "{{ stream_delta_aws_region }}" }
+  - { name: "STREAM_DELTA_AWS_BUCKET", value: "{{ stream_delta_aws_bucket }}" }
+  - { name: "STREAM_DELTA_AWS_URL", value: "{{ stream_delta_aws_url }}" }
+  - { name: "STREAM_DELTA_TELESCOPE_ENABLED", value: "false" }
+  - { name: "STREAM_DELTA_CURRENCY_NATIVE", value: "{{ stream_delta_currency_native | default('GBP') }}" }
+  - { name: "STREAM_DELTA_ARCHIVE_PUBLIC_DOMAIN", value: "" }
+  - { name: "STREAM_DELTA_ACRCLOUD_JWT_PATH", value: "/etc/stream-delta/acrcloud.jwt" }
+  - { name: "STREAM_DELTA_APP_DEBUG", value: "true" }
+  - { name: "STREAM_DELTA_APP_ENV", value: "staging" }
+
+# GitHub Actions staging environment secrets (server-specific)
+stream_delta_github_staging_secrets:
+  - { name: "SSH_KEY", value: '{{ lookup("ansible.builtin.file", "files/keys/stream-delta-deploy") }}' }
+  - { name: "STREAM_DELTA_DB_PASSWORD", value: "{{ stream_delta_staging_db_password }}" }
+  - { name: "STREAM_DELTA_APP_KEY", value: "{{ stream_delta_staging_app_key }}" }
+  - { name: "STREAM_DELTA_WEBHOOK_SECRET", value: "{{ stream_delta_staging_webhook_secret }}" }
+  - { name: "STREAM_DELTA_REVERB_APP_KEY", value: "{{ stream_delta_staging_reverb_app_key }}" }
+  - { name: "STREAM_DELTA_REVERB_APP_SECRET", value: "{{ stream_delta_staging_reverb_app_secret }}" }
+  - { name: "STREAM_DELTA_REDIS_PASSWORD", value: "{{ stream_delta_staging_redis_password }}" }
 
 # GitHub Actions repository-level secrets (not environment-specific)
 stream_delta_github_secrets:
