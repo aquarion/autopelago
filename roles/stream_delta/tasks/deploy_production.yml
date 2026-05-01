@@ -53,6 +53,9 @@
         status_code: 200,201,204
       register: stream_delta_production_response
       changed_when: stream_delta_production_response.status == 201
+      retries: 3
+      delay: 5
+      until: stream_delta_production_response is not failed
       loop: "{{ stream_delta_github_production_variables }}"
 
     - name: Get github public key for production environment
@@ -83,6 +86,9 @@
       register: stream_delta_production_secrets_response
       changed_when: stream_delta_production_secrets_response.status == 201
       no_log: true
+      retries: 3
+      delay: 5
+      until: stream_delta_production_secrets_response is not failed
       loop: "{{ stream_delta_github_production_secrets }}"
 
     # - name: Trigger github action to deploy stream-delta
@@ -98,7 +104,7 @@
   rescue:
     - name: "Github production environment configuration failure warning"
       ansible.builtin.debug:
-        msg: "Github production environment configuration failed"
+        msg: "Github production environment configuration failed: {{ ansible_failed_result }}"
     - name: "Github production environment configuration failure execution"
       ansible.builtin.command:
         cmd: "false"

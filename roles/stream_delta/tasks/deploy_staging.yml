@@ -54,6 +54,9 @@
         status_code: 200,201,204
       register: stream_delta_staging_response
       changed_when: stream_delta_staging_response.status == 201
+      retries: 3
+      delay: 5
+      until: stream_delta_staging_response is not failed
       loop: "{{ stream_delta_github_staging_variables }}"
 
     - name: Get github public key for staging environment
@@ -84,12 +87,15 @@
       register: stream_delta_staging_secrets_response
       changed_when: stream_delta_staging_secrets_response.status == 201
       no_log: true
+      retries: 3
+      delay: 5
+      until: stream_delta_staging_secrets_response is not failed
       loop: "{{ stream_delta_github_staging_secrets }}"
 
   rescue:
     - name: "Github staging environment configuration failure warning"
       ansible.builtin.debug:
-        msg: "Github staging environment configuration failed"
+        msg: "Github staging environment configuration failed: {{ ansible_failed_result }}"
     - name: "Github staging environment configuration failure execution"
       ansible.builtin.command:
         cmd: "false"
@@ -104,7 +110,9 @@
     - stream_delta_deploy
 
 - name: Deploy stream-delta staging from Github
-  when: not stream_delta_staging_installation_stat.stat.exists
+  when:
+    - not stream_delta_staging_installation_stat.stat.exists
+    - stream_delta_staging_run_initial_deploy | bool
   become: true
   become_user: stream-delta
   tags:
