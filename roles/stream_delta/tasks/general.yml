@@ -142,7 +142,7 @@
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:
-        msg: "AWS tasks failed"
+        msg: "GitHub hostkeys/known_hosts tasks failed"
     - name: "Failure execution"
       ansible.builtin.command:
         cmd: "false"
