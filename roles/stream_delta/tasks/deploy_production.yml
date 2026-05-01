@@ -1,0 +1,198 @@
+---
+- name: Github production environment configuration
+  tags:
+    - stream_delta
+    - stream_delta_github
+  block:
+    - name: Ensure production environment exists
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body: {}
+        body_format: json
+        status_code: 200,201
+      register: stream_delta_env_response
+      changed_when: stream_delta_env_response.status == 201
+
+    - name: Set api_endpoint for production environment variables
+      ansible.builtin.set_fact:
+        stream_delta_gh_env_api: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}"
+
+    - name: Get list of production environment variables
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/variables?per_page=30"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_production_variables_response
+      changed_when: false
+
+    - name: Set production variables list as fact for cleaner code
+      ansible.builtin.set_fact:
+        stream_delta_production_vars: "{{ stream_delta_github_production_variables_response.json.variables | map(attribute='name') | list }}"
+
+    - name: Add variables to production environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/variables{{ ('/' + item.name) if item.name in stream_delta_production_vars else '' }}"
+        method: "{{ 'PATCH' if item.name in stream_delta_production_vars else 'POST' }}"
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          name: "{{ item.name }}"
+          value: "{{ item.value | string }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_production_response
+      changed_when: stream_delta_production_response.status == 201
+      loop: "{{ stream_delta_github_production_variables }}"
+
+    - name: Get github public key for production environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/secrets/public-key"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_production_public_key
+      changed_when: false
+
+    - name: Add secrets to production environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_env_api }}/secrets/{{ item.name }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          encrypted_value: "{{ item.value | encrypt_secret(stream_delta_github_production_public_key.json.key) }}"
+          key_id: "{{ stream_delta_github_production_public_key.json.key_id }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_production_secrets_response
+      changed_when: stream_delta_production_secrets_response.status == 201
+      no_log: true
+      loop: "{{ stream_delta_github_production_secrets }}"
+
+    # - name: Trigger github action to deploy stream-delta
+    #   ansible.builtin.uri:
+    #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
+    #     method: POST
+    #     headers:
+    #       Authorization: "Bearer {{ streamdelta_github_token }}"
+    #       Accept: "application/vnd.github.v3+json"
+    #     body: '{"ref":"main"}'
+    #     body_format: json
+
+  rescue:
+    - name: "Github production environment configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Github production environment configuration failed"
+    - name: "Github production environment configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Check for current stream-delta installation
+  ansible.builtin.stat:
+    path: "{{ stream_delta_install_dir }}/current"
+  register: stream_delta_installation_stat
+  tags:
+    - stream_delta
+    - stream_delta_deploy
+
+- name: Deploy stream-delta from Github
+  when: not stream_delta_installation_stat.stat.exists
+  become: true
+  become_user: stream-delta
+  tags:
+    - stream_delta
+    - stream_delta_deploy
+  block:
+    - name: Download stream-delta repository to stream-delta home
+      ansible.builtin.git:
+        repo: "https://github.com/aquarion/stream-delta.git"
+        dest: "{{ stream_delta_home }}/releases/github"
+        version: main
+        depth: 1
+        force: true
+        accept_hostkey: true
+
+    - name: Run composer install for stream-delta
+      ansible.builtin.command: composer install --no-dev --optimize-autoloader
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github"
+
+    - name: Fetch template from cloned repository to controller
+      ansible.builtin.fetch:
+        src: "{{ stream_delta_home }}/releases/github/.github/templates/production.env.j2"
+        dest: "/tmp/stream-delta-production.env.j2"
+        flat: true
+      changed_when: false
+
+    - name: Set template variables as individual facts
+      ansible.builtin.set_fact:
+        "{{ item.name }}": "{{ item.value }}"
+      loop: "{{ stream_delta_github_variables + stream_delta_github_production_variables + stream_delta_github_secrets + stream_delta_github_production_secrets }}"
+
+    - name: Create .env file for stream-delta using fetched template
+      ansible.builtin.template:
+        src: "/tmp/stream-delta-production.env.j2"
+        dest: "{{ stream_delta_home }}/releases/github/.env"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0644"
+
+    - name: Clean up template variables from facts
+      ansible.builtin.set_fact:
+        "{{ item.name }}":
+      loop: "{{ stream_delta_github_variables + stream_delta_github_production_variables + stream_delta_github_secrets + stream_delta_github_production_secrets }}"
+
+    - name: Clean up temporary template file
+      ansible.builtin.file:
+        path: "/tmp/stream-delta-production.env.j2"
+        state: absent
+      delegate_to: localhost
+
+    - name: Create deploy archive of stream-delta
+      community.general.archive:
+        path: "{{ stream_delta_home }}/releases/github/."
+        dest: "{{ stream_delta_home }}/stream-delta-deploy.tar.gz"
+        format: gz
+        owner: stream-delta
+        group: stream-delta
+        mode: "0644"
+
+    - name: Copy stream-delta deploy key - private
+      ansible.builtin.copy:
+        src: files/keys/stream-delta-deploy.vault.key
+        dest: "{{ stream_delta_home }}/.ssh/id_rsa"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0600"
+
+    - name: Run laravel envoy for stream-delta
+      ansible.builtin.command: vendor/bin/envoy run deploy --host=localhost --user=stream-delta --deploy_path={{ stream_delta_install_dir }} --app_url={{
+        stream_delta_app_url }}
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github"
+
+    - name: Clean up github release directory
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/releases/github"
+        state: absent
+
+    - name: Remove stream-delta deploy keys
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/.ssh/id_rsa"
+        state: absent

@@ -24,6 +24,8 @@ echo "Generating certificates for atoll"
 sudo --preserve-env=AWS_PROFILE certbot -n -t certonly --expand --dns-route53 --cert-name atoll.water.gkhs.net --domains atoll.istic.systems,voyuer.istic.net,ws.voyuer.istic.net
 echo "Generating certificates for voyeur"
 sudo --preserve-env=AWS_PROFILE certbot -n -t certonly --expand --dns-route53 --cert-name voyeur.istic.net --domains voyeur.istic.net,ws.voyeur.istic.net
+echo "Generating certificates for voyeur staging"
+sudo --preserve-env=AWS_PROFILE certbot -n -t certonly --expand --dns-route53 --cert-name voyeur.istic.dev --domains voyeur.istic.dev,ws.voyeur.istic.dev
 
 if [ -n "${ARCHIVE_PUBLIC_DOMAIN:-}" ]; then
 	echo "Generating certificate for archive domain: $ARCHIVE_PUBLIC_DOMAIN"

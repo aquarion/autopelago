@@ -1,0 +1,191 @@
+---
+- name: Github staging environment configuration
+  tags:
+    - stream_delta
+    - stream_delta_github
+    - stream_delta_staging
+  block:
+    - name: Ensure staging environment exists
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_staging_environment }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body: {}
+        body_format: json
+        status_code: 200,201
+      register: stream_delta_staging_env_response
+      changed_when: stream_delta_staging_env_response.status == 201
+
+    - name: Set api_endpoint for staging environment variables
+      ansible.builtin.set_fact:
+        stream_delta_gh_staging_env_api: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_staging_environment }}"
+
+    - name: Get list of staging environment variables
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_staging_env_api }}/variables?per_page=30"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_staging_variables_response
+      changed_when: false
+
+    - name: Set staging variables list as fact for cleaner code
+      ansible.builtin.set_fact:
+        stream_delta_staging_vars: "{{ stream_delta_github_staging_variables_response.json.variables | map(attribute='name') | list }}"
+
+    - name: Add variables to staging environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_staging_env_api }}/variables{{ ('/' + item.name) if item.name in stream_delta_staging_vars else '' }}"
+        method: "{{ 'PATCH' if item.name in stream_delta_staging_vars else 'POST' }}"
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          name: "{{ item.name }}"
+          value: "{{ item.value | string }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_staging_response
+      changed_when: stream_delta_staging_response.status == 201
+      loop: "{{ stream_delta_github_staging_variables }}"
+
+    - name: Get github public key for staging environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_staging_env_api }}/secrets/public-key"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_staging_public_key
+      changed_when: false
+
+    - name: Add secrets to staging environment
+      ansible.builtin.uri:
+        url: "{{ stream_delta_gh_staging_env_api }}/secrets/{{ item.name }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          encrypted_value: "{{ item.value | encrypt_secret(stream_delta_github_staging_public_key.json.key) }}"
+          key_id: "{{ stream_delta_github_staging_public_key.json.key_id }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_staging_secrets_response
+      changed_when: stream_delta_staging_secrets_response.status == 201
+      no_log: true
+      loop: "{{ stream_delta_github_staging_secrets }}"
+
+  rescue:
+    - name: "Github staging environment configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Github staging environment configuration failed"
+    - name: "Github staging environment configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Check for current stream-delta staging installation
+  ansible.builtin.stat:
+    path: "{{ stream_delta_staging_install_dir }}/current"
+  register: stream_delta_staging_installation_stat
+  tags:
+    - stream_delta
+    - stream_delta_staging
+    - stream_delta_deploy
+
+- name: Deploy stream-delta staging from Github
+  when: not stream_delta_staging_installation_stat.stat.exists
+  become: true
+  become_user: stream-delta
+  tags:
+    - stream_delta
+    - stream_delta_staging
+    - stream_delta_deploy
+  block:
+    - name: Download stream-delta repository to stream-delta home (staging)
+      ansible.builtin.git:
+        repo: "https://github.com/aquarion/stream-delta.git"
+        dest: "{{ stream_delta_home }}/releases/github-staging"
+        version: main
+        depth: 1
+        force: true
+        accept_hostkey: true
+
+    - name: Run composer install for stream-delta (staging)
+      ansible.builtin.command: composer install --no-dev --optimize-autoloader
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github-staging"
+
+    - name: Fetch template from cloned repository to controller (staging)
+      ansible.builtin.fetch:
+        src: "{{ stream_delta_home }}/releases/github-staging/.github/templates/production.env.j2"
+        dest: "/tmp/stream-delta-staging.env.j2"
+        flat: true
+      changed_when: false
+
+    - name: Set staging template variables as individual facts
+      ansible.builtin.set_fact:
+        "{{ item.name }}": "{{ item.value }}"
+      loop: "{{ stream_delta_github_variables + stream_delta_github_staging_variables + stream_delta_github_secrets + stream_delta_github_staging_secrets }}"
+
+    - name: Create .env file for stream-delta staging using fetched template
+      ansible.builtin.template:
+        src: "/tmp/stream-delta-staging.env.j2"
+        dest: "{{ stream_delta_home }}/releases/github-staging/.env"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0644"
+
+    - name: Clean up staging template variables from facts
+      ansible.builtin.set_fact:
+        "{{ item.name }}":
+      loop: "{{ stream_delta_github_variables + stream_delta_github_staging_variables + stream_delta_github_secrets + stream_delta_github_staging_secrets }}"
+
+    - name: Clean up temporary staging template file
+      ansible.builtin.file:
+        path: "/tmp/stream-delta-staging.env.j2"
+        state: absent
+      delegate_to: localhost
+
+    - name: Create deploy archive of stream-delta staging
+      community.general.archive:
+        path: "{{ stream_delta_home }}/releases/github-staging/."
+        dest: "{{ stream_delta_home }}/stream-delta-staging-deploy.tar.gz"
+        format: gz
+        owner: stream-delta
+        group: stream-delta
+        mode: "0644"
+
+    - name: Copy stream-delta deploy key - private (staging)
+      ansible.builtin.copy:
+        src: files/keys/stream-delta-deploy.vault.key
+        dest: "{{ stream_delta_home }}/.ssh/id_rsa"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0600"
+
+    - name: Run laravel envoy for stream-delta staging
+      ansible.builtin.command: vendor/bin/envoy run deploy --host=localhost --user=stream-delta --deploy_path={{ stream_delta_staging_install_dir }}
+        --app_url={{ stream_delta_staging_app_url }}
+      args:
+        chdir: "{{ stream_delta_home }}/releases/github-staging"
+
+    - name: Clean up staging github release directory
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/releases/github-staging"
+        state: absent
+
+    - name: Remove stream-delta deploy keys (staging)
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/.ssh/id_rsa"
+        state: absent

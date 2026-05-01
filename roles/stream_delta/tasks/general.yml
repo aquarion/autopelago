@@ -1,0 +1,518 @@
+---
+- name: Stream-Delta DNS setup
+  tags:
+    - stream_delta
+    - aws
+  block:
+    - name: Voyeur.istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: voyeur.istic.net.
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Ws.voyeur.istic.net - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.net
+        record: ws.voyeur.istic.net.
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Voyeur.istic.dev - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.dev
+        record: voyeur.istic.dev.
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_dev
+
+    - name: Ws.voyeur.istic.dev - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.dev
+        record: ws.voyeur.istic.dev.
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_dev
+
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Stream-Delta S3 and IAM setup
+  tags:
+    - stream_delta
+    - aws
+    - s3
+  block:
+    - name: S3 and IAM tasks
+      ansible.builtin.import_tasks: s3_iam.yml
+
+  rescue:
+    - name: Rescue - Remove credentials file if access key was created before failure
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
+        state: absent
+      delegate_to: localhost
+      when: stream_delta_iam_access_key is defined and stream_delta_iam_access_key.changed
+
+    - name: Rescue - Delete IAM access key if it was created before failure
+      amazon.aws.iam_access_key:
+        user_name: "{{ stream_delta_aws_iam_user }}"
+        id: "{{ stream_delta_iam_access_key.access_key.access_key_id }}"
+        state: absent
+        aws_profile: istic
+      no_log: true
+      when: stream_delta_iam_access_key is defined and stream_delta_iam_access_key.changed
+
+    - name: Delete IAM policy if it was created before failure
+      amazon.aws.iam_managed_policy:
+        policy_name: stream-delta-logos-policy
+        state: absent
+        aws_profile: istic
+      when: stream_delta_iam_policy is defined and stream_delta_iam_policy.changed
+
+    - name: Rescue - Delete IAM user if it was created before failure
+      amazon.aws.iam_user:
+        name: "{{ stream_delta_aws_iam_user }}"
+        state: absent
+        aws_profile: istic
+      when: stream_delta_iam_user is defined and stream_delta_iam_user.changed
+
+    - name: Rescue - S3/IAM setup failure
+      ansible.builtin.fail:
+        msg: "S3 and IAM setup failed — rolled back any resources created this run."
+
+- name: Ensure Github is present in known_host
+  tags:
+    - stream_delta
+  block:
+    - name: Ensure jq and curl are present
+      ansible.builtin.package:
+        name:
+          - jq
+          - curl
+        state: present
+      become: true
+    - name: Fetch github hostkeys
+      ansible.builtin.shell: >
+        set -o pipefail && curl --silent {{ add_github_hostkeys_api_endpoint }} | jq --raw-output '"github.com "+.ssh_keys[]'
+      changed_when: false
+      args:
+        executable: /bin/bash
+      check_mode: false
+      register: stream_delta_fetched_github_hostkeys
+
+    - name: Add github hostkeys to stream-delta known_hosts
+      ansible.builtin.known_hosts:
+        name: github.com
+        key: "{{ known_host }}"
+        state: present
+        path: "{{ stream_delta_home }}/.ssh/known_hosts"
+      loop: "{{ stream_delta_fetched_github_hostkeys.stdout_lines }}"
+      loop_control:
+        loop_var: known_host
+      become: true
+      become_user: stream-delta
+  rescue:
+    - name: "Failure warning"
+      ansible.builtin.debug:
+        msg: "AWS tasks failed"
+    - name: "Failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Package dependencies installation
+  tags:
+    - stream_delta
+    - dependencies
+  block:
+    - name: Install stream-delta dependencies
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - supervisor
+        - git
+        - "{{ php_package }}-cli"
+        - "{{ php_package }}-xml"
+        - "{{ php_package }}-redis"
+        - mariadb-server
+        - redis-server
+        - python3-pymysql
+  rescue:
+    - name: "Package installation failure warning"
+      ansible.builtin.debug:
+        msg: "Package dependencies installation failed"
+    - name: "Package installation failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: User and directory setup
+  tags:
+    - stream_delta
+    - stream_delta_user
+    - user
+  block:
+    - name: Create stream-delta user
+      ansible.builtin.user:
+        name: stream-delta
+        shell: /bin/bash
+        home: "{{ stream_delta_home }}"
+        system: true
+
+    - name: Make stream-delta user a member of www-data group
+      ansible.builtin.user:
+        name: stream-delta
+        groups: www-data
+        append: true
+
+    - name: Create stream-delta ssh key directory
+      ansible.builtin.file:
+        path: "{{ stream_delta_home }}/.ssh"
+        state: directory
+        owner: stream-delta
+        group: stream-delta
+        mode: "0700"
+
+    - name: Copy stream-delta deploy key - public
+      ansible.builtin.copy:
+        src: files/keys/stream-delta-deploy.pub
+        dest: "{{ stream_delta_home }}/.ssh/deploy_key.pub"
+        owner: stream-delta
+        group: stream-delta
+        mode: "0600"
+
+    - name: Allow deploy key to log in to atoll
+      ansible.builtin.lineinfile:
+        path: "{{ stream_delta_home }}/.ssh/authorized_keys"
+        line: "{{ lookup('ansible.builtin.file', 'files/keys/stream-delta-deploy.pub') }}"
+        create: true
+        owner: stream-delta
+        group: stream-delta
+        mode: "0600"
+
+  # - name: Make sure stream-delta install dir exists
+  #   ansible.builtin.file:
+  #     path: "{{ stream_delta_install_dir }}"
+  #     state: directory
+  #     owner: stream-delta
+  #     group: www-data
+  #     mode: "0755"
+
+  # - name: Change ownership of stream-delta directory
+  #   ansible.builtin.file:
+  #     path: "{{ stream_delta_install_dir }}" # this should be as same as `dest` above
+  #     owner: stream-delta
+  #     group: www-data
+  #     state: directory
+  #     recurse: true
+  rescue:
+    - name: "User and directory setup failure warning"
+      ansible.builtin.debug:
+        msg: "User and directory setup failed"
+    - name: "User and directory setup failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Database configuration
+  tags:
+    - stream_delta
+    - mysql
+  block:
+    - name: Create stream-delta database
+      community.mysql.mysql_db:
+        name: stream_delta
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create stream-delta database user
+      community.mysql.mysql_user:
+        name: stream_delta
+        password: "{{ stream_delta_db_password }}"
+        priv: stream_delta.*:ALL
+        host: localhost
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        column_case_sensitive: true
+
+    - name: Create stream-delta-staging database
+      community.mysql.mysql_db:
+        name: "{{ stream_delta_staging_db_name }}"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create stream-delta-staging database user
+      community.mysql.mysql_user:
+        name: "{{ stream_delta_staging_db_user }}"
+        password: "{{ stream_delta_staging_db_password }}"
+        priv: "{{ stream_delta_staging_db_name }}.*:ALL"
+        host: localhost
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        column_case_sensitive: true
+  rescue:
+    - name: "Database configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Database configuration failed"
+    - name: "Database configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Remove tubular container
+  tags:
+    - stream_delta
+    - tubular
+  community.docker.docker_container:
+    name: tubular
+    state: absent
+
+- name: Remove watchtower-tubular container
+  tags:
+    - stream_delta
+    - tubular
+  community.docker.docker_container:
+    name: watchtower-tubular
+    state: absent
+
+- name: Service configuration
+  tags:
+    - stream_delta
+    - services
+  block:
+    - name: Configure supervisord for stream-delta
+      ansible.builtin.template:
+        src: templates/supervisord/stream-delta.conf.j2
+        dest: /etc/supervisor/conf.d/stream-delta.conf
+        mode: "0644"
+      notify:
+        - Restart supervisor
+      tags:
+        - supervisord
+        - stream_delta_supervisord
+
+    - name: Configure supervisord for stream-delta-staging
+      ansible.builtin.template:
+        src: templates/supervisord/stream-delta-staging.conf.j2
+        dest: /etc/supervisor/conf.d/stream-delta-staging.conf
+        mode: "0644"
+      notify:
+        - Restart supervisor
+      tags:
+        - supervisord
+        - stream_delta_supervisord
+
+    - name: Allow supervisord to restart supervisor without password
+      # community.general.sudoers:
+      #   name: "stream-delta"
+      #   state: present
+      #   commands:
+      #     - /bin/systemctl restart supervisor
+      #   nopassword: true
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/stream-delta
+        create: true
+        line: "stream-delta ALL=(ALL) NOPASSWD: /usr/bin/supervisorctl restart all"
+        state: present
+        validate: "visudo -cf %s"
+        owner: root
+        group: root
+        mode: "0440"
+      tags:
+        - supervisord
+        - stream_delta_supervisord
+
+    - name: Configure Redis streamdelta user password
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        line: user {{ stream_delta_redis_username }} on +@all -DEBUG ~* >{{ stream_delta_redis_password }}
+        regex: ^user {{ stream_delta_redis_username }}
+      notify:
+        - Reload Redis ACL
+      tags:
+        - redis
+
+    - name: Configure Redis streamdelta-staging user password
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        line: user {{ stream_delta_staging_redis_username }} on +@all -DEBUG ~* >{{ stream_delta_staging_redis_password }}
+        regex: ^user {{ stream_delta_staging_redis_username }}
+      notify:
+        - Reload Redis ACL
+      tags:
+        - redis
+
+    - name: Create /etc/stream-delta directory
+      ansible.builtin.file:
+        path: /etc/stream-delta
+        state: directory
+        owner: root
+        group: stream-delta
+        mode: "0750"
+      become: true
+      tags:
+        - acrcloud
+
+    - name: Deploy ACRCloud JWT file
+      ansible.builtin.copy:
+        src: files/acrcloud/acrcloud.vault.jwt
+        dest: /etc/stream-delta/acrcloud.jwt
+        owner: root
+        group: stream-delta
+        mode: "0640"
+      become: true
+      tags:
+        - acrcloud
+  rescue:
+    - name: "Service configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Service configuration failed"
+    - name: "Service configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
+
+- name: Github repository configuration
+  tags:
+    - stream_delta
+    - stream_delta_github
+  block:
+    - name: Get list of repository variables
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables?per_page=30"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_variables_response
+      changed_when: false
+
+    - name: Set variables list as fact for cleaner code
+      ansible.builtin.set_fact:
+        stream_delta_vars: "{{ stream_delta_github_variables_response.json.variables | map(attribute='name') | list }}"
+
+    - name: Add variables to github actions workflow
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables{{ ('/' + item.name) if item.name in stream_delta_vars else '' }}"
+        method: "{{ 'PATCH' if item.name in stream_delta_vars else 'POST' }}"
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          name: "{{ item.name }}"
+          value: "{{ item.value | string }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_response
+      changed_when: stream_delta_response.status == 201
+      loop: "{{ stream_delta_github_variables }}"
+
+    - name: Remove production-scoped variables from repository scope
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables/{{ item.name }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        status_code: 204,404
+      register: stream_delta_delete_var_response
+      changed_when: stream_delta_delete_var_response.status == 204
+      when: item.name in stream_delta_vars
+      loop: "{{ stream_delta_github_production_variables }}"
+
+    - name: Get github public key for stream-delta repository
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/public-key"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_public_key
+      changed_when: false
+
+    - name: Add secrets to stream-delta github repository
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/{{ item.name }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          encrypted_value: "{{ item.value | encrypt_secret(stream_delta_github_public_key.json.key) }}"
+          key_id: "{{ stream_delta_github_public_key.json.key_id }}"
+        body_format: json
+        status_code: 200,201,204
+      register: stream_delta_secrets_response
+      changed_when: stream_delta_secrets_response.status == 201
+      no_log: true
+      loop: "{{ stream_delta_github_secrets }}"
+
+    - name: Get list of repository secrets
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets?per_page=30"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: stream_delta_github_secrets_response
+      changed_when: false
+
+    - name: Remove production-scoped secrets from repository scope
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets/{{ item.name }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        status_code: 204,404
+      register: stream_delta_delete_secret_response
+      changed_when: stream_delta_delete_secret_response.status == 204
+      no_log: true
+      when: item.name in (stream_delta_github_secrets_response.json.secrets | map(attribute='name') | list)
+      loop: "{{ stream_delta_github_production_secrets }}"
+
+  rescue:
+    - name: "Github repository configuration failure warning"
+      ansible.builtin.debug:
+        msg: "Github repository configuration failed"
+    - name: "Github repository configuration failure execution"
+      ansible.builtin.command:
+        cmd: "false"
