@@ -10,3 +10,4 @@ results.sarif
 *.retry
 *.pyc
 .claude/settings.local.json
+.worktrees
