@@ -99,6 +99,7 @@
     - Restart nginx
   tags:
     - streamsite
+    - nginx
     - nginx_sites
 
 - name: Configure dead nginx sites as disabled
@@ -111,6 +112,7 @@
     - Restart nginx
   tags:
     - streamsite
+    - nginx
     - nginx_sites
 
 - name: Configure dead nginx sites as unavailable
@@ -123,6 +125,7 @@
     - Restart nginx
   tags:
     - streamsite
+    - nginx
     - nginx_sites
 
 - name: Streamsite Basic Auth
