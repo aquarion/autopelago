@@ -109,6 +109,17 @@
       ansible.builtin.command:
         cmd: "false"
 
+- name: Ensure deploy directory exists for stream-delta production
+  ansible.builtin.file:
+    path: "{{ stream_delta_install_dir }}"
+    state: directory
+    owner: stream-delta
+    group: stream-delta
+    mode: "0755"
+  tags:
+    - stream_delta
+    - stream_delta_deploy
+
 - name: Check for current stream-delta installation
   ansible.builtin.stat:
     path: "{{ stream_delta_install_dir }}/current"
