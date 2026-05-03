@@ -98,6 +98,12 @@
     - aws
     - conterio
 
+- name: Update Route53 for kastark
+  ansible.builtin.include_tasks: zones/kastark.yml
+  tags:
+    - aws
+    - kastark
+
 - name: Update Route53 for hubris
   ansible.builtin.include_tasks: zones/hubris.yml
   tags:
