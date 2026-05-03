@@ -2,6 +2,31 @@
 # File mounted as: /etc/sftp.d/bind_mounts.sh
 # {{ ansible_managed }}
 
+set -euo pipefail
+
+WWW_DATA_UID="{{ firth_sftp_docker_www_data_uid_resolved | default(33) }}"
+WWW_DATA_GID="{{ firth_sftp_docker_www_data_gid_resolved | default(33) }}"
+
+if getent group www-data > /dev/null; then
+	current_gid="$(getent group www-data | cut -d: -f3)"
+	if [ "$current_gid" != "$WWW_DATA_GID" ]; then
+		groupmod -o -g "$WWW_DATA_GID" www-data
+	fi
+else
+	groupadd -g "$WWW_DATA_GID" www-data
+fi
+
+if getent passwd www-data > /dev/null; then
+	current_uid="$(getent passwd www-data | cut -d: -f3)"
+	if [ "$current_uid" != "$WWW_DATA_UID" ]; then
+		usermod -o -u "$WWW_DATA_UID" -g "$WWW_DATA_GID" www-data
+	else
+		usermod -g "$WWW_DATA_GID" www-data
+	fi
+else
+	useradd -u "$WWW_DATA_UID" -g "$WWW_DATA_GID" -M -N -s /usr/sbin/nologin www-data
+fi
+
 function bindmount() {
 	if [ -d "$1" ]; then
 		mkdir -p "$2"
