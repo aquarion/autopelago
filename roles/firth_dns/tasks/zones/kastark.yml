@@ -21,6 +21,19 @@
   tags:
     - kastark
 
+- name: Www.kastark.co.uk. - CNAME - Delete (replace with A record)
+  amazon.aws.route53:
+    overwrite: true
+    command: delete
+    zone: kastark.co.uk
+    record: www.kastark.co.uk.
+    aws_profile: aqcom
+    type: CNAME
+    ttl: "300"
+    value: "kastark.co.uk."
+  tags:
+    - kastark
+
 - name: Www.kastark.co.uk. - A
   amazon.aws.route53:
     overwrite: true
