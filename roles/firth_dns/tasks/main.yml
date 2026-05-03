@@ -30,6 +30,12 @@
   tags:
     - always
 
+- name: Socksandpuppets DNS - Cloudflare
+  ansible.builtin.include_tasks: zones/socksandpuppets.yml
+  tags:
+    - cloudflare
+    - socksandpuppets
+
 - name: Update Route53 for aqxs
   ansible.builtin.include_tasks: zones/aqxs.yml
   tags:
