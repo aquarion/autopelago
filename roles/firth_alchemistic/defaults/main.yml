@@ -4,6 +4,10 @@
 firth_alchemistic_image: ghcr.io/istic/alchemistic
 firth_alchemistic_image_tag: latest
 
+# Preferred GHCR credentials for private Alchemistic images.
+# If unset, the role falls back to legacy ghcr_username/ghcr_token.
+firth_alchemistic_ghcr_username:
+firth_alchemistic_ghcr_token:
 firth_alchemistic_app_url:
 firth_alchemistic_app_key:
 firth_alchemistic_db_host: host.docker.internal
