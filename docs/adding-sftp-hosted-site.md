@@ -119,7 +119,7 @@ sudo certbot certonly --non-interactive --cert-name example.com \
 
 ## 4. Add the nginx vhost
 
-Create `roles/firth_nginx/templates/vhosts/example`:
+Create `roles/firth_nginx/templates/vhosts/sftp_example` (the `sftp_` prefix identifies these as SFTP-container-backed sites, consistent with other per-container vhost files like `miscweb`):
 
 ```nginx
 # {{ ansible_managed }}
