@@ -20,6 +20,8 @@ An Ansible role that deploys a containerized SFTP server using Docker, with supp
 
 - `sftp_docker_user`: System user for running the Docker container (default: `sftp_docker`)
 - `sftp_docker_group`: System group for the Docker container (default: `sftp_docker`)
+- `firth_sftp_docker_www_data_uid`: Override UID used for `www-data` in containers that share website files (default: host `www-data` UID, fallback `33`)
+- `firth_sftp_docker_www_data_gid`: Override GID used for `www-data` in containers that share website files (default: host `www-data` GID, fallback `33`)
 
 ### SFTP User Configuration
 
@@ -89,6 +91,7 @@ The role creates the following directory structure:
 - SSH key-only authentication (no passwords)
 - Dedicated system user runs the container
 - Proper file permissions and ownership
+- Per-user home roots are reconciled to each user UID/GID during sync so content under `username/` stays user-owned
 - SSH host key persistence across container restarts
 
 ## Testing

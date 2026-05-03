@@ -33,21 +33,25 @@ while IFS=':' read -r username _; do
         getent passwd "$username" > /dev/null
 done < "$USERS_CONF"
 
-# Sync authorized_keys for each user
-while IFS=$'\t' read -r username uid public_key; do
+# Sync authorized_keys and ownership for each user home
+while IFS=$'\t' read -r username uid gid public_key; do
+    user_home="$HOME_DIR/$username"
     ssh_dir="$HOME_DIR/$username/.ssh"
     auth_keys="$ssh_dir/authorized_keys"
+
+    mkdir -p "$user_home"
+    chown -R "$uid:$gid" "$user_home"
 
     if [[ -n "$public_key" ]]; then
         mkdir -p "$ssh_dir"
         echo "$public_key" > "$auth_keys"
-        chown -R "$uid:$uid" "$ssh_dir"
+        chown -R "$uid:$gid" "$ssh_dir"
         chmod 700 "$ssh_dir"
         chmod 600 "$auth_keys"
     else
         rm -f "$auth_keys"
     fi
-done < <(mysql -sNe "SELECT username, uid, COALESCE(public_key, '') FROM sftp_users;")
+done < <(mysql -sNe "SELECT username, uid, gid, COALESCE(public_key, '') FROM sftp_users;")
 
 # Update passwords for all users (handles existing users that were skipped above)
 password_updates="$(mysql -sNe "SELECT CONCAT(username, ':', password) FROM sftp_users WHERE password IS NOT NULL AND password <> '';" || true)"

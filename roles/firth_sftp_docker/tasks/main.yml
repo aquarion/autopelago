@@ -1,6 +1,52 @@
 ---
 # tasks file for roles/firth_sftp_docker
 
+- name: Resolve host www-data identity defaults
+  tags:
+    - sftp
+    - docker
+  block:
+    - name: Lookup host passwd entry for www-data
+      ansible.builtin.getent:
+        database: passwd
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Lookup host group entry for www-data
+      ansible.builtin.getent:
+        database: group
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Resolve www-data UID/GID for SFTP role
+      ansible.builtin.set_fact:
+        firth_sftp_docker_www_data_uid_resolved: >-
+          {{
+            (firth_sftp_docker_www_data_uid | string | length > 0)
+            | ternary(
+              firth_sftp_docker_www_data_uid | int,
+              ((ansible_facts.getent_passwd | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+        firth_sftp_docker_www_data_gid_resolved: >-
+          {{
+            (firth_sftp_docker_www_data_gid | string | length > 0)
+            | ternary(
+              firth_sftp_docker_www_data_gid | int,
+              ((ansible_facts.getent_group | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+      changed_when: false
+
+  rescue:
+    - name: Fallback www-data UID/GID for SFTP role
+      ansible.builtin.set_fact:
+        firth_sftp_docker_www_data_uid_resolved: 33
+        firth_sftp_docker_www_data_gid_resolved: 33
+      changed_when: false
+
 - name: Setup SFTP Docker users and groups
   tags:
     - sftp

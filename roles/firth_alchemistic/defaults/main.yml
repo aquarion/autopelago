@@ -21,7 +21,8 @@ firth_alchemistic_mail_username:
 firth_alchemistic_mail_password:
 firth_alchemistic_mail_from_address:
 firth_alchemistic_mail_from_name: Alchemistic
-
+firth_alchemistic_www_data_uid:
+firth_alchemistic_www_data_gid:
 # Port exposed to localhost for the upstream nginx fastcgi_pass
 firth_alchemistic_fpm_port: 9000
 

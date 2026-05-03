@@ -4,6 +4,7 @@ name: alchemistic
 services:
   app:
     image: "{{ firth_alchemistic_image }}:{{ firth_alchemistic_image_tag }}"
+    user: "{{ firth_alchemistic_www_data_uid_resolved | default(33) }}:{{ firth_alchemistic_www_data_gid_resolved | default(33) }}"
     restart: unless-stopped
     ports:
       - "127.0.0.1:{{ firth_alchemistic_fpm_port }}:9000"

@@ -9,6 +9,8 @@ firth_sftp_docker_db_port: 3306
 firth_sftp_docker_db_user:
 firth_sftp_docker_db_password:
 firth_sftp_docker_db_name:
+firth_sftp_docker_www_data_uid:
+firth_sftp_docker_www_data_gid:
 # Example structure for firth_sftp_docker_users
 # firth_sftp_docker_users:
 #   - name: user1
