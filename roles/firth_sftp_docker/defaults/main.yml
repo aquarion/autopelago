@@ -22,3 +22,8 @@ firth_sftp_docker_db_name:
 #       - source: /data/user1/docs
 #         target: docs
 #         read_only: true
+#     # Optional: add a PHP-FPM sidecar container for this user's webroot.
+#     php_web_domain: user1.example.com  # subdirectory under sftp/home/<user>/ to serve as webroot;
+#                                        # creates a phpfpm_<user> container with a Unix socket at
+#                                        # docker_root/sftp/run/<user>.sock
+#     php_image: php:8.3-fpm-alpine      # optional override, defaults to php:8.3-fpm-alpine

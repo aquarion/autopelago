@@ -1,0 +1,38 @@
+# {{ ansible_managed }}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name socksandpuppets.com *.socksandpuppets.com;
+  add_header X-WhyAmI "socksandpuppets redirect";
+  return 301 https://$host$request_uri;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name socksandpuppets.com *.socksandpuppets.com;
+  include /etc/nginx/snippets/ssl/socksandpuppets_ssl.conf;
+
+  root {{ docker_root }}/sftp/home/socksandpuppets/socksandpuppets.com;
+
+  error_log /var/log/nginx/socksandpuppets.error.log;
+  access_log /var/log/nginx/socksandpuppets.access.log;
+
+  add_header X-WhyAmI socksandpuppets;
+
+  location / {
+    try_files $uri $uri/ /index.php?$query_string;
+  }
+
+  location ~ \.php$ {
+    try_files $uri =404;
+    fastcgi_pass unix:{{ docker_root }}/sftp/run/socksandpuppets.sock;
+    fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
+    fastcgi_param QUERY_STRING $query_string;
+    include fastcgi_params;
+  }
+
+  include /etc/nginx/snippets/errors.conf;
+  client_max_body_size 100M;
+}

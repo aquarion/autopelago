@@ -48,6 +48,15 @@
         - "{{ docker_root }}/sftp/etc"
         - "{{ docker_root }}/sftp/keys"
         - "{{ docker_root }}/sftp/bin"
+        - "{{ docker_root }}/sftp/phpfpm"
+
+    - name: Create PHP-FPM socket directory
+      ansible.builtin.file:
+        path: "{{ docker_root }}/sftp/run"
+        state: directory
+        owner: root
+        group: root
+        mode: "0777"
 
     - name: Create home directory for SFTP Docker
       ansible.builtin.file:
@@ -146,6 +155,17 @@
         owner: "{{ firth_sftp_docker_user | default('sftp_docker') }}"
         group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         mode: "0755"
+
+    - name: Template PHP-FPM pool configs for web users
+      ansible.builtin.template:
+        src: phpfpm-pool.conf.j2
+        dest: "{{ docker_root }}/sftp/phpfpm/{{ item.name }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        user: "{{ item }}"
+      loop: "{{ firth_sftp_docker_users | default([]) | selectattr('php_web_domain', 'defined') | list }}"
 
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
