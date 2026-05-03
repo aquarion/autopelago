@@ -11,6 +11,7 @@ server {
     listen [::]:443 ssl proxy_protocol;
     server_name {{ firth_alchemistic_server_name | default('manage.istic.systems') }};
 
+    include /etc/nginx/snippets/errors.conf;
     include /etc/nginx/snippets/ssl/istic_ssl.conf;
 
     error_log  /var/log/nginx/alchemistic.error.log;

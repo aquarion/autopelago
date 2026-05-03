@@ -63,10 +63,32 @@
   tags:
     - alchemistic
     - docker
-  community.docker.docker_login:
-    registry_url: ghcr.io
-    username: "{{ ghcr_username }}"
-    password: "{{ ghcr_token }}"
+  when: firth_alchemistic_image is match('^ghcr\\.io/.+')
+  block:
+    - name: Resolve GHCR credentials for Alchemistic image
+      ansible.builtin.set_fact:
+        firth_alchemistic_ghcr_username_resolved: "{{ firth_alchemistic_ghcr_username | default(ghcr_username | default(''), true) }}"
+        firth_alchemistic_ghcr_token_resolved: "{{ firth_alchemistic_ghcr_token | default(ghcr_token | default(''), true) }}"
+      changed_when: false
+      no_log: true
+
+    - name: Validate GHCR credentials are configured
+      ansible.builtin.assert:
+        that:
+          - firth_alchemistic_ghcr_username_resolved | length > 0
+          - firth_alchemistic_ghcr_token_resolved | length > 0
+        fail_msg: >-
+          Missing GHCR credentials for image {{ firth_alchemistic_image }}.
+          Set either firth_alchemistic_ghcr_username/firth_alchemistic_ghcr_token
+          or legacy ghcr_username/ghcr_token. The token must have read:packages scope.
+      no_log: true
+
+    - name: Authenticate to GHCR
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: "{{ firth_alchemistic_ghcr_username_resolved }}"
+        password: "{{ firth_alchemistic_ghcr_token_resolved }}"
+      no_log: true
 
 - name: Ensure shared Docker network exists
   tags:
