@@ -41,6 +41,12 @@
       changed_when: false
 
   rescue:
+    - name: Log www-data lookup failure
+      ansible.builtin.debug:
+        msg: >-
+          WARNING: Failed to resolve www-data UID/GID from host. Falling back to UID/GID 33.
+          If this is wrong, set firth_alchemistic_www_data_uid and firth_alchemistic_www_data_gid explicitly.
+
     - name: Fallback www-data UID/GID for Alchemistic role
       ansible.builtin.set_fact:
         firth_alchemistic_www_data_uid_resolved: 33
@@ -69,7 +75,12 @@
   rescue:
     - name: Debug failure to create Route53 record for Alchemistic
       ansible.builtin.debug:
-        msg: "Failed to create Route53 record for Alchemistic. Check loadbalancer_ip and AWS credentials."
+        msg: "Failed to create Route53 record for Alchemistic. Check loadbalancer_ip and AWS credentials. Error: {{ ansible_failed_result.msg | default('unknown error')
+          }}"
+
+    - name: Abort after Route53 failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: Route53 DNS setup for Alchemistic failed."
 
 - name: Setup Alchemistic database
   tags:
@@ -103,7 +114,12 @@
   rescue:
     - name: Debug failure to setup Alchemistic database
       ansible.builtin.debug:
-        msg: "Failed to setup Alchemistic database. Check mysql_root_password and firth_alchemistic_db_* variables."
+        msg: "Failed to setup Alchemistic database. Check mysql_root_password and firth_alchemistic_db_* variables. Error: {{ ansible_failed_result.msg | default('unknown
+          error') }}"
+
+    - name: Abort after database setup failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: Alchemistic database setup failed."
 
 - name: Log in to GitHub Container Registry
   tags:
@@ -175,7 +191,11 @@
   rescue:
     - name: Debug failure to deploy Alchemistic Docker Compose
       ansible.builtin.debug:
-        msg: "Failed to deploy Alchemistic Docker Compose."
+        msg: "Failed to deploy Alchemistic Docker Compose: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after Docker Compose deploy failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: Alchemistic Docker Compose deployment failed."
 
 - name: Pull Alchemistic image
   tags:
@@ -185,7 +205,7 @@
   args:
     chdir: "{{ docker_root }}/alchemistic"
   register: firth_alchemistic_pull
-  changed_when: "'Pulled' in firth_alchemistic_pull.stderr"
+  changed_when: "'up to date' not in firth_alchemistic_pull.stderr"
   notify: Restart Alchemistic
 
 - name: Start Alchemistic
@@ -196,6 +216,9 @@
   args:
     chdir: "{{ docker_root }}/alchemistic"
   when: firth_alchemistic_pull.changed
+  register: firth_alchemistic_up
+  changed_when: true
+  failed_when: firth_alchemistic_up.rc != 0
 
 - name: Copy Vite build assets from container to host
   tags:
@@ -205,6 +228,9 @@
   args:
     chdir: "{{ docker_root }}/alchemistic"
   when: firth_alchemistic_pull.changed
+  register: firth_alchemistic_cp
+  changed_when: firth_alchemistic_cp.rc == 0
+  failed_when: firth_alchemistic_cp.rc != 0
 
 - name: Deploy Alchemistic nginx vhost
   tags:
@@ -235,3 +261,7 @@
     docker compose exec -T app php artisan migrate --force
   args:
     chdir: "{{ docker_root }}/alchemistic"
+  when: firth_alchemistic_pull.changed
+  register: firth_alchemistic_migrate
+  changed_when: "'Nothing to migrate' not in firth_alchemistic_migrate.stdout"
+  failed_when: firth_alchemistic_migrate.rc != 0

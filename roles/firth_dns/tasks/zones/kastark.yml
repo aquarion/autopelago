@@ -11,7 +11,7 @@
 - name: Kastark.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: present
     zone: kastark.co.uk
     record: kastark.co.uk.
     aws_profile: aqcom
@@ -37,7 +37,7 @@
 - name: Www.kastark.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: present
     zone: kastark.co.uk
     record: www.kastark.co.uk.
     aws_profile: aqcom
@@ -59,7 +59,7 @@
 - name: Dhmstark.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: present
     zone: dhmstark.co.uk
     record: dhmstark.co.uk.
     aws_profile: aqcom
@@ -72,7 +72,7 @@
 - name: Www.dhmstark.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: present
     zone: dhmstark.co.uk
     record: www.dhmstark.co.uk.
     aws_profile: aqcom

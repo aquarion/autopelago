@@ -13,15 +13,12 @@ In `host_vars/firth.water.gkhs.net/sftp.yml` (vault-encrypted), add an entry to 
 ```yaml
 firth_sftp_docker_users:
   - name: example          # becomes the SFTP username and container name suffix
-    password: "hashed"     # bcrypt hash; generate with:
+    password: "hashed"     # MD5-crypt hash; generate with:
                            #   echo -n "password" | docker run -i --rm atmoz/makepasswd --crypt-md5 --clearfrom=-
     userid: 1099
     groupid: 1099
     php_web_domain: example.com   # subdirectory under sftp/home/<user>/ served as webroot
                                   # omit entirely for static-only sites (no PHP-FPM container)
-    bind_mounts:
-      - source: "{{ docker_root }}/sftp/home/example/example.com"
-        target: example.com
 ```
 
 The `php_web_domain` value must match the directory the user will upload to. The SFTP docker-compose will automatically create a `phpfpm_example` container mounting that path as `/var/www/html`, with a Unix socket at `docker_root/sftp/run/example.sock`.
@@ -50,7 +47,7 @@ Route53 example:
 - name: Example.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: present
     zone: example.com
     record: example.com.
     aws_profile: aqcom
@@ -63,7 +60,7 @@ Route53 example:
 - name: Www.example.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: present
     zone: example.com
     record: www.example.com.
     aws_profile: aqcom

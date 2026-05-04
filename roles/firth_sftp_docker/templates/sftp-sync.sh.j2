@@ -22,15 +22,23 @@ mysql -sNe "SELECT CONCAT(username, ':', COALESCE(NULLIF(password, ''), '*'), ':
     > "$USERS_CONF"
 
 # Reconcile users in the running container; existing users are skipped by create-sftp-user.
+# Any failure here aborts the sync (set -e is active).
 while IFS= read -r line; do
-    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
-        /usr/local/bin/create-sftp-user "$line"
+    username="${line%%:*}"
+    if ! docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+            /usr/local/bin/create-sftp-user "$line"; then
+        echo "ERROR: create-sftp-user failed for user: $username" >&2
+        exit 1
+    fi
 done < "$USERS_CONF"
 
 # Verify that every users.conf entry resolves to an OS account inside the container.
 while IFS=':' read -r username _; do
-    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
-        getent passwd "$username" > /dev/null
+    if ! docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+            getent passwd "$username" > /dev/null; then
+        echo "ERROR: User '$username' not found in SFTP container after sync. Check container logs." >&2
+        exit 1
+    fi
 done < "$USERS_CONF"
 
 # Sync authorized_keys and ownership for each user home
@@ -54,7 +62,7 @@ while IFS=$'\t' read -r username uid gid public_key; do
 done < <(mysql -sNe "SELECT username, uid, gid, COALESCE(public_key, '') FROM sftp_users;")
 
 # Update passwords for all users (handles existing users that were skipped above)
-password_updates="$(mysql -sNe "SELECT CONCAT(username, ':', password) FROM sftp_users WHERE password IS NOT NULL AND password <> '';" || true)"
+password_updates="$(mysql -sNe "SELECT CONCAT(username, ':', password) FROM sftp_users WHERE password IS NOT NULL AND password <> '';")"
 
 if [[ -n "$password_updates" ]]; then
     printf '%s\n' "$password_updates" | \

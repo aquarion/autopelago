@@ -13,7 +13,7 @@ if getent group www-data > /dev/null; then
 		groupmod -o -g "$WWW_DATA_GID" www-data
 	fi
 else
-	groupadd -g "$WWW_DATA_GID" www-data
+	groupadd -o -g "$WWW_DATA_GID" www-data
 fi
 
 if getent passwd www-data > /dev/null; then
@@ -24,18 +24,16 @@ if getent passwd www-data > /dev/null; then
 		usermod -g "$WWW_DATA_GID" www-data
 	fi
 else
-	useradd -u "$WWW_DATA_UID" -g "$WWW_DATA_GID" -M -N -s /usr/sbin/nologin www-data
+	useradd -o -u "$WWW_DATA_UID" -g "$WWW_DATA_GID" -M -N -s /usr/sbin/nologin www-data
 fi
 
 function bindmount() {
+	local extra_flags="${3:-}"
 	if [ -d "$1" ]; then
 		mkdir -p "$2"
 	fi
-	mount --bind $3 "$1" "$2"
+	mount --bind $extra_flags "$1" "$2"
 }
-
-# Remember permissions, you may have to fix them:
-# chown -R :users /data/common
 
 {% for user in firth_sftp_docker_users %}
 {% if user.bind_mounts is defined %}

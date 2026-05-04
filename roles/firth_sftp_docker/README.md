@@ -18,8 +18,8 @@ An Ansible role that deploys a containerized SFTP server using Docker, with supp
 
 ### Optional Variables
 
-- `sftp_docker_user`: System user for running the Docker container (default: `sftp_docker`)
-- `sftp_docker_group`: System group for the Docker container (default: `sftp_docker`)
+- `firth_sftp_docker_user`: System user for running the Docker container (default: `sftp_docker`)
+- `firth_sftp_docker_group`: System group for the Docker container (default: `sftp_docker`)
 - `firth_sftp_docker_www_data_uid`: Override UID used for `www-data` in containers that share website files (default: host `www-data` UID, fallback `33`)
 - `firth_sftp_docker_www_data_gid`: Override GID used for `www-data` in containers that share website files (default: host `www-data` GID, fallback `33`)
 
@@ -30,10 +30,13 @@ Each user in `firth_sftp_docker_users` should have the following structure:
 ```yaml
 firth_sftp_docker_users:
   - name: username
-    ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vbq... user@domain.com"
-    uid: 1001 # Optional: custom UID for the user
-    gid: 100 # Optional: custom GID for the user
+    password: "hashed-password"  # pre-hashed (MD5-crypt or SHA-512); omit for key-only
+    userid: 1001                 # optional: custom UID for the user
+    groupid: 100                 # optional: custom GID for the user
+    php_web_domain: example.com  # optional: serve this subdirectory via PHP-FPM
 ```
+
+SSH public keys are deployed by placing `.pub` files in `files/user_keys.d/<username>.pub` — there is no `ssh_key` field in the user struct.
 
 ## Dependencies
 
@@ -50,16 +53,16 @@ This role depends on Docker being installed and configured on the target system.
     docker_root: /opt/docker
     firth_sftp_docker_users:
       - name: client1
-        ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vbq... client1@company.com"
-        uid: 2001
-        gid: 2001
+        userid: 2001
+        groupid: 2001
       - name: client2
-        ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD8xyz... client2@company.com"
-        uid: 2002
-        gid: 2002
+        userid: 2002
+        groupid: 2002
   roles:
     - firth-sftp-docker
 ```
+
+Place SSH public keys in `files/user_keys.d/client1.pub`, `files/user_keys.d/client2.pub`, etc.
 
 ## Directory Structure
 
@@ -88,7 +91,7 @@ The role creates the following directory structure:
 ## Security Features
 
 - Users are chrooted to their home directories
-- SSH key-only authentication (no passwords)
+- SSH key and/or password authentication (password field accepts a pre-hashed MD5-crypt or SHA-512 value)
 - Dedicated system user runs the container
 - Proper file permissions and ownership
 - Per-user home roots are reconciled to each user UID/GID during sync so content under `username/` stays user-owned

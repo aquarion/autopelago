@@ -41,6 +41,12 @@
       changed_when: false
 
   rescue:
+    - name: Log www-data lookup failure
+      ansible.builtin.debug:
+        msg: >-
+          WARNING: Failed to resolve www-data UID/GID from host. Falling back to UID/GID 33.
+          If this is wrong, set firth_sftp_docker_www_data_uid and firth_sftp_docker_www_data_gid explicitly.
+
     - name: Fallback www-data UID/GID for SFTP role
       ansible.builtin.set_fact:
         firth_sftp_docker_www_data_uid_resolved: 33
@@ -72,7 +78,11 @@
   rescue:
     - name: Debug failure to create SFTP Docker user/group
       ansible.builtin.debug:
-        msg: "Failed to create SFTP Docker user or group."
+        msg: "Failed to create SFTP Docker user or group: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after SFTP Docker user/group failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SFTP Docker user/group setup failed."
 
 - name: Setup SFTP Docker directories
   tags:
@@ -137,7 +147,11 @@
   rescue:
     - name: Debug failure to create SFTP Docker directories
       ansible.builtin.debug:
-        msg: "Failed to create necessary SFTP Docker directories."
+        msg: "Failed to create necessary SFTP Docker directories: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after SFTP Docker directory failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SFTP Docker directory setup failed."
 
 - name: Create SSH keys and authorized_keys for SFTP Docker users
   tags:
@@ -161,7 +175,11 @@
   rescue:
     - name: Debug failure to generate SSH host keys
       ansible.builtin.debug:
-        msg: "Failed to generate SSH host keys for SFTP Docker."
+        msg: "Failed to generate SSH host keys for SFTP Docker: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after SSH host key failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SSH host key generation failed."
 
 - name: Setup SSH configuration
   tags:
@@ -185,7 +203,11 @@
   rescue:
     - name: Debug failure to setup SSH configuration
       ansible.builtin.debug:
-        msg: "Failed to setup SSH configuration for SFTP Docker."
+        msg: "Failed to setup SSH configuration for SFTP Docker: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after SSH configuration failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SSH configuration setup failed."
 
 - name: Setup SFTP Docker configuration
   tags:
@@ -216,7 +238,11 @@
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
       ansible.builtin.debug:
-        msg: "Failed to create necessary SFTP Docker configuration files."
+        msg: "Failed to create necessary SFTP Docker configuration files: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after SFTP Docker configuration failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SFTP Docker configuration setup failed."
 
 - name: Setup SFTP user sync script and timer
   tags:
@@ -226,10 +252,10 @@
   block:
     - name: Create MySQL user for sftp-sync
       community.mysql.mysql_user:
-        name: "{{ firth_alchemistic_db_user }}"
-        password: "{{ firth_alchemistic_db_password }}"
+        name: "{{ firth_sftp_docker_db_user }}"
+        password: "{{ firth_sftp_docker_db_password }}"
         host: localhost
-        priv: "{{ firth_alchemistic_db_name }}.*:all"
+        priv: "{{ firth_sftp_docker_db_name }}.*:all"
         state: present
 
     - name: Deploy MySQL client config for sftp-sync
@@ -275,7 +301,11 @@
   rescue:
     - name: Debug failure to setup SFTP sync
       ansible.builtin.debug:
-        msg: "Failed to setup SFTP user sync script or timer."
+        msg: "Failed to setup SFTP user sync script or timer: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after SFTP sync setup failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SFTP user sync setup failed."
 
 - name: Setup Docker Compose for SFTP Docker container
   tags:
@@ -294,4 +324,8 @@
   rescue:
     - name: Debug failure to setup Docker Compose for SFTP Docker container
       ansible.builtin.debug:
-        msg: "Failed to create necessary Docker Compose for SFTP Docker container."
+        msg: "Failed to create necessary Docker Compose for SFTP Docker container: {{ ansible_failed_result.msg | default('unknown error') }}"
+
+    - name: Abort after Docker Compose setup failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: Docker Compose setup for SFTP Docker failed."
