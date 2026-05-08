@@ -1,7 +1,13 @@
 #!/bin/bash +x
 # {{ ansible_managed }}
 #PASSWORD=$1 # Now using .my.cnf for password
-LOC={{ mysql_backup_location }}/$1
+
+if [ -z "$1" ]; then
+	echo "Usage: $0 <backup-name>"
+	exit 1
+fi
+
+LOC="{{ mysql_backup_location }}/$1"
 
 # Exit immediately if a pipeline returns non-zero.
 # Short form: set -e
@@ -20,9 +26,9 @@ set -o errtrace
 # successfully.
 set -o pipefail
 
-mkdir -p $LOC
+mkdir -p "$LOC"
 
-mysql -u root -e 'show databases;' --skip-column-names --skip-pager | while read DATABASE; do
+mysql -u root -e 'show databases;' --skip-column-names --skip-pager | while read -r DATABASE; do
 	TMPFILE=$(mktemp) || exit 1
 	echo "$DATABASE"
 	if [[ $DATABASE = performance_schema ]]; then
@@ -34,10 +40,10 @@ mysql -u root -e 'show databases;' --skip-column-names --skip-pager | while read
 		continue
 	fi
 	echo ">> Dump..."
-	mysqldump --events -uroot $DATABASE >$TMPFILE
+	mysqldump --events -uroot "$DATABASE" >"$TMPFILE"
 	echo ">> Squeeze..."
-	bzip2 -c $TMPFILE >$LOC/$DATABASE.sql.bz2
+	bzip2 -c "$TMPFILE" >"$LOC/$DATABASE.sql.bz2"
 	echo ">> Clean..."
-	rm $TMPFILE
+	rm "$TMPFILE"
 	echo ">> $LOC/$DATABASE.sql.bz2"
 done | ts

@@ -131,7 +131,7 @@
         minute: "16"
         hour: "3"
         user: root
-        job: /usr/local/bin/mysql_backup.sh Daily/`date +%A` | ts > /var/log/mysql/mysql_backup.log
+        job: /usr/local/bin/mysql_backup.sh Daily/`date +\%A` | ts > /var/log/mysql/mysql_backup.log
         cron_file: mysql_backup_daily
 
     - name: Setup monthly backup
@@ -141,7 +141,7 @@
         hour: "0"
         day: "1"
         user: root
-        job: /usr/local/bin/mysql_backup.sh Monthly/`date +%B` | ts > /var/log/mysql/mysql_backup.log
+        job: /usr/local/bin/mysql_backup.sh Monthly/`date +\%B` | ts > /var/log/mysql/mysql_backup.log
         cron_file: mysql_backup_monthly
 
     - name: Ensure MySQL log directory exists
