@@ -8,7 +8,7 @@
     aws_profile: aqcom
     type: A
     ttl: "3600"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
 
 - name: Aqxs.net. - NS
   amazon.aws.route53:
@@ -55,7 +55,7 @@
     aws_profile: aqcom
     type: A
     ttl: "3600"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
 
 - name: 20151026232244.pm._domainkey.aqxs.net. - TXT
   amazon.aws.route53:

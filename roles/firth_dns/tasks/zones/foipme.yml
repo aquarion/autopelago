@@ -58,35 +58,35 @@
 - name: Strangelrp.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: strangelrp.foip.me.
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
 
 - name: Wakingnightmare.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: wakingnightmare.foip.me.
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
 
 - name: Fourrivers.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: fourrivers.foip.me.
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
 
 - name: Forgotten.foip.me. - A
   amazon.aws.route53:
@@ -97,7 +97,7 @@
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
 
 - name: Ojaqs.foip.me. - A
   amazon.aws.route53:
@@ -179,10 +179,10 @@
 - name: Obviouslyfakeurl.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: obviouslyfakeurl.foip.me.
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"

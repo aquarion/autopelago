@@ -189,12 +189,12 @@
     - name: Ludo.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        command: absent
         zone: istic.net
         record: ludo.istic.net.
         type: CNAME
         ttl: "300"
-        value: cenote.water.gkhs.net
+        value: water.gkhs.net
         aws_profile: istic
       tags:
         - istic_net
@@ -454,74 +454,17 @@
         - istic_net
         - istic_sys
 
-    # old istic.systems records
-    - name: Cenote.li-lon1.istic.systems - A
-      amazon.aws.route53:
-        overwrite: true
-        command: absent
-        zone: istic.systems
-        record: cenote.hz-fsn1.istic.systems.
-        type: A
-        ttl: "300"
-        value: "{{ cenote_ip }}"
-        aws_profile: istic
-      tags:
-        - istic_net
-        - istic_sys
-
-    - name: Archipelago.hz-fsn1.istic.systems - A
-      amazon.aws.route53:
-        overwrite: true
-        command: absent
-        zone: istic.systems
-        record: archipelago.hz-fsn1.istic.systems.
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-        aws_profile: istic
-      tags:
-        - istic_net
-        - istic_sys
-
-    - name: Firth.hz-fsn1.istic.systems - A
-      amazon.aws.route53:
-        overwrite: true
-        command: absent
-        zone: istic.systems
-        record: firth.hz-fsn1.istic.systems.
-        type: A
-        ttl: "300"
-        value: "{{ firth_ip }}"
-        aws_profile: istic
-      tags:
-        - istic_net
-        - istic_sys
-
-    - name: Tributary.hz-fsn1.istic.systems - A
-      amazon.aws.route53:
-        overwrite: true
-        command: absent
-        zone: istic.systems
-        record: tributary.hz-fsn1.istic.systems.
-        type: A
-        ttl: "300"
-        value: "{{ firth_ip }}"
-        aws_profile: istic
-      tags:
-        - istic_net
-        - istic_sys
-
     # New istic.systems records
 
     - name: Cenote.istic.systems - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        command: absent
         zone: istic.systems
         record: cenote.istic.systems.
         type: A
         ttl: "300"
-        value: "{{ cenote_ip }}"
+        value: "{{ loadbalancer_ip }}"
         aws_profile: istic
       tags:
         - istic_net
