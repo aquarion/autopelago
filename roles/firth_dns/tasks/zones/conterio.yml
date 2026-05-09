@@ -17,7 +17,7 @@
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
   tags:
     - conterio
 
@@ -54,7 +54,7 @@
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
   tags:
     - conterio
 
@@ -67,6 +67,6 @@
     aws_profile: aqcom
     type: A
     ttl: "300"
-    value: "{{ cenote_ip }}"
+    value: "{{ loadbalancer_ip }}"
   tags:
     - conterio

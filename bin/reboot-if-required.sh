@@ -3,7 +3,7 @@
 eval "$(ssh-agent -s)"
 ssh-add
 
-for host in firth cenote atoll; do
+for host in firth atoll; do
 	echo "Updating $host"
 	if ssh $host.istic.systems 'test -f /var/run/reboot-required'; then
 		echo "Reboot required on $host"

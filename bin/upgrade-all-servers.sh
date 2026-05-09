@@ -14,7 +14,7 @@ function update_host {
 	fi
 }
 
-for host in firth cenote atoll; do
+for host in firth atoll; do
 	update_host "$host" &
 done
 
