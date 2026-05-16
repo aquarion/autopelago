@@ -1,0 +1,78 @@
+---
+- name: Deploy Novelathon production Docker Compose
+  tags:
+    - novelathon
+    - docker
+  notify: Restart Novelathon
+  block:
+    - name: Template docker-compose.yml for Novelathon production
+      ansible.builtin.template:
+        src: production/docker-compose.yml.j2
+        dest: "{{ docker_root }}/novelathon/docker-compose.yml"
+        owner: root
+        group: docker
+        mode: "0660"
+
+  rescue:
+    - name: Debug failure to deploy Novelathon production Docker Compose
+      ansible.builtin.debug:
+        msg: "Failed to deploy Novelathon production Docker Compose."
+
+- name: Pull Novelathon production image
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.command: docker compose pull
+  args:
+    chdir: "{{ docker_root }}/novelathon"
+  register: firth_novelathon_pull
+  changed_when: "'Pulled' in firth_novelathon_pull.stderr"
+  notify: Restart Novelathon
+
+- name: Start Novelathon production
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.command: docker compose up -d
+  args:
+    chdir: "{{ docker_root }}/novelathon"
+  when: firth_novelathon_pull.changed
+
+- name: Copy Vite build assets from Novelathon production container to host
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.command: docker compose cp app:/var/www/html/public/build public/build
+  args:
+    chdir: "{{ docker_root }}/novelathon"
+  when: firth_novelathon_pull.changed
+
+- name: Deploy Novelathon production nginx vhost
+  tags:
+    - novelathon
+    - nginx
+  block:
+    - name: Deploy nginx vhost to sites-available
+      ansible.builtin.template:
+        src: vhosts/novelathon.com.conf.j2
+        dest: /etc/nginx/sites-available/novelathon.com.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Enable nginx vhost
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/novelathon.com.conf
+        src: ../sites-available/novelathon.com.conf
+        state: link
+      notify: Reload nginx
+
+- name: Run Novelathon production database migrations
+  tags:
+    - novelathon
+    - migrations
+  ansible.builtin.command: >
+    docker compose exec -T app php artisan migrate --force
+  args:
+    chdir: "{{ docker_root }}/novelathon"
