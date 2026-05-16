@@ -1,0 +1,91 @@
+# Docker Compose file for Novelathon (staging)
+# {{ ansible_managed }}
+name: novelathon-staging
+services:
+  app:
+    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
+    user: "{{ firth_novelathon_www_data_uid_resolved | default(33) }}:{{ firth_novelathon_www_data_gid_resolved | default(33) }}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ firth_novelathon_staging_fpm_port }}:9000"
+    environment:
+      APP_NAME: "Novelathon Staging"
+      APP_ENV: staging
+      APP_KEY: "{{ firth_novelathon_staging_app_key }}"
+      APP_DEBUG: "true"
+      APP_URL: "{{ firth_novelathon_staging_app_url }}"
+      LOG_STACK: "stderr,single"
+      DB_CONNECTION: mysql
+      DB_HOST: "{{ firth_novelathon_db_host }}"
+      DB_PORT: "{{ firth_novelathon_db_port }}"
+      DB_DATABASE: "{{ firth_novelathon_staging_db_name }}"
+      DB_USERNAME: "{{ firth_novelathon_staging_db_user }}"
+      DB_PASSWORD: "{{ firth_novelathon_staging_db_password }}"
+      REDIS_HOST: "{{ firth_novelathon_redis_host }}"
+      REDIS_PORT: "{{ firth_novelathon_redis_port }}"
+      REDIS_USERNAME: "{{ firth_novelathon_staging_redis_username }}"
+      REDIS_PASSWORD: "{{ firth_novelathon_staging_redis_password }}"
+      MAIL_MAILER: smtp
+      MAIL_HOST: "{{ firth_novelathon_mail_host }}"
+      MAIL_PORT: "{{ firth_novelathon_mail_port }}"
+      MAIL_USERNAME: "{{ firth_novelathon_mail_username }}"
+      MAIL_PASSWORD: "{{ firth_novelathon_mail_password }}"
+      MAIL_FROM_ADDRESS: "{{ firth_novelathon_mail_from_address }}"
+      MAIL_FROM_NAME: "{{ firth_novelathon_mail_from_name }}"
+    volumes:
+      - novelathon_staging_storage:/var/www/html/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
+  worker:
+    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work"]
+    environment:
+      APP_NAME: "Novelathon Staging"
+      APP_ENV: staging
+      APP_KEY: "{{ firth_novelathon_staging_app_key }}"
+      APP_DEBUG: "true"
+      APP_URL: "{{ firth_novelathon_staging_app_url }}"
+      LOG_STACK: "stderr,single"
+      DB_CONNECTION: mysql
+      DB_HOST: "{{ firth_novelathon_db_host }}"
+      DB_PORT: "{{ firth_novelathon_db_port }}"
+      DB_DATABASE: "{{ firth_novelathon_staging_db_name }}"
+      DB_USERNAME: "{{ firth_novelathon_staging_db_user }}"
+      DB_PASSWORD: "{{ firth_novelathon_staging_db_password }}"
+      REDIS_HOST: "{{ firth_novelathon_redis_host }}"
+      REDIS_PORT: "{{ firth_novelathon_redis_port }}"
+      REDIS_USERNAME: "{{ firth_novelathon_staging_redis_username }}"
+      REDIS_PASSWORD: "{{ firth_novelathon_staging_redis_password }}"
+      MAIL_MAILER: smtp
+      MAIL_HOST: "{{ firth_novelathon_mail_host }}"
+      MAIL_PORT: "{{ firth_novelathon_mail_port }}"
+      MAIL_USERNAME: "{{ firth_novelathon_mail_username }}"
+      MAIL_PASSWORD: "{{ firth_novelathon_mail_password }}"
+      MAIL_FROM_ADDRESS: "{{ firth_novelathon_mail_from_address }}"
+      MAIL_FROM_NAME: "{{ firth_novelathon_mail_from_name }}"
+    volumes:
+      - novelathon_staging_storage:/var/www/html/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
+volumes:
+  novelathon_staging_storage:
+
+networks:
+  firth_services:
+    external: true
+    name: "{{ firth_services_docker_network }}"
