@@ -1,0 +1,78 @@
+---
+- name: Deploy Novelathon staging Docker Compose
+  tags:
+    - novelathon
+    - docker
+  notify: Restart Novelathon Staging
+  block:
+    - name: Template docker-compose.yml for Novelathon staging
+      ansible.builtin.template:
+        src: staging/docker-compose.yml.j2
+        dest: "{{ docker_root }}/novelathon-staging/docker-compose.yml"
+        owner: root
+        group: docker
+        mode: "0660"
+
+  rescue:
+    - name: Debug failure to deploy Novelathon staging Docker Compose
+      ansible.builtin.debug:
+        msg: "Failed to deploy Novelathon staging Docker Compose."
+
+- name: Pull Novelathon staging image
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.command: docker compose pull
+  args:
+    chdir: "{{ docker_root }}/novelathon-staging"
+  register: firth_novelathon_staging_pull
+  changed_when: "'Pulled' in firth_novelathon_staging_pull.stderr"
+  notify: Restart Novelathon Staging
+
+- name: Start Novelathon staging
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.command: docker compose up -d
+  args:
+    chdir: "{{ docker_root }}/novelathon-staging"
+  when: firth_novelathon_staging_pull.changed
+
+- name: Copy Vite build assets from Novelathon staging container to host
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.command: docker compose cp app:/var/www/html/public/build public/build
+  args:
+    chdir: "{{ docker_root }}/novelathon-staging"
+  when: firth_novelathon_staging_pull.changed
+
+- name: Deploy Novelathon staging nginx vhost
+  tags:
+    - novelathon
+    - nginx
+  block:
+    - name: Deploy nginx vhost to sites-available
+      ansible.builtin.template:
+        src: vhosts/novelathon.istic.dev.conf.j2
+        dest: /etc/nginx/sites-available/novelathon.istic.dev.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Enable nginx vhost
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/novelathon.istic.dev.conf
+        src: ../sites-available/novelathon.istic.dev.conf
+        state: link
+      notify: Reload nginx
+
+- name: Run Novelathon staging database migrations
+  tags:
+    - novelathon
+    - migrations
+  ansible.builtin.command: >
+    docker compose exec -T app php artisan migrate --force
+  args:
+    chdir: "{{ docker_root }}/novelathon-staging"
