@@ -1,0 +1,43 @@
+---
+# defaults file for roles/firth_novelathon
+
+firth_novelathon_image: ghcr.io/istic/novelathon
+firth_novelathon_image_tag: latest
+
+# Preferred GHCR credentials. If unset, falls back to ghcr_username/ghcr_token.
+firth_novelathon_ghcr_username:
+firth_novelathon_ghcr_token:
+# www-data UID/GID — resolved at runtime in general.yml. Leave blank to auto-detect.
+firth_novelathon_www_data_uid:
+firth_novelathon_www_data_gid:
+# FPM ports exposed to localhost (alchemistic uses 9000 — no conflict)
+firth_novelathon_fpm_port: 9001
+firth_novelathon_staging_fpm_port: 9002
+
+# Domain names
+firth_novelathon_server_name: novelathon.com
+firth_novelathon_staging_server_name: novelathon.istic.dev
+
+# MySQL — production
+firth_novelathon_mysql_login_host: 127.0.0.1
+firth_novelathon_db_host: host.docker.internal
+firth_novelathon_db_port: 3306
+firth_novelathon_db_name:
+firth_novelathon_db_user:
+# MySQL — staging
+firth_novelathon_staging_db_name:
+firth_novelathon_staging_db_user:
+# Redis — system Redis on host, accessed via host.docker.internal from containers
+firth_novelathon_redis_host: host.docker.internal
+firth_novelathon_redis_port: 6379
+firth_novelathon_redis_username:
+firth_novelathon_staging_redis_username:
+# App URLs
+firth_novelathon_app_url:
+firth_novelathon_staging_app_url:
+# Mail (shared across environments; override staging vars if needed)
+firth_novelathon_mail_host:
+firth_novelathon_mail_port: 587
+firth_novelathon_mail_username:
+firth_novelathon_mail_from_address:
+firth_novelathon_mail_from_name: Novelathon

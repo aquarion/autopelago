@@ -1,0 +1,17 @@
+---
+# handlers file for roles/firth_novelathon
+
+- name: Restart Novelathon
+  ansible.builtin.command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ docker_root }}/novelathon"
+
+- name: Restart Novelathon Staging
+  ansible.builtin.command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ docker_root }}/novelathon-staging"
+
+- name: Reload nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
