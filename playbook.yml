@@ -87,6 +87,7 @@
     - getmail
     - firth_sftp_docker
     - firth_alchemistic
+    - firth_novelathon
 
 - name: Hello Atoll
   hosts: atoll

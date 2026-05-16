@@ -1,0 +1,7 @@
+---
+- name: General Novelathon setup
+  ansible.builtin.import_tasks: general.yml
+- name: Novelathon production deployment
+  ansible.builtin.import_tasks: deploy_production.yml
+- name: Novelathon staging deployment
+  ansible.builtin.import_tasks: deploy_staging.yml
