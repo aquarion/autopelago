@@ -9,6 +9,9 @@ firth_novelathon_ghcr_username:
 firth_novelathon_ghcr_token:
 # System user that runs the containers — created by general.yml, added to docker group.
 firth_novelathon_system_user: novelathon
+
+# GitHub repo for uploading the deploy key secret (owner/repo format).
+firth_novelathon_github_repo: istic/novelathon
 # FPM ports exposed to localhost (alchemistic uses 9000 — no conflict)
 firth_novelathon_fpm_port: 9001
 firth_novelathon_staging_fpm_port: 9002

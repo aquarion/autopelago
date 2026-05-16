@@ -3,7 +3,7 @@
 import os
 
 from ansible.plugins.filter.core import FilterModule as FilterModuleBase
-from nacl import encoding, public  # pylint: disable=import-self # type: ignore[attr-defined]
+from nacl import encoding, public  # pylint: disable=import-self
 
 
 class FilterModule(FilterModuleBase):

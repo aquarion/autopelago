@@ -81,7 +81,7 @@ stream_delta_github_staging_secrets:
 
 # GitHub Actions repository-level secrets (not environment-specific)
 stream_delta_github_secrets:
-  - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ streamdelta_github_token }}" }
+  - { name: "DEPENDABOT_GITHUB_TOKEN", value: "{{ github_deploy_token }}" }
   - { name: "STREAM_DELTA_TWITCH_CLIENT_ID", value: "{{ stream_delta_twitch_client_id }}" }
   - { name: "STREAM_DELTA_TWITCH_CLIENT_SECRET", value: "{{ stream_delta_twitch_client_secret }}" }
   - { name: "STREAM_DELTA_YOUTUBE_API_KEY", value: "{{ stream_delta_youtube_api_key }}" }

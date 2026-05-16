@@ -9,7 +9,7 @@
         url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}"
         method: PUT
         headers:
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body: {}
@@ -28,7 +28,7 @@
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           X-GitHub-Api-Version: "2022-11-28"
         return_content: true
       register: stream_delta_github_production_variables_response
@@ -43,7 +43,7 @@
         url: "{{ stream_delta_gh_env_api }}/variables{{ ('/' + item.name) if item.name in stream_delta_production_vars else '' }}"
         method: "{{ 'PATCH' if item.name in stream_delta_production_vars else 'POST' }}"
         headers:
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body:
@@ -64,7 +64,7 @@
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           X-GitHub-Api-Version: "2022-11-28"
         return_content: true
       register: stream_delta_github_production_public_key
@@ -75,7 +75,7 @@
         url: "{{ stream_delta_gh_env_api }}/secrets/{{ item.name }}"
         method: PUT
         headers:
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body:
@@ -96,7 +96,7 @@
     #     url: "https://api.github.com/repos/aquarion/stream-delta/actions/workflows/stream-delta-deploy.yml/dispatches"
     #     method: POST
     #     headers:
-    #       Authorization: "Bearer {{ streamdelta_github_token }}"
+    #       Authorization: "Bearer {{ github_deploy_token }}"
     #       Accept: "application/vnd.github.v3+json"
     #     body: '{"ref":"main"}'
     #     body_format: json
