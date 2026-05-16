@@ -7,9 +7,8 @@ firth_novelathon_image_tag: latest
 # Preferred GHCR credentials. If unset, falls back to ghcr_username/ghcr_token.
 firth_novelathon_ghcr_username:
 firth_novelathon_ghcr_token:
-# www-data UID/GID — resolved at runtime in general.yml. Leave blank to auto-detect.
-firth_novelathon_www_data_uid:
-firth_novelathon_www_data_gid:
+# System user that runs the containers — created by general.yml, added to docker group.
+firth_novelathon_system_user: novelathon
 # FPM ports exposed to localhost (alchemistic uses 9000 — no conflict)
 firth_novelathon_fpm_port: 9001
 firth_novelathon_staging_fpm_port: 9002

@@ -4,7 +4,7 @@ name: novelathon-staging
 services:
   app:
     image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
-    user: "{{ firth_novelathon_www_data_uid_resolved | default(33) }}:{{ firth_novelathon_www_data_gid_resolved | default(33) }}"
+    user: "{{ firth_novelathon_run_uid_resolved }}:{{ firth_novelathon_run_gid_resolved }}"
     restart: unless-stopped
     ports:
       - "127.0.0.1:{{ firth_novelathon_staging_fpm_port }}:9000"
@@ -45,6 +45,7 @@ services:
 
   worker:
     image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
+    user: "{{ firth_novelathon_run_uid_resolved }}:{{ firth_novelathon_run_gid_resolved }}"
     restart: unless-stopped
     command: ["php", "artisan", "queue:work"]
     environment:

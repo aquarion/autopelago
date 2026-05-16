@@ -1,49 +1,33 @@
 ---
-- name: Resolve host www-data identity defaults
+- name: Create Novelathon system user
   tags:
     - novelathon
-    - docker
   block:
-    - name: Lookup host passwd entry for www-data
+    - name: Ensure novelathon system user exists
+      ansible.builtin.user:
+        name: "{{ firth_novelathon_system_user }}"
+        system: true
+        shell: /usr/sbin/nologin
+        groups: docker
+        append: true
+        state: present
+
+    - name: Lookup novelathon user identity
       ansible.builtin.getent:
         database: passwd
-        key: www-data
-        fail_key: false
+        key: "{{ firth_novelathon_system_user }}"
       changed_when: false
 
-    - name: Lookup host group entry for www-data
-      ansible.builtin.getent:
-        database: group
-        key: www-data
-        fail_key: false
-      changed_when: false
-
-    - name: Resolve www-data UID/GID for Novelathon role
+    - name: Set novelathon run UID/GID facts
       ansible.builtin.set_fact:
-        firth_novelathon_www_data_uid_resolved: >-
-          {{
-            (firth_novelathon_www_data_uid | string | length > 0)
-            | ternary(
-              firth_novelathon_www_data_uid | int,
-              ((ansible_facts.getent_passwd | default({})).get('www-data', ['x', '33'])[1] | int)
-            )
-          }}
-        firth_novelathon_www_data_gid_resolved: >-
-          {{
-            (firth_novelathon_www_data_gid | string | length > 0)
-            | ternary(
-              firth_novelathon_www_data_gid | int,
-              ((ansible_facts.getent_group | default({})).get('www-data', ['x', '33'])[1] | int)
-            )
-          }}
+        firth_novelathon_run_uid_resolved: "{{ ansible_facts.getent_passwd[firth_novelathon_system_user][1] | int }}"
+        firth_novelathon_run_gid_resolved: "{{ ansible_facts.getent_passwd[firth_novelathon_system_user][2] | int }}"
       changed_when: false
 
   rescue:
-    - name: Fallback www-data UID/GID for Novelathon role
-      ansible.builtin.set_fact:
-        firth_novelathon_www_data_uid_resolved: 33
-        firth_novelathon_www_data_gid_resolved: 33
-      changed_when: false
+    - name: Debug failure to create Novelathon system user
+      ansible.builtin.debug:
+        msg: "Failed to create {{ firth_novelathon_system_user }} system user. Check that the docker group exists."
 
 - name: Register Novelathon DNS
   tags:
