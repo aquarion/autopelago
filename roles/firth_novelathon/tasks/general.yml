@@ -1,0 +1,219 @@
+---
+- name: Resolve host www-data identity defaults
+  tags:
+    - novelathon
+    - docker
+  block:
+    - name: Lookup host passwd entry for www-data
+      ansible.builtin.getent:
+        database: passwd
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Lookup host group entry for www-data
+      ansible.builtin.getent:
+        database: group
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Resolve www-data UID/GID for Novelathon role
+      ansible.builtin.set_fact:
+        firth_novelathon_www_data_uid_resolved: >-
+          {{
+            (firth_novelathon_www_data_uid | string | length > 0)
+            | ternary(
+              firth_novelathon_www_data_uid | int,
+              ((ansible_facts.getent_passwd | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+        firth_novelathon_www_data_gid_resolved: >-
+          {{
+            (firth_novelathon_www_data_gid | string | length > 0)
+            | ternary(
+              firth_novelathon_www_data_gid | int,
+              ((ansible_facts.getent_group | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+      changed_when: false
+
+  rescue:
+    - name: Fallback www-data UID/GID for Novelathon role
+      ansible.builtin.set_fact:
+        firth_novelathon_www_data_uid_resolved: 33
+        firth_novelathon_www_data_gid_resolved: 33
+      changed_when: false
+
+- name: Register Novelathon DNS
+  tags:
+    - novelathon
+    - dns
+    - aws
+  block:
+    - name: Novelathon.com - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: novelathon.com
+        record: "novelathon.com."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      connection: local
+      become: false
+
+    - name: Novelathon.istic.dev - A
+      amazon.aws.route53:
+        overwrite: true
+        command: present
+        zone: istic.dev
+        record: "novelathon.istic.dev."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      connection: local
+      become: false
+
+  rescue:
+    - name: Debug failure to create Route53 records for Novelathon
+      ansible.builtin.debug:
+        msg: "Failed to create Route53 records for Novelathon. Check loadbalancer_ip and AWS credentials."
+
+- name: Setup Novelathon databases
+  tags:
+    - novelathon
+    - database
+  block:
+    - name: Ensure python3-mysqldb is installed
+      ansible.builtin.apt:
+        name: python3-mysqldb
+        state: present
+
+    - name: Create Novelathon production database
+      community.mysql.mysql_db:
+        name: "{{ firth_novelathon_db_name }}"
+        state: present
+        login_host: "{{ firth_novelathon_mysql_login_host }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create Novelathon production database user
+      community.mysql.mysql_user:
+        name: "{{ firth_novelathon_db_user }}"
+        password: "{{ firth_novelathon_db_password }}"
+        priv: "{{ firth_novelathon_db_name }}.*:ALL"
+        host: "%"
+        state: present
+        login_host: "{{ firth_novelathon_mysql_login_host }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        column_case_sensitive: true
+
+    - name: Create Novelathon staging database
+      community.mysql.mysql_db:
+        name: "{{ firth_novelathon_staging_db_name }}"
+        state: present
+        login_host: "{{ firth_novelathon_mysql_login_host }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create Novelathon staging database user
+      community.mysql.mysql_user:
+        name: "{{ firth_novelathon_staging_db_user }}"
+        password: "{{ firth_novelathon_staging_db_password }}"
+        priv: "{{ firth_novelathon_staging_db_name }}.*:ALL"
+        host: "%"
+        state: present
+        login_host: "{{ firth_novelathon_mysql_login_host }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        column_case_sensitive: true
+
+  rescue:
+    - name: Debug failure to setup Novelathon databases
+      ansible.builtin.debug:
+        msg: "Failed to setup Novelathon databases. Check mysql_root_password and firth_novelathon_db_* variables."
+
+- name: Configure Redis ACL users for Novelathon
+  tags:
+    - novelathon
+    - redis
+  block:
+    - name: Configure Redis production user
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        line: "user {{ firth_novelathon_redis_username }} on +@all -DEBUG ~* >{{ firth_novelathon_redis_password }}"
+        regexp: "^user {{ firth_novelathon_redis_username }}"
+      notify:
+        - Reload Redis ACL
+
+    - name: Configure Redis staging user
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        line: "user {{ firth_novelathon_staging_redis_username }} on +@all -DEBUG ~* >{{ firth_novelathon_staging_redis_password }}"
+        regexp: "^user {{ firth_novelathon_staging_redis_username }}"
+      notify:
+        - Reload Redis ACL
+
+  rescue:
+    - name: Debug failure to configure Redis ACL for Novelathon
+      ansible.builtin.debug:
+        msg: "Failed to configure Redis ACL for Novelathon. Check /etc/redis/users.acl exists and is writable."
+
+- name: Log in to GitHub Container Registry
+  tags:
+    - novelathon
+    - docker
+  when: firth_novelathon_image is match('^ghcr\\.io/.+')
+  block:
+    - name: Resolve GHCR credentials for Novelathon image
+      ansible.builtin.set_fact:
+        firth_novelathon_ghcr_username_resolved: "{{ firth_novelathon_ghcr_username | default(ghcr_username | default(''), true) }}"
+        firth_novelathon_ghcr_token_resolved: "{{ firth_novelathon_ghcr_token | default(ghcr_token | default(''), true) }}"
+      changed_when: false
+      no_log: true
+
+    - name: Validate GHCR credentials are configured
+      ansible.builtin.assert:
+        that:
+          - firth_novelathon_ghcr_username_resolved | length > 0
+          - firth_novelathon_ghcr_token_resolved | length > 0
+        fail_msg: >-
+          Missing GHCR credentials for image {{ firth_novelathon_image }}.
+          Set firth_novelathon_ghcr_username/firth_novelathon_ghcr_token
+          or legacy ghcr_username/ghcr_token. Token must have read:packages scope.
+      no_log: true
+
+    - name: Authenticate to GHCR
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: "{{ firth_novelathon_ghcr_username_resolved }}"
+        password: "{{ firth_novelathon_ghcr_token_resolved }}"
+      no_log: true
+
+- name: Ensure shared Docker network exists
+  tags:
+    - novelathon
+    - docker
+  community.docker.docker_network:
+    name: "{{ firth_services_docker_network }}"
+    state: present
+
+- name: Create Novelathon working directories
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ docker_root }}/novelathon"
+    - "{{ docker_root }}/novelathon/public"
+    - "{{ docker_root }}/novelathon-staging"
+    - "{{ docker_root }}/novelathon-staging/public"
