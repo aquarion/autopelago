@@ -1,0 +1,258 @@
+# firth_novelathon Ansible Role — Design Spec
+
+## Overview
+
+A new Ansible role `firth_novelathon` that provisions novelathon.com (production) and novelathon.istic.dev (staging) on Firth as Docker-containerised Laravel applications. The role follows the `firth_alchemistic` Docker deployment pattern and the `stream_delta` task-file structure.
+
+The role is added to the "Hello Firth" play in `playbook.yml`, after `firth_alchemistic`.
+
+---
+
+## Architecture
+
+### Per environment (production + staging)
+
+Each environment gets:
+
+- **Route53 A record** pointing to `loadbalancer_ip`
+- **MySQL database + user** on the host (connecting via `host.docker.internal`)
+- **Redis ACL user** on the system Redis (same pattern as stream_delta)
+- **Docker Compose stack** in `{{ docker_root }}/novelathon/` (production) and `{{ docker_root }}/novelathon-staging/` (staging), with two services:
+  - `app` — PHP-FPM container (image from GHCR)
+  - `worker` — same image, runs `php artisan queue:work`
+- **Nginx vhost** on the host with `fastcgi_pass` to the app FPM port, static `/build/` assets served from host
+
+### What the role does NOT handle
+
+- Let's Encrypt cert provisioning — `novelathon.com` cert is already expected by `firth_nginx` (line 45 of its tasks/main.yml); `istic.dev` wildcard already exists
+- GitHub Actions variables/secrets — deployment is Ansible-only (image pull + `docker compose up -d`), no SSH-from-CI pattern
+
+---
+
+## Task File Structure
+
+```
+roles/firth_novelathon/
+  defaults/main.yml
+  handlers/main.yml
+  tasks/
+    main.yml               ← imports all task files
+    general.yml            ← DNS, DB, Redis ACL, www-data resolution, GHCR auth, Docker network
+    deploy_production.yml  ← production docker-compose, nginx vhost, image pull, migrations
+    deploy_staging.yml     ← same for staging
+  templates/
+    production/docker-compose.yml.j2
+    staging/docker-compose.yml.j2
+    vhosts/novelathon.com.conf.j2
+    vhosts/novelathon.istic.dev.conf.j2
+```
+
+---
+
+## Docker Compose Design
+
+Each stack has two services using the same GHCR image. Example (production):
+
+```yaml
+name: novelathon
+services:
+  app:
+    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
+    user: "{{ firth_novelathon_www_data_uid_resolved }}:{{ firth_novelathon_www_data_gid_resolved }}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ firth_novelathon_fpm_port }}:9000"
+    environment:
+      APP_ENV: production
+      APP_KEY: "{{ firth_novelathon_app_key }}"
+      APP_URL: "{{ firth_novelathon_app_url }}"
+      APP_DEBUG: "false"
+      DB_CONNECTION: mysql
+      DB_HOST: "{{ firth_novelathon_db_host }}"
+      DB_PORT: "{{ firth_novelathon_db_port }}"
+      DB_DATABASE: "{{ firth_novelathon_db_name }}"
+      DB_USERNAME: "{{ firth_novelathon_db_user }}"
+      DB_PASSWORD: "{{ firth_novelathon_db_password }}"
+      REDIS_HOST: "{{ firth_novelathon_redis_host }}"
+      REDIS_PORT: "{{ firth_novelathon_redis_port }}"
+      REDIS_USERNAME: "{{ firth_novelathon_redis_username }}"
+      REDIS_PASSWORD: "{{ firth_novelathon_redis_password }}"
+      MAIL_MAILER: smtp
+      MAIL_HOST: "{{ firth_novelathon_mail_host }}"
+      MAIL_PORT: "{{ firth_novelathon_mail_port }}"
+      MAIL_USERNAME: "{{ firth_novelathon_mail_username }}"
+      MAIL_PASSWORD: "{{ firth_novelathon_mail_password }}"
+      MAIL_FROM_ADDRESS: "{{ firth_novelathon_mail_from_address }}"
+      MAIL_FROM_NAME: "{{ firth_novelathon_mail_from_name }}"
+    volumes:
+      - novelathon_storage:/var/www/html/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
+  worker:
+    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work"]
+    environment: # same as app
+    volumes:
+      - novelathon_storage:/var/www/html/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
+volumes:
+  novelathon_storage:
+
+networks:
+  firth_services:
+    external: true
+    name: "{{ firth_services_docker_network }}"
+```
+
+Staging uses the same structure with `_staging_` variables and a separate compose project name (`novelathon-staging`).
+
+**FPM ports** (localhost only):
+- Production: `9001` (alchemistic uses `9000`)
+- Staging: `9002`
+
+---
+
+## Nginx Vhost Design
+
+Both vhosts follow the alchemistic pattern:
+- HTTP → 301 HTTPS redirect
+- HTTPS with `proxy_protocol`, `fastcgi_pass` to FPM port
+- Static `/build/` assets served from host (copied out of container after image pull)
+- `include /etc/nginx/snippets/errors.conf`
+
+SSL snippets:
+- `novelathon.com` → `include /etc/nginx/snippets/ssl/novelathon.com_ssl.conf` (generated by `firth_nginx` from `ssl.nginx.conf.j2` with `cert_name: novelathon.com`)
+- `novelathon.istic.dev` → `include /etc/nginx/snippets/ssl/istic_dev_ssl.conf` (existing `istic.dev` wildcard)
+
+Vhosts are deployed and symlinked by `firth_novelathon` itself (not via `firth_nginx`'s glob), same approach as `firth_alchemistic`.
+
+---
+
+## Secrets Flow
+
+**Ansible vault → docker-compose `environment:` block on Firth.**
+
+Vault-encrypted vars live in `host_vars/firth.water.gkhs.net/novelathon.yml`:
+
+```yaml
+firth_novelathon_app_key:
+firth_novelathon_db_password:
+firth_novelathon_redis_password:
+firth_novelathon_mail_password:
+
+firth_novelathon_staging_app_key:
+firth_novelathon_staging_db_password:
+firth_novelathon_staging_redis_password:
+```
+
+Ansible templates these directly into the docker-compose file on disk (root:docker, mode 0660). No GitHub Actions secret management.
+
+GHCR credentials (`ghcr_username` / `ghcr_token`) are existing shared vault vars, reused via fallback same as alchemistic.
+
+---
+
+## Defaults (`defaults/main.yml`)
+
+```yaml
+firth_novelathon_image: ghcr.io/istic/novelathon
+firth_novelathon_image_tag: latest
+
+firth_novelathon_ghcr_username:
+firth_novelathon_ghcr_token:
+
+firth_novelathon_www_data_uid:
+firth_novelathon_www_data_gid:
+
+firth_novelathon_fpm_port: 9001
+firth_novelathon_staging_fpm_port: 9002
+
+firth_novelathon_server_name: novelathon.com
+firth_novelathon_staging_server_name: novelathon.istic.dev
+
+# DB — production
+firth_novelathon_db_host: host.docker.internal
+firth_novelathon_db_port: 3306
+firth_novelathon_db_name:
+firth_novelathon_db_user:
+
+# DB — staging
+firth_novelathon_staging_db_name:
+firth_novelathon_staging_db_user:
+
+# Redis
+firth_novelathon_redis_host: host.docker.internal
+firth_novelathon_redis_port: 6379
+firth_novelathon_redis_username:
+firth_novelathon_staging_redis_username:
+
+# App URLs
+firth_novelathon_app_url:
+firth_novelathon_staging_app_url:
+
+# Mail (shared across environments unless overridden)
+firth_novelathon_mail_host:
+firth_novelathon_mail_port: 587
+firth_novelathon_mail_username:
+firth_novelathon_mail_from_address:
+firth_novelathon_mail_from_name: Novelathon
+```
+
+Shared infrastructure vars (`docker_root`, `firth_services_docker_network`, `mysql_root_password`, `loadbalancer_ip`) come from existing group/host vars.
+
+---
+
+## Handlers (`handlers/main.yml`)
+
+```yaml
+- name: Restart Novelathon
+  ansible.builtin.command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ docker_root }}/novelathon"
+
+- name: Restart Novelathon Staging
+  ansible.builtin.command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ docker_root }}/novelathon-staging"
+
+- name: Reload nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+```
+
+---
+
+## `general.yml` task outline
+
+1. Resolve www-data UID/GID (same block as alchemistic — sets `firth_novelathon_www_data_uid_resolved` and `firth_novelathon_www_data_gid_resolved` facts used by docker-compose templates)
+2. Register Route53 A records — `novelathon.com` and `novelathon.istic.dev` → `loadbalancer_ip`
+3. Set up MySQL databases + users (production + staging) using `mysql_root_password`
+4. Configure Redis ACL users (production + staging) in `/etc/redis/users.acl` using `lineinfile` with the format `user {{ username }} on +@all -DEBUG ~* >{{ password }}`, notify Redis ACL reload
+5. Authenticate to GHCR (reusing alchemistic's credential resolution pattern)
+6. Ensure shared Docker network exists
+7. Create working directories: `{{ docker_root }}/novelathon/`, `{{ docker_root }}/novelathon/public/`, `{{ docker_root }}/novelathon-staging/`, `{{ docker_root }}/novelathon-staging/public/`
+
+## `deploy_production.yml` / `deploy_staging.yml` task outline
+
+1. Template docker-compose.yml → `{{ docker_root }}/novelathon[-staging]/docker-compose.yml` (root:docker, 0660), notify Restart
+2. Pull image (`docker compose pull`), notify Restart on change
+3. Start stack (`docker compose up -d`) when image changed
+4. Copy Vite build assets from container to host (`docker compose cp app:/var/www/html/public/build public/build`) when image changed
+5. Deploy nginx vhost to `sites-available`, symlink to `sites-enabled`, notify Reload nginx
+6. Run migrations (`docker compose exec -T app php artisan migrate --force`)
