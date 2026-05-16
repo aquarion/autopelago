@@ -7,6 +7,8 @@
       ansible.builtin.user:
         name: "{{ firth_novelathon_system_user }}"
         system: true
+        home: "/var/lib/{{ firth_novelathon_system_user }}"
+        create_home: true
         shell: /usr/sbin/nologin
         groups: docker
         append: true
@@ -23,6 +25,64 @@
         firth_novelathon_run_uid_resolved: "{{ ansible_facts.getent_passwd[firth_novelathon_system_user][1] | int }}"
         firth_novelathon_run_gid_resolved: "{{ ansible_facts.getent_passwd[firth_novelathon_system_user][2] | int }}"
       changed_when: false
+
+    - name: Generate SSH deploy keypair for novelathon user
+      community.crypto.openssh_keypair:
+        path: "/var/lib/{{ firth_novelathon_system_user }}/.ssh/id_ed25519"
+        type: ed25519
+        comment: "novelathon-deploy@firth"
+        owner: "{{ firth_novelathon_system_user }}"
+        group: "{{ firth_novelathon_system_user }}"
+        mode: "0600"
+        force: false
+      register: firth_novelathon_deploy_keypair
+
+    - name: Authorise deploy key for novelathon user
+      ansible.posix.authorized_key:
+        user: "{{ firth_novelathon_system_user }}"
+        key: "{{ firth_novelathon_deploy_keypair.public_key }}"
+        state: present
+
+    - name: Slurp novelathon deploy private key
+      ansible.builtin.slurp:
+        src: "/var/lib/{{ firth_novelathon_system_user }}/.ssh/id_ed25519"
+      register: firth_novelathon_deploy_privkey
+      no_log: true
+
+    - name: Get GitHub public key for novelathon repository
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ firth_novelathon_github_repo }}/actions/secrets/public-key"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ github_deploy_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: firth_novelathon_github_pubkey
+      delegate_to: localhost
+      become: false
+      changed_when: false
+      when: firth_novelathon_deploy_keypair.changed
+      no_log: true
+
+    - name: Upload novelathon deploy key to GitHub Actions secrets
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ firth_novelathon_github_repo }}/actions/secrets/FIRTH_SSH_KEY"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ github_deploy_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          encrypted_value: "{{ firth_novelathon_deploy_privkey.content | b64decode | encrypt_secret(firth_novelathon_github_pubkey.json.key) }}"
+          key_id: "{{ firth_novelathon_github_pubkey.json.key_id }}"
+        body_format: json
+        status_code: [200, 201, 204]
+      delegate_to: localhost
+      become: false
+      changed_when: true
+      no_log: true
+      when: firth_novelathon_deploy_keypair.changed
 
   rescue:
     - name: Debug failure to create Novelathon system user

@@ -10,7 +10,7 @@
         url: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_staging_environment }}"
         method: PUT
         headers:
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body: {}
@@ -29,7 +29,7 @@
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           X-GitHub-Api-Version: "2022-11-28"
         return_content: true
       register: stream_delta_github_staging_variables_response
@@ -44,7 +44,7 @@
         url: "{{ stream_delta_gh_staging_env_api }}/variables{{ ('/' + item.name) if item.name in stream_delta_staging_vars else '' }}"
         method: "{{ 'PATCH' if item.name in stream_delta_staging_vars else 'POST' }}"
         headers:
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body:
@@ -65,7 +65,7 @@
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           X-GitHub-Api-Version: "2022-11-28"
         return_content: true
       register: stream_delta_github_staging_public_key
@@ -76,7 +76,7 @@
         url: "{{ stream_delta_gh_staging_env_api }}/secrets/{{ item.name }}"
         method: PUT
         headers:
-          Authorization: "Bearer {{ streamdelta_github_token }}"
+          Authorization: "Bearer {{ github_deploy_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body:
