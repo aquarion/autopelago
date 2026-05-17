@@ -14,18 +14,6 @@
         append: true
         state: present
 
-    - name: Lookup novelathon user identity
-      ansible.builtin.getent:
-        database: passwd
-        key: "{{ firth_novelathon_system_user }}"
-      changed_when: false
-
-    - name: Set novelathon run UID/GID facts
-      ansible.builtin.set_fact:
-        firth_novelathon_run_uid_resolved: "{{ ansible_facts.getent_passwd[firth_novelathon_system_user][1] | int }}"
-        firth_novelathon_run_gid_resolved: "{{ ansible_facts.getent_passwd[firth_novelathon_system_user][2] | int }}"
-      changed_when: false
-
     # Single-host assumption: each host generates its own keypair and the last
     # one to run wins the GitHub secret. For multi-host, move the keypair into
     # vault and deploy the public key from there instead.
