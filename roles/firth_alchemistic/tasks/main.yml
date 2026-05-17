@@ -1,6 +1,52 @@
 ---
 # tasks file for roles/firth_alchemistic
 
+- name: Resolve host www-data identity defaults
+  tags:
+    - alchemistic
+    - docker
+  block:
+    - name: Lookup host passwd entry for www-data
+      ansible.builtin.getent:
+        database: passwd
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Lookup host group entry for www-data
+      ansible.builtin.getent:
+        database: group
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Resolve www-data UID/GID for Alchemistic role
+      ansible.builtin.set_fact:
+        firth_alchemistic_www_data_uid_resolved: >-
+          {{
+            (firth_alchemistic_www_data_uid | string | length > 0)
+            | ternary(
+              firth_alchemistic_www_data_uid | int,
+              ((ansible_facts.getent_passwd | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+        firth_alchemistic_www_data_gid_resolved: >-
+          {{
+            (firth_alchemistic_www_data_gid | string | length > 0)
+            | ternary(
+              firth_alchemistic_www_data_gid | int,
+              ((ansible_facts.getent_group | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+      changed_when: false
+
+  rescue:
+    - name: Fallback www-data UID/GID for Alchemistic role
+      ansible.builtin.set_fact:
+        firth_alchemistic_www_data_uid_resolved: 33
+        firth_alchemistic_www_data_gid_resolved: 33
+      changed_when: false
+
 - name: Register manage.istic.systems DNS
   tags:
     - alchemistic
@@ -63,10 +109,32 @@
   tags:
     - alchemistic
     - docker
-  community.docker.docker_login:
-    registry_url: ghcr.io
-    username: "{{ ghcr_username }}"
-    password: "{{ ghcr_token }}"
+  when: firth_alchemistic_image is match('^ghcr\\.io/.+')
+  block:
+    - name: Resolve GHCR credentials for Alchemistic image
+      ansible.builtin.set_fact:
+        firth_alchemistic_ghcr_username_resolved: "{{ firth_alchemistic_ghcr_username | default(ghcr_username | default(''), true) }}"
+        firth_alchemistic_ghcr_token_resolved: "{{ firth_alchemistic_ghcr_token | default(ghcr_token | default(''), true) }}"
+      changed_when: false
+      no_log: true
+
+    - name: Validate GHCR credentials are configured
+      ansible.builtin.assert:
+        that:
+          - firth_alchemistic_ghcr_username_resolved | length > 0
+          - firth_alchemistic_ghcr_token_resolved | length > 0
+        fail_msg: >-
+          Missing GHCR credentials for image {{ firth_alchemistic_image }}.
+          Set either firth_alchemistic_ghcr_username/firth_alchemistic_ghcr_token
+          or legacy ghcr_username/ghcr_token. The token must have read:packages scope.
+      no_log: true
+
+    - name: Authenticate to GHCR
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: "{{ firth_alchemistic_ghcr_username_resolved }}"
+        password: "{{ firth_alchemistic_ghcr_token_resolved }}"
+      no_log: true
 
 - name: Ensure shared Docker network exists
   tags:

@@ -1,6 +1,52 @@
 ---
 # tasks file for roles/firth_sftp_docker
 
+- name: Resolve host www-data identity defaults
+  tags:
+    - sftp
+    - docker
+  block:
+    - name: Lookup host passwd entry for www-data
+      ansible.builtin.getent:
+        database: passwd
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Lookup host group entry for www-data
+      ansible.builtin.getent:
+        database: group
+        key: www-data
+        fail_key: false
+      changed_when: false
+
+    - name: Resolve www-data UID/GID for SFTP role
+      ansible.builtin.set_fact:
+        firth_sftp_docker_www_data_uid_resolved: >-
+          {{
+            (firth_sftp_docker_www_data_uid | string | length > 0)
+            | ternary(
+              firth_sftp_docker_www_data_uid | int,
+              ((ansible_facts.getent_passwd | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+        firth_sftp_docker_www_data_gid_resolved: >-
+          {{
+            (firth_sftp_docker_www_data_gid | string | length > 0)
+            | ternary(
+              firth_sftp_docker_www_data_gid | int,
+              ((ansible_facts.getent_group | default({})).get('www-data', ['x', '33'])[1] | int)
+            )
+          }}
+      changed_when: false
+
+  rescue:
+    - name: Fallback www-data UID/GID for SFTP role
+      ansible.builtin.set_fact:
+        firth_sftp_docker_www_data_uid_resolved: 33
+        firth_sftp_docker_www_data_gid_resolved: 33
+      changed_when: false
+
 - name: Setup SFTP Docker users and groups
   tags:
     - sftp
@@ -48,6 +94,15 @@
         - "{{ docker_root }}/sftp/etc"
         - "{{ docker_root }}/sftp/keys"
         - "{{ docker_root }}/sftp/bin"
+        - "{{ docker_root }}/sftp/phpfpm"
+
+    - name: Create PHP-FPM socket directory
+      ansible.builtin.file:
+        path: "{{ docker_root }}/sftp/run"
+        state: directory
+        owner: root
+        group: root
+        mode: "0777"
 
     - name: Create home directory for SFTP Docker
       ansible.builtin.file:
@@ -146,6 +201,17 @@
         owner: "{{ firth_sftp_docker_user | default('sftp_docker') }}"
         group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         mode: "0755"
+
+    - name: Template PHP-FPM pool configs for web users
+      ansible.builtin.template:
+        src: phpfpm-pool.conf.j2
+        dest: "{{ docker_root }}/sftp/phpfpm/{{ item.name }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        user: "{{ item }}"
+      loop: "{{ firth_sftp_docker_users | default([]) | selectattr('php_web_domain', 'defined') | list }}"
 
   rescue:
     - name: Debug failure to setup SFTP Docker configuration

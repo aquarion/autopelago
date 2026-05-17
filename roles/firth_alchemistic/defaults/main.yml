@@ -4,6 +4,10 @@
 firth_alchemistic_image: ghcr.io/istic/alchemistic
 firth_alchemistic_image_tag: latest
 
+# Preferred GHCR credentials for private Alchemistic images.
+# If unset, the role falls back to legacy ghcr_username/ghcr_token.
+firth_alchemistic_ghcr_username:
+firth_alchemistic_ghcr_token:
 firth_alchemistic_app_url:
 firth_alchemistic_app_key:
 firth_alchemistic_db_host: host.docker.internal
@@ -17,7 +21,8 @@ firth_alchemistic_mail_username:
 firth_alchemistic_mail_password:
 firth_alchemistic_mail_from_address:
 firth_alchemistic_mail_from_name: Alchemistic
-
+firth_alchemistic_www_data_uid:
+firth_alchemistic_www_data_gid:
 # Port exposed to localhost for the upstream nginx fastcgi_pass
 firth_alchemistic_fpm_port: 9000
 

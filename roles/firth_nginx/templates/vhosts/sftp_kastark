@@ -1,0 +1,47 @@
+# {{ ansible_managed }}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name kastark.co.uk www.kastark.co.uk dhmstark.co.uk www.dhmstark.co.uk;
+  add_header X-WhyAmI "kastark redirect";
+  return 301 https://kastark.co.uk$request_uri;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name dhmstark.co.uk www.dhmstark.co.uk;
+  include /etc/nginx/snippets/ssl/kastark_ssl.conf;
+  add_header X-WhyAmI "kastark dhmstark redirect";
+  return 301 https://kastark.co.uk$request_uri;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name kastark.co.uk www.kastark.co.uk;
+  include /etc/nginx/snippets/ssl/kastark_ssl.conf;
+
+  root {{ docker_root }}/sftp/home/kastark/kastark.co.uk/htdocs;
+
+  error_log /var/log/nginx/kastark.error.log;
+  access_log /var/log/nginx/kastark.access.log;
+
+  add_header X-WhyAmI kastark;
+
+  location / {
+    try_files $uri $uri/ /index.php?$query_string;
+  }
+
+  location ~ \.php$ {
+    try_files $uri =404;
+    fastcgi_pass unix:{{ docker_root }}/sftp/run/kastark.sock;
+    fastcgi_param SCRIPT_FILENAME /var/www/html/htdocs$fastcgi_script_name;
+    fastcgi_param QUERY_STRING $query_string;
+    include fastcgi_params;
+  }
+
+  include /etc/nginx/snippets/errors.conf;
+  client_max_body_size 20M;
+}

@@ -18,33 +18,51 @@ if [[ "$dirty" != "1" ]]; then
 fi
 
 # Write users.conf
-mysql -sNe "SELECT CONCAT(username, ':', password, ':e:', uid, ':', gid) FROM sftp_users;" \
+mysql -sNe "SELECT CONCAT(username, ':', COALESCE(NULLIF(password, ''), '*'), ':e:', uid, ':', gid) FROM sftp_users;" \
     > "$USERS_CONF"
 
-# Sync authorized_keys for each user
-while IFS=$'\t' read -r username uid public_key; do
+# Reconcile users in the running container; existing users are skipped by create-sftp-user.
+while IFS= read -r line; do
+    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+        /usr/local/bin/create-sftp-user "$line"
+done < "$USERS_CONF"
+
+# Verify that every users.conf entry resolves to an OS account inside the container.
+while IFS=':' read -r username _; do
+    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+        getent passwd "$username" > /dev/null
+done < "$USERS_CONF"
+
+# Sync authorized_keys and ownership for each user home
+while IFS=$'\t' read -r username uid gid public_key; do
+    user_home="$HOME_DIR/$username"
     ssh_dir="$HOME_DIR/$username/.ssh"
     auth_keys="$ssh_dir/authorized_keys"
+
+    mkdir -p "$user_home"
+    chown -R "$uid:$gid" "$user_home"
 
     if [[ -n "$public_key" ]]; then
         mkdir -p "$ssh_dir"
         echo "$public_key" > "$auth_keys"
-        chown -R "$uid:$uid" "$ssh_dir"
+        chown -R "$uid:$gid" "$ssh_dir"
         chmod 700 "$ssh_dir"
         chmod 600 "$auth_keys"
     else
         rm -f "$auth_keys"
     fi
-done < <(mysql -sNe "SELECT username, uid, COALESCE(public_key, '') FROM sftp_users;")
-
-# Create any new users in the running container (existing users are skipped)
-while IFS= read -r line; do
-    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
-        /usr/local/bin/create-sftp-user "$line" || true
-done < "$USERS_CONF"
+done < <(mysql -sNe "SELECT username, uid, gid, COALESCE(public_key, '') FROM sftp_users;")
 
 # Update passwords for all users (handles existing users that were skipped above)
-mysql -sNe "SELECT CONCAT(username, ':', password) FROM sftp_users;" | \
-    docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp chpasswd -e
+password_updates="$(mysql -sNe "SELECT CONCAT(username, ':', password) FROM sftp_users WHERE password IS NOT NULL AND password <> '';" || true)"
+
+if [[ -n "$password_updates" ]]; then
+    printf '%s\n' "$password_updates" | \
+        docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp chpasswd -e
+fi
+
+# Reload sshd to pick up account/password updates without recreating the container.
+docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+    sh -c 'pkill -HUP sshd 2>/dev/null || kill -HUP 1'
 
 mysql -e "UPDATE sftp_sync SET dirty = 0, last_synced_at = NOW() WHERE id = 1;"

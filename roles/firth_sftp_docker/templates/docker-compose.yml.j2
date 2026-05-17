@@ -27,6 +27,24 @@ services:
     networks:
       - firth_services
     restart: unless-stopped
+{% for user in firth_sftp_docker_users %}
+{% if user.php_web_domain is defined %}
+
+  phpfpm_{{ user.name }}:
+    image: "{{ user.php_image | default('php:8.3-fpm-alpine') }}"
+    volumes:
+      - {{ docker_root }}/sftp/home/{{ user.name }}/{{ user.php_web_domain }}:/var/www/html:rw
+      - {{ docker_root }}/sftp/phpfpm/{{ user.name }}.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - {{ docker_root }}/sftp/run:/run/phpfpm:rw
+    networks:
+      - firth_services
+    restart: unless-stopped
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+{% endif %}
+{% endfor %}
 
 networks:
   firth_services:
