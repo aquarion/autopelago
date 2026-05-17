@@ -34,6 +34,12 @@
         key: "{{ firth_novelathon_deploy_keypair.public_key }}"
         state: present
 
+    - name: Authorise aquarion SSH keys for novelathon user
+      ansible.posix.authorized_key:
+        user: "{{ firth_novelathon_system_user }}"
+        key: "{{ lookup('file', playbook_dir + '/files/aquarion.keys') }}"
+        state: present
+
     - name: Slurp novelathon deploy private key
       ansible.builtin.slurp:
         src: "/var/lib/{{ firth_novelathon_system_user }}/.ssh/id_ed25519"
