@@ -36,7 +36,8 @@
   ansible.builtin.command: docker compose up -d
   args:
     chdir: "{{ docker_root }}/novelathon"
-  when: firth_novelathon_pull.changed
+  register: firth_novelathon_up
+  changed_when: "'Started' in firth_novelathon_up.stdout or 'Created' in firth_novelathon_up.stdout"
 
 - name: Copy Vite build assets from Novelathon production container to host
   tags:
