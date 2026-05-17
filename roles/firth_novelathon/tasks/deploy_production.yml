@@ -77,3 +77,5 @@
     docker compose exec -T app php artisan migrate --force
   args:
     chdir: "{{ docker_root }}/novelathon"
+  register: firth_novelathon_migrate
+  changed_when: "'migrated' in firth_novelathon_migrate.stdout"
