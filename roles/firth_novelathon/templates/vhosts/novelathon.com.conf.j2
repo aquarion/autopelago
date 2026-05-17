@@ -2,8 +2,18 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name {{ firth_novelathon_server_name }};
-    return 301 https://$host$request_uri;
+    server_name {{ firth_novelathon_server_name }} www.{{ firth_novelathon_server_name }};
+    return 301 https://{{ firth_novelathon_server_name }}$request_uri;
+}
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name www.{{ firth_novelathon_server_name }};
+
+    include /etc/nginx/snippets/ssl/novelathon.com_ssl.conf;
+
+    return 301 https://{{ firth_novelathon_server_name }}$request_uri;
 }
 
 server {
