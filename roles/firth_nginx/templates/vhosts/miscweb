@@ -35,7 +35,6 @@ server {
   *.deadbadgerdesigns.co.uk *.deadbadgerdesigns.co.uk.net
   *.larp.me *.larp.me.uk
   *.firth.water.gkhs.net
-  novelathon.com *.novelathon.com
   *.camlarp.co.uk camlarp.co.uk
   *.larp.me.uk larp.me.uk
   michael.conterio.co.uk www.michael.conterio.co.uk
@@ -292,20 +291,6 @@ server {
   client_max_body_size 100M;
 }
 
-
-server {
-  listen 443 ssl proxy_protocol;
-  listen [::]:443 ssl proxy_protocol;
-  server_name *.novelathon.com novelathon.com;
-  include /etc/nginx/snippets/ssl/novelathon.com_ssl.conf;
-  add_header X-WhyAmI "miscweb novelathon";
-  location / {
-    proxy_pass http://docker-miscweb;
-    include /etc/nginx/snippets/proxy_params.nginx.conf;
-  }
-  include /etc/nginx/snippets/errors.conf;
-  client_max_body_size 100M;
-}
 
 
 #                 _            _
