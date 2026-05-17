@@ -26,6 +26,9 @@
         firth_novelathon_run_gid_resolved: "{{ ansible_facts.getent_passwd[firth_novelathon_system_user][2] | int }}"
       changed_when: false
 
+    # Single-host assumption: each host generates its own keypair and the last
+    # one to run wins the GitHub secret. For multi-host, move the keypair into
+    # vault and deploy the public key from there instead.
     - name: Generate SSH deploy keypair for novelathon user
       community.crypto.openssh_keypair:
         path: "/var/lib/{{ firth_novelathon_system_user }}/.ssh/id_ed25519"
