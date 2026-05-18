@@ -187,7 +187,7 @@
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
         line: "user {{ firth_novelathon_redis_username }} on +@all -DEBUG ~* >{{ firth_novelathon_redis_password }}"
-        regexp: "^user {{ firth_novelathon_redis_username }}"
+        regexp: "^user {{ firth_novelathon_redis_username | regex_escape }} "
       notify:
         - Reload Redis ACL
 
@@ -195,7 +195,7 @@
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
         line: "user {{ firth_novelathon_staging_redis_username }} on +@all -DEBUG ~* >{{ firth_novelathon_staging_redis_password }}"
-        regexp: "^user {{ firth_novelathon_staging_redis_username }}"
+        regexp: "^user {{ firth_novelathon_staging_redis_username | regex_escape }} "
       notify:
         - Reload Redis ACL
 
