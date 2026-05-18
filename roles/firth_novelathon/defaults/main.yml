@@ -3,6 +3,7 @@
 
 firth_novelathon_image: ghcr.io/istic/novelathon
 firth_novelathon_image_tag: latest
+firth_novelathon_staging_image_tag: staging
 
 # Preferred GHCR credentials. If unset, falls back to ghcr_username/ghcr_token.
 firth_novelathon_ghcr_username:
