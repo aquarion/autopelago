@@ -60,7 +60,7 @@
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ github_deploy_token }}"
+          Authorization: "Bearer {{ firth_novelathon_github_deploy_token }}"
           X-GitHub-Api-Version: "2022-11-28"
         return_content: true
       register: firth_novelathon_github_pubkey
@@ -74,7 +74,7 @@
         url: "https://api.github.com/repos/{{ firth_novelathon_github_repo }}/actions/secrets/FIRTH_SSH_KEY"
         method: PUT
         headers:
-          Authorization: "Bearer {{ github_deploy_token }}"
+          Authorization: "Bearer {{ firth_novelathon_github_deploy_token }}"
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body:
