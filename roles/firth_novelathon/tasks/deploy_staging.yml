@@ -36,6 +36,8 @@
   ansible.builtin.file:
     path: "{{ docker_root }}/novelathon-staging/public/build"
     state: absent
+  become: true
+  become_user: "{{ firth_novelathon_system_user }}"
   when: firth_novelathon_staging_compose.changed
 
 - name: Copy Vite build assets from Novelathon staging container to host
@@ -45,6 +47,8 @@
   ansible.builtin.command: docker compose cp app:/var/www/html/public/build public/build
   args:
     chdir: "{{ docker_root }}/novelathon-staging"
+  become: true
+  become_user: "{{ firth_novelathon_system_user }}"
   when: firth_novelathon_staging_compose.changed
   changed_when: firth_novelathon_staging_compose.changed
 
@@ -77,5 +81,7 @@
     docker compose exec -T app php artisan migrate --force
   args:
     chdir: "{{ docker_root }}/novelathon-staging"
+  become: true
+  become_user: "{{ firth_novelathon_system_user }}"
   register: firth_novelathon_staging_migrate
   changed_when: "'migrated' in firth_novelathon_staging_migrate.stdout"
