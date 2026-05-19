@@ -75,8 +75,7 @@
   rescue:
     - name: Debug failure to create Route53 record for Alchemistic
       ansible.builtin.debug:
-        msg:
-          "Failed to create Route53 record for Alchemistic. Check loadbalancer_ip and AWS credentials. Error: {{ ansible_failed_result.msg | default('unknown error')
+        msg: "Failed to create Route53 record for Alchemistic. Check loadbalancer_ip and AWS credentials. Error: {{ ansible_failed_result.msg | default('unknown error')
           }}"
 
     - name: Abort after Route53 failure
@@ -94,7 +93,7 @@
         state: present
 
     - name: Create Alchemistic database
-      community.mysql.mysql_db:
+      ansible.mysql.mysql_db:
         name: "{{ firth_alchemistic_db_name }}"
         state: present
         login_host: "{{ firth_alchemistic_mysql_login_host | default('127.0.0.1') }}"
@@ -102,7 +101,7 @@
         login_password: "{{ mysql_root_password }}"
 
     - name: Create Alchemistic database user
-      community.mysql.mysql_user:
+      ansible.mysql.mysql_user:
         name: "{{ firth_alchemistic_db_user }}"
         password: "{{ firth_alchemistic_db_password }}"
         priv: "{{ firth_alchemistic_db_name }}.*:ALL"
@@ -115,8 +114,7 @@
   rescue:
     - name: Debug failure to setup Alchemistic database
       ansible.builtin.debug:
-        msg:
-          "Failed to setup Alchemistic database. Check mysql_root_password and firth_alchemistic_db_* variables. Error: {{ ansible_failed_result.msg | default('unknown
+        msg: "Failed to setup Alchemistic database. Check mysql_root_password and firth_alchemistic_db_* variables. Error: {{ ansible_failed_result.msg | default('unknown
           error') }}"
 
     - name: Abort after database setup failure

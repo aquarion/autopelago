@@ -2,7 +2,7 @@
 collections:
   - amazon.aws
   - community.general
-  - community.mysql
+  - ansible.mysql
   - community.crypto
   - community.docker
   - ansible.posix

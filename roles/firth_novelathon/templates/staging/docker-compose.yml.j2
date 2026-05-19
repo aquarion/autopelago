@@ -3,7 +3,7 @@
 name: novelathon-staging
 services:
   app:
-    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
+    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_staging_image_tag }}"
     restart: unless-stopped
     ports:
       - "127.0.0.1:{{ firth_novelathon_staging_fpm_port }}:9000"
@@ -43,7 +43,7 @@ services:
         tag: "$${.Name}/$${.ID}"
 
   worker:
-    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_image_tag }}"
+    image: "{{ firth_novelathon_image }}:{{ firth_novelathon_staging_image_tag }}"
     restart: unless-stopped
     command: ["php", "artisan", "queue:work"]
     environment:
