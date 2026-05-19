@@ -29,6 +29,15 @@
   become_user: "{{ firth_novelathon_system_user }}"
   register: firth_novelathon_staging_compose
 
+- name: Remove stale Novelathon staging build assets
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.file:
+    path: "{{ docker_root }}/novelathon-staging/public/build"
+    state: absent
+  when: firth_novelathon_staging_compose.changed
+
 - name: Copy Vite build assets from Novelathon staging container to host
   tags:
     - novelathon

@@ -264,6 +264,18 @@
     mode: "0755"
   loop:
     - "{{ docker_root }}/novelathon"
-    - "{{ docker_root }}/novelathon/public"
     - "{{ docker_root }}/novelathon-staging"
+
+- name: Create Novelathon public asset directories
+  tags:
+    - novelathon
+    - docker
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ firth_novelathon_system_user }}"
+    group: "{{ firth_novelathon_system_user }}"
+    mode: "0755"
+  loop:
+    - "{{ docker_root }}/novelathon/public"
     - "{{ docker_root }}/novelathon-staging/public"
