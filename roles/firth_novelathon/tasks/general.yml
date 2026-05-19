@@ -245,7 +245,7 @@
         executable: /bin/bash
       become: true
       become_user: "{{ firth_novelathon_system_user }}"
-      changed_when: true
+      changed_when: false
       no_log: true
 
 - name: Ensure shared Docker network exists
