@@ -1,10 +1,17 @@
 ---
 collections:
-  - amazon.aws
-  - community.general
-  - ansible.mysql
-  - community.crypto
-  - community.docker
-  - ansible.posix
+  - name: amazon.aws
+    version: "11.3.0"
+  - name: community.general
+    version: "13.0.0"
+  - name: ansible.mysql
+    version: "5.0.1"
+  - name: community.crypto
+    version: "3.2.1"
+  - name: community.docker
+    version: "5.2.0"
+  - name: ansible.posix
+    version: "2.2.0"
 roles:
   - name: geerlingguy.nodejs
+    version: "7.1.0"
