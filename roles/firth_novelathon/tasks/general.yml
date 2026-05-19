@@ -9,7 +9,7 @@
         system: true
         home: "/var/lib/{{ firth_novelathon_system_user }}"
         create_home: true
-        shell: /usr/sbin/nologin
+        shell: /bin/bash
         groups: docker
         append: true
         state: present
