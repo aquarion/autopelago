@@ -235,17 +235,12 @@
       no_log: true
 
     - name: Authenticate to GHCR as novelathon user
-      ansible.builtin.shell:
-        cmd: |
-          set -o pipefail
-          echo {{ firth_novelathon_ghcr_token_resolved | quote }} \
-            | docker login ghcr.io \
-            --username {{ firth_novelathon_ghcr_username_resolved | quote }} \
-            --password-stdin
-        executable: /bin/bash
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: "{{ firth_novelathon_ghcr_username_resolved }}"
+        password: "{{ firth_novelathon_ghcr_token_resolved }}"
       become: true
       become_user: "{{ firth_novelathon_system_user }}"
-      changed_when: false
       no_log: true
 
 - name: Ensure shared Docker network exists

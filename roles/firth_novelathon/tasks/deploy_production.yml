@@ -3,7 +3,6 @@
   tags:
     - novelathon
     - docker
-  notify: Restart Novelathon
   block:
     - name: Template docker-compose.yml for Novelathon production
       ansible.builtin.template:
@@ -18,26 +17,17 @@
       ansible.builtin.debug:
         msg: "Failed to deploy Novelathon production Docker Compose."
 
-- name: Pull Novelathon production image
+- name: Pull and start Novelathon production
   tags:
     - novelathon
     - docker
-  ansible.builtin.command: docker compose pull
-  args:
-    chdir: "{{ docker_root }}/novelathon"
-  register: firth_novelathon_pull
-  changed_when: "'Pulled' in firth_novelathon_pull.stderr"
-  notify: Restart Novelathon
-
-- name: Start Novelathon production
-  tags:
-    - novelathon
-    - docker
-  ansible.builtin.command: docker compose up -d
-  args:
-    chdir: "{{ docker_root }}/novelathon"
-  register: firth_novelathon_up
-  changed_when: "'Started' in firth_novelathon_up.stdout or 'Created' in firth_novelathon_up.stdout"
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_root }}/novelathon"
+    pull: always
+    state: present
+  become: true
+  become_user: "{{ firth_novelathon_system_user }}"
+  register: firth_novelathon_compose
 
 - name: Copy Vite build assets from Novelathon production container to host
   tags:
@@ -46,7 +36,8 @@
   ansible.builtin.command: docker compose cp app:/var/www/html/public/build public/build
   args:
     chdir: "{{ docker_root }}/novelathon"
-  when: firth_novelathon_pull.changed
+  when: firth_novelathon_compose.changed
+  changed_when: firth_novelathon_compose.changed
 
 - name: Deploy Novelathon production nginx vhost
   tags:
