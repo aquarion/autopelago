@@ -141,7 +141,7 @@
         state: present
 
     - name: Create Novelathon production database
-      community.mysql.mysql_db:
+      ansible.mysql.mysql_db:
         name: "{{ firth_novelathon_db_name }}"
         state: present
         login_host: "{{ firth_novelathon_mysql_login_host }}"
@@ -149,7 +149,7 @@
         login_password: "{{ mysql_root_password }}"
 
     - name: Create Novelathon production database user
-      community.mysql.mysql_user:
+      ansible.mysql.mysql_user:
         name: "{{ firth_novelathon_db_user }}"
         password: "{{ firth_novelathon_db_password }}"
         priv: "{{ firth_novelathon_db_name }}.*:ALL"
@@ -161,7 +161,7 @@
         column_case_sensitive: true
 
     - name: Create Novelathon staging database
-      community.mysql.mysql_db:
+      ansible.mysql.mysql_db:
         name: "{{ firth_novelathon_staging_db_name }}"
         state: present
         login_host: "{{ firth_novelathon_mysql_login_host }}"
@@ -169,7 +169,7 @@
         login_password: "{{ mysql_root_password }}"
 
     - name: Create Novelathon staging database user
-      community.mysql.mysql_user:
+      ansible.mysql.mysql_user:
         name: "{{ firth_novelathon_staging_db_user }}"
         password: "{{ firth_novelathon_staging_db_password }}"
         priv: "{{ firth_novelathon_staging_db_name }}.*:ALL"

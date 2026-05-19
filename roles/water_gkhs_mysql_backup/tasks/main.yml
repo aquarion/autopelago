@@ -25,7 +25,7 @@
 
     # Set root password
     - name: Set Root Password
-      community.mysql.mysql_user:
+      ansible.mysql.mysql_user:
         name: root
         password: "{{ mysql_root_password }}"
         check_implicit_admin: true
