@@ -14,6 +14,14 @@
         append: true
         state: present
 
+    - name: Ensure novelathon .ssh directory exists
+      ansible.builtin.file:
+        path: "/var/lib/{{ firth_novelathon_system_user }}/.ssh"
+        state: directory
+        owner: "{{ firth_novelathon_system_user }}"
+        group: "{{ firth_novelathon_system_user }}"
+        mode: "0700"
+
     # Single-host assumption: each host generates its own keypair and the last
     # one to run wins the GitHub secret. For multi-host, move the keypair into
     # vault and deploy the public key from there instead.
