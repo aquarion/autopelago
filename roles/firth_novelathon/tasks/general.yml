@@ -59,7 +59,6 @@
       delegate_to: localhost
       become: false
       changed_when: false
-      when: firth_novelathon_deploy_keypair.changed
       no_log: true
 
     - name: Upload novelathon deploy key to GitHub Actions secrets
@@ -79,7 +78,6 @@
       become: false
       changed_when: true
       no_log: true
-      when: firth_novelathon_deploy_keypair.changed
 
   rescue:
     - name: Debug failure to create Novelathon system user
