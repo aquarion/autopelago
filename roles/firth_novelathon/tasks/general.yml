@@ -82,9 +82,10 @@
           key_id: "{{ firth_novelathon_github_pubkey.json.key_id }}"
         body_format: json
         status_code: [200, 201, 204]
+      register: firth_novelathon_github_secret_response
       delegate_to: localhost
       become: false
-      changed_when: true
+      changed_when: firth_novelathon_github_secret_response.status == 201
       no_log: true
 
   rescue:
