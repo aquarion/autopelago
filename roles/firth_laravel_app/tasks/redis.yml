@@ -1,0 +1,8 @@
+---
+- name: Configure Redis ACL user for {{ fla_ctx.name }}
+  ansible.builtin.lineinfile:
+    path: /etc/redis/users.acl
+    line: "user {{ fla_ctx.redis.username }} on +@all -DEBUG ~* >{{ fla_ctx.redis.password }}"
+    regexp: "^user {{ fla_ctx.redis.username | regex_escape }} "
+  notify: Reload Redis ACL
+  tags: "{{ fla_ctx.name }}"
