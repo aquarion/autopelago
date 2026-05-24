@@ -45,9 +45,9 @@ repos:
     rev: v3.13.0-1
     hooks:
       - id: shfmt
-  # - repo: https://github.com/ansible-community/ansible-lint.git
-  #   rev: v26.2.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
-  #   hooks:
-  #     - id: ansible-lint
-  #       entry: python3 -m ansiblelint -v --force-color --fix
-  #       files: \.(yaml|yml)$
+  - repo: https://github.com/ansible-community/ansible-lint.git
+    rev: v26.2.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
+    hooks:
+      - id: ansible-lint
+        entry: python3 -m ansiblelint -v --force-color --fix
+        files: \.(yaml|yml)$
