@@ -1,0 +1,38 @@
+---
+- name: Authenticate to GHCR for {{ fla.name }}
+  tags: "{{ fla.name }}"
+  block:
+    - name: Resolve GHCR credentials for {{ fla.name }}
+      ansible.builtin.set_fact:
+        firth_laravel_app_ghcr_username_resolved: "{{ fla.ghcr_username | default(ghcr_username | default(''), true) }}"
+        firth_laravel_app_ghcr_token_resolved: "{{ fla.ghcr_token | default(ghcr_token | default(''), true) }}"
+      changed_when: false
+      no_log: true
+
+    - name: Validate GHCR credentials for {{ fla.name }}
+      ansible.builtin.assert:
+        that:
+          - firth_laravel_app_ghcr_username_resolved | length > 0
+          - firth_laravel_app_ghcr_token_resolved | length > 0
+        fail_msg: >-
+          Missing GHCR credentials for {{ fla.name }} image {{ fla.image }}.
+          Set fla.ghcr_username/fla.ghcr_token or legacy ghcr_username/ghcr_token.
+      no_log: true
+
+    - name: Authenticate to GHCR as {{ fla.name }}
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: "{{ firth_laravel_app_ghcr_username_resolved }}"
+        password: "{{ firth_laravel_app_ghcr_token_resolved }}"
+      become: true
+      become_user: "{{ fla.name }}"
+      no_log: true
+
+  rescue:
+    - name: Debug GHCR auth failure for {{ fla.name }}
+      ansible.builtin.debug:
+        msg: "Failed to authenticate {{ fla.name }} to GHCR. Check ghcr_username/ghcr_token have read:packages scope."
+
+    - name: Abort GHCR auth failure for {{ fla.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: GHCR authentication for {{ fla.name }} failed."
