@@ -1,0 +1,56 @@
+---
+- name: Deploy {{ fla_ctx.name }}
+  tags: "{{ fla_ctx.name }}"
+  block:
+    - name: Template docker-compose.yml for {{ fla_ctx.name }}
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ docker_root }}/{{ fla_ctx.name }}/docker-compose.yml"
+        owner: root
+        group: docker
+        mode: "0660"
+
+    - name: Pull and start {{ fla_ctx.name }}
+      community.docker.docker_compose_v2:
+        project_src: "{{ docker_root }}/{{ fla_ctx.name }}"
+        pull: always
+        state: present
+      become: true
+      become_user: "{{ fla_ctx.system_user }}"
+      register: firth_laravel_app_compose
+
+    - name: Remove stale build assets for {{ fla_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ docker_root }}/{{ fla_ctx.name }}/public/build"
+        state: absent
+      become: true
+      become_user: "{{ fla_ctx.system_user }}"
+      when: firth_laravel_app_compose.changed
+
+    - name: Copy Vite build assets from container for {{ fla_ctx.name }}
+      ansible.builtin.command: docker compose cp app:/var/www/html/public/build public/build
+      args:
+        chdir: "{{ docker_root }}/{{ fla_ctx.name }}"
+      become: true
+      become_user: "{{ fla_ctx.system_user }}"
+      when: firth_laravel_app_compose.changed
+      changed_when: firth_laravel_app_compose.changed
+
+    - name: Run migrations for {{ fla_ctx.name }}
+      ansible.builtin.command: docker compose exec -T app php artisan migrate --force
+      args:
+        chdir: "{{ docker_root }}/{{ fla_ctx.name }}"
+      become: true
+      become_user: "{{ fla_ctx.system_user }}"
+      when: firth_laravel_app_compose.changed
+      register: firth_laravel_app_migrate
+      changed_when: "'migrated' in firth_laravel_app_migrate.stdout"
+
+  rescue:
+    - name: Debug deploy failure for {{ fla_ctx.name }}
+      ansible.builtin.debug:
+        msg: "Failed to deploy {{ fla_ctx.name }}. Check docker-compose.yml and image availability."
+
+    - name: Abort after deploy failure for {{ fla_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: deploy of {{ fla_ctx.name }} failed."
