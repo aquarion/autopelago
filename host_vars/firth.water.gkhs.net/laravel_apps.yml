@@ -11,7 +11,7 @@ firth_laravel_app_apps:
     app_name: Alchemistic
     ssl_snippet: istic
     github_repo: istic/alchemistic
-    github_deploy_token: "{{ firth_alchemistic_github_deploy_token }}"
+    github_deploy_token: "{{ laravel_apps_deploy_token }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     mysql:
@@ -19,12 +19,12 @@ firth_laravel_app_apps:
       db_user: "{{ firth_alchemistic_db_user }}"
       db_password: "{{ firth_alchemistic_db_password }}"
     mail:
-      host: "{{ firth_alchemistic_mail_host }}"
-      port: "{{ firth_alchemistic_mail_port }}"
-      username: "{{ firth_alchemistic_mail_username }}"
-      password: "{{ firth_alchemistic_mail_password }}"
-      from_address: "{{ firth_alchemistic_mail_from_address }}"
-      from_name: "{{ firth_alchemistic_mail_from_name }}"
+      host: "{{ laravel_apps_mail_host }}"
+      port: "{{ laravel_apps_mail_port }}"
+      username: "{{ laravel_apps_mail_username }}"
+      password: "{{ laravel_apps_mail_password }}"
+      from_address: "{{ laravel_apps_mail_from_address }}"
+      from_name: "Istic Support"
 
   - name: novelathon
     image: ghcr.io/istic/novelathon
@@ -38,7 +38,7 @@ firth_laravel_app_apps:
     ssl_snippet: novelathon.com
     www_redirect: true
     github_repo: istic/novelathon
-    github_deploy_token: "{{ firth_novelathon_github_deploy_token }}"
+    github_deploy_token: "{{ laravel_apps_deploy_token }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     worker: true
@@ -50,12 +50,12 @@ firth_laravel_app_apps:
       username: "{{ firth_novelathon_redis_username }}"
       password: "{{ firth_novelathon_redis_password }}"
     mail:
-      host: "{{ firth_novelathon_mail_host }}"
-      port: "{{ firth_novelathon_mail_port }}"
-      username: "{{ firth_novelathon_mail_username }}"
-      password: "{{ firth_novelathon_mail_password }}"
-      from_address: "{{ firth_novelathon_mail_from_address }}"
-      from_name: "{{ firth_novelathon_mail_from_name }}"
+      host: "{{ laravel_apps_mail_host }}"
+      port: "{{ laravel_apps_mail_port }}"
+      username: "{{ laravel_apps_mail_username }}"
+      password: "{{ laravel_apps_mail_password }}"
+      from_address: "{{ laravel_apps_mail_from_address }}"
+      from_name: "Novelathon Support"
     staging:
       image_tag: staging
       port: 9002
@@ -82,7 +82,7 @@ firth_laravel_app_apps:
     app_name: Sprouter
     ssl_snippet: istic
     github_repo: aquarion/sprouter
-    github_deploy_token: "{{ vault_sprouter_github_deploy_token }}"
+    github_deploy_token: "{{ laravel_apps_deploy_token }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     mysql:
@@ -93,9 +93,9 @@ firth_laravel_app_apps:
       username: sprouter
       password: "{{ vault_sprouter_redis_password }}"
     mail:
-      host: "{{ mail_host }}"
-      port: 587
-      username: "{{ mail_username }}"
-      password: "{{ vault_mail_password }}"
-      from_address: noreply@social.istic.net
-      from_name: Sprouter
+      host: "{{ laravel_apps_mail_host }}"
+      port: "{{ laravel_apps_mail_port }}"
+      username: "{{ laravel_apps_mail_username }}"
+      password: "{{ laravel_apps_mail_password }}"
+      from_address: "{{ laravel_apps_mail_from_address }}"
+      from_name: "Sprouter Support"

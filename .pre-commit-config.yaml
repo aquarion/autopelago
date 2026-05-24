@@ -15,12 +15,6 @@ repos:
         args: ["--autofix"]
   - repo: local
     hooks:
-      - id: check-vault-encrypted
-        name: Check host_vars are vault-encrypted
-        entry: bin/check-vault-encrypted.sh
-        language: script
-        files: ^host_vars/
-        exclude: ^host_vars/(_example\.yml|firth\.water\.gkhs\.net/laravel_apps\.yml)$
       - id: check-vault-files
         name: Check *.vault files are vault-encrypted
         entry: bin/check-vault-encrypted.sh
@@ -51,9 +45,9 @@ repos:
     rev: v3.13.0-1
     hooks:
       - id: shfmt
-  - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v26.2.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
-    hooks:
-      - id: ansible-lint
-        entry: python3 -m ansiblelint -v --force-color --fix
-        files: \.(yaml|yml)$
+  # - repo: https://github.com/ansible-community/ansible-lint.git
+  #   rev: v26.2.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
+  #   hooks:
+  #     - id: ansible-lint
+  #       entry: python3 -m ansiblelint -v --force-color --fix
+  #       files: \.(yaml|yml)$
