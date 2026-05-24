@@ -1,1 +1,7 @@
 ---
+- name: Configure Laravel applications
+  ansible.builtin.include_tasks: app.yml
+  loop: "{{ firth_laravel_app_apps }}"
+  loop_control:
+    loop_var: firth_laravel_app_item
+    label: "{{ firth_laravel_app_item.name }}"

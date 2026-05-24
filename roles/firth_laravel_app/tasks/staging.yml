@@ -1,0 +1,55 @@
+---
+- name: Create staging working directories for {{ fla.name }}
+  ansible.builtin.file:
+    path: "{{ firth_laravel_app_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ docker_root }}/{{ fla.name }}-staging"
+    - "{{ docker_root }}/{{ fla.name }}-staging/public"
+  loop_control:
+    loop_var: firth_laravel_app_dir
+  tags: "{{ fla.name }}"
+
+- name: Set staging context for {{ fla.name }} # noqa: var-naming[no-role-prefix]
+  ansible.builtin.set_fact:
+    fla_ctx:
+      name: "{{ fla.name }}-staging"
+      image: "{{ fla.image }}"
+      image_tag: "{{ fla.staging.image_tag | default('staging') }}"
+      backend: "{{ fla.backend }}"
+      port: "{{ fla.staging.port }}"
+      app_name: "{{ fla.app_name | default(fla.name | capitalize) }} Staging"
+      app_env: staging
+      app_debug: "true"
+      app_key: "{{ fla.staging.app_key }}"
+      app_url: "{{ fla.staging.app_url }}"
+      server_name: "{{ fla.staging.server_name }}"
+      ssl_snippet: "{{ fla.staging.ssl_snippet | default(fla.ssl_snippet) }}"
+      www_redirect: "{{ fla.staging.www_redirect | default(false) }}"
+      worker: "{{ fla.staging.worker | default(fla.worker | default(false)) }}"
+      mysql: "{{ fla.staging.mysql | default({}) }}"
+      redis: "{{ fla.staging.redis | default({}) }}"
+      mail: "{{ fla.mail | default({}) }}"
+      system_user: "{{ fla.name }}"
+  tags: "{{ fla.name }}"
+
+- name: Provision staging database for {{ fla.name }}
+  ansible.builtin.include_tasks: mysql.yml
+  when: fla_ctx.mysql | length > 0
+  tags: "{{ fla.name }}"
+
+- name: Configure staging Redis user for {{ fla.name }}
+  ansible.builtin.include_tasks: redis.yml
+  when: fla_ctx.redis | length > 0
+  tags: "{{ fla.name }}"
+
+- name: Deploy staging application for {{ fla.name }}
+  ansible.builtin.include_tasks: deploy.yml
+  tags: "{{ fla.name }}"
+
+- name: Deploy staging nginx vhost for {{ fla.name }}
+  ansible.builtin.include_tasks: nginx.yml
+  tags: "{{ fla.name }}"
