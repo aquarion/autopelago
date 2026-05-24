@@ -1,0 +1,37 @@
+---
+- name: "Provision database: {{ fla_ctx.name }}"
+  tags: "{{ fla_ctx.name }}"
+  block:
+    - name: Ensure python3-mysqldb is installed
+      ansible.builtin.apt:
+        name: python3-mysqldb
+        state: present
+
+    - name: "Create database: {{ fla_ctx.name }}"
+      community.mysql.mysql_db:
+        name: "{{ fla_ctx.mysql.db_name }}"
+        state: present
+        login_host: "{{ firth_laravel_app_mysql_login_host }}"
+        login_user: "{{ firth_laravel_app_mysql_login_user }}"
+        login_password: "{{ mysql_root_password }}"
+
+    - name: "Create database user: {{ fla_ctx.name }}"
+      community.mysql.mysql_user:
+        name: "{{ fla_ctx.mysql.db_user }}"
+        password: "{{ fla_ctx.mysql.db_password }}"
+        priv: "{{ fla_ctx.mysql.db_name }}.*:ALL"
+        host: "%"
+        state: present
+        login_host: "{{ firth_laravel_app_mysql_login_host }}"
+        login_user: "{{ firth_laravel_app_mysql_login_user }}"
+        login_password: "{{ mysql_root_password }}"
+        column_case_sensitive: true
+
+  rescue:
+    - name: "Debug database failure: {{ fla_ctx.name }}"
+      ansible.builtin.debug:
+        msg: "Failed to provision database for {{ fla_ctx.name }}. Check mysql_root_password and MySQL connectivity."
+
+    - name: "Abort database setup failure: {{ fla_ctx.name }}"
+      ansible.builtin.fail:
+        msg: "Cannot continue: database setup for {{ fla_ctx.name }} failed."
