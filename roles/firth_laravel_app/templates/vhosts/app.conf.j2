@@ -1,0 +1,54 @@
+# {{ ansible_managed }}
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ fla_ctx.server_name }}{% if fla_ctx.www_redirect %} www.{{ fla_ctx.server_name }}{% endif %};
+    return 301 https://{{ fla_ctx.server_name }}$request_uri;
+}
+
+{% if fla_ctx.www_redirect %}
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name www.{{ fla_ctx.server_name }};
+
+    include /etc/nginx/snippets/ssl/{{ fla_ctx.ssl_snippet }}_ssl.conf;
+
+    return 301 https://{{ fla_ctx.server_name }}$request_uri;
+}
+
+{% endif %}
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name {{ fla_ctx.server_name }};
+
+    include /etc/nginx/snippets/errors.conf;
+    include /etc/nginx/snippets/ssl/{{ fla_ctx.ssl_snippet }}_ssl.conf;
+
+    error_log  /var/log/nginx/{{ fla_ctx.name }}.error.log;
+    access_log /var/log/nginx/{{ fla_ctx.name }}.access.log;
+
+    add_header X-WhyAmI {{ fla_ctx.name }};
+
+    location /build/ {
+        alias {{ docker_root }}/{{ fla_ctx.name }}/public/build/;
+        expires max;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location / {
+{% if fla_ctx.backend == 'fpm' %}
+        fastcgi_pass 127.0.0.1:{{ fla_ctx.port }};
+        fastcgi_param SCRIPT_FILENAME /var/www/html/public/index.php;
+        fastcgi_param QUERY_STRING $query_string;
+        include fastcgi_params;
+{% else %}
+        proxy_pass http://127.0.0.1:{{ fla_ctx.port }};
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+{% endif %}
+    }
+}
