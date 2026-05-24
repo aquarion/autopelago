@@ -88,6 +88,7 @@
     - firth_sftp_docker
     - firth_alchemistic
     - firth_novelathon
+    - firth_laravel_app
 
 - name: Hello Atoll
   hosts: atoll
