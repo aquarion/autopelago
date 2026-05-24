@@ -1,0 +1,101 @@
+---
+firth_laravel_app_apps:
+  - name: alchemistic
+    image: ghcr.io/istic/alchemistic
+    image_tag: latest
+    backend: fpm
+    port: 9000
+    server_name: manage.istic.systems
+    app_url: https://manage.istic.systems
+    app_key: "{{ firth_alchemistic_app_key }}"
+    app_name: Alchemistic
+    ssl_snippet: istic
+    github_repo: istic/alchemistic
+    github_deploy_token: "{{ firth_alchemistic_github_deploy_token }}"
+    ghcr_username: "{{ ghcr_username }}"
+    ghcr_token: "{{ ghcr_token }}"
+    mysql:
+      db_name: "{{ firth_alchemistic_db_name }}"
+      db_user: "{{ firth_alchemistic_db_user }}"
+      db_password: "{{ firth_alchemistic_db_password }}"
+    mail:
+      host: "{{ firth_alchemistic_mail_host }}"
+      port: "{{ firth_alchemistic_mail_port }}"
+      username: "{{ firth_alchemistic_mail_username }}"
+      password: "{{ firth_alchemistic_mail_password }}"
+      from_address: "{{ firth_alchemistic_mail_from_address }}"
+      from_name: "{{ firth_alchemistic_mail_from_name }}"
+
+  - name: novelathon
+    image: ghcr.io/istic/novelathon
+    image_tag: latest
+    backend: fpm
+    port: 9001
+    server_name: novelathon.com
+    app_url: https://novelathon.com
+    app_key: "{{ firth_novelathon_app_key }}"
+    app_name: Novelathon
+    ssl_snippet: novelathon.com
+    www_redirect: true
+    github_repo: istic/novelathon
+    github_deploy_token: "{{ firth_novelathon_github_deploy_token }}"
+    ghcr_username: "{{ ghcr_username }}"
+    ghcr_token: "{{ ghcr_token }}"
+    worker: true
+    mysql:
+      db_name: "{{ firth_novelathon_db_name }}"
+      db_user: "{{ firth_novelathon_db_user }}"
+      db_password: "{{ firth_novelathon_db_password }}"
+    redis:
+      username: "{{ firth_novelathon_redis_username }}"
+      password: "{{ firth_novelathon_redis_password }}"
+    mail:
+      host: "{{ firth_novelathon_mail_host }}"
+      port: "{{ firth_novelathon_mail_port }}"
+      username: "{{ firth_novelathon_mail_username }}"
+      password: "{{ firth_novelathon_mail_password }}"
+      from_address: "{{ firth_novelathon_mail_from_address }}"
+      from_name: "{{ firth_novelathon_mail_from_name }}"
+    staging:
+      image_tag: staging
+      port: 9002
+      server_name: novelathon.istic.dev
+      app_url: https://novelathon.istic.dev
+      app_key: "{{ firth_novelathon_staging_app_key }}"
+      ssl_snippet: istic_dev
+      mysql:
+        db_name: "{{ firth_novelathon_staging_db_name }}"
+        db_user: "{{ firth_novelathon_staging_db_user }}"
+        db_password: "{{ firth_novelathon_staging_db_password }}"
+      redis:
+        username: "{{ firth_novelathon_staging_redis_username }}"
+        password: "{{ firth_novelathon_staging_redis_password }}"
+
+  - name: sprouter
+    image: ghcr.io/aquarion/sprouter
+    image_tag: latest
+    backend: octane
+    port: 8000
+    server_name: social.istic.net
+    app_url: https://social.istic.net
+    app_key: "{{ vault_sprouter_app_key }}"
+    app_name: Sprouter
+    ssl_snippet: istic
+    github_repo: aquarion/sprouter
+    github_deploy_token: "{{ vault_sprouter_github_deploy_token }}"
+    ghcr_username: "{{ ghcr_username }}"
+    ghcr_token: "{{ ghcr_token }}"
+    mysql:
+      db_name: sprouter
+      db_user: sprouter
+      db_password: "{{ vault_sprouter_db_password }}"
+    redis:
+      username: sprouter
+      password: "{{ vault_sprouter_redis_password }}"
+    mail:
+      host: "{{ mail_host }}"
+      port: 587
+      username: "{{ mail_username }}"
+      password: "{{ vault_mail_password }}"
+      from_address: noreply@social.istic.net
+      from_name: Sprouter

@@ -20,7 +20,7 @@ repos:
         entry: bin/check-vault-encrypted.sh
         language: script
         files: ^host_vars/
-        exclude: ^host_vars/_example\.yml$
+        exclude: ^host_vars/(_example\.yml|firth\.water\.gkhs\.net/laravel_apps\.yml)$
       - id: check-vault-files
         name: Check *.vault files are vault-encrypted
         entry: bin/check-vault-encrypted.sh
