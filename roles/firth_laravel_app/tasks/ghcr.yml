@@ -1,6 +1,6 @@
 ---
 - name: Authenticate to GHCR for {{ fla.name }}
-  tags: ["{{ fla.name }}", firth_laravel_app]
+  tags: firth_laravel_app
   block:
     - name: Resolve GHCR credentials for {{ fla.name }}
       ansible.builtin.set_fact:

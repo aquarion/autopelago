@@ -1,6 +1,6 @@
 ---
 - name: Deploy {{ fla_ctx.name }}
-  tags: ["{{ fla_ctx.name }}", firth_laravel_app]
+  tags: firth_laravel_app
   block:
     - name: Template docker-compose.yml for {{ fla_ctx.name }}
       ansible.builtin.template:

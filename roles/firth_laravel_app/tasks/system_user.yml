@@ -1,6 +1,6 @@
 ---
 - name: Create system user for {{ fla.name }}
-  tags: ["{{ fla.name }}", firth_laravel_app]
+  tags: firth_laravel_app
   block:
     - name: Ensure system user exists for {{ fla.name }}
       ansible.builtin.user:
