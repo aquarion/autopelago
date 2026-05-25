@@ -11,7 +11,7 @@ firth_laravel_app_apps:
     app_name: Alchemistic
     ssl_snippet: istic
     github_repo: istic/alchemistic
-    github_deploy_token: "{{ laravel_apps_deploy_token }}"
+    github_deploy_token: "{{ laravel_apps_deploy_token_istic }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     mysql:
@@ -38,7 +38,7 @@ firth_laravel_app_apps:
     ssl_snippet: novelathon.com
     www_redirect: true
     github_repo: istic/novelathon
-    github_deploy_token: "{{ laravel_apps_deploy_token }}"
+    github_deploy_token: "{{ laravel_apps_deploy_token_istic }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     worker: true
@@ -75,6 +75,7 @@ firth_laravel_app_apps:
     image: ghcr.io/aquarion/sprouter
     image_tag: latest
     backend: octane
+    workdir: /app
     port: 8000
     server_name: social.istic.net
     app_url: https://social.istic.net
@@ -82,7 +83,7 @@ firth_laravel_app_apps:
     app_name: Sprouter
     ssl_snippet: istic
     github_repo: aquarion/sprouter
-    github_deploy_token: "{{ laravel_apps_deploy_token }}"
+    github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     mysql:

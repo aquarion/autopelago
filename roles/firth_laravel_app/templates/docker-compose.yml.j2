@@ -37,7 +37,7 @@ services:
       MAIL_FROM_NAME: "{{ fla_ctx.mail.from_name }}"
 {% endif %}
     volumes:
-      - storage:/var/www/html/storage
+      - storage:{{ fla_ctx.workdir }}/storage
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -54,7 +54,7 @@ services:
     command: ["php", "artisan", "queue:work"]
     environment: *app-env
     volumes:
-      - storage:/var/www/html/storage
+      - storage:{{ fla_ctx.workdir }}/storage
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
