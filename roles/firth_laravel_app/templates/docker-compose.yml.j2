@@ -37,7 +37,7 @@ services:
       MAIL_FROM_NAME: "{{ fla_ctx.mail.from_name }}"
 {% endif %}
     volumes:
-      - {{ fla_ctx.name }}_storage:/var/www/html/storage
+      - {{ fla_ctx.name | replace('-', '_') }}_storage:/var/www/html/storage
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -54,7 +54,7 @@ services:
     command: ["php", "artisan", "queue:work"]
     environment: *app-env
     volumes:
-      - {{ fla_ctx.name }}_storage:/var/www/html/storage
+      - {{ fla_ctx.name | replace('-', '_') }}_storage:/var/www/html/storage
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -66,7 +66,7 @@ services:
 
 {% endif %}
 volumes:
-  {{ fla_ctx.name }}_storage:
+  {{ fla_ctx.name | replace('-', '_') }}_storage:
 
 networks:
   firth_services:
