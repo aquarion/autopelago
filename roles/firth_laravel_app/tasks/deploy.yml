@@ -23,8 +23,6 @@
       ansible.builtin.file:
         path: "{{ docker_root }}/{{ fla_ctx.name }}/public/build"
         state: absent
-      become: true
-      become_user: "{{ fla_ctx.system_user }}"
       when: firth_laravel_app_compose.changed
 
     - name: Copy Vite build assets from container for {{ fla_ctx.name }}
