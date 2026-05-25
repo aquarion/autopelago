@@ -23,7 +23,7 @@
       ansible.builtin.file:
         path: "{{ docker_root }}/{{ fla_ctx.name }}/public/build"
         state: absent
-      when: firth_laravel_app_compose.changed
+      when: firth_laravel_app_compose.changed and fla_ctx.backend == 'fpm'
 
     - name: Copy Vite build assets from container for {{ fla_ctx.name }}
       ansible.builtin.command: docker compose cp app:/var/www/html/public/build public/build
@@ -31,7 +31,7 @@
         chdir: "{{ docker_root }}/{{ fla_ctx.name }}"
       become: true
       become_user: "{{ fla_ctx.system_user }}"
-      when: firth_laravel_app_compose.changed
+      when: firth_laravel_app_compose.changed and fla_ctx.backend == 'fpm'
       changed_when: firth_laravel_app_compose.changed
 
     - name: Run migrations for {{ fla_ctx.name }}
