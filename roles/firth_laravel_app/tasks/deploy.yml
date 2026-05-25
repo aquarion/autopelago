@@ -25,6 +25,19 @@
         state: absent
       when: firth_laravel_app_compose.changed
 
+    - name: Wait for container to be running for {{ fla_ctx.name }}
+      ansible.builtin.command: docker compose exec -T app true
+      args:
+        chdir: "{{ docker_root }}/{{ fla_ctx.name }}"
+      become: true
+      become_user: "{{ fla_ctx.system_user }}"
+      register: firth_laravel_app_container_wait
+      until: firth_laravel_app_container_wait.rc == 0
+      retries: 10
+      delay: 3
+      when: firth_laravel_app_compose.changed
+      changed_when: false
+
     - name: Copy Vite build assets from container for {{ fla_ctx.name }}
       ansible.builtin.command: docker compose cp app:{{ fla_ctx.workdir }}/public/build public/build
       args:
