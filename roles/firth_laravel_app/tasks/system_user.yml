@@ -31,12 +31,14 @@
         mode: "0600"
         force: false
       register: firth_laravel_app_deploy_keypair
+      when: not ansible_check_mode
 
     - name: Authorise deploy key for {{ fla.name }}
       ansible.posix.authorized_key:
         user: "{{ fla.name }}"
         key: "{{ firth_laravel_app_deploy_keypair.public_key }}"
         state: present
+      when: not ansible_check_mode
 
     - name: Authorise aquarion SSH keys for {{ fla.name }}
       ansible.posix.authorized_key:
@@ -49,6 +51,7 @@
         src: "/var/lib/{{ fla.name }}/.ssh/id_ed25519"
       register: firth_laravel_app_deploy_privkey
       no_log: true
+      when: not ansible_check_mode
 
     - name: Get GitHub public key for repository {{ fla.github_repo }}
       ansible.builtin.uri:
@@ -64,6 +67,7 @@
       become: false
       changed_when: false
       no_log: true
+      when: not ansible_check_mode
 
     - name: Upload deploy key to GitHub Actions secrets for {{ fla.github_repo }}
       ansible.builtin.uri:
@@ -83,6 +87,7 @@
       become: false
       changed_when: firth_laravel_app_github_secret_response.status == 201
       no_log: true
+      when: not ansible_check_mode
 
     - name: Create working directory for {{ fla.name }}
       ansible.builtin.file:
