@@ -26,6 +26,10 @@ services:
       REDIS_PORT: "{{ fla_ctx.redis.port | default(6379) }}"
       REDIS_USERNAME: "{{ fla_ctx.redis.username }}"
       REDIS_PASSWORD: "{{ fla_ctx.redis.password }}"
+      CACHE_STORE: redis
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_CONNECTION: redis
 {% endif %}
 {% if fla_ctx.mail %}
       MAIL_MAILER: smtp
