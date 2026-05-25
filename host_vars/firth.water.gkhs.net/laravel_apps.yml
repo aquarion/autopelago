@@ -75,7 +75,6 @@ firth_laravel_app_apps:
     image: ghcr.io/aquarion/sprouter
     image_tag: latest
     backend: octane
-    workdir: /app
     port: 8000
     server_name: social.istic.net
     app_url: https://social.istic.net
