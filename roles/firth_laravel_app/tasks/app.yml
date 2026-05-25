@@ -21,7 +21,7 @@
       redis: "{{ firth_laravel_app_item.redis | default({}) }}"
       mail: "{{ firth_laravel_app_item.mail | default({}) }}"
       system_user: "{{ firth_laravel_app_item.name }}"
-  tags: always
+  tags: [always, firth_laravel_app]
 
 - name: Setup system user for {{ fla.name }}
   ansible.builtin.include_tasks: system_user.yml

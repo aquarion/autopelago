@@ -1,6 +1,6 @@
 ---
 - name: "Provision database: {{ fla_ctx.name }}"
-  tags: "{{ fla_ctx.name }}"
+  tags: ["{{ fla_ctx.name }}", firth_laravel_app]
   block:
     - name: Ensure python3-mysqldb is installed
       ansible.builtin.apt:

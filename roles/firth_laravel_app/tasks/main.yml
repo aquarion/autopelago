@@ -5,3 +5,4 @@
   loop_control:
     loop_var: firth_laravel_app_item
     label: "{{ firth_laravel_app_item.name }}"
+  tags: firth_laravel_app

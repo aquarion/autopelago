@@ -1,6 +1,6 @@
 ---
 - name: Deploy nginx vhost for {{ fla_ctx.name }}
-  tags: "{{ fla_ctx.name }}"
+  tags: ["{{ fla_ctx.name }}", firth_laravel_app]
   block:
     - name: Template nginx vhost for {{ fla_ctx.server_name }}
       ansible.builtin.template:
