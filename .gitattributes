@@ -1,1 +1,2 @@
+group_vars/all.yml diff=ansible-vault merge=binary
 **.vault.??? diff=ansible-vault merge=binary
