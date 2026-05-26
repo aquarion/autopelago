@@ -4,7 +4,7 @@
 
 **Goal:** Replace `firth_novelathon` and `firth_alchemistic` with a single parametric `firth_laravel_app` role that deploys all Dockerised Laravel apps on firth from a list in host_vars, and add Sprouter (`social.istic.net`) as the first new app using that role.
 
-**Architecture:** A `firth_laravel_apps` list in `host_vars/firth.water.gkhs.net/laravel_apps.yml` defines each app. `tasks/main.yml` loops over the list (loop_var `firth_laravel_app_item`). `tasks/app.yml` sets a `fla` fact (raw app dict) and a `fla_ctx` fact (normalised rendering context), then delegates to focused sub-task files. The same `deploy.yml` and `nginx.yml` task files serve both production and staging — staging.yml just rebuilds `fla_ctx` before calling them.
+**Architecture:** A `firth_laravel_app_apps` list in `host_vars/firth.water.gkhs.net/laravel_apps.yml` defines each app. `tasks/main.yml` loops over the list (loop_var `firth_laravel_app_item`). `tasks/app.yml` sets a `fla` fact (raw app dict) and a `fla_ctx` fact (normalised rendering context), then delegates to focused sub-task files. The same `deploy.yml` and `nginx.yml` task files serve both production and staging — staging.yml just rebuilds `fla_ctx` before calling them.
 
 **Tech Stack:** Ansible, community.docker, community.crypto, ansible.posix, ansible.mysql, Jinja2 templates, GitHub API (deploy key upload), GHCR
 
@@ -98,7 +98,7 @@ dependencies: []
 ```yaml
 ---
 # List of apps to deploy — define in host_vars/firth.water.gkhs.net/laravel_apps.yml
-firth_laravel_apps: []
+firth_laravel_app_apps: []
 
 # MySQL login credentials for provisioning databases (set in host vault)
 firth_laravel_app_mysql_login_host: 127.0.0.1
@@ -831,7 +831,7 @@ git commit -m "⚙️ Add firth_laravel_app staging tasks"
 - Create: `roles/firth_laravel_app/tasks/app.yml`
 - Create: `roles/firth_laravel_app/tasks/main.yml`
 
-`app.yml` is the per-app orchestrator. It sets `fla` (raw dict) and `fla_ctx` (production rendering context), then calls sub-task files in order. `main.yml` loops over `firth_laravel_apps` and calls `app.yml` for each entry.
+`app.yml` is the per-app orchestrator. It sets `fla` (raw dict) and `fla_ctx` (production rendering context), then calls sub-task files in order. `main.yml` loops over `firth_laravel_app_apps` and calls `app.yml` for each entry.
 
 - [ ] **Write `roles/firth_laravel_app/tasks/app.yml`**
 
@@ -898,7 +898,7 @@ git commit -m "⚙️ Add firth_laravel_app staging tasks"
 ---
 - name: Configure Laravel applications
   ansible.builtin.include_tasks: app.yml
-  loop: "{{ firth_laravel_apps }}"
+  loop: "{{ firth_laravel_app_apps }}"
   loop_control:
     loop_var: firth_laravel_app_item
     label: "{{ firth_laravel_app_item.name }}"
@@ -940,7 +940,7 @@ Alchemistic's current FPM port is 9000 — keep it. Novelathon production is 900
 
 ```yaml
 ---
-firth_laravel_apps:
+firth_laravel_app_apps:
   - name: alchemistic
     image: ghcr.io/istic/alchemistic
     image_tag: latest
@@ -1238,7 +1238,7 @@ gh pr create --draft --title "⚙️ Add firth_laravel_app role (replaces novela
 ## Summary
 - Replaces `firth_novelathon` and `firth_alchemistic` with single parametric `firth_laravel_app` role
 - Deploys Sprouter at `social.istic.net` as first new app
-- All apps configured via `firth_laravel_apps` list in host_vars
+- All apps configured via `firth_laravel_app_apps` list in host_vars
 
 ## Test plan
 - [ ] `ansible-lint` passes

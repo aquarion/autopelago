@@ -1,9 +1,9 @@
-ngnix_add_www:
+nginx_add_www:
   - aquarionics.com
   - cleartextcontent.co.uk
   - carcosadreams.co.uk
   - deathuntodarkness.org
-ngnix_remove_www:
+nginx_remove_www:
   - ludoistic.com
   - omnyom.com
   - factionfiction.net

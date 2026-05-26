@@ -16,7 +16,7 @@ DNS registration is out of scope — handled separately per-app as zones and pro
 Apps are defined as a list in `host_vars/firth.water.gkhs.net/laravel_apps.yml`:
 
 ```yaml
-firth_laravel_apps:
+firth_laravel_app_apps:
   - name: novelathon
     image: ghcr.io/istic/novelathon
     image_tag: latest
@@ -103,7 +103,7 @@ roles/firth_laravel_app/
   defaults/main.yml
   handlers/main.yml
   tasks/
-    main.yml          ← loops over firth_laravel_apps; sets fla fact; calls app.yml
+    main.yml          ← loops over firth_laravel_app_apps; sets fla fact; calls app.yml
     app.yml           ← orchestrates sub-tasks for one app
     system_user.yml   ← system user (docker group), SSH keypair, GitHub secret upload
     mysql.yml         ← database + user (skipped if mysql key absent)
