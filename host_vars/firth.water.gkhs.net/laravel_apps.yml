@@ -99,3 +99,17 @@ firth_laravel_app_apps:
       password: "{{ laravel_apps_mail_password }}"
       from_address: "{{ laravel_apps_mail_from_address }}"
       from_name: "Sprouter Support"
+    staging:
+      image_tag: staging
+      port: 8001
+      server_name: social.istic.dev
+      app_url: https://social.istic.dev
+      app_key: "{{ vault_sprouter_staging_app_key }}"
+      ssl_snippet: istic_dev
+      mysql:
+        db_name: sprouter_staging
+        db_user: sprouter_staging
+        db_password: "{{ vault_sprouter_staging_db_password }}"
+      redis:
+        username: sprouter_staging
+        password: "{{ vault_sprouter_staging_redis_password }}"
