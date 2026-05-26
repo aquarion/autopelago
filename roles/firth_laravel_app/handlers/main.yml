@@ -1,0 +1,3 @@
+---
+# Global handlers (Reload Nginx, Reload Redis ACL) are defined in
+# roles/global_things/handlers/main.yml and imported by the firth play.

@@ -1,0 +1,28 @@
+---
+- name: Deploy nginx vhost for {{ fla_ctx.name }}
+  tags: firth_laravel_app
+  block:
+    - name: Template nginx vhost for {{ fla_ctx.server_name }}
+      ansible.builtin.template:
+        src: vhosts/app.conf.j2
+        dest: "/etc/nginx/sites-available/{{ fla_ctx.server_name }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload Nginx
+
+    - name: Enable nginx vhost for {{ fla_ctx.server_name }}
+      ansible.builtin.file:
+        path: "/etc/nginx/sites-enabled/{{ fla_ctx.server_name }}.conf"
+        src: "../sites-available/{{ fla_ctx.server_name }}.conf"
+        state: link
+      notify: Reload Nginx
+
+  rescue:
+    - name: Debug nginx failure for {{ fla_ctx.name }}
+      ansible.builtin.debug:
+        msg: "Failed to deploy nginx vhost for {{ fla_ctx.server_name }}."
+
+    - name: Abort nginx failure for {{ fla_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: nginx vhost for {{ fla_ctx.server_name }} failed."

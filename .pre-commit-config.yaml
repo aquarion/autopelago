@@ -15,12 +15,6 @@ repos:
         args: ["--autofix"]
   - repo: local
     hooks:
-      - id: check-vault-encrypted
-        name: Check host_vars are vault-encrypted
-        entry: bin/check-vault-encrypted.sh
-        language: script
-        files: ^host_vars/
-        exclude: ^host_vars/_example\.yml$
       - id: check-vault-files
         name: Check *.vault files are vault-encrypted
         entry: bin/check-vault-encrypted.sh

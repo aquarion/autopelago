@@ -1,0 +1,77 @@
+# {{ ansible_managed }}
+name: {{ fla_ctx.name }}
+services:
+  app:
+    image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ fla_ctx.port }}:{% if fla_ctx.backend == 'fpm' %}9000{% else %}8000{% endif %}"
+    environment: &app-env
+      APP_NAME: "{{ fla_ctx.app_name }}"
+      APP_ENV: "{{ fla_ctx.app_env }}"
+      APP_KEY: "{{ fla_ctx.app_key }}"
+      APP_DEBUG: "{{ fla_ctx.app_debug }}"
+      APP_URL: "{{ fla_ctx.app_url }}"
+      LOG_STACK: "stderr,single"
+{% if fla_ctx.mysql %}
+      DB_CONNECTION: mysql
+      DB_HOST: "{{ fla_ctx.mysql.db_host | default('host.docker.internal') }}"
+      DB_PORT: "{{ fla_ctx.mysql.db_port | default(3306) }}"
+      DB_DATABASE: "{{ fla_ctx.mysql.db_name }}"
+      DB_USERNAME: "{{ fla_ctx.mysql.db_user }}"
+      DB_PASSWORD: "{{ fla_ctx.mysql.db_password }}"
+{% endif %}
+{% if fla_ctx.redis %}
+      REDIS_HOST: "{{ fla_ctx.redis.host | default('host.docker.internal') }}"
+      REDIS_PORT: "{{ fla_ctx.redis.port | default(6379) }}"
+      REDIS_USERNAME: "{{ fla_ctx.redis.username }}"
+      REDIS_PASSWORD: "{{ fla_ctx.redis.password }}"
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
+      QUEUE_CONNECTION: redis
+{% endif %}
+{% if fla_ctx.mail %}
+      MAIL_MAILER: smtp
+      MAIL_HOST: "{{ fla_ctx.mail.host }}"
+      MAIL_PORT: "{{ fla_ctx.mail.port | default(587) }}"
+      MAIL_USERNAME: "{{ fla_ctx.mail.username }}"
+      MAIL_PASSWORD: "{{ fla_ctx.mail.password }}"
+      MAIL_FROM_ADDRESS: "{{ fla_ctx.mail.from_address }}"
+      MAIL_FROM_NAME: "{{ fla_ctx.mail.from_name }}"
+{% endif %}
+    volumes:
+      - storage:{{ fla_ctx.workdir }}/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
+{% if fla_ctx.worker %}
+  worker:
+    image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work"]
+    environment: *app-env
+    volumes:
+      - storage:{{ fla_ctx.workdir }}/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
+{% endif %}
+volumes:
+  storage:
+
+networks:
+  firth_services:
+    external: true
+    name: "{{ firth_services_docker_network }}"

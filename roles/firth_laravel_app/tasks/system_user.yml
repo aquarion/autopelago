@@ -1,0 +1,115 @@
+---
+- name: Create system user for {{ fla.name }}
+  tags: firth_laravel_app
+  block:
+    - name: Ensure system user exists for {{ fla.name }}
+      ansible.builtin.user:
+        name: "{{ fla.name }}"
+        system: true
+        home: "/var/lib/{{ fla.name }}"
+        create_home: true
+        shell: /bin/bash
+        groups: docker
+        append: true
+        state: present
+
+    - name: Ensure .ssh directory exists for {{ fla.name }}
+      ansible.builtin.file:
+        path: "/var/lib/{{ fla.name }}/.ssh"
+        state: directory
+        owner: "{{ fla.name }}"
+        group: "{{ fla.name }}"
+        mode: "0700"
+
+    - name: Generate SSH deploy keypair for {{ fla.name }}
+      community.crypto.openssh_keypair:
+        path: "/var/lib/{{ fla.name }}/.ssh/id_ed25519"
+        type: ed25519
+        comment: "{{ fla.name }}-deploy@firth"
+        owner: "{{ fla.name }}"
+        group: "{{ fla.name }}"
+        mode: "0600"
+        force: false
+      register: firth_laravel_app_deploy_keypair
+      when: not ansible_check_mode
+
+    - name: Authorise deploy key for {{ fla.name }}
+      ansible.posix.authorized_key:
+        user: "{{ fla.name }}"
+        key: "{{ firth_laravel_app_deploy_keypair.public_key }}"
+        state: present
+      when: not ansible_check_mode
+
+    - name: Authorise aquarion SSH keys for {{ fla.name }}
+      ansible.posix.authorized_key:
+        user: "{{ fla.name }}"
+        key: "{{ lookup('file', playbook_dir + '/files/aquarion.keys') }}"
+        state: present
+
+    - name: Slurp deploy private key for {{ fla.name }}
+      ansible.builtin.slurp:
+        src: "/var/lib/{{ fla.name }}/.ssh/id_ed25519"
+      register: firth_laravel_app_deploy_privkey
+      no_log: true
+      when: not ansible_check_mode
+
+    - name: Get GitHub public key for repository {{ fla.github_repo }}
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ fla.github_repo }}/actions/secrets/public-key"
+        method: GET
+        headers:
+          Accept: "application/vnd.github.v3+json"
+          Authorization: "Bearer {{ fla.github_deploy_token }}"
+          X-GitHub-Api-Version: "2022-11-28"
+        return_content: true
+      register: firth_laravel_app_github_pubkey
+      delegate_to: localhost
+      become: false
+      changed_when: false
+      no_log: true
+      when: not ansible_check_mode
+
+    - name: Upload deploy key to GitHub Actions secrets for {{ fla.github_repo }}
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ fla.github_repo }}/actions/secrets/FIRTH_SSH_KEY"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ fla.github_deploy_token }}"
+          Accept: "application/vnd.github.v3+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body:
+          encrypted_value: "{{ firth_laravel_app_deploy_privkey.content | b64decode | encrypt_secret(firth_laravel_app_github_pubkey.json.key) }}"
+          key_id: "{{ firth_laravel_app_github_pubkey.json.key_id }}"
+        body_format: json
+        status_code: [200, 201, 204]
+      register: firth_laravel_app_github_secret_response
+      delegate_to: localhost
+      become: false
+      changed_when: firth_laravel_app_github_secret_response.status == 201
+      no_log: true
+      when: not ansible_check_mode
+
+    - name: Create working directory for {{ fla.name }}
+      ansible.builtin.file:
+        path: "{{ docker_root }}/{{ fla.name }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Create public asset directory for {{ fla.name }}
+      ansible.builtin.file:
+        path: "{{ docker_root }}/{{ fla.name }}/public"
+        state: directory
+        owner: "{{ fla.name }}"
+        group: "{{ fla.name }}"
+        mode: "0755"
+
+  rescue:
+    - name: Debug system user failure for {{ fla.name }}
+      ansible.builtin.debug:
+        msg: "Failed to set up system user for {{ fla.name }}. Check docker group exists and GitHub token has secrets:write scope."
+
+    - name: Abort after system user failure for {{ fla.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: system user setup for {{ fla.name }} failed."

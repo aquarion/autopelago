@@ -1,0 +1,6 @@
+---
+# List of apps to deploy — define in host_vars/firth.water.gkhs.net/laravel_apps.yml
+firth_laravel_app_apps: []
+# MySQL login credentials for provisioning databases (set in host vault)
+firth_laravel_app_mysql_login_host: 127.0.0.1
+firth_laravel_app_mysql_login_user: root
