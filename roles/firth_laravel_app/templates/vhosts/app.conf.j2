@@ -40,7 +40,7 @@ server {
     location / {
 {% if fla_ctx.backend == 'fpm' %}
         fastcgi_pass 127.0.0.1:{{ fla_ctx.port }};
-        fastcgi_param SCRIPT_FILENAME /var/www/html/public/index.php;
+        fastcgi_param SCRIPT_FILENAME {{ fla_ctx.workdir }}/public/index.php;
         fastcgi_param QUERY_STRING $query_string;
         include fastcgi_params;
 {% else %}
