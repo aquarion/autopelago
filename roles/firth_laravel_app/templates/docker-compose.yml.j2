@@ -39,6 +39,11 @@ services:
       MAIL_FROM_ADDRESS: "{{ fla_ctx.mail.from_address }}"
       MAIL_FROM_NAME: "{{ fla_ctx.mail.from_name }}"
 {% endif %}
+{% if fla_ctx.additional_env %}
+{% for key, value in fla_ctx.additional_env.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
     volumes:
       - storage:{{ fla_ctx.workdir }}/storage
     extra_hosts:

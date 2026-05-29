@@ -1,5 +1,38 @@
 ---
 firth_laravel_app_apps:
+  # - name: example
+  #   image: ghcr.io/istic/example
+  #   image_tag: latest
+  #   backend: fpm or octane
+  #   port: 9000 (fpm) or 8000 (octane) must be unique across apps
+  #   server_name: example.com
+  #   app_url: https://example.com
+  #   app_key: base64:... - probably from a vault lookup
+  #   app_name: Example
+  #   ssl_snippet: example - corresponds to a snippet in firth_nginix/templates/snippets/ for SSL config
+  #   github_repo: istic/example - used for auto-deployments from GitHub Actions
+  #   github_deploy_token: "{{ laravel_apps_deploy_token_istic }}" - a GitHub token with repo access, stored in Ansible Vault
+  #   ghcr_username: "{{ ghcr_username }}" - GitHub username for accessing GHCR, stored in Ansible Vault
+  #   ghcr_token: "{{ ghcr_token }}" - GitHub token for accessing GHCR, stored in Ansible Vault
+  #   mysql: # optional MySQL config, these will be created in mysql.
+  #     db_name: example
+  #     db_user: example
+  #     db_password: "{{ vault_example_db_password }}"
+  #   redis: # optional Redis config, these will be created in redis.
+  #     username: example
+  #     password: "{{ vault_example_redis_password }}"
+  #   mail:
+  #     host: smtp.example.com
+  #     port: 587
+  #     username: "{{ vault_example_mail_username }}"
+  #     password: "{{ vault_example_mail_password }}"
+  #     from_address: "support@istic.net"
+  #     from_name: "Example Support"
+  #  additional_env: # optional additional environment variables to pass to the container, can be used for things like third-party API keys
+  #    EXAMPLE_API_KEY: "{{ vault_example_api_key }}"
+  #  staging: # optional staging config, if you want a separate staging environment with a different image tag and environment variables
+  #      ## This is a duplicate of the config above, but with overrides for staging.
+  #      ## The staging image should be built and pushed to GHCR by your CI pipeline when you push to your staging branch.
   - name: alchemistic
     image: ghcr.io/istic/alchemistic
     image_tag: latest
