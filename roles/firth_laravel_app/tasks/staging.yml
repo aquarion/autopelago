@@ -38,6 +38,7 @@
       mysql: "{{ fla.staging.mysql | default({}) }}"
       redis: "{{ fla.staging.redis | default({}) }}"
       mail: "{{ fla.mail | default({}) }}"
+      additional_env: "{{ fla.staging.additional_env | default(fla.additional_env | default({})) }}"
       system_user: "{{ fla.name }}"
   tags: firth_laravel_app
 
