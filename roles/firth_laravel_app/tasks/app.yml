@@ -21,6 +21,7 @@
       mysql: "{{ firth_laravel_app_item.mysql | default({}) }}"
       redis: "{{ firth_laravel_app_item.redis | default({}) }}"
       mail: "{{ firth_laravel_app_item.mail | default({}) }}"
+      additional_env: "{{ firth_laravel_app_item.additional_env | default({}) }}"
       system_user: "{{ firth_laravel_app_item.name }}"
   tags: [always, firth_laravel_app]
 

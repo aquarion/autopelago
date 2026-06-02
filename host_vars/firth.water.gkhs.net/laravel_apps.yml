@@ -146,3 +146,56 @@ firth_laravel_app_apps:
       redis:
         username: sprouter_staging
         password: "{{ vault_sprouter_staging_redis_password }}"
+
+  - name: docket
+    image: ghcr.io/aquarion/docket
+    image_tag: latest
+    backend: fpm
+    port: 9003
+    server_name: docket.hubris.house
+    app_url: https://docket.hubris.house
+    app_key: "{{ vault_docket_app_key }}"
+    app_name: Docket
+    ssl_snippet: hubris
+    github_repo: aquarion/docket
+    github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
+    ghcr_username: "{{ ghcr_username }}"
+    ghcr_token: "{{ ghcr_token }}"
+    mysql:
+      db_name: docket
+      db_user: docket
+      db_password: "{{ vault_docket_db_password }}"
+    redis:
+      username: docket
+      password: "{{ vault_docket_redis_password }}"
+    additional_env:
+      MY_LAT: "{{ vault_docket_my_lat }}"
+      MY_LON: "{{ vault_docket_my_lon }}"
+      MAPBOX_API_TOKEN: "{{ vault_docket_mapbox_token }}"
+      GOOGLE_CREDENTIALS_PATH: google/credentials.json
+      GOOGLE_REDIRECT_URI: https://docket.hubris.house/token
+      GOOGLE_DEFAULT_ACCOUNT: "{{ vault_docket_google_default_account }}"
+      CALENDAR_CACHE_TTL: "900"
+      GCAL_HOLIDAYS_SRC: "{{ vault_docket_gcal_holidays_src }}"
+      GCAL_WORK_SRC: "{{ vault_docket_gcal_work_src }}"
+      GCAL_PERSONAL_SRC: "{{ vault_docket_gcal_personal_src }}"
+      GCAL_FAMILY_SRC: "{{ vault_docket_gcal_family_src }}"
+      ICAL_WORK_URL: "{{ vault_docket_ical_work_url }}"
+      ICAL_BIRTHDAYS_URL: "{{ vault_docket_ical_birthdays_url }}"
+      ICAL_DEADLINES_URL: "{{ vault_docket_ical_deadlines_url }}"
+    staging:
+      image_tag: staging
+      port: 9004
+      server_name: docket.istic.dev
+      app_url: https://docket.istic.dev
+      app_key: "{{ vault_docket_staging_app_key }}"
+      ssl_snippet: istic_dev
+      mysql:
+        db_name: docket_staging
+        db_user: docket_staging
+        db_password: "{{ vault_docket_staging_db_password }}"
+      redis:
+        username: docket_staging
+        password: "{{ vault_docket_staging_redis_password }}"
+      additional_env:
+        GOOGLE_REDIRECT_URI: https://docket.istic.dev/token
