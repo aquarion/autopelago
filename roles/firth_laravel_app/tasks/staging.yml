@@ -39,6 +39,7 @@
       redis: "{{ fla.staging.redis | default({}) }}"
       mail: "{{ fla.mail | default({}) }}"
       additional_env: "{{ fla.staging.additional_env | default(fla.additional_env | default({})) }}"
+      additional_files: "{{ fla.staging.additional_files | default(fla.additional_files | default([])) }}"
       system_user: "{{ fla.name }}"
   tags: firth_laravel_app
 
@@ -50,6 +51,11 @@
 - name: Configure staging Redis user for {{ fla.name }}
   ansible.builtin.include_tasks: redis.yml
   when: fla_ctx.redis | length > 0
+  tags: firth_laravel_app
+
+- name: Deploy staging additional files for {{ fla.name }}
+  ansible.builtin.include_tasks: files.yml
+  when: fla_ctx.additional_files | length > 0
   tags: firth_laravel_app
 
 - name: Deploy staging application for {{ fla.name }}

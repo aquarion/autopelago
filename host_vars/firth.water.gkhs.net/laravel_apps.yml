@@ -183,6 +183,9 @@ firth_laravel_app_apps:
       ICAL_WORK_URL: "{{ vault_docket_ical_work_url }}"
       ICAL_BIRTHDAYS_URL: "{{ vault_docket_ical_birthdays_url }}"
       ICAL_DEADLINES_URL: "{{ vault_docket_ical_deadlines_url }}"
+    additional_files:
+      - src: files/laravel/docket/google_credentials.vault.json
+        dest: google/credentials.json
     staging:
       image_tag: staging
       port: 9004

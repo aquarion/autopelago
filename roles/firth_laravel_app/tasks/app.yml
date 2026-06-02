@@ -22,6 +22,7 @@
       redis: "{{ firth_laravel_app_item.redis | default({}) }}"
       mail: "{{ firth_laravel_app_item.mail | default({}) }}"
       additional_env: "{{ firth_laravel_app_item.additional_env | default({}) }}"
+      additional_files: "{{ firth_laravel_app_item.additional_files | default([]) }}"
       system_user: "{{ firth_laravel_app_item.name }}"
   tags: [always, firth_laravel_app]
 
@@ -48,6 +49,11 @@
   community.docker.docker_network:
     name: "{{ firth_services_docker_network }}"
     state: present
+  tags: firth_laravel_app
+
+- name: Deploy additional files for {{ fla.name }}
+  ansible.builtin.include_tasks: files.yml
+  when: fla_ctx.additional_files | length > 0
   tags: firth_laravel_app
 
 - name: Deploy {{ fla.name }}

@@ -1,0 +1,20 @@
+---
+- name: Ensure secrets directories exist for {{ fla_ctx.name }}
+  ansible.builtin.file:
+    path: "{{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ item.dest | dirname }}"
+    state: directory
+    owner: root
+    group: docker
+    mode: "0750"
+  loop: "{{ fla_ctx.additional_files }}"
+  tags: firth_laravel_app
+
+- name: Copy additional files for {{ fla_ctx.name }}
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/{{ item.src }}"
+    dest: "{{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ item.dest }}"
+    owner: root
+    group: docker
+    mode: "0640"
+  loop: "{{ fla_ctx.additional_files }}"
+  tags: firth_laravel_app
