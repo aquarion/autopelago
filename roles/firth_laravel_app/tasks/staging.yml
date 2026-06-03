@@ -1,4 +1,9 @@
 ---
+- name: Reset staging files changed state # noqa: var-naming[no-role-prefix]
+  ansible.builtin.set_fact:
+    firth_laravel_app_files_changed: false
+  tags: [always, firth_laravel_app]
+
 - name: Create staging working directory for {{ fla.name }}
   ansible.builtin.file:
     path: "{{ docker_root }}/{{ fla.name }}-staging"
