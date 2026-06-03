@@ -174,15 +174,10 @@ firth_laravel_app_apps:
       MAPBOX_API_TOKEN: "{{ vault_docket_mapbox_token }}"
       GOOGLE_CREDENTIALS_PATH: google/credentials.json
       GOOGLE_REDIRECT_URI: https://docket.hubris.house/token
-      GOOGLE_DEFAULT_ACCOUNT: "{{ vault_docket_google_default_account }}"
+      # Google OAuth for user login (Socialite)
+      GOOGLE_CLIENT_ID: "{{ vault_docket_google_client_id }}"
+      GOOGLE_CLIENT_SECRET: "{{ vault_docket_google_secret }}"
       CALENDAR_CACHE_TTL: "900"
-      GCAL_HOLIDAYS_SRC: "{{ vault_docket_gcal_holidays_src }}"
-      GCAL_WORK_SRC: "{{ vault_docket_gcal_work_src }}"
-      GCAL_PERSONAL_SRC: "{{ vault_docket_gcal_personal_src }}"
-      GCAL_FAMILY_SRC: "{{ vault_docket_gcal_family_src }}"
-      ICAL_WORK_URL: "{{ vault_docket_ical_work_url }}"
-      ICAL_BIRTHDAYS_URL: "{{ vault_docket_ical_birthdays_url }}"
-      ICAL_DEADLINES_URL: "{{ vault_docket_ical_deadlines_url }}"
     additional_files:
       - src: files/laravel/docket/google_credentials.vault.json
         dest: google/credentials.json
@@ -202,3 +197,14 @@ firth_laravel_app_apps:
         password: "{{ vault_docket_staging_redis_password }}"
       additional_env:
         GOOGLE_REDIRECT_URI: https://docket.istic.dev/token
+        MY_LAT: "{{ vault_docket_my_lat }}"
+        MY_LON: "{{ vault_docket_my_lon }}"
+        MAPBOX_API_TOKEN: "{{ vault_docket_mapbox_token }}"
+        # Google OAuth for user login (Socialite)
+        GOOGLE_CLIENT_ID: "{{ vault_docket_google_client_id }}"
+        GOOGLE_CLIENT_SECRET: "{{ vault_docket_google_secret }}"
+        GOOGLE_CREDENTIALS_PATH: google/credentials.json
+        CALENDAR_CACHE_TTL: "900"
+      additional_files:
+        - src: files/laravel/docket/google_credentials.vault.json
+          dest: google/credentials.json

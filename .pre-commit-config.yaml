@@ -11,8 +11,10 @@ repos:
       - id: check-added-large-files
       - id: detect-private-key
       - id: check-json
+        exclude: \.vault\.json$
       - id: pretty-format-json
         args: ["--autofix"]
+        exclude: \.vault\.json$
   - repo: local
     hooks:
       - id: check-vault-files
