@@ -93,8 +93,8 @@
       ansible.builtin.file:
         path: "{{ docker_root }}/{{ fla.name }}"
         state: directory
-        owner: root
-        group: root
+        owner: "{{ fla.name }}"
+        group: docker
         mode: "0755"
 
     - name: Link working directory to system user home for {{ fla.name }}
