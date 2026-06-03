@@ -111,11 +111,11 @@ Add a `staging:` block to the app entry to get a second deployment at a separate
     redis:                                 # if prod has redis, staging needs it too
       username: myapp_staging
       password: "{{ vault_myapp_staging_redis_password }}"
-    additional_env:                        # overrides or supplements prod additional_env
+    additional_env:                        # replaces prod additional_env entirely — repeat any keys you need
       MY_API_KEY: "{{ vault_myapp_staging_api_key }}"
 ```
 
-Staging inherits `mail`, `worker`, `workdir`, `additional_files` from the prod entry unless overridden.
+Staging inherits `mail`, `worker`, `workdir`, `ssl_snippet`, `www_redirect`, `additional_files`, and `additional_env` from the prod entry unless overridden. Note that `additional_env` is replaced entirely if provided — it is not merged with the prod value.
 
 ### Optional: additional files
 
@@ -163,7 +163,7 @@ For staging, push a `staging` tag too if you have a staging block.
 ansible-playbook playbook.yml -l firth --tags firth_laravel_app
 ```
 
-This pulls the image, starts the container, waits for it to be healthy, runs migrations, and copies Vite build assets.
+This pulls the image, starts the container, waits for it to be running, copies Vite build assets from the container, then runs database migrations.
 
 ---
 

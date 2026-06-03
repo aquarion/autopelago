@@ -1,26 +1,38 @@
 ---
-- name: Ensure secrets directories exist for {{ fla_ctx.name }}
-  ansible.builtin.file:
-    path: "{{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ item.dest | dirname }}"
-    state: directory
-    owner: root
-    group: docker
-    mode: "0750"
-  loop: "{{ fla_ctx.additional_files }}"
+- name: Deploy additional files for {{ fla_ctx.name }}
   tags: firth_laravel_app
+  block:
+    - name: Ensure secrets directories exist for {{ fla_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ item.dest | dirname }}"
+        state: directory
+        owner: root
+        group: docker
+        mode: "0750"
+      loop: "{{ fla_ctx.additional_files }}"
 
-- name: Copy additional files for {{ fla_ctx.name }}
-  ansible.builtin.copy:
-    src: "{{ playbook_dir }}/{{ item.src }}"
-    dest: "{{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ item.dest }}"
-    owner: root
-    group: docker
-    mode: "0644"
-  loop: "{{ fla_ctx.additional_files }}"
-  register: firth_laravel_app_files
-  tags: firth_laravel_app
+    - name: Copy additional files for {{ fla_ctx.name }}
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/{{ item.src }}"
+        dest: "{{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ item.dest }}"
+        owner: root
+        group: docker
+        mode: "0644"
+      loop: "{{ fla_ctx.additional_files }}"
+      register: firth_laravel_app_files
 
-- name: Record additional files changed state for {{ fla_ctx.name }}
-  ansible.builtin.set_fact:
-    firth_laravel_app_files_changed: "{{ firth_laravel_app_files.changed }}"
-  tags: firth_laravel_app
+    - name: Record additional files changed state for {{ fla_ctx.name }}
+      ansible.builtin.set_fact:
+        firth_laravel_app_files_changed: "{{ firth_laravel_app_files.changed }}"
+
+  rescue:
+    - name: Debug files failure for {{ fla_ctx.name }}
+      ansible.builtin.debug:
+        msg: >
+          Failed to deploy additional files for {{ fla_ctx.name }}.
+          Check that every src path in additional_files exists in the repo
+          and the vault password is correct.
+
+    - name: Abort after files failure for {{ fla_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: additional files deployment for {{ fla_ctx.name }} failed."
