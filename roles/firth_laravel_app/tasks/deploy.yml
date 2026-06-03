@@ -19,6 +19,7 @@
         project_src: "{{ docker_root }}/{{ fla_ctx.name }}"
         pull: always
         state: present
+        recreate: "{{ 'always' if (firth_laravel_app_files_changed | default(false)) else 'auto' }}"
       become: true
       become_user: "{{ fla_ctx.system_user }}"
       register: firth_laravel_app_compose
