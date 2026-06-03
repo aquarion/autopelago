@@ -17,7 +17,7 @@ Docket is the most complete reference implementation for this pattern.
 
 ## 2. Generate secrets
 
-Generate secrets for the new app and add them to a vault file at `host_vars/firth.water.gkhs.net/<appname>.vault.yml`:
+Generate secrets for the new app and add them to a vault file at `host_vars/firth.water.gkhs.net/laravel/<appname>.vault.yml`:
 
 ```yaml
 vault_<appname>_app_key: "base64:..."   # php artisan key:generate --show
@@ -34,7 +34,7 @@ docker run --rm php:8.3-cli php -r "echo 'base64:'.base64_encode(random_bytes(32
 
 Encrypt the vault file before committing:
 ```bash
-ansible-vault encrypt host_vars/firth.water.gkhs.net/<appname>.vault.yml
+ansible-vault encrypt host_vars/firth.water.gkhs.net/laravel/<appname>.vault.yml
 ```
 
 ---
