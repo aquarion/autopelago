@@ -89,6 +89,7 @@ Ports currently in use:
 | novelathon  | 9001        | 9002           |
 | sprouter    | 8000        | 8001           |
 | docket      | 9003        | 9004           |
+| wereabouts  | 9005        | 9006           |
 
 Pick the next available port. FPM apps use 9xxx; octane apps use 8xxx by convention.
 
