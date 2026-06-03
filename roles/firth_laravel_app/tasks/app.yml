@@ -26,6 +26,11 @@
       system_user: "{{ firth_laravel_app_item.name }}"
   tags: [always, firth_laravel_app]
 
+- name: Reset files changed state for {{ firth_laravel_app_item.name }} # noqa: var-naming[no-role-prefix]
+  ansible.builtin.set_fact:
+    firth_laravel_app_files_changed: false
+  tags: [always, firth_laravel_app]
+
 - name: Setup system user for {{ fla.name }}
   ansible.builtin.include_tasks: system_user.yml
   tags: firth_laravel_app
