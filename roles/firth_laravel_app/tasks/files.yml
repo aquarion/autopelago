@@ -15,6 +15,6 @@
     dest: "{{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ item.dest }}"
     owner: root
     group: docker
-    mode: "0640"
+    mode: "0644"
   loop: "{{ fla_ctx.additional_files }}"
   tags: firth_laravel_app
