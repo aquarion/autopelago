@@ -208,3 +208,50 @@ firth_laravel_app_apps:
       additional_files:
         - src: files/laravel/docket/google_credentials.vault.json
           dest: google/credentials.json
+
+  - name: wereabouts
+    image: ghcr.io/istic/wereabouts
+    image_tag: latest
+    backend: fpm
+    port: 9005
+    server_name: locations.larp.me
+    app_url: https://locations.larp.me
+    app_key: "{{ vault_wereabouts_app_key }}"
+    app_name: Wereabouts
+    ssl_snippet: larpme
+    github_repo: istic/wereabouts
+    github_deploy_token: "{{ laravel_apps_deploy_token_istic }}"
+    ghcr_username: "{{ ghcr_username }}"
+    ghcr_token: "{{ ghcr_token }}"
+    redis:
+      username: wereabouts
+      password: "{{ vault_wereabouts_redis_password }}"
+    mail:
+      host: "{{ laravel_apps_mail_host }}"
+      port: "{{ laravel_apps_mail_port }}"
+      username: "{{ laravel_apps_mail_username }}"
+      password: "{{ laravel_apps_mail_password }}"
+      from_address: "{{ laravel_apps_mail_from_address }}"
+      from_name: "Wereabouts Support"
+    additional_env:
+      APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
+      GOOGLE_CREDENTIALS_PATH: google/credentials.json
+    additional_files:
+      - src: files/laravel/wereabouts/google_credentials.vault.json
+        dest: google/credentials.json
+    staging:
+      image_tag: staging
+      port: 9006
+      server_name: wereabouts.istic.dev
+      app_url: https://wereabouts.istic.dev
+      app_key: "{{ vault_wereabouts_staging_app_key }}"
+      ssl_snippet: istic_dev
+      redis:
+        username: wereabouts_staging
+        password: "{{ vault_wereabouts_staging_redis_password }}"
+      additional_env:
+        APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
+        GOOGLE_CREDENTIALS_PATH: google/credentials.json
+      additional_files:
+        - src: files/laravel/wereabouts/google_credentials.vault.json
+          dest: google/credentials.json
