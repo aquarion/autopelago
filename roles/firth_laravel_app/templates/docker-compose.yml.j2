@@ -46,6 +46,9 @@ services:
 {% endif %}
     volumes:
       - storage:{{ fla_ctx.workdir }}/storage
+{% for file in fla_ctx.additional_files %}
+      - {{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ file.dest }}:{{ fla_ctx.workdir }}/storage/app/{{ file.dest }}:ro
+{% endfor %}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -63,6 +66,9 @@ services:
     environment: *app-env
     volumes:
       - storage:{{ fla_ctx.workdir }}/storage
+{% for file in fla_ctx.additional_files %}
+      - {{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ file.dest }}:{{ fla_ctx.workdir }}/storage/app/{{ file.dest }}:ro
+{% endfor %}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

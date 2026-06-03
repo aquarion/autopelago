@@ -1,4 +1,8 @@
 ---
+# Deploy the Laravel app using docker-compose
+# use --skip-tags=laravel_apps_deploy to skip this step (e.g. when only doing
+# config changes that don't require redeploy, or the image doesn't exist yet)
+
 - name: Deploy {{ fla_ctx.name }}
   tags: firth_laravel_app
   block:
@@ -15,15 +19,20 @@
         project_src: "{{ docker_root }}/{{ fla_ctx.name }}"
         pull: always
         state: present
+        recreate: "{{ 'always' if (firth_laravel_app_files_changed | default(false)) else 'auto' }}"
       become: true
       become_user: "{{ fla_ctx.system_user }}"
       register: firth_laravel_app_compose
+      tags:
+        - laravel_apps_deploy
 
     - name: Remove stale build assets for {{ fla_ctx.name }}
       ansible.builtin.file:
         path: "{{ docker_root }}/{{ fla_ctx.name }}/public/build"
         state: absent
       when: firth_laravel_app_compose.changed
+      tags:
+        - laravel_apps_deploy
 
     - name: Wait for container to be running for {{ fla_ctx.name }}
       ansible.builtin.command: docker compose exec -T app true
@@ -37,6 +46,8 @@
       delay: 3
       when: firth_laravel_app_compose.changed
       changed_when: false
+      tags:
+        - laravel_apps_deploy
 
     - name: Copy Vite build assets from container for {{ fla_ctx.name }}
       ansible.builtin.command: docker compose cp app:{{ fla_ctx.workdir }}/public/build public/build
@@ -46,6 +57,8 @@
       become_user: "{{ fla_ctx.system_user }}"
       when: firth_laravel_app_compose.changed
       changed_when: firth_laravel_app_compose.changed
+      tags:
+        - laravel_apps_deploy
 
     - name: Run migrations for {{ fla_ctx.name }}
       ansible.builtin.command: docker compose exec -T app php artisan migrate --force
@@ -56,6 +69,8 @@
       when: firth_laravel_app_compose.changed
       register: firth_laravel_app_migrate
       changed_when: "'migrated' in firth_laravel_app_migrate.stdout"
+      tags:
+        - laravel_apps_deploy
 
   rescue:
     - name: Debug deploy failure for {{ fla_ctx.name }}
