@@ -8,7 +8,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.12,<4.0"
-ansible = "==13.*"
+ansible = ">=13,<15"
 ansible-lint = { version = "==26.*", markers = "platform_system != 'Windows'" }
 boto = "==2.*"
 boto3 = "==1.*"
