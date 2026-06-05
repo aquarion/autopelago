@@ -1,0 +1,57 @@
+---
+- name: Set context for {{ firth_laravel_app_remove_item.name }} # noqa: var-naming[no-role-prefix]
+  ansible.builtin.set_fact:
+    flr: "{{ firth_laravel_app_remove_item }}"
+    flr_ctx:
+      name: "{{ firth_laravel_app_remove_item.name }}"
+      mysql: "{{ firth_laravel_app_remove_item.mysql | default({}) }}"
+      redis: "{{ firth_laravel_app_remove_item.redis | default({}) }}"
+      server_name: "{{ firth_laravel_app_remove_item.server_name }}"
+      remove:
+        containers: "{{ firth_laravel_app_remove_item.remove.containers | default(false) }}"
+        mysql: "{{ firth_laravel_app_remove_item.remove.mysql | default(false) }}"
+        redis: "{{ firth_laravel_app_remove_item.remove.redis | default(false) }}"
+        nginx: "{{ firth_laravel_app_remove_item.remove.nginx | default(false) }}"
+        workdir: "{{ firth_laravel_app_remove_item.remove.workdir | default(false) }}"
+        system_user: "{{ firth_laravel_app_remove_item.remove.system_user | default(false) }}"
+      archive_date: "{{ ansible_date_time.date }}"
+  tags: [always, firth_laravel_app_remove]
+
+- name: Archive {{ flr.name }}
+  ansible.builtin.include_tasks: archive.yml
+  tags: firth_laravel_app_remove
+
+- name: Stop containers for {{ flr.name }}
+  ansible.builtin.include_tasks: containers.yml
+  when: flr_ctx.remove.containers
+  tags: firth_laravel_app_remove
+
+- name: Remove nginx vhost for {{ flr.name }}
+  ansible.builtin.include_tasks: nginx.yml
+  when: flr_ctx.remove.nginx
+  tags: firth_laravel_app_remove
+
+- name: Remove MySQL for {{ flr.name }}
+  ansible.builtin.include_tasks: mysql.yml
+  when: flr_ctx.remove.mysql and flr_ctx.mysql | length > 0
+  tags: firth_laravel_app_remove
+
+- name: Remove Redis user for {{ flr.name }}
+  ansible.builtin.include_tasks: redis.yml
+  when: flr_ctx.remove.redis and flr_ctx.redis | length > 0
+  tags: firth_laravel_app_remove
+
+- name: Remove workdir for {{ flr.name }}
+  ansible.builtin.include_tasks: workdir.yml
+  when: flr_ctx.remove.workdir
+  tags: firth_laravel_app_remove
+
+- name: Remove system user for {{ flr.name }}
+  ansible.builtin.include_tasks: system_user.yml
+  when: flr_ctx.remove.system_user
+  tags: firth_laravel_app_remove
+
+- name: Remove staging environment for {{ flr.name }}
+  ansible.builtin.include_tasks: staging.yml
+  when: flr.staging is defined
+  tags: firth_laravel_app_remove

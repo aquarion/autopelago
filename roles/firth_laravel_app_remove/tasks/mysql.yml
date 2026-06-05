@@ -1,0 +1,5 @@
+---
+# TODO: implement MySQL removal step
+- name: Remove MySQL database and user for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "MySQL stub for {{ flr.name }}"

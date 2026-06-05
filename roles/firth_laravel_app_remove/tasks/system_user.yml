@@ -1,0 +1,5 @@
+---
+# TODO: implement system user removal step
+- name: Remove system user for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "System user stub for {{ flr.name }}"

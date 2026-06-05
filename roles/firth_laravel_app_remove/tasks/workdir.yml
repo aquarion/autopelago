@@ -1,0 +1,5 @@
+---
+# TODO: implement workdir removal step
+- name: Remove workdir for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "Workdir stub for {{ flr.name }}"

@@ -1,0 +1,5 @@
+---
+# TODO: implement staging environment removal step
+- name: Remove staging environment for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "Staging stub for {{ flr.name }}"

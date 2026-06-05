@@ -1,0 +1,5 @@
+---
+# TODO: implement archive step
+- name: Archive storage volumes for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "Archive stub for {{ flr.name }}"

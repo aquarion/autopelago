@@ -1,0 +1,5 @@
+---
+# TODO: implement Redis user removal step
+- name: Remove Redis user for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "Redis stub for {{ flr.name }}"

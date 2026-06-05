@@ -1,0 +1,5 @@
+---
+# TODO: implement nginx vhost removal step
+- name: Remove nginx vhost for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "Nginx stub for {{ flr.name }}"

@@ -1,0 +1,5 @@
+---
+# TODO: implement containers removal step
+- name: Stop and remove containers for {{ flr.name }}
+  ansible.builtin.debug:
+    msg: "Containers stub for {{ flr.name }}"
