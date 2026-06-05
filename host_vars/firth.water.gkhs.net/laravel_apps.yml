@@ -104,48 +104,48 @@ firth_laravel_app_apps:
         username: "{{ firth_novelathon_staging_redis_username }}"
         password: "{{ firth_novelathon_staging_redis_password }}"
 
-  - name: sprouter
-    image: ghcr.io/aquarion/sprouter
+  - name: bloom
+    image: ghcr.io/aquarion/bloom
     image_tag: latest
     backend: octane
     port: 8000
     server_name: social.istic.net
     app_url: https://social.istic.net
-    app_key: "{{ vault_sprouter_app_key }}"
-    app_name: Sprouter
+    app_key: "{{ vault_bloom_app_key }}"
+    app_name: Bloom
     ssl_snippet: istic
-    github_repo: aquarion/sprouter
+    github_repo: aquarion/bloom
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     mysql:
-      db_name: sprouter
-      db_user: sprouter
-      db_password: "{{ vault_sprouter_db_password }}"
+      db_name: bloom
+      db_user: bloom
+      db_password: "{{ vault_bloom_db_password }}"
     redis:
-      username: sprouter
-      password: "{{ vault_sprouter_redis_password }}"
+      username: bloom
+      password: "{{ vault_bloom_redis_password }}"
     mail:
       host: "{{ laravel_apps_mail_host }}"
       port: "{{ laravel_apps_mail_port }}"
       username: "{{ laravel_apps_mail_username }}"
       password: "{{ laravel_apps_mail_password }}"
       from_address: "{{ laravel_apps_mail_from_address }}"
-      from_name: "Sprouter Support"
+      from_name: "Bloom Support"
     staging:
       image_tag: staging
       port: 8001
       server_name: social.istic.dev
       app_url: https://social.istic.dev
-      app_key: "{{ vault_sprouter_staging_app_key }}"
+      app_key: "{{ vault_bloom_staging_app_key }}"
       ssl_snippet: istic_dev
       mysql:
-        db_name: sprouter_staging
-        db_user: sprouter_staging
-        db_password: "{{ vault_sprouter_staging_db_password }}"
+        db_name: bloom_staging
+        db_user: bloom_staging
+        db_password: "{{ vault_bloom_staging_db_password }}"
       redis:
-        username: sprouter_staging
-        password: "{{ vault_sprouter_staging_redis_password }}"
+        username: bloom_staging
+        password: "{{ vault_bloom_staging_redis_password }}"
 
   - name: docket
     image: ghcr.io/aquarion/docket
