@@ -102,9 +102,6 @@
         src: "{{ docker_root }}/{{ fla.name }}"
         dest: "/var/lib/{{ fla.name }}/production"
         state: link
-        owner: "{{ fla.name }}"
-        group: "{{ fla.name }}"
-        mode: "0755"
 
     - name: Create public asset directory for {{ fla.name }}
       ansible.builtin.file:

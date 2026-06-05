@@ -8,8 +8,8 @@
   ansible.builtin.file:
     path: "{{ docker_root }}/{{ fla.name }}-staging"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ fla.name }}"
+    group: docker
     mode: "0755"
   tags: firth_laravel_app
 
@@ -18,9 +18,6 @@
     src: "{{ docker_root }}/{{ fla.name }}-staging"
     dest: "/var/lib/{{ fla.name }}/staging"
     state: link
-    owner: "{{ fla.name }}"
-    group: "{{ fla.name }}"
-    mode: "0755"
   tags: firth_laravel_app
 
 - name: Create staging public asset directory for {{ fla.name }}
