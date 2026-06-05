@@ -14,6 +14,7 @@
         nginx: "{{ firth_laravel_app_remove_item.remove.nginx | default(false) }}"
         workdir: "{{ firth_laravel_app_remove_item.remove.workdir | default(false) }}"
         system_user: "{{ firth_laravel_app_remove_item.remove.system_user | default(false) }}"
+      system_user: "{{ firth_laravel_app_remove_item.name }}"
       archive_date: "{{ ansible_date_time.date }}"
   tags: [always, firth_laravel_app_remove]
 

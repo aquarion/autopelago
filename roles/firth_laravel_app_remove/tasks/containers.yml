@@ -12,7 +12,7 @@
         cmd: docker compose down --volumes
         chdir: "{{ docker_root }}/{{ flr_ctx.name }}"
       become: true
-      become_user: "{{ flr_ctx.name }}"
+      become_user: "{{ flr_ctx.system_user }}"
       when: firth_laravel_app_remove_workdir_stat.stat.exists
       changed_when: true
 
