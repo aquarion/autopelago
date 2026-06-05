@@ -1,5 +1,35 @@
 ---
-# TODO: implement MySQL removal step
-- name: Remove MySQL database and user for {{ flr.name }}
-  ansible.builtin.debug:
-    msg: "MySQL stub for {{ flr.name }}"
+- name: Remove MySQL database and user for {{ flr_ctx.name }}
+  tags: firth_laravel_app_remove
+  block:
+    - name: Ensure python3-mysqldb is installed
+      ansible.builtin.apt:
+        name: python3-mysqldb
+        state: present
+
+    - name: Drop database for {{ flr_ctx.name }}
+      community.mysql.mysql_db:
+        name: "{{ flr_ctx.mysql.db_name }}"
+        state: absent
+        login_host: "{{ firth_laravel_app_remove_mysql_login_host }}"
+        login_user: "{{ firth_laravel_app_remove_mysql_login_user }}"
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Drop database user for {{ flr_ctx.name }}
+      community.mysql.mysql_user:
+        name: "{{ flr_ctx.mysql.db_user }}"
+        host: "%"
+        state: absent
+        login_host: "{{ firth_laravel_app_remove_mysql_login_host }}"
+        login_user: "{{ firth_laravel_app_remove_mysql_login_user }}"
+        login_password: "{{ mysql_root_password }}"
+        column_case_sensitive: true
+
+  rescue:
+    - name: Debug MySQL removal failure for {{ flr_ctx.name }}
+      ansible.builtin.debug:
+        msg: "Failed to remove MySQL database/user for {{ flr_ctx.name }}."
+
+    - name: Abort after MySQL removal failure for {{ flr_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: MySQL removal for {{ flr_ctx.name }} failed."
