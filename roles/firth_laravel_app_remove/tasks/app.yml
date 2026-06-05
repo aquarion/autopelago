@@ -51,12 +51,12 @@
   when: flr_ctx.remove.workdir | bool
   tags: firth_laravel_app_remove
 
-- name: Remove system user for {{ flr.name }}
-  ansible.builtin.include_tasks: system_user.yml
-  when: flr_ctx.remove.system_user | bool
-  tags: firth_laravel_app_remove
-
 - name: Remove staging environment for {{ flr.name }}
   ansible.builtin.include_tasks: staging.yml
   when: flr.staging is defined
+  tags: firth_laravel_app_remove
+
+- name: Remove system user for {{ flr.name }}
+  ansible.builtin.include_tasks: system_user.yml
+  when: flr_ctx.remove.system_user | bool
   tags: firth_laravel_app_remove
