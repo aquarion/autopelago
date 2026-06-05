@@ -1,5 +1,92 @@
 ---
-# TODO: implement archive step
-- name: Archive storage volumes for {{ flr.name }}
-  ansible.builtin.debug:
-    msg: "Archive stub for {{ flr.name }}"
+- name: Archive {{ flr_ctx.name }}
+  tags: firth_laravel_app_remove
+  block:
+    - name: Check for existing archive of {{ flr_ctx.name }}
+      ansible.builtin.stat:
+        path: "{{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz"
+      register: firth_laravel_app_remove_archive_stat
+
+    - name: Fail if archive already exists for {{ flr_ctx.name }}
+      ansible.builtin.fail:
+        msg: >
+          Archive {{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz
+          already exists. Remove it manually before re-running.
+      when: firth_laravel_app_remove_archive_stat.stat.exists
+
+    - name: Dump database for {{ flr_ctx.name }}
+      ansible.builtin.shell:
+        cmd: >
+          mysqldump
+          -h {{ firth_laravel_app_remove_mysql_login_host }}
+          -u {{ firth_laravel_app_remove_mysql_login_user }}
+          -p'{{ mysql_root_password }}'
+          {{ flr_ctx.mysql.db_name }}
+          > /tmp/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql
+      when: flr_ctx.mysql | length > 0
+      no_log: true
+      changed_when: true
+
+    - name: Copy docker-compose.yml for {{ flr_ctx.name }}
+      ansible.builtin.copy:
+        src: "{{ docker_root }}/{{ flr_ctx.name }}/docker-compose.yml"
+        dest: "/tmp/{{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0640"
+
+    - name: Archive storage volume for {{ flr_ctx.name }}
+      ansible.builtin.shell:
+        cmd: >
+          docker run --rm
+          -v {{ flr_ctx.name }}_storage:/storage
+          alpine
+          tar -C /storage -czf - .
+          > /tmp/{{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar.gz
+      changed_when: true
+
+    - name: Set archive file list for {{ flr_ctx.name }}
+      ansible.builtin.set_fact:
+        firth_laravel_app_remove_archive_files: >-
+          {{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml
+          {{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar.gz{%- if flr_ctx.mysql | length > 0 %} {{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql{% endif
+          %}
+
+    - name: Create archive tarball for {{ flr_ctx.name }} # noqa: command-instead-of-module
+      # ansible.builtin.archive does not support -C (change directory) or a
+      # space-separated dynamic file list without a full path rewrite.
+      ansible.builtin.shell:
+        cmd: >
+          tar -czf
+          {{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz
+          -C /tmp {{ firth_laravel_app_remove_archive_files }}
+      changed_when: true
+
+    - name: Set ownership on archive for {{ flr_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz"
+        owner: root
+        group: root
+        mode: "0640"
+
+    - name: Remove temp files for {{ flr_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/{{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml"
+        - "/tmp/{{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar.gz"
+        - "/tmp/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql"
+
+  rescue:
+    - name: Debug archive failure for {{ flr_ctx.name }}
+      ansible.builtin.debug:
+        msg: >
+          Failed to archive {{ flr_ctx.name }}.
+          Check mysql_root_password, Docker availability, and that
+          {{ docker_root }}/{{ flr_ctx.name }}/docker-compose.yml exists.
+
+    - name: Abort after archive failure for {{ flr_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: archive of {{ flr_ctx.name }} failed."
