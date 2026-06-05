@@ -1,19 +1,22 @@
 ---
+- name: Check for existing archive of {{ flr_ctx.name }}
+  ansible.builtin.stat:
+    path: "{{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz"
+  register: firth_laravel_app_remove_archive_stat
+  tags: firth_laravel_app_remove
+
+- name: Log archive already exists for {{ flr_ctx.name }}
+  ansible.builtin.debug:
+    msg: >
+      Archive {{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz
+      already exists — skipping archive step.
+  when: firth_laravel_app_remove_archive_stat.stat.exists
+  tags: firth_laravel_app_remove
+
 - name: Archive {{ flr_ctx.name }}
   tags: firth_laravel_app_remove
+  when: not firth_laravel_app_remove_archive_stat.stat.exists
   block:
-    - name: Check for existing archive of {{ flr_ctx.name }}
-      ansible.builtin.stat:
-        path: "{{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz"
-      register: firth_laravel_app_remove_archive_stat
-
-    - name: Fail if archive already exists for {{ flr_ctx.name }}
-      ansible.builtin.fail:
-        msg: >
-          Archive {{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.gz
-          already exists. Remove it manually before re-running.
-      when: firth_laravel_app_remove_archive_stat.stat.exists
-
     - name: Check if database exists for {{ flr_ctx.name }}
       community.mysql.mysql_info:
         login_host: "{{ firth_laravel_app_remove_mysql_login_host }}"
@@ -67,7 +70,8 @@
             [
               flr_ctx.name ~ '-docker-compose-' ~ flr_ctx.archive_date ~ '.yml',
               flr_ctx.name ~ '-storage-' ~ flr_ctx.archive_date ~ '.tar.gz',
-            ] + ([ flr_ctx.name ~ '-' ~ flr_ctx.archive_date ~ '.sql' ] if flr_ctx.mysql | length > 0 and flr_ctx.mysql.db_name in (firth_laravel_app_remove_mysql_info.databases | default({})) else [])
+            ] + ([ flr_ctx.name ~ '-' ~ flr_ctx.archive_date ~ '.sql' ] if flr_ctx.mysql | length > 0 and flr_ctx.mysql.db_name in (firth_laravel_app_remove_mysql_info.databases
+          | default({})) else [])
           ) | join(' ') }}
 
     - name: Create archive tarball for {{ flr_ctx.name }} # noqa: command-instead-of-module
