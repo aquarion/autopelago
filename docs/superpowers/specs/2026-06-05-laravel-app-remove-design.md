@@ -86,8 +86,9 @@ For production and staging independently:
 2. Capture today's date via `ansible_date_time.date`.
 3. Run `mysqldump -h 127.0.0.1 -u root -p{{ mysql_root_password }} {{ db_name }}` to `/tmp/{{ name }}-{{ date }}.sql`. Skip if no `mysql:` block.
 4. Copy `{{ docker_root }}/{{ name }}/docker-compose.yml` to `/tmp/{{ name }}-docker-compose-{{ date }}.yml`.
-5. Create `{{ docker_root }}/{{ name }}-archive-{{ date }}.tar.gz` from the temp files (root-owned, mode `0640`).
-6. Remove temp files.
+5. Archive the `{{ name }}_storage` Docker volume via a temporary Alpine container: `docker run --rm -v {{ name }}_storage:/storage alpine tar -C /storage -czf - . > /tmp/{{ name }}-storage-{{ date }}.tar.gz`. Must run before `docker compose down --volumes` while the volume still exists.
+6. Create `{{ docker_root }}/{{ name }}-archive-{{ date }}.tar.gz` from all temp files (root-owned, mode `0640`).
+7. Remove temp files.
 
 ---
 
