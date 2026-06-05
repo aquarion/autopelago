@@ -1,8 +1,22 @@
 ---
 - name: Remove Redis ACL user for {{ flr_ctx.name }}
-  ansible.builtin.lineinfile:
-    path: /etc/redis/users.acl
-    regexp: "^user {{ flr_ctx.redis.username | regex_escape }} "
-    state: absent
-  notify: Reload Redis ACL
   tags: firth_laravel_app_remove
+  block:
+    - name: Remove Redis ACL entry for {{ flr_ctx.name }}
+      ansible.builtin.lineinfile:
+        path: /etc/redis/users.acl
+        regexp: "^user {{ flr_ctx.redis.username | regex_escape }} "
+        state: absent
+      notify: Reload Redis ACL
+
+  rescue:
+    - name: Debug Redis removal failure for {{ flr_ctx.name }}
+      ansible.builtin.debug:
+        msg: >
+          Failed task: {{ ansible_failed_task.name }}.
+          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          Failed to remove Redis ACL user {{ flr_ctx.redis.username }} for {{ flr_ctx.name }}.
+
+    - name: Abort after Redis removal failure for {{ flr_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: Redis ACL removal for {{ flr_ctx.name }} failed."

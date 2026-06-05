@@ -19,7 +19,10 @@
   rescue:
     - name: Debug containers failure for {{ flr_ctx.name }}
       ansible.builtin.debug:
-        msg: "Failed to stop containers for {{ flr_ctx.name }}."
+        msg: >
+          Failed task: {{ ansible_failed_task.name }}.
+          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          Failed to stop containers for {{ flr_ctx.name }}.
 
     - name: Abort after containers failure for {{ flr_ctx.name }}
       ansible.builtin.fail:

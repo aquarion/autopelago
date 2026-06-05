@@ -12,7 +12,10 @@
   rescue:
     - name: Debug system user removal failure for {{ flr_ctx.name }}
       ansible.builtin.debug:
-        msg: "Failed to remove system user {{ flr_ctx.name }}."
+        msg: >
+          Failed task: {{ ansible_failed_task.name }}.
+          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          Failed to remove system user {{ flr_ctx.name }}.
 
     - name: Abort after system user removal failure for {{ flr_ctx.name }}
       ansible.builtin.fail:

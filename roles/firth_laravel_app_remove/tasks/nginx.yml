@@ -17,7 +17,10 @@
   rescue:
     - name: Debug nginx removal failure for {{ flr_ctx.name }}
       ansible.builtin.debug:
-        msg: "Failed to remove nginx vhost for {{ flr_ctx.server_name }}."
+        msg: >
+          Failed task: {{ ansible_failed_task.name }}.
+          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          Failed to remove nginx vhost for {{ flr_ctx.server_name }}.
 
     - name: Abort after nginx removal failure for {{ flr_ctx.name }}
       ansible.builtin.fail:

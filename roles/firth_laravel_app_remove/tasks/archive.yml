@@ -76,9 +76,10 @@
     - name: Debug archive failure for {{ flr_ctx.name }}
       ansible.builtin.debug:
         msg: >
-          Failed to archive {{ flr_ctx.name }}.
-          Check mysql_root_password, Docker availability, and that
-          {{ docker_root }}/{{ flr_ctx.name }}/docker-compose.yml exists.
+          Failed task: {{ ansible_failed_task.name }}.
+          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          Common causes: invalid mysql_root_password, Docker unavailable,
+          missing {{ docker_root }}/{{ flr_ctx.name }}/docker-compose.yml.
 
     - name: Abort after archive failure for {{ flr_ctx.name }}
       ansible.builtin.fail:

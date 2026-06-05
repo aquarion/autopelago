@@ -5,7 +5,7 @@
       name: "{{ flr.name }}-staging"
       mysql: "{{ flr.staging.mysql | default({}) }}"
       redis: "{{ flr.staging.redis | default({}) }}"
-      server_name: "{{ flr.staging.server_name }}"
+      server_name: "{{ flr.staging.server_name | default('') }}"
       remove: "{{ flr.staging.remove | default(flr.remove) }}"
       archive_date: "{{ ansible_date_time.date }}"
   tags: [always, firth_laravel_app_remove]
