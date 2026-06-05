@@ -87,6 +87,7 @@
     - getmail
     - firth_sftp_docker
     - firth_laravel_app
+    - firth_laravel_app_remove
 
 - name: Hello Atoll
   hosts: atoll
