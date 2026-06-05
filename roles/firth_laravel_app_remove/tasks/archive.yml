@@ -49,9 +49,11 @@
     - name: Set archive file list for {{ flr_ctx.name }}
       ansible.builtin.set_fact:
         firth_laravel_app_remove_archive_files: >-
-          {{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml
-          {{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar.gz{%- if flr_ctx.mysql | length > 0 %} {{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql{% endif
-          %}
+          {{ [
+            flr_ctx.name ~ '-docker-compose-' ~ flr_ctx.archive_date ~ '.yml',
+            flr_ctx.name ~ '-storage-' ~ flr_ctx.archive_date ~ '.tar.gz',
+          ] + ([ flr_ctx.name ~ '-' ~ flr_ctx.archive_date ~ '.sql' ] if flr_ctx.mysql | length > 0 else [])
+          | join(' ') }}
 
     - name: Create archive tarball for {{ flr_ctx.name }} # noqa: command-instead-of-module
       # ansible.builtin.archive does not support -C (change directory) or a
@@ -70,15 +72,6 @@
         group: root
         mode: "0640"
 
-    - name: Remove temp files for {{ flr_ctx.name }}
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - "/tmp/{{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml"
-        - "/tmp/{{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar.gz"
-        - "/tmp/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql"
-
   rescue:
     - name: Debug archive failure for {{ flr_ctx.name }}
       ansible.builtin.debug:
@@ -90,3 +83,13 @@
     - name: Abort after archive failure for {{ flr_ctx.name }}
       ansible.builtin.fail:
         msg: "Cannot continue: archive of {{ flr_ctx.name }} failed."
+
+  always:
+    - name: Remove temp files for {{ flr_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/{{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml"
+        - "/tmp/{{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar.gz"
+        - "/tmp/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql"
