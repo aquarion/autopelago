@@ -1,0 +1,4 @@
+---
+firth_laravel_app_remove_apps: []
+firth_laravel_app_remove_mysql_login_host: 127.0.0.1
+firth_laravel_app_remove_mysql_login_user: root

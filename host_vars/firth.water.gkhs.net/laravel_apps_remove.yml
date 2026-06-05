@@ -1,0 +1,24 @@
+---
+firth_laravel_app_remove_apps:
+  - name: sprouter
+    mysql:
+      db_name: sprouter
+      db_user: sprouter
+    redis:
+      username: sprouter
+    server_name: social.istic.net
+    remove:
+      containers: false
+      mysql: false
+      redis: false
+      nginx: false
+      workdir: false
+      system_user: false
+    staging:
+      mysql:
+        db_name: sprouter_staging
+        db_user: sprouter_staging
+      redis:
+        username: sprouter_staging
+      server_name: social.istic.dev
+      remove: {}
