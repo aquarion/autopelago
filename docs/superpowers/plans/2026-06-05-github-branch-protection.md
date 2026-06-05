@@ -4,7 +4,7 @@
 
 **Goal:** Apply a consistent GitHub Ruleset enforcing PR reviews, status checks, and no force-pushes to a defined list of repos spanning two GitHub accounts.
 
-**Architecture:** A new `github_branch_protection` role loops over `github_protected_repos`, calling the GitHub Rulesets API via `ansible.builtin.uri`. Each repo gets a GET → POST-or-PUT sequence to create or update an `ansible-managed` ruleset idempotently. Non-secret vars live in `host_vars/localhost/main.yml`; the PAT lives in `host_vars/localhost/github.vault.yml`.
+**Architecture:** A new `github_branch_protection` role loops over `github_protected_repos`, calling the GitHub Rulesets API via `ansible.builtin.uri`. Each repo gets a GET to find an existing `ansible-managed` ruleset, then a single POST-or-PUT task with a dynamic URL/method (matching the pattern in `roles/stream_delta/tasks/general.yml`). `changed_when` is tied to the HTTP status code so idempotent re-runs report `ok`. Non-secret vars live in `host_vars/localhost/main.yml`; the PAT lives in `host_vars/localhost/github.vault.yml`.
 
 **Tech Stack:** Ansible `ansible.builtin.uri`, `community.general.dict_kv` filter, ansible-vault
 
@@ -16,7 +16,7 @@
 |--------|------|---------|
 | Create | `roles/github_branch_protection/defaults/main.yml` | Default vars: ruleset name, default branch, empty overrides dict |
 | Create | `roles/github_branch_protection/tasks/main.yml` | Loop over repos, include apply_ruleset.yml per repo |
-| Create | `roles/github_branch_protection/tasks/apply_ruleset.yml` | GET + set_fact + conditional POST or PUT for a single repo |
+| Create | `roles/github_branch_protection/tasks/apply_ruleset.yml` | GET + set_fact + single dynamic POST-or-PUT task |
 | Create | `host_vars/localhost/main.yml` | Repo list and per-repo status check overrides |
 | Create | `host_vars/localhost/github.vault.yml` | Vault-encrypted GitHub PAT |
 | Create | `github.yml` | Playbook targeting localhost |
@@ -132,104 +132,85 @@ git commit -m "🎇 Add vault-encrypted GitHub PAT for branch protection"
 **Files:**
 - Create: `roles/github_branch_protection/tasks/apply_ruleset.yml`
 
-This file handles one repo (passed as `github_repo_item` loop variable from `main.yml`). It builds the status check list, fetches existing rulesets, then creates or updates the `ansible-managed` ruleset.
+This file handles one repo (passed as `github_repo_item` loop variable from `main.yml`). It follows the same pattern as `roles/stream_delta/tasks/general.yml` "Github repository configuration" block: GET to check existence, then a single `uri` task with a dynamic URL and method, `status_code` accepting both success codes, and `changed_when` tied to the response status so idempotent updates report `ok`.
 
 - [ ] **Step 1: Create the file**
 
 ```yaml
 # roles/github_branch_protection/tasks/apply_ruleset.yml
 ---
-- name: Build_status_check_contexts
-  ansible.builtin.set_fact:
-    github_repo_check_contexts: >-
-      {{ (github_status_check_overrides[github_repo_item.repo] | default([]))
-         | map('community.general.dict_kv', 'context') | list }}
+- name: Github_branch_protection for {{ github_repo_item.owner }}/{{ github_repo_item.repo }}
+  block:
+    - name: Build_status_check_contexts
+      ansible.builtin.set_fact:
+        github_repo_check_contexts: >-
+          {{ (github_status_check_overrides[github_repo_item.repo] | default([]))
+             | map('community.general.dict_kv', 'context') | list }}
 
-- name: Get_existing_rulesets
-  ansible.builtin.uri:
-    url: "https://api.github.com/repos/{{ github_repo_item.owner }}/{{ github_repo_item.repo }}/rulesets"
-    method: GET
-    headers:
-      Authorization: "Bearer {{ vault_github_pat }}"
-      Accept: "application/vnd.github+json"
-      X-GitHub-Api-Version: "2022-11-28"
-    status_code: 200
-  register: github_rulesets_result
+    - name: Get_existing_rulesets
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ github_repo_item.owner }}/{{ github_repo_item.repo }}/rulesets"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ vault_github_pat }}"
+          Accept: "application/vnd.github+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        status_code: 200
+      register: github_rulesets_result
+      changed_when: false
 
-- name: Set_existing_ruleset_fact
-  ansible.builtin.set_fact:
-    github_existing_ruleset: >-
-      {{ github_rulesets_result.json
-         | selectattr('name', '==', github_ruleset_name)
-         | list | first | default({}) }}
+    - name: Set_existing_ruleset_fact
+      ansible.builtin.set_fact:
+        github_existing_ruleset: >-
+          {{ github_rulesets_result.json
+             | selectattr('name', '==', github_ruleset_name)
+             | list | first | default({}) }}
 
-- name: Create_ruleset
-  ansible.builtin.uri:
-    url: "https://api.github.com/repos/{{ github_repo_item.owner }}/{{ github_repo_item.repo }}/rulesets"
-    method: POST
-    headers:
-      Authorization: "Bearer {{ vault_github_pat }}"
-      Accept: "application/vnd.github+json"
-      X-GitHub-Api-Version: "2022-11-28"
-    body_format: json
-    body:
-      name: "{{ github_ruleset_name }}"
-      target: branch
-      enforcement: active
-      conditions:
-        ref_name:
-          include:
-            - "refs/heads/{{ github_default_branch }}"
-          exclude: []
-      bypass_actors: []
-      rules:
-        - type: non_fast_forward
-        - type: pull_request
-          parameters:
-            required_approving_review_count: 1
-            dismiss_stale_reviews_on_push: false
-            require_code_owner_review: false
-            require_last_push_approval: false
-        - type: required_status_checks
-          parameters:
-            required_status_checks: "{{ github_repo_check_contexts }}"
-            strict_required_status_checks_policy: false
-    status_code: 201
-  when: not github_existing_ruleset
+    - name: Create_or_update_ruleset
+      ansible.builtin.uri:
+        url: >-
+          https://api.github.com/repos/{{ github_repo_item.owner }}/{{ github_repo_item.repo }}/rulesets{{
+            ('/' + github_existing_ruleset.id | string) if github_existing_ruleset else '' }}
+        method: "{{ 'PUT' if github_existing_ruleset else 'POST' }}"
+        headers:
+          Authorization: "Bearer {{ vault_github_pat }}"
+          Accept: "application/vnd.github+json"
+          X-GitHub-Api-Version: "2022-11-28"
+        body_format: json
+        body:
+          name: "{{ github_ruleset_name }}"
+          target: branch
+          enforcement: active
+          conditions:
+            ref_name:
+              include:
+                - "refs/heads/{{ github_default_branch }}"
+              exclude: []
+          bypass_actors: []
+          rules:
+            - type: non_fast_forward
+            - type: pull_request
+              parameters:
+                required_approving_review_count: 1
+                dismiss_stale_reviews_on_push: false
+                require_code_owner_review: false
+                require_last_push_approval: false
+            - type: required_status_checks
+              parameters:
+                required_status_checks: "{{ github_repo_check_contexts }}"
+                strict_required_status_checks_policy: false
+        status_code: 200, 201
+      register: github_ruleset_response
+      changed_when: github_ruleset_response.status == 201
 
-- name: Update_ruleset
-  ansible.builtin.uri:
-    url: "https://api.github.com/repos/{{ github_repo_item.owner }}/{{ github_repo_item.repo }}/rulesets/{{ github_existing_ruleset.id }}"
-    method: PUT
-    headers:
-      Authorization: "Bearer {{ vault_github_pat }}"
-      Accept: "application/vnd.github+json"
-      X-GitHub-Api-Version: "2022-11-28"
-    body_format: json
-    body:
-      name: "{{ github_ruleset_name }}"
-      target: branch
-      enforcement: active
-      conditions:
-        ref_name:
-          include:
-            - "refs/heads/{{ github_default_branch }}"
-          exclude: []
-      bypass_actors: []
-      rules:
-        - type: non_fast_forward
-        - type: pull_request
-          parameters:
-            required_approving_review_count: 1
-            dismiss_stale_reviews_on_push: false
-            require_code_owner_review: false
-            require_last_push_approval: false
-        - type: required_status_checks
-          parameters:
-            required_status_checks: "{{ github_repo_check_contexts }}"
-            strict_required_status_checks_policy: false
-    status_code: 200
-  when: github_existing_ruleset
+  rescue:
+    - name: Github_branch_protection failure warning
+      ansible.builtin.debug:
+        msg: "Failed to apply ruleset to {{ github_repo_item.owner }}/{{ github_repo_item.repo }}"
+
+    - name: Github_branch_protection failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: ruleset apply failed for {{ github_repo_item.owner }}/{{ github_repo_item.repo }}"
 ```
 
 - [ ] **Step 2: Lint**
@@ -328,7 +309,7 @@ git commit -m "🎇 Add github.yml playbook for repository management"
 ansible-playbook github.yml
 ```
 
-Expected: tasks complete with `ok` or `changed` for each repo; no failures.
+Expected: `Create_or_update_ruleset` tasks report `changed` (HTTP 201) for each repo on first run; no failures.
 
 - [ ] **Step 2: Verify in GitHub UI**
 
@@ -343,4 +324,4 @@ For each repo in `github_protected_repos`, check Settings → Rules → Rulesets
 ansible-playbook github.yml
 ```
 
-Expected: playbook completes without errors. `Update_ruleset` tasks will still report `changed` (Ansible's `uri` module always reports changed for PUT/POST regardless of content). Confirm no duplicate `ansible-managed` rulesets appear in the GitHub UI — only one per repo.
+Expected: `Create_or_update_ruleset` tasks report `ok` (HTTP 200 from PUT; `changed_when: status == 201` evaluates false). No duplicate `ansible-managed` rulesets in the GitHub UI.
