@@ -49,11 +49,12 @@
     - name: Set archive file list for {{ flr_ctx.name }}
       ansible.builtin.set_fact:
         firth_laravel_app_remove_archive_files: >-
-          {{ [
-            flr_ctx.name ~ '-docker-compose-' ~ flr_ctx.archive_date ~ '.yml',
-            flr_ctx.name ~ '-storage-' ~ flr_ctx.archive_date ~ '.tar.gz',
-          ] + ([ flr_ctx.name ~ '-' ~ flr_ctx.archive_date ~ '.sql' ] if flr_ctx.mysql | length > 0 else [])
-          | join(' ') }}
+          {{ (
+            [
+              flr_ctx.name ~ '-docker-compose-' ~ flr_ctx.archive_date ~ '.yml',
+              flr_ctx.name ~ '-storage-' ~ flr_ctx.archive_date ~ '.tar.gz',
+            ] + ([ flr_ctx.name ~ '-' ~ flr_ctx.archive_date ~ '.sql' ] if flr_ctx.mysql | length > 0 else [])
+          ) | join(' ') }}
 
     - name: Create archive tarball for {{ flr_ctx.name }} # noqa: command-instead-of-module
       # ansible.builtin.archive does not support -C (change directory) or a
