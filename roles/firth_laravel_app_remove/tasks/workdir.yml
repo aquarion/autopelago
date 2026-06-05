@@ -1,5 +1,6 @@
 ---
-# TODO: implement workdir removal step
-- name: Remove workdir for {{ flr.name }}
-  ansible.builtin.debug:
-    msg: "Workdir stub for {{ flr.name }}"
+- name: Remove working directory for {{ flr_ctx.name }}
+  ansible.builtin.file:
+    path: "{{ docker_root }}/{{ flr_ctx.name }}"
+    state: absent
+  tags: firth_laravel_app_remove
