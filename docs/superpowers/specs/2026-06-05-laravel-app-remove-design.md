@@ -93,7 +93,7 @@ For production and staging independently:
 
 ## Removal steps detail
 
-**containers.yml** — `docker compose down` in `{{ docker_root }}/{{ name }}`, become `{{ name }}` user. No-op if the directory doesn't exist.
+**containers.yml** — `docker compose down --volumes` in `{{ docker_root }}/{{ name }}`, become `{{ name }}` user. The `--volumes` flag removes the named `{{ name }}_storage` volume (and any anonymous volumes) alongside the containers. No-op if the directory doesn't exist.
 
 **nginx.yml** — Remove `/etc/nginx/sites-enabled/{{ server_name }}.conf` (symlink) and `/etc/nginx/sites-available/{{ server_name }}.conf`, then notify Reload Nginx handler.
 
