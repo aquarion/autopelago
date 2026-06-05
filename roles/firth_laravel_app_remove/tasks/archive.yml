@@ -14,6 +14,18 @@
           already exists. Remove it manually before re-running.
       when: firth_laravel_app_remove_archive_stat.stat.exists
 
+    - name: Check if database exists for {{ flr_ctx.name }}
+      community.mysql.mysql_info:
+        login_host: "{{ firth_laravel_app_remove_mysql_login_host }}"
+        login_user: "{{ firth_laravel_app_remove_mysql_login_user }}"
+        login_password: "{{ mysql_root_password }}"
+        filter:
+          - databases
+      register: firth_laravel_app_remove_mysql_info
+      no_log: true
+      changed_when: false
+      when: flr_ctx.mysql | length > 0
+
     - name: Dump database for {{ flr_ctx.name }}
       ansible.builtin.shell:
         cmd: >
@@ -23,7 +35,9 @@
           -p'{{ mysql_root_password }}'
           {{ flr_ctx.mysql.db_name }}
           > /tmp/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql
-      when: flr_ctx.mysql | length > 0
+      when:
+        - flr_ctx.mysql | length > 0
+        - flr_ctx.mysql.db_name in (firth_laravel_app_remove_mysql_info.databases | default({}))
       no_log: true
       changed_when: true
 
@@ -53,7 +67,7 @@
             [
               flr_ctx.name ~ '-docker-compose-' ~ flr_ctx.archive_date ~ '.yml',
               flr_ctx.name ~ '-storage-' ~ flr_ctx.archive_date ~ '.tar.gz',
-            ] + ([ flr_ctx.name ~ '-' ~ flr_ctx.archive_date ~ '.sql' ] if flr_ctx.mysql | length > 0 else [])
+            ] + ([ flr_ctx.name ~ '-' ~ flr_ctx.archive_date ~ '.sql' ] if flr_ctx.mysql | length > 0 and flr_ctx.mysql.db_name in (firth_laravel_app_remove_mysql_info.databases | default({})) else [])
           ) | join(' ') }}
 
     - name: Create archive tarball for {{ flr_ctx.name }} # noqa: command-instead-of-module
