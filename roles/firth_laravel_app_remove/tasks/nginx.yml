@@ -1,5 +1,24 @@
 ---
-# TODO: implement nginx vhost removal step
-- name: Remove nginx vhost for {{ flr.name }}
-  ansible.builtin.debug:
-    msg: "Nginx stub for {{ flr.name }}"
+- name: Remove nginx vhost for {{ flr_ctx.name }}
+  tags: firth_laravel_app_remove
+  block:
+    - name: Remove nginx sites-enabled symlink for {{ flr_ctx.server_name }}
+      ansible.builtin.file:
+        path: "/etc/nginx/sites-enabled/{{ flr_ctx.server_name }}.conf"
+        state: absent
+      notify: Reload Nginx
+
+    - name: Remove nginx sites-available config for {{ flr_ctx.server_name }}
+      ansible.builtin.file:
+        path: "/etc/nginx/sites-available/{{ flr_ctx.server_name }}.conf"
+        state: absent
+      notify: Reload Nginx
+
+  rescue:
+    - name: Debug nginx removal failure for {{ flr_ctx.name }}
+      ansible.builtin.debug:
+        msg: "Failed to remove nginx vhost for {{ flr_ctx.server_name }}."
+
+    - name: Abort after nginx removal failure for {{ flr_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: nginx vhost removal for {{ flr_ctx.name }} failed."

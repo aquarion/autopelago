@@ -1,5 +1,19 @@
 ---
-# TODO: implement system user removal step
-- name: Remove system user for {{ flr.name }}
-  ansible.builtin.debug:
-    msg: "System user stub for {{ flr.name }}"
+- name: Remove system user for {{ flr_ctx.name }}
+  tags: firth_laravel_app_remove
+  block:
+    - name: Remove system user {{ flr_ctx.name }}
+      ansible.builtin.user:
+        name: "{{ flr_ctx.name }}"
+        state: absent
+        remove: true
+        force: true
+
+  rescue:
+    - name: Debug system user removal failure for {{ flr_ctx.name }}
+      ansible.builtin.debug:
+        msg: "Failed to remove system user {{ flr_ctx.name }}."
+
+    - name: Abort after system user removal failure for {{ flr_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: system user removal for {{ flr_ctx.name }} failed."
