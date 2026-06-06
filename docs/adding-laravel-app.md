@@ -87,7 +87,7 @@ Ports currently in use:
 |-------------|-------------|----------------|
 | alchemistic | 9000        | —              |
 | novelathon  | 9001        | 9002           |
-| sprouter    | 8000        | 8001           |
+| bloom       | 8000        | 8001           |
 | docket      | 9003        | 9004           |
 | wereabouts  | 9005        | 9006           |
 

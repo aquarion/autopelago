@@ -1,0 +1,8 @@
+---
+- name: Remove Laravel applications
+  ansible.builtin.include_tasks: app.yml
+  loop: "{{ firth_laravel_app_remove_apps }}"
+  loop_control:
+    loop_var: firth_laravel_app_remove_item
+    label: "{{ firth_laravel_app_remove_item.name }}"
+  tags: firth_laravel_app_remove

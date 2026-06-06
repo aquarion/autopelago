@@ -1,0 +1,16 @@
+letsencrypt_dir: "{{ ansible_fqdn }}"
+
+flexget_tasks:
+  tasks:
+    - none
+
+apt_cache_time: 21600
+
+mysql_host: 127.0.0.1
+
+ansible_python_interpreter: /usr/bin/python3
+
+forward_emails_to: aquarion
+
+ubuntu_package_mirror: http://archive.ubuntu.com/ubuntu/
+ubuntu_mirror_key: /usr/share/keyrings/ubuntu-archive-keyring.gpg

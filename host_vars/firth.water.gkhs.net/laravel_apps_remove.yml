@@ -1,0 +1,36 @@
+---
+firth_laravel_app_remove_apps:
+  - name: sprouter
+    mysql:
+      db_name: sprouter
+      db_user: sprouter
+    redis:
+      username: sprouter
+    server_name: social.istic.net
+    # WARNING: social.istic.net is now the live bloom vhost. Set nginx: true only
+    # after confirming bloom has fully taken over and the old sprouter nginx config
+    # can be safely removed.
+    remove:
+      containers: true
+      mysql: true
+      redis: true
+      nginx: true
+      workdir: true
+      system_user: true
+    staging:
+      mysql:
+        db_name: sprouter_staging
+        db_user: sprouter_staging
+      redis:
+        username: sprouter_staging
+      server_name: social.istic.dev
+      # Explicit flags matching production — staging sprouter fully deprovisioned.
+      # To skip staging removal, use remove: {} (all flags absent = no steps run).
+      # Omit this key entirely to inherit parent remove flags via default(flr.remove).
+      remove:
+        containers: true
+        mysql: true
+        redis: true
+        nginx: true
+        workdir: true
+        system_user: true

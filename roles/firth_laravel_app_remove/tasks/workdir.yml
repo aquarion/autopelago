@@ -1,0 +1,20 @@
+---
+- name: Remove working directory for {{ flr_ctx.name }}
+  tags: firth_laravel_app_remove
+  block:
+    - name: Remove workdir for {{ flr_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ docker_root }}/{{ flr_ctx.name }}"
+        state: absent
+
+  rescue:
+    - name: Debug workdir removal failure for {{ flr_ctx.name }}
+      ansible.builtin.debug:
+        msg: >
+          Failed task: {{ ansible_failed_task.name }}.
+          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          Failed to remove working directory {{ docker_root }}/{{ flr_ctx.name }}.
+
+    - name: Abort after workdir removal failure for {{ flr_ctx.name }}
+      ansible.builtin.fail:
+        msg: "Cannot continue: workdir removal for {{ flr_ctx.name }} failed."

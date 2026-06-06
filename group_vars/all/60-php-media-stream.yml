@@ -1,0 +1,10 @@
+php_version: 8.4
+php_package: php{{ php_version }}
+remove_php_packages: [php8.1, php8.2, php8.3, php8.4, php8.5]
+
+media_library: /XXXunsetXXX
+streamsite_users: {}
+
+### Stream Delta URL Configuration ###
+# This also needs to be group_vars/all as it's used in the Cloudflare DNS role to set up the CNAME record
+stream_delta_app_domain: voyeur.istic.net
