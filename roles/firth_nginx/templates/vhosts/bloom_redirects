@@ -2,16 +2,16 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name social.istic.dev;
+    server_name social.istic.net;
     return 301 https://bloomfeed.app$request_uri;
 }
 
 server {
     listen 443 ssl proxy_protocol;
     listen [::]:443 ssl proxy_protocol;
-    server_name social.istic.dev;
+    server_name social.istic.net;
 
-    include /etc/nginx/snippets/ssl/istic_dev_ssl.conf;
+    include /etc/nginx/snippets/ssl/istic_ssl.conf;
 
     return 301 https://bloomfeed.app$request_uri;
 }
