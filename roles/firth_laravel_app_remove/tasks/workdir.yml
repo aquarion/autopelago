@@ -1,6 +1,6 @@
 ---
 - name: Remove working directory for {{ flr_ctx.name }}
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
   block:
     - name: Remove workdir for {{ flr_ctx.name }}
       ansible.builtin.file:

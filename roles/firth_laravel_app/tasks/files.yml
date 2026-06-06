@@ -1,6 +1,6 @@
 ---
 - name: Deploy additional files for {{ fla_ctx.name }}
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
   block:
     - name: Ensure secrets directories exist for {{ fla_ctx.name }}
       ansible.builtin.file:

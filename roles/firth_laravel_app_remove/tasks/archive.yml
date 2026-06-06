@@ -3,7 +3,7 @@
   ansible.builtin.stat:
     path: "{{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.bz2"
   register: firth_laravel_app_remove_archive_stat
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Log archive already exists for {{ flr_ctx.name }}
   ansible.builtin.debug:
@@ -11,10 +11,10 @@
       Archive {{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.bz2
       already exists — skipping archive step.
   when: firth_laravel_app_remove_archive_stat.stat.exists
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Archive {{ flr_ctx.name }}
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
   when: not firth_laravel_app_remove_archive_stat.stat.exists
   block:
     - name: Check if database exists for {{ flr_ctx.name }}

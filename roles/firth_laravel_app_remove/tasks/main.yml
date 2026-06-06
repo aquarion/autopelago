@@ -5,4 +5,6 @@
   loop_control:
     loop_var: firth_laravel_app_remove_item
     label: "{{ firth_laravel_app_remove_item.name }}"
-  tags: firth_laravel_app_remove
+  tags:
+    - firth_laravel_app
+    - firth_laravel_app_remove

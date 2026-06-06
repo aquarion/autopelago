@@ -1,6 +1,6 @@
 ---
 - name: Stop containers for {{ flr_ctx.name }}
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
   block:
     - name: Check if working directory exists for {{ flr_ctx.name }}
       ansible.builtin.stat:

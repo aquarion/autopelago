@@ -4,7 +4,7 @@
 # config changes that don't require redeploy, or the image doesn't exist yet)
 
 - name: Deploy {{ fla_ctx.name }}
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
   block:
     - name: Template docker-compose.yml for {{ fla_ctx.name }}
       ansible.builtin.template:

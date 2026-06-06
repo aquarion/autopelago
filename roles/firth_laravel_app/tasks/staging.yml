@@ -2,7 +2,7 @@
 - name: Reset staging files changed state
   ansible.builtin.set_fact:
     firth_laravel_app_files_changed: false
-  tags: [always, firth_laravel_app]
+  tags: [always, firth_laravel_app, firth_laravel_app_install]
 
 - name: Create staging working directory for {{ fla.name }}
   ansible.builtin.file:
@@ -11,14 +11,14 @@
     owner: "{{ fla.name }}"
     group: docker
     mode: "0755"
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Link staging working directory to system user home for {{ fla.name }}
   ansible.builtin.file:
     src: "{{ docker_root }}/{{ fla.name }}-staging"
     dest: "/var/lib/{{ fla.name }}/staging"
     state: link
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Create staging public asset directory for {{ fla.name }}
   ansible.builtin.file:
@@ -27,7 +27,7 @@
     owner: "{{ fla.name }}"
     group: "{{ fla.name }}"
     mode: "0755"
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Set staging context for {{ fla.name }} # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
@@ -53,27 +53,27 @@
       additional_env: "{{ fla.staging.additional_env | default(fla.additional_env | default({})) }}"
       additional_files: "{{ fla.staging.additional_files | default(fla.additional_files | default([])) }}"
       system_user: "{{ fla.name }}"
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Provision staging database for {{ fla.name }}
   ansible.builtin.include_tasks: mysql.yml
   when: fla_ctx.mysql | length > 0
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Configure staging Redis user for {{ fla.name }}
   ansible.builtin.include_tasks: redis.yml
   when: fla_ctx.redis | length > 0
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy staging additional files for {{ fla.name }}
   ansible.builtin.include_tasks: files.yml
   when: fla_ctx.additional_files | length > 0
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy staging application for {{ fla.name }}
   ansible.builtin.include_tasks: deploy.yml
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy staging nginx vhost for {{ fla.name }}
   ansible.builtin.include_tasks: nginx.yml
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]

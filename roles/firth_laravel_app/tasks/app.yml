@@ -24,52 +24,52 @@
       additional_env: "{{ firth_laravel_app_item.additional_env | default({}) }}"
       additional_files: "{{ firth_laravel_app_item.additional_files | default([]) }}"
       system_user: "{{ firth_laravel_app_item.name }}"
-  tags: [always, firth_laravel_app]
+  tags: [always, firth_laravel_app, firth_laravel_app_install]
 
 - name: Reset files changed state for {{ firth_laravel_app_item.name }} # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     firth_laravel_app_files_changed: false
-  tags: [always, firth_laravel_app]
+  tags: [always, firth_laravel_app, firth_laravel_app_install]
 
 - name: Setup system user for {{ fla.name }}
   ansible.builtin.include_tasks: system_user.yml
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Provision database for {{ fla.name }}
   ansible.builtin.include_tasks: mysql.yml
   when: fla_ctx.mysql | length > 0
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Configure Redis user for {{ fla.name }}
   ansible.builtin.include_tasks: redis.yml
   when: fla_ctx.redis | length > 0
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Authenticate to GHCR for {{ fla.name }}
   ansible.builtin.include_tasks: ghcr.yml
   when: fla.image is match('^ghcr\\.io/.+')
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Ensure shared Docker network exists for {{ fla.name }}
   community.docker.docker_network:
     name: "{{ firth_services_docker_network }}"
     state: present
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy additional files for {{ fla.name }}
   ansible.builtin.include_tasks: files.yml
   when: fla_ctx.additional_files | length > 0
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy {{ fla.name }}
   ansible.builtin.include_tasks: deploy.yml
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy nginx vhost for {{ fla.name }}
   ansible.builtin.include_tasks: nginx.yml
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy staging environment for {{ fla.name }}
   ansible.builtin.include_tasks: staging.yml
   when: fla.staging is defined
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]

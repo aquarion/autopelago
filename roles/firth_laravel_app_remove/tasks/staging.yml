@@ -9,37 +9,37 @@
       remove: "{{ flr.staging.remove | default(flr.remove) }}"
       system_user: "{{ flr.name }}"
       archive_date: "{{ ansible_date_time.date }}"
-  tags: [always, firth_laravel_app_remove]
+  tags: [always, firth_laravel_app, firth_laravel_app_remove]
 
 - name: Archive {{ flr_ctx.name }}
   ansible.builtin.include_tasks: archive.yml
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Stop containers for {{ flr_ctx.name }}
   ansible.builtin.include_tasks: containers.yml
   when: flr_ctx.remove.containers | default(false) | bool
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Remove nginx vhost for {{ flr_ctx.name }}
   ansible.builtin.include_tasks: nginx.yml
   when: flr_ctx.remove.nginx | default(false) | bool
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Remove MySQL for {{ flr_ctx.name }}
   ansible.builtin.include_tasks: mysql.yml
   when:
     - flr_ctx.remove.mysql | default(false) | bool
     - flr_ctx.mysql | length > 0
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Remove Redis user for {{ flr_ctx.name }}
   ansible.builtin.include_tasks: redis.yml
   when:
     - flr_ctx.remove.redis | default(false) | bool
     - flr_ctx.redis | length > 0
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Remove workdir for {{ flr_ctx.name }}
   ansible.builtin.include_tasks: workdir.yml
   when: flr_ctx.remove.workdir | default(false) | bool
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
