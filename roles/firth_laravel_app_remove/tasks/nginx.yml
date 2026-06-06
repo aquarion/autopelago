@@ -1,6 +1,6 @@
 ---
 - name: Remove nginx vhost for {{ flr_ctx.name }}
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
   block:
     - name: Remove nginx sites-enabled symlink for {{ flr_ctx.server_name }}
       ansible.builtin.file:

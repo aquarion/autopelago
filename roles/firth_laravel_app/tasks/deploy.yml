@@ -4,7 +4,7 @@
 # config changes that don't require redeploy, or the image doesn't exist yet)
 
 - name: Deploy {{ fla_ctx.name }}
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]
   block:
     - name: Template docker-compose.yml for {{ fla_ctx.name }}
       ansible.builtin.template:
@@ -66,7 +66,7 @@
         chdir: "{{ docker_root }}/{{ fla_ctx.name }}"
       become: true
       become_user: "{{ fla_ctx.system_user }}"
-      when: firth_laravel_app_compose.changed
+      when: firth_laravel_app_compose.changed and fla_ctx.mysql | length > 0
       register: firth_laravel_app_migrate
       changed_when: "'migrated' in firth_laravel_app_migrate.stdout"
       tags:

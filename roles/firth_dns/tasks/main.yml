@@ -153,3 +153,9 @@
   tags:
     - aws
     - nicholasavenell
+
+- name: Update Route53 for bloomfeedapp
+  ansible.builtin.include_tasks: zones/bloomfeedapp.yml
+  tags:
+    - aws
+    - bloomfeedapp

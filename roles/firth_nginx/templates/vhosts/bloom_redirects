@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+server {
+    listen 80;
+    listen [::]:80;
+    server_name social.istic.dev;
+    return 301 https://bloomfeed.app$request_uri;
+}
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name social.istic.dev;
+
+    include /etc/nginx/snippets/ssl/istic_dev_ssl.conf;
+
+    return 301 https://bloomfeed.app$request_uri;
+}

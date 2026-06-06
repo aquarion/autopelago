@@ -1,0 +1,35 @@
+---
+# Set Route53 nameservers for a Namecheap domain.
+# Required vars: namecheap_sld, namecheap_tld, namecheap_nameservers (comma-separated string)
+- name: Set custom nameservers via Namecheap API
+  # Namecheap whitelists firth's IP for API access; the parent role forces
+  # connection: local, so this task must explicitly run on firth over SSH.
+  connection: ssh
+  delegate_to: "{{ inventory_hostname }}"
+  ansible.builtin.uri:
+    url: "https://api.namecheap.com/xml.response"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      ApiUser: "{{ namecheap_api_user }}"
+      ApiKey: "{{ namecheap_api_key }}"
+      UserName: "{{ namecheap_api_user }}"
+      ClientIp: "{{ firth_ip }}"
+      Command: namecheap.domains.dns.setCustom
+      SLD: "{{ namecheap_sld }}"
+      TLD: "{{ namecheap_tld }}"
+      Nameservers: "{{ namecheap_nameservers }}"
+    status_code: 200
+    return_content: true
+  register: firth_dns_namecheap_result
+  no_log: true
+  tags:
+    - always
+
+- name: Assert Namecheap API call succeeded
+  ansible.builtin.assert:
+    that:
+      - '''Status="OK"'' in firth_dns_namecheap_result.content'
+    fail_msg: "Namecheap API returned an error: {{ firth_dns_namecheap_result.content }}"
+  tags:
+    - always

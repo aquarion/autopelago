@@ -1,6 +1,6 @@
 ---
 - name: Remove Redis ACL user for {{ flr_ctx.name }}
-  tags: firth_laravel_app_remove
+  tags: [firth_laravel_app, firth_laravel_app_remove]
   block:
     - name: Remove Redis ACL entry for {{ flr_ctx.name }}
       ansible.builtin.lineinfile:

@@ -5,4 +5,4 @@
     line: "user {{ fla_ctx.redis.username }} on +@all -DEBUG ~* >{{ fla_ctx.redis.password }}"
     regexp: "^user {{ fla_ctx.redis.username | regex_escape }} "
   notify: Reload Redis ACL
-  tags: firth_laravel_app
+  tags: [firth_laravel_app, firth_laravel_app_install]

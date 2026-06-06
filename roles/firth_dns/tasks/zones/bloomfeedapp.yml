@@ -1,0 +1,58 @@
+---
+- name: Bloomfeed.app zone
+  amazon.aws.route53_zone:
+    state: present
+    zone: bloomfeed.app
+    comment: bloomfeed.app
+    aws_profile: aqcom
+  tags:
+    - bloomfeedapp
+
+- name: Look up bloomfeed.app nameservers
+  # route53_zone only returns name_servers when it actually creates/changes the
+  # zone, so query the NS record directly to get them on every run.
+  amazon.aws.route53:
+    state: get
+    zone: bloomfeed.app
+    record: bloomfeed.app.
+    type: NS
+    aws_profile: aqcom
+  register: firth_dns_bloomfeedapp_ns
+  tags:
+    - bloomfeedapp
+
+- name: Bloomfeed.app. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: bloomfeed.app
+    record: bloomfeed.app.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: aqcom
+  tags:
+    - bloomfeedapp
+
+- name: Www.bloomfeed.app. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: bloomfeed.app
+    record: www.bloomfeed.app.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: aqcom
+  tags:
+    - bloomfeedapp
+
+- name: Delegate bloomfeed.app to Route53 on Namecheap
+  ansible.builtin.include_tasks: ../../included_tasks/namecheap_delegate.yml
+  vars:
+    namecheap_sld: bloomfeed
+    namecheap_tld: app
+    namecheap_nameservers: "{{ firth_dns_bloomfeedapp_ns.set.value.split(',') | map('lower') | map('trim', '.') | unique | join(',') }}"
+  tags:
+    - bloomfeedapp
+    - namecheap

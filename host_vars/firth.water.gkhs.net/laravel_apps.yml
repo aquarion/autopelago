@@ -109,11 +109,11 @@ firth_laravel_app_apps:
     image_tag: latest
     backend: octane
     port: 8000
-    server_name: social.istic.net
-    app_url: https://social.istic.net
+    server_name: bloomfeed.app
+    app_url: https://bloomfeed.app
     app_key: "{{ vault_bloom_app_key }}"
     app_name: Bloom
-    ssl_snippet: istic
+    ssl_snippet: bloomfeedapp
     github_repo: aquarion/bloom
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
     ghcr_username: "{{ ghcr_username }}"

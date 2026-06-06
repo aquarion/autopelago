@@ -52,6 +52,8 @@ echo "Generating certificates for nanocountdown"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name nanocountdown.com --dns-route53 -d nanocountdown.com -d "*.nanocountdown.com"
 echo "Generating certificates for novelathon"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name novelathon.com --dns-route53 -d novelathon.com -d "*.novelathon.com"
+echo "Generating certificates for bloomfeed.app"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name bloomfeed.app --dns-route53 -d bloomfeed.app -d "*.bloomfeed.app"
 
 ## AqCom Wildcards
 export AWS_PROFILE=aqcom

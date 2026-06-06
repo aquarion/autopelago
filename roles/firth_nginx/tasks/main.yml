@@ -17,8 +17,8 @@
   notify:
     - Reload nginx
   tags:
-    - streamsite
     - nginx
+    - nginx_ssl
 
 - name: Configure ssl config snippits
   ansible.builtin.template:
@@ -31,6 +31,7 @@
     - Restart nginx
   tags:
     - nginx
+    - nginx_ssl
 
 - name: Configure SSL Config
   ansible.builtin.template:
@@ -48,7 +49,7 @@
     - Restart nginx
   tags:
     - nginx
-    - camlarp
+    - nginx_ssl
 
 - name: Configure config overrides
   ansible.builtin.template:

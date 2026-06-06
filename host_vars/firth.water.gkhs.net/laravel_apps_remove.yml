@@ -7,14 +7,12 @@ firth_laravel_app_remove_apps:
     redis:
       username: sprouter
     server_name: social.istic.net
-    # WARNING: social.istic.net is now the live bloom vhost. Set nginx: true only
-    # after confirming bloom has fully taken over and the old sprouter nginx config
-    # can be safely removed.
+    # Bloom has moved to bloomfeed.app; social.istic.net is now a redirect
     remove:
       containers: true
       mysql: true
       redis: true
-      nginx: true
+      nginx: false # Keep nginx config to avoid downtime if social.istic.net is repurposed.
       workdir: true
       system_user: true
     staging:
@@ -31,6 +29,6 @@ firth_laravel_app_remove_apps:
         containers: true
         mysql: true
         redis: true
-        nginx: true
+        nginx: false # Keep nginx config to avoid downtime if social.istic.net is repurposed.
         workdir: true
         system_user: true
