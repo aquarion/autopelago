@@ -66,7 +66,7 @@
         chdir: "{{ docker_root }}/{{ fla_ctx.name }}"
       become: true
       become_user: "{{ fla_ctx.system_user }}"
-      when: firth_laravel_app_compose.changed
+      when: firth_laravel_app_compose.changed and fla_ctx.mysql | length > 0
       register: firth_laravel_app_migrate
       changed_when: "'migrated' in firth_laravel_app_migrate.stdout"
       tags:
