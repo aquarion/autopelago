@@ -7,13 +7,22 @@
         path: "{{ docker_root }}/{{ flr_ctx.name }}"
       register: firth_laravel_app_remove_workdir_stat
 
+    - name: Check if system user exists for {{ flr_ctx.name }}
+      ansible.builtin.command:
+        cmd: id {{ flr_ctx.system_user }}
+      register: firth_laravel_app_remove_user_check
+      changed_when: false
+      failed_when: false
+
     - name: Run docker compose down --volumes for {{ flr_ctx.name }}
       ansible.builtin.command:
         cmd: docker compose down --volumes
         chdir: "{{ docker_root }}/{{ flr_ctx.name }}"
       become: true
-      become_user: "{{ flr_ctx.name }}"
-      when: firth_laravel_app_remove_workdir_stat.stat.exists
+      become_user: "{{ flr_ctx.system_user }}"
+      when:
+        - firth_laravel_app_remove_workdir_stat.stat.exists
+        - firth_laravel_app_remove_user_check.rc == 0
       changed_when: true
 
   rescue:
