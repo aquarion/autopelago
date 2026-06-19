@@ -255,3 +255,61 @@ firth_laravel_app_apps:
       additional_files:
         - src: files/laravel/wereabouts/google_credentials.vault.json
           dest: google/credentials.json
+
+  # Vault variables required (add to vault manually):
+  #   vault_thalium_app_key
+  #   vault_thalium_staging_app_key
+  #   vault_thalium_redis_password
+  #   vault_thalium_staging_redis_password
+  #   vault_thalium_es_user
+  #   vault_thalium_es_pass
+  - name: thalium
+    image: ghcr.io/aquarion/thalium
+    image_tag: latest
+    backend: octane
+    port: 8002
+    server_name: thalium.aquarionics.com
+    app_url: https://thalium.aquarionics.com
+    app_key: "{{ vault_thalium_app_key }}"
+    app_name: Thalium
+    ssl_snippet: aquarionics
+    github_repo: aquarion/thalium
+    github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
+    ghcr_username: "{{ ghcr_username }}"
+    ghcr_token: "{{ ghcr_token }}"
+    worker: true
+    redis:
+      username: thalium
+      password: "{{ vault_thalium_redis_password }}"
+    additional_env:
+      ELASTICSEARCH_HOST: host.docker.internal
+      ELASTICSEARCH_PORT: "9200"
+      ELASTICSEARCH_SCHEME: https
+      ELASTICSEARCH_USER: "{{ vault_thalium_es_user }}"
+      ELASTICSEARCH_PASS: "{{ vault_thalium_es_pass }}"
+      DOCKER_PDF_LIBRARY: /mnt/rpg
+      LIBRARY_URL: https://thalium.aquarionics.com/_libris/
+    additional_volumes:
+      - src: /home/library/RPG/Systems
+        dest: /mnt/rpg
+      - name: elasticsearch_certs
+        dest: /usr/share/elasticsearch/config/certs
+        external: true
+    staging:
+      image_tag: staging
+      port: 8003
+      server_name: thalium.istic.dev
+      app_url: https://thalium.istic.dev
+      app_key: "{{ vault_thalium_staging_app_key }}"
+      ssl_snippet: istic_dev
+      redis:
+        username: thalium_staging
+        password: "{{ vault_thalium_staging_redis_password }}"
+      additional_env:
+        ELASTICSEARCH_HOST: host.docker.internal
+        ELASTICSEARCH_PORT: "9200"
+        ELASTICSEARCH_SCHEME: https
+        ELASTICSEARCH_USER: "{{ vault_thalium_es_user }}"
+        ELASTICSEARCH_PASS: "{{ vault_thalium_es_pass }}"
+        DOCKER_PDF_LIBRARY: /mnt/rpg
+        LIBRARY_URL: https://thalium.istic.dev/_libris/
