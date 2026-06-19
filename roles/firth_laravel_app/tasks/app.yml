@@ -23,6 +23,7 @@
       mail: "{{ firth_laravel_app_item.mail | default({}) }}"
       additional_env: "{{ firth_laravel_app_item.additional_env | default({}) }}"
       additional_files: "{{ firth_laravel_app_item.additional_files | default([]) }}"
+      additional_volumes: "{{ firth_laravel_app_item.additional_volumes | default([]) }}"
       system_user: "{{ firth_laravel_app_item.name }}"
   tags: [always, firth_laravel_app, firth_laravel_app_install]
 

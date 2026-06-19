@@ -49,6 +49,13 @@ services:
 {% for file in fla_ctx.additional_files %}
       - {{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ file.dest }}:{{ fla_ctx.workdir }}/storage/app/{{ file.dest }}:ro
 {% endfor %}
+{% for vol in fla_ctx.additional_volumes %}
+{% if vol.src is defined %}
+      - {{ vol.src }}:{{ vol.dest }}
+{% else %}
+      - {{ vol.name }}:{{ vol.dest }}
+{% endif %}
+{% endfor %}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -69,6 +76,13 @@ services:
 {% for file in fla_ctx.additional_files %}
       - {{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ file.dest }}:{{ fla_ctx.workdir }}/storage/app/{{ file.dest }}:ro
 {% endfor %}
+{% for vol in fla_ctx.additional_volumes %}
+{% if vol.src is defined %}
+      - {{ vol.src }}:{{ vol.dest }}
+{% else %}
+      - {{ vol.name }}:{{ vol.dest }}
+{% endif %}
+{% endfor %}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -82,6 +96,15 @@ services:
 volumes:
   storage:
 
+{% for vol in fla_ctx.additional_volumes %}
+{% if vol.name is defined %}
+  {{ vol.name }}:
+{% if vol.external | default(false) %}
+    external: true
+    name: {{ vol.name }}
+{% endif %}
+{% endif %}
+{% endfor %}
 networks:
   firth_services:
     external: true
