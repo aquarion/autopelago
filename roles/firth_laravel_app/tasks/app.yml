@@ -38,7 +38,7 @@
 
 - name: Configure GitHub Actions secrets for {{ fla.name }}
   ansible.builtin.include_tasks: github.yml
-  when: fla.github_repo is defined and fla.github_rebase_token is defined
+  when: fla.github_repo is defined
   tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Provision database for {{ fla.name }}

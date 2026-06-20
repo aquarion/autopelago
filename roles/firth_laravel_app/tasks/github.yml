@@ -24,7 +24,7 @@
       Accept: "application/vnd.github.v3+json"
       X-GitHub-Api-Version: "2022-11-28"
     body:
-      encrypted_value: "{{ fla.github_rebase_token | encrypt_secret(firth_laravel_app_github_pubkey.json.key) }}"
+      encrypted_value: "{{ laravel_apps_rebase_token | encrypt_secret(firth_laravel_app_github_pubkey.json.key) }}"
       key_id: "{{ firth_laravel_app_github_pubkey.json.key_id }}"
     body_format: json
     status_code: [200, 201, 204]
