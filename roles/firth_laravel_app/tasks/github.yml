@@ -1,0 +1,36 @@
+---
+- name: Get GitHub public key for repository {{ fla.github_repo }}
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/{{ fla.github_repo }}/actions/secrets/public-key"
+    method: GET
+    headers:
+      Accept: "application/vnd.github.v3+json"
+      Authorization: "Bearer {{ fla.github_deploy_token }}"
+      X-GitHub-Api-Version: "2022-11-28"
+    return_content: true
+  register: firth_laravel_app_github_pubkey
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  when: not ansible_check_mode
+
+- name: Upload REBASE_TOKEN to GitHub Actions secrets for {{ fla.github_repo }}
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/{{ fla.github_repo }}/actions/secrets/REBASE_TOKEN"
+    method: PUT
+    headers:
+      Authorization: "Bearer {{ fla.github_deploy_token }}"
+      Accept: "application/vnd.github.v3+json"
+      X-GitHub-Api-Version: "2022-11-28"
+    body:
+      encrypted_value: "{{ fla.github_rebase_token | encrypt_secret(firth_laravel_app_github_pubkey.json.key) }}"
+      key_id: "{{ firth_laravel_app_github_pubkey.json.key_id }}"
+    body_format: json
+    status_code: [200, 201, 204]
+  register: firth_laravel_app_github_rebase_response
+  delegate_to: localhost
+  become: false
+  changed_when: firth_laravel_app_github_rebase_response.status == 201
+  no_log: true
+  when: not ansible_check_mode
