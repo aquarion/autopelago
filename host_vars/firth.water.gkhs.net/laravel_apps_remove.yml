@@ -1,5 +1,5 @@
 ---
-firth_laravel_app_remove_apps:
+firth_laravel_app_remove_apps_example:
   - name: sprouter
     mysql:
       db_name: sprouter

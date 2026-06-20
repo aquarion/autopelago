@@ -6,6 +6,19 @@
 - name: Deploy {{ fla_ctx.name }}
   tags: [firth_laravel_app, firth_laravel_app_install]
   block:
+    - name: Validate additional_volumes entries for {{ fla_ctx.name }}
+      ansible.builtin.assert:
+        that:
+          - (vol.src is defined) or (vol.name is defined)
+          - vol.dest is defined
+        fail_msg: >
+          additional_volumes entry in {{ fla_ctx.name }} is missing 'dest'
+          or has neither 'src' (bind mount) nor 'name' (named volume). Entry: {{ vol }}
+      loop: "{{ fla_ctx.additional_volumes }}"
+      loop_control:
+        loop_var: vol
+      when: fla_ctx.additional_volumes | length > 0
+
     - name: Template docker-compose.yml for {{ fla_ctx.name }}
       ansible.builtin.template:
         src: docker-compose.yml.j2

@@ -52,6 +52,7 @@
       mail: "{{ fla.mail | default({}) }}"
       additional_env: "{{ fla.staging.additional_env | default(fla.additional_env | default({})) }}"
       additional_files: "{{ fla.staging.additional_files | default(fla.additional_files | default([])) }}"
+      additional_volumes: "{{ fla.staging.additional_volumes | default(fla.additional_volumes | default([])) }}"
       system_user: "{{ fla.name }}"
   tags: [firth_laravel_app, firth_laravel_app_install]
 
