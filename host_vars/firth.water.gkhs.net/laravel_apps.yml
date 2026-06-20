@@ -116,7 +116,7 @@ firth_laravel_app_apps:
     ssl_snippet: bloomfeedapp
     github_repo: aquarion/bloom
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
-    github_rebase_token: "{{ laravel_apps_rebase_token_aquarion }}"
+    github_rebase_token: "{{ laravel_apps_rebase_token }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     mysql:
@@ -276,7 +276,7 @@ firth_laravel_app_apps:
     ssl_snippet: aquarionics
     github_repo: aquarion/thalium
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
-    github_rebase_token: "{{ laravel_apps_rebase_token_aquarion }}"
+    github_rebase_token: "{{ laravel_apps_rebase_token }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     worker: true
