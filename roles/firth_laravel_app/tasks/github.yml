@@ -1,4 +1,14 @@
 ---
+- name: Assert laravel_apps_rebase_token is defined for {{ fla.github_repo }}
+  ansible.builtin.assert:
+    that:
+      - laravel_apps_rebase_token is defined
+      - laravel_apps_rebase_token | length > 0
+    fail_msg: >
+      laravel_apps_rebase_token is undefined or empty.
+      Define it in the host vault (laravel/laravel_apps.vault.yml) before running this role.
+  when: not ansible_check_mode
+
 - name: Get GitHub public key for repository {{ fla.github_repo }}
   ansible.builtin.uri:
     url: "https://api.github.com/repos/{{ fla.github_repo }}/actions/secrets/public-key"
