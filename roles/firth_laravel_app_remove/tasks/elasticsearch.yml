@@ -12,6 +12,8 @@
         force_basic_auth: true
         ca_path: "{{ firth_laravel_app_remove_elasticsearch_ca_cert }}"
         status_code: [200, 404]
+      register: firth_laravel_app_remove_es_user_result
+      changed_when: firth_laravel_app_remove_es_user_result.status == 200
 
     - name: "Remove Elasticsearch role: {{ flr_ctx.name }}"
       ansible.builtin.uri:
@@ -22,13 +24,16 @@
         force_basic_auth: true
         ca_path: "{{ firth_laravel_app_remove_elasticsearch_ca_cert }}"
         status_code: [200, 404]
+      register: firth_laravel_app_remove_es_role_result
+      changed_when: firth_laravel_app_remove_es_role_result.status == 200
 
   rescue:
     - name: "Debug Elasticsearch removal failure for {{ flr_ctx.name }}"
       ansible.builtin.debug:
         msg: >
           Failed task: {{ ansible_failed_task.name }}.
-          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          HTTP status: {{ ansible_failed_result.status | default('unknown') }}.
+          Response: {{ ansible_failed_result.json | default(ansible_failed_result.content) | default(ansible_failed_result.msg) | default('no response') }}.
           Failed to remove Elasticsearch user/role for {{ flr_ctx.name }}.
 
     - name: "Abort after Elasticsearch removal failure for {{ flr_ctx.name }}"

@@ -39,7 +39,7 @@
   rescue:
     - name: Debug Elasticsearch setup failure
       ansible.builtin.debug:
-        msg: "Failed task: {{ ansible_failed_task.name }}. Error: {{ ansible_failed_result.msg | default('unknown') }}"
+        var: ansible_failed_result
 
     - name: Abort Elasticsearch setup failure
       ansible.builtin.fail:

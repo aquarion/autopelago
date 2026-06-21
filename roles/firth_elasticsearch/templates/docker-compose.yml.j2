@@ -28,7 +28,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
+        - curl -s --cacert config/certs/ca/ca.crt https://localhost:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -90,7 +90,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
+        - curl -s --cacert config/certs/ca/ca.crt https://localhost:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -147,7 +147,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
+        - curl -s --cacert config/certs/ca/ca.crt https://localhost:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -197,7 +197,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s -I http://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_kibana_port }}   | grep -q 'HTTP/1.1 302 Found'
+        - curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -279,16 +279,33 @@ services:
           find . -type d -exec chmod 755 \{\} \;;
           find . -type f -exec chmod 644 \{\} \;;
           echo "Waiting for Elasticsearch availability";
-          until curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q "missing authentication credentials"; do sleep 30; done;
+          retries=0; max_retries=60;
+          until curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q "missing authentication credentials"; do
+            sleep 30;
+            retries=$((retries+1));
+            if [ $retries -ge $max_retries ]; then
+              echo "ERROR: Elasticsearch did not become available after $((max_retries * 30)) seconds";
+              exit 1;
+            fi;
+          done;
           echo "Setting kibana_system password";
-          until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:$ELASTIC_PASSWORD" -H "Content-Type: application/json" https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }}/_security/user/kibana_system/_password -d "{\"password\":\"$KIBANA_PASSWORD\"}" | grep -q "^{}"; do sleep 10; done;
+          retries=0; max_retries=30;
+          until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:$ELASTIC_PASSWORD" -H "Content-Type: application/json" https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }}/_security/user/kibana_system/_password -d "{\"password\":\"$KIBANA_PASSWORD\"}" | grep -q "^{}"; do
+            sleep 10;
+            retries=$((retries+1));
+            if [ $retries -ge $max_retries ]; then
+              echo "ERROR: Failed to set kibana_system password after $((max_retries * 10)) seconds";
+              exit 1;
+            fi;
+          done;
           echo "All done!";
+          touch config/certs/setup_complete;
     healthcheck:
       test:
         - CMD-SHELL
-        - '[ -f config/certs/es01/es01.crt ]'
+        - '[ -f config/certs/setup_complete ]'
       timeout: 5s
-      interval: 1s
+      interval: 10s
       retries: 120
     image: docker.elastic.co/elasticsearch/elasticsearch:{{ firth_elasticsearch_version }}
     logging:
@@ -297,7 +314,7 @@ services:
         tag: '{% raw %}{{.Name}}/{{.ID}}{% endraw %}'
     networks:
       default: null
-    restart: unless-stopped
+    restart: "no"
     user: "0"
     volumes:
       - type: volume

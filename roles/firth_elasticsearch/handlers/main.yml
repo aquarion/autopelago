@@ -4,4 +4,3 @@
     project_src: "{{ docker_root }}/elasticsearch"
     state: present
     recreate: always
-  listen: Restart Elasticsearch
