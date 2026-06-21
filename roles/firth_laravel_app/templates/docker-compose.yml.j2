@@ -36,6 +36,7 @@ services:
       ELASTICSEARCH_SCHEME: https
       ELASTICSEARCH_USER: "{{ fla_ctx.elasticsearch.username }}"
       ELASTICSEARCH_PASS: "{{ fla_ctx.elasticsearch.password }}"
+      ELASTICSEARCH_CACERT: "{{ fla_ctx.elasticsearch.cacert | default('/usr/share/elasticsearch/config/certs/ca/ca.crt') }}"
 {% endif %}
 {% if fla_ctx.mail %}
       MAIL_MAILER: smtp
