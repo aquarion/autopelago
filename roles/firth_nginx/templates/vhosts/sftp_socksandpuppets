@@ -14,7 +14,7 @@ server {
   server_name socksandpuppets.com *.socksandpuppets.com;
   include /etc/nginx/snippets/ssl/socksandpuppets_ssl.conf;
 
-  root {{ docker_root }}/sftp/home/ahdok/www.socksandpuppets.com/htdocs;
+  root /home/docker/miscweb/hosts/socksandpuppets.com/htdocs;
 
   error_log /var/log/nginx/socksandpuppets.error.log;
   access_log /var/log/nginx/socksandpuppets.access.log;
