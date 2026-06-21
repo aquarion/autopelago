@@ -7,10 +7,10 @@ services:
         condition: service_healthy
         required: true
     environment:
-      ELASTIC_PASSWORD: {{ firth_elasticsearch_elastic_password }}
+      ELASTIC_PASSWORD: "{{ firth_elasticsearch_elastic_password }}"
       bootstrap.memory_lock: "true"
       cluster.initial_master_nodes: es01,es02,es03
-      cluster.name: {{ firth_elasticsearch_cluster_name }}
+      cluster.name: "{{ firth_elasticsearch_cluster_name }}"
       discovery.seed_hosts: es02,es03
       node.name: es01
       xpack.license.self_generated.type: basic
@@ -69,10 +69,10 @@ services:
         condition: service_started
         required: true
     environment:
-      ELASTIC_PASSWORD: {{ firth_elasticsearch_elastic_password }}
+      ELASTIC_PASSWORD: "{{ firth_elasticsearch_elastic_password }}"
       bootstrap.memory_lock: "true"
       cluster.initial_master_nodes: es01,es02,es03
-      cluster.name: {{ firth_elasticsearch_cluster_name }}
+      cluster.name: "{{ firth_elasticsearch_cluster_name }}"
       discovery.seed_hosts: es01,es03
       node.name: es02
       xpack.license.self_generated.type: basic
@@ -126,10 +126,10 @@ services:
         condition: service_started
         required: true
     environment:
-      ELASTIC_PASSWORD: {{ firth_elasticsearch_elastic_password }}
+      ELASTIC_PASSWORD: "{{ firth_elasticsearch_elastic_password }}"
       bootstrap.memory_lock: "true"
       cluster.initial_master_nodes: es01,es02,es03
-      cluster.name: {{ firth_elasticsearch_cluster_name }}
+      cluster.name: "{{ firth_elasticsearch_cluster_name }}"
       discovery.seed_hosts: es01,es02
       node.name: es03
       xpack.license.self_generated.type: basic
@@ -190,7 +190,7 @@ services:
         required: true
     environment:
       ELASTICSEARCH_HOSTS: https://es01:9200
-      ELASTICSEARCH_PASSWORD: {{ firth_elasticsearch_kibana_password }}
+      ELASTICSEARCH_PASSWORD: "{{ firth_elasticsearch_kibana_password }}"
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: config/certs/ca/ca.crt
       ELASTICSEARCH_USERNAME: kibana_system
       SERVERNAME: kibana
