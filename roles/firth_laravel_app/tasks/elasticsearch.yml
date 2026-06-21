@@ -2,43 +2,54 @@
 - name: "Provision Elasticsearch for {{ fla_ctx.name }}"
   tags: [firth_laravel_app, firth_laravel_app_install]
   block:
+    - name: Ensure python3-venv is installed
+      ansible.builtin.apt:
+        name: python3-venv
+        state: present
+
     - name: Ensure elasticsearch Python module is installed
       ansible.builtin.pip:
         name: "elasticsearch>=8.0.0"
         state: present
+        virtualenv: /opt/ansible-venvs/elastic
+        virtualenv_command: /usr/bin/python3 -m venv
 
-    - name: "Create Elasticsearch role: {{ fla_ctx.name }}"
-      community.elastic.elastic_role:
-        name: "{{ fla_ctx.name }}"
-        login_hosts: "{{ firth_laravel_app_elasticsearch_host }}"
-        login_port: "{{ firth_laravel_app_elasticsearch_port }}"
-        login_user: elastic
-        login_password: "{{ firth_laravel_app_elasticsearch_password }}"
-        auth_method: http_auth
-        auth_scheme: https
-        cafile: "{{ firth_laravel_app_elasticsearch_ca_cert }}"
-        indices:
-          - names: ["{{ fla_ctx.elasticsearch.index_pattern | default(fla_ctx.name + '-*') }}"]
-            privileges: ["all"]
-        cluster:
-          - monitor
-        state: present
+    - name: "Manage Elasticsearch role and user for {{ fla_ctx.name }}"
+      vars:
+        ansible_python_interpreter: /opt/ansible-venvs/elastic/bin/python
+      block:
+        - name: "Create Elasticsearch role: {{ fla_ctx.name }}"
+          community.elastic.elastic_role:
+            name: "{{ fla_ctx.name }}"
+            login_hosts: "{{ firth_laravel_app_elasticsearch_host }}"
+            login_port: "{{ firth_laravel_app_elasticsearch_port }}"
+            login_user: elastic
+            login_password: "{{ firth_laravel_app_elasticsearch_password }}"
+            auth_method: http_auth
+            auth_scheme: https
+            cafile: "{{ firth_laravel_app_elasticsearch_ca_cert }}"
+            indices:
+              - names: ["{{ fla_ctx.elasticsearch.index_pattern | default(fla_ctx.name + '-*') }}"]
+                privileges: ["all"]
+            cluster:
+              - monitor
+            state: present
 
-    - name: "Create Elasticsearch user: {{ fla_ctx.name }}"
-      community.elastic.elastic_user:
-        name: "{{ fla_ctx.elasticsearch.username }}"
-        password: "{{ fla_ctx.elasticsearch.password }}"
-        roles:
-          - "{{ fla_ctx.name }}"
-        login_hosts: "{{ firth_laravel_app_elasticsearch_host }}"
-        login_port: "{{ firth_laravel_app_elasticsearch_port }}"
-        login_user: elastic
-        login_password: "{{ firth_laravel_app_elasticsearch_password }}"
-        auth_method: http_auth
-        auth_scheme: https
-        cafile: "{{ firth_laravel_app_elasticsearch_ca_cert }}"
-        update_password: on_create
-        state: present
+        - name: "Create Elasticsearch user: {{ fla_ctx.name }}"
+          community.elastic.elastic_user:
+            name: "{{ fla_ctx.elasticsearch.username }}"
+            password: "{{ fla_ctx.elasticsearch.password }}"
+            roles:
+              - "{{ fla_ctx.name }}"
+            login_hosts: "{{ firth_laravel_app_elasticsearch_host }}"
+            login_port: "{{ firth_laravel_app_elasticsearch_port }}"
+            login_user: elastic
+            login_password: "{{ firth_laravel_app_elasticsearch_password }}"
+            auth_method: http_auth
+            auth_scheme: https
+            cafile: "{{ firth_laravel_app_elasticsearch_ca_cert }}"
+            update_password: on_create
+            state: present
 
   rescue:
     - name: "Debug Elasticsearch failure: {{ fla_ctx.name }}"
