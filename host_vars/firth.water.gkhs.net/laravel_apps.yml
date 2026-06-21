@@ -288,6 +288,7 @@ firth_laravel_app_apps:
     elasticsearch:
       username: "{{ vault_thalium_es_user }}"
       password: "{{ vault_thalium_es_pass }}"
+      index_pattern: "libris"
     additional_env:
       DOCKER_PDF_LIBRARY: /mnt/rpg
       LIBRARY_URL: https://thalium.aquarionics.com/_libris/
