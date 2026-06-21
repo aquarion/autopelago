@@ -1,0 +1,322 @@
+# {{ ansible_managed }}
+name: elasticsearch
+services:
+  es01:
+    depends_on:
+      setup:
+        condition: service_healthy
+        required: true
+    environment:
+      ELASTIC_PASSWORD: {{ firth_elasticsearch_elastic_password }}
+      bootstrap.memory_lock: "true"
+      cluster.initial_master_nodes: es01,es02,es03
+      cluster.name: {{ firth_elasticsearch_cluster_name }}
+      discovery.seed_hosts: es02,es03
+      node.name: es01
+      xpack.license.self_generated.type: basic
+      xpack.ml.use_auto_machine_memory_percent: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.certificate: certs/es01/es01.crt
+      xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: certs/es01/es01.key
+      xpack.security.transport.ssl.certificate: certs/es01/es01.crt
+      xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.key: certs/es01/es01.key
+      xpack.security.transport.ssl.verification_mode: certificate
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'
+      timeout: 10s
+      interval: 10s
+      retries: 120
+    image: docker.elastic.co/elasticsearch/elasticsearch:{{ firth_elasticsearch_version }}
+    logging:
+      driver: journald
+      options:
+        tag: '{% raw %}{{.Name}}/{{.ID}}{% endraw %}'
+    mem_limit: "{{ firth_elasticsearch_mem_limit }}"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 9200
+        published: "{{ firth_elasticsearch_es_port }}"
+        protocol: tcp
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - type: volume
+        source: certs
+        target: /usr/share/elasticsearch/config/certs
+        volume: {}
+      - type: volume
+        source: esdata01
+        target: /usr/share/elasticsearch/data
+        volume: {}
+      - type: bind
+        source: {{ docker_root }}/elasticsearch/elasticsearch-plugins.yml
+        target: /usr/share/elasticsearch/config/elasticsearch-plugins.yml
+        bind: {}
+  es02:
+    depends_on:
+      es01:
+        condition: service_started
+        required: true
+    environment:
+      ELASTIC_PASSWORD: {{ firth_elasticsearch_elastic_password }}
+      bootstrap.memory_lock: "true"
+      cluster.initial_master_nodes: es01,es02,es03
+      cluster.name: {{ firth_elasticsearch_cluster_name }}
+      discovery.seed_hosts: es01,es03
+      node.name: es02
+      xpack.license.self_generated.type: basic
+      xpack.ml.use_auto_machine_memory_percent: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.certificate: certs/es02/es02.crt
+      xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: certs/es02/es02.key
+      xpack.security.transport.ssl.certificate: certs/es02/es02.crt
+      xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.key: certs/es02/es02.key
+      xpack.security.transport.ssl.verification_mode: certificate
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'
+      timeout: 10s
+      interval: 10s
+      retries: 120
+    image: docker.elastic.co/elasticsearch/elasticsearch:{{ firth_elasticsearch_version }}
+    logging:
+      driver: journald
+      options:
+        tag: '{% raw %}{{.Name}}/{{.ID}}{% endraw %}'
+    mem_limit: "{{ firth_elasticsearch_mem_limit }}"
+    networks:
+      default: null
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - type: volume
+        source: certs
+        target: /usr/share/elasticsearch/config/certs
+        volume: {}
+      - type: volume
+        source: esdata02
+        target: /usr/share/elasticsearch/data
+        volume: {}
+      - type: bind
+        source: {{ docker_root }}/elasticsearch/elasticsearch-plugins.yml
+        target: /usr/share/elasticsearch/config/elasticsearch-plugins.yml
+        bind: {}
+  es03:
+    depends_on:
+      es02:
+        condition: service_started
+        required: true
+    environment:
+      ELASTIC_PASSWORD: {{ firth_elasticsearch_elastic_password }}
+      bootstrap.memory_lock: "true"
+      cluster.initial_master_nodes: es01,es02,es03
+      cluster.name: {{ firth_elasticsearch_cluster_name }}
+      discovery.seed_hosts: es01,es02
+      node.name: es03
+      xpack.license.self_generated.type: basic
+      xpack.ml.use_auto_machine_memory_percent: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.certificate: certs/es03/es03.crt
+      xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: certs/es03/es03.key
+      xpack.security.transport.ssl.certificate: certs/es03/es03.crt
+      xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.key: certs/es03/es03.key
+      xpack.security.transport.ssl.verification_mode: certificate
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'
+      timeout: 10s
+      interval: 10s
+      retries: 120
+    image: docker.elastic.co/elasticsearch/elasticsearch:{{ firth_elasticsearch_version }}
+    logging:
+      driver: journald
+      options:
+        tag: '{% raw %}{{.Name}}/{{.ID}}{% endraw %}'
+    mem_limit: "{{ firth_elasticsearch_mem_limit }}"
+    networks:
+      default: null
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - type: volume
+        source: certs
+        target: /usr/share/elasticsearch/config/certs
+        volume: {}
+      - type: volume
+        source: esdata03
+        target: /usr/share/elasticsearch/data
+        volume: {}
+      - type: bind
+        source: {{ docker_root }}/elasticsearch/elasticsearch-plugins.yml
+        target: /usr/share/elasticsearch/config/elasticsearch-plugins.yml
+        bind: {}
+  kibana:
+    depends_on:
+      es01:
+        condition: service_healthy
+        required: true
+      es02:
+        condition: service_healthy
+        required: true
+      es03:
+        condition: service_healthy
+        required: true
+    environment:
+      ELASTICSEARCH_HOSTS: https://es01:9200
+      ELASTICSEARCH_PASSWORD: {{ firth_elasticsearch_kibana_password }}
+      ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: config/certs/ca/ca.crt
+      ELASTICSEARCH_USERNAME: kibana_system
+      SERVERNAME: kibana
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'
+      timeout: 10s
+      interval: 10s
+      retries: 120
+    image: docker.elastic.co/kibana/kibana:{{ firth_elasticsearch_version }}
+    logging:
+      driver: journald
+      options:
+        tag: '{% raw %}{{.Name}}/{{.ID}}{% endraw %}'
+    mem_limit: "{{ firth_elasticsearch_mem_limit }}"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5601
+        published: "{{ firth_elasticsearch_kibana_port }}"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: certs
+        target: /usr/share/kibana/config/certs
+        volume: {}
+      - type: volume
+        source: kibanadata
+        target: /usr/share/kibana/data
+        volume: {}
+  setup:
+    command:
+      - bash
+      - -c
+      - |
+
+          if [ x{{ firth_elasticsearch_elastic_password }} == x ]; then
+            echo "Set the ELASTIC_PASSWORD variable in the role defaults or vault";
+            exit 1;
+          elif [ x{{ firth_elasticsearch_kibana_password }} == x ]; then
+            echo "Set the KIBANA_PASSWORD variable in the role defaults or vault";
+            exit 1;
+          fi;
+          if [ ! -f config/certs/ca.zip ]; then
+            echo "Creating CA";
+            bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+            unzip config/certs/ca.zip -d config/certs;
+          fi;
+          if [ ! -f config/certs/certs.zip ]; then
+            echo "Creating certs";
+            echo -ne \
+            "instances:\n"\
+            "  - name: es01\n"\
+            "    dns:\n"\
+            "      - es01\n"\
+            "      - elasticsearch.svc.istic.systems\n"\
+            "      - localhost\n"\
+            "    ip:\n"\
+            "      - 127.0.0.1\n"\
+            "  - name: es02\n"\
+            "    dns:\n"\
+            "      - es02\n"\
+            "      - elasticsearch.svc.istic.systems\n"\
+            "      - localhost\n"\
+            "    ip:\n"\
+            "      - 127.0.0.1\n"\
+            "  - name: es03\n"\
+            "    dns:\n"\
+            "      - es03\n"\
+            "      - elasticsearch.svc.istic.systems\n"\
+            "      - localhost\n"\
+            "    ip:\n"\
+            "      - 127.0.0.1\n"\
+            > config/certs/instances.yml;
+            bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+            unzip config/certs/certs.zip -d config/certs;
+          fi;
+          echo "Setting file permissions"
+          chown -R root:docker config/certs;
+          find . -type d -exec chmod 755 \{\} \;;
+          find . -type f -exec chmod 644 \{\} \;;
+          echo "Waiting for Elasticsearch availability";
+          until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+          echo "Setting kibana_system password";
+          until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:{{ firth_elasticsearch_elastic_password }}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"{{ firth_elasticsearch_kibana_password }}\"}" | grep -q "^{}"; do sleep 10; done;
+          echo "All done!";
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - '[ -f config/certs/es01/es01.crt ]'
+      timeout: 5s
+      interval: 1s
+      retries: 120
+    image: docker.elastic.co/elasticsearch/elasticsearch:{{ firth_elasticsearch_version }}
+    logging:
+      driver: journald
+      options:
+        tag: '{% raw %}{{.Name}}/{{.ID}}{% endraw %}'
+    networks:
+      default: null
+    restart: unless-stopped
+    user: "0"
+    volumes:
+      - type: volume
+        source: certs
+        target: /usr/share/elasticsearch/config/certs
+        volume: {}
+networks:
+  default:
+    name: elasticsearch_default
+volumes:
+  certs:
+    name: elasticsearch_certs
+    driver: local
+  esdata01:
+    name: elasticsearch_esdata01
+    driver: local
+  esdata02:
+    name: elasticsearch_esdata02
+    driver: local
+  esdata03:
+    name: elasticsearch_esdata03
+    driver: local
+  kibanadata:
+    name: elasticsearch_kibanadata
+    driver: local

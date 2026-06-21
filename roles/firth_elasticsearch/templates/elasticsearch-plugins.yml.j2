@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+plugins:
+{% for plugin in firth_elasticsearch_plugins %}
+  - id: {{ plugin }}
+{% endfor %}
