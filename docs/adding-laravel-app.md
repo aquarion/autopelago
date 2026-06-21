@@ -130,7 +130,7 @@ Staging inherits `mail`, `worker`, `workdir`, `ssl_snippet`, `www_redirect`, `ad
 If the app needs Elasticsearch, add an `elasticsearch:` block to the app entry. The role will:
 
 1. Create an Elasticsearch role named `<appname>` scoped to `<index_pattern>` indices with `all` privileges and `monitor` cluster access
-2. Create an Elasticsearch user with the given credentials and assign them to that role (only on first run — password is not updated if the user already exists)
+2. Create or update an Elasticsearch user with the given credentials and assign them to that role (password is always synced from the vault value)
 3. Inject the following env vars into the container:
 
 | Env var | Value |
