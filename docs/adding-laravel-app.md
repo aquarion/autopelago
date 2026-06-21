@@ -23,6 +23,8 @@ Generate secrets for the new app and add them to a vault file at `host_vars/firt
 vault_<appname>_app_key: "base64:..."   # php artisan key:generate --show
 vault_<appname>_db_password: "..."
 vault_<appname>_redis_password: "..."   # if using Redis
+vault_<appname>_es_user: "..."          # if using Elasticsearch
+vault_<appname>_es_pass: "..."          # if using Elasticsearch
 ```
 
 For staging add corresponding `vault_<appname>_staging_*` variants.
@@ -72,6 +74,11 @@ In `host_vars/firth.water.gkhs.net/laravel_apps.yml`, add an entry to `firth_lar
     password: "{{ laravel_apps_mail_password }}"
     from_address: "{{ laravel_apps_mail_from_address }}"
     from_name: "My App Support"
+  elasticsearch:                           # optional; provisions a scoped ES role/user and injects env vars
+    username: myapp
+    password: "{{ vault_myapp_es_pass }}"
+    index_pattern: "myapp-*"             # optional; defaults to "<name>-*"
+    host: host.docker.internal           # optional; defaults to host.docker.internal
   additional_env:                          # optional; arbitrary env vars passed to the container
     MY_API_KEY: "{{ vault_myapp_api_key }}"
   additional_files:                        # optional; files copied into container at storage/app/<dest>
@@ -118,6 +125,24 @@ Add a `staging:` block to the app entry to get a second deployment at a separate
 
 Staging inherits `mail`, `worker`, `workdir`, `ssl_snippet`, `www_redirect`, `additional_files`, and `additional_env` from the prod entry unless overridden. Note that `additional_env` is replaced entirely if provided — it is not merged with the prod value.
 
+### Optional: Elasticsearch
+
+If the app needs Elasticsearch, add an `elasticsearch:` block to the app entry. The role will:
+
+1. Create an Elasticsearch role named `<appname>` scoped to `<index_pattern>` indices with `all` privileges and `monitor` cluster access
+2. Create an Elasticsearch user with the given credentials and assign them to that role (only on first run — password is not updated if the user already exists)
+3. Inject the following env vars into the container:
+
+| Env var | Value |
+|---|---|
+| `ELASTICSEARCH_HOST` | `host.docker.internal` (or `host:`) |
+| `ELASTICSEARCH_PORT` | `9200` (or `port:`) |
+| `ELASTICSEARCH_SCHEME` | `https` |
+| `ELASTICSEARCH_USER` | `username:` |
+| `ELASTICSEARCH_PASS` | `password:` |
+
+Staging inherits the prod `elasticsearch:` block unless overridden. If you need separate staging credentials, add an `elasticsearch:` key under `staging:` — note the staging username should differ from prod to ensure a separate ES user is created.
+
 ### Optional: additional files
 
 For files that need to be present inside the container (e.g. service account credentials):
@@ -144,6 +169,7 @@ This creates:
 - SSH deploy keypair, uploaded as `FIRTH_SSH_KEY` to the GitHub repo's Actions secrets
 - MySQL database and user
 - Redis ACL user (if configured)
+- Elasticsearch role and user (if configured)
 - nginx vhost at `/etc/nginx/sites-enabled/myapp.example.com.conf`
 - Working directory at `{{ docker_root }}/myapp/`
 
