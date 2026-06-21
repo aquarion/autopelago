@@ -286,6 +286,7 @@ firth_laravel_app_apps:
       username: thalium
       password: "{{ vault_thalium_redis_password }}"
     elasticsearch:
+      host: "{{ firth_elasticsearch_host }}"
       username: "{{ vault_thalium_es_user }}"
       password: "{{ vault_thalium_es_pass }}"
       index_pattern: "libris"

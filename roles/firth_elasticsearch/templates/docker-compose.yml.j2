@@ -28,7 +28,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'
+        - curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -90,7 +90,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'
+        - curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -147,7 +147,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'
+        - curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q 'missing authentication credentials'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -189,7 +189,7 @@ services:
         condition: service_healthy
         required: true
     environment:
-      ELASTICSEARCH_HOSTS: https://es01:9200
+      ELASTICSEARCH_HOSTS: https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }}
       ELASTICSEARCH_PASSWORD: "{{ firth_elasticsearch_kibana_password }}"
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: config/certs/ca/ca.crt
       ELASTICSEARCH_USERNAME: kibana_system
@@ -197,7 +197,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'
+        - curl -s -I http://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_kibana_port }}   | grep -q 'HTTP/1.1 302 Found'
       timeout: 10s
       interval: 10s
       retries: 120
@@ -252,21 +252,21 @@ services:
             "  - name: es01\n"\
             "    dns:\n"\
             "      - es01\n"\
-            "      - elasticsearch.svc.istic.systems\n"\
+            "      - {{ firth_elasticsearch_host }}\n"\
             "      - localhost\n"\
             "    ip:\n"\
             "      - 127.0.0.1\n"\
             "  - name: es02\n"\
             "    dns:\n"\
             "      - es02\n"\
-            "      - elasticsearch.svc.istic.systems\n"\
+            "      - {{ firth_elasticsearch_host }}\n"\
             "      - localhost\n"\
             "    ip:\n"\
             "      - 127.0.0.1\n"\
             "  - name: es03\n"\
             "    dns:\n"\
             "      - es03\n"\
-            "      - elasticsearch.svc.istic.systems\n"\
+            "      - {{ firth_elasticsearch_host }}\n"\
             "      - localhost\n"\
             "    ip:\n"\
             "      - 127.0.0.1\n"\
@@ -279,9 +279,9 @@ services:
           find . -type d -exec chmod 755 \{\} \;;
           find . -type f -exec chmod 644 \{\} \;;
           echo "Waiting for Elasticsearch availability";
-          until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+          until curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q "missing authentication credentials"; do sleep 30; done;
           echo "Setting kibana_system password";
-          until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:$ELASTIC_PASSWORD" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"$KIBANA_PASSWORD\"}" | grep -q "^{}"; do sleep 10; done;
+          until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:$ELASTIC_PASSWORD" -H "Content-Type: application/json" https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }}/_security/user/kibana_system/_password -d "{\"password\":\"$KIBANA_PASSWORD\"}" | grep -q "^{}"; do sleep 10; done;
           echo "All done!";
     healthcheck:
       test:

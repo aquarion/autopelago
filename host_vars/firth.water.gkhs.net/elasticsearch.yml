@@ -6,3 +6,5 @@
 firth_elasticsearch_version: "9.0.3"
 firth_elasticsearch_plugins:
   - ingest-attachment
+
+firth_elasticsearch_host: "elasticsearch.svc.istic.systems"

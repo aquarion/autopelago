@@ -78,7 +78,7 @@ In `host_vars/firth.water.gkhs.net/laravel_apps.yml`, add an entry to `firth_lar
     username: myapp
     password: "{{ vault_myapp_es_pass }}"
     index_pattern: "myapp-*"             # optional; defaults to "<name>-*"
-    host: host.docker.internal           # optional; defaults to host.docker.internal
+    host: "{{ firth_elasticsearch_host }}"          # optional; defaults to host.docker.internal
   additional_env:                          # optional; arbitrary env vars passed to the container
     MY_API_KEY: "{{ vault_myapp_api_key }}"
   additional_files:                        # optional; files copied into container at storage/app/<dest>
