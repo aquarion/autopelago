@@ -225,16 +225,19 @@ services:
         target: /usr/share/kibana/data
         volume: {}
   setup:
+    environment:
+      ELASTIC_PASSWORD: "{{ firth_elasticsearch_elastic_password }}"
+      KIBANA_PASSWORD: "{{ firth_elasticsearch_kibana_password }}"
     command:
       - bash
       - -c
       - |
 
-          if [ x{{ firth_elasticsearch_elastic_password }} == x ]; then
-            echo "Set the ELASTIC_PASSWORD variable in the role defaults or vault";
+          if [ -z "$ELASTIC_PASSWORD" ]; then
+            echo "ELASTIC_PASSWORD is not set";
             exit 1;
-          elif [ x{{ firth_elasticsearch_kibana_password }} == x ]; then
-            echo "Set the KIBANA_PASSWORD variable in the role defaults or vault";
+          elif [ -z "$KIBANA_PASSWORD" ]; then
+            echo "KIBANA_PASSWORD is not set";
             exit 1;
           fi;
           if [ ! -f config/certs/ca.zip ]; then
@@ -278,7 +281,7 @@ services:
           echo "Waiting for Elasticsearch availability";
           until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
           echo "Setting kibana_system password";
-          until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:{{ firth_elasticsearch_elastic_password }}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"{{ firth_elasticsearch_kibana_password }}\"}" | grep -q "^{}"; do sleep 10; done;
+          until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:$ELASTIC_PASSWORD" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"$KIBANA_PASSWORD\"}" | grep -q "^{}"; do sleep 10; done;
           echo "All done!";
     healthcheck:
       test:
