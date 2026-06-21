@@ -20,6 +20,7 @@
       workdir: "{{ firth_laravel_app_item.workdir | default('/var/www/html') }}"
       mysql: "{{ firth_laravel_app_item.mysql | default({}) }}"
       redis: "{{ firth_laravel_app_item.redis | default({}) }}"
+      elasticsearch: "{{ firth_laravel_app_item.elasticsearch | default({}) }}"
       mail: "{{ firth_laravel_app_item.mail | default({}) }}"
       additional_env: "{{ firth_laravel_app_item.additional_env | default({}) }}"
       additional_files: "{{ firth_laravel_app_item.additional_files | default([]) }}"
@@ -49,6 +50,11 @@
 - name: Configure Redis user for {{ fla.name }}
   ansible.builtin.include_tasks: redis.yml
   when: fla_ctx.redis | length > 0
+  tags: [firth_laravel_app, firth_laravel_app_install]
+
+- name: Provision Elasticsearch for {{ fla.name }}
+  ansible.builtin.include_tasks: elasticsearch.yml
+  when: fla_ctx.elasticsearch | length > 0
   tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Authenticate to GHCR for {{ fla.name }}

@@ -49,6 +49,7 @@
       workdir: "{{ fla.staging.workdir | default(fla.workdir | default('/var/www/html')) }}"
       mysql: "{{ fla.staging.mysql | default({}) }}"
       redis: "{{ fla.staging.redis | default({}) }}"
+      elasticsearch: "{{ fla.staging.elasticsearch | default(fla.elasticsearch | default({})) }}"
       mail: "{{ fla.mail | default({}) }}"
       additional_env: "{{ fla.staging.additional_env | default(fla.additional_env | default({})) }}"
       additional_files: "{{ fla.staging.additional_files | default(fla.additional_files | default([])) }}"
@@ -64,6 +65,11 @@
 - name: Configure staging Redis user for {{ fla.name }}
   ansible.builtin.include_tasks: redis.yml
   when: fla_ctx.redis | length > 0
+  tags: [firth_laravel_app, firth_laravel_app_install]
+
+- name: Provision staging Elasticsearch for {{ fla.name }}
+  ansible.builtin.include_tasks: elasticsearch.yml
+  when: fla_ctx.elasticsearch | length > 0
   tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Deploy staging additional files for {{ fla.name }}

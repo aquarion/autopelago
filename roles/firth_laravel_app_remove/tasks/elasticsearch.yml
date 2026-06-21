@@ -1,0 +1,39 @@
+---
+- name: "Remove Elasticsearch user and role for {{ flr_ctx.name }}"
+  tags: [firth_laravel_app, firth_laravel_app_remove]
+  block:
+    - name: "Remove Elasticsearch user: {{ flr_ctx.elasticsearch.username }}"
+      community.elastic.elastic_user:
+        name: "{{ flr_ctx.elasticsearch.username }}"
+        login_hosts: "{{ firth_laravel_app_remove_elasticsearch_host }}"
+        login_port: "{{ firth_laravel_app_remove_elasticsearch_port }}"
+        login_user: elastic
+        login_password: "{{ firth_laravel_app_remove_elasticsearch_password }}"
+        auth_method: http_auth
+        auth_scheme: https
+        cafile: "{{ firth_laravel_app_remove_elasticsearch_ca_cert }}"
+        state: absent
+
+    - name: "Remove Elasticsearch role: {{ flr_ctx.name }}"
+      community.elastic.elastic_role:
+        name: "{{ flr_ctx.name }}"
+        login_hosts: "{{ firth_laravel_app_remove_elasticsearch_host }}"
+        login_port: "{{ firth_laravel_app_remove_elasticsearch_port }}"
+        login_user: elastic
+        login_password: "{{ firth_laravel_app_remove_elasticsearch_password }}"
+        auth_method: http_auth
+        auth_scheme: https
+        cafile: "{{ firth_laravel_app_remove_elasticsearch_ca_cert }}"
+        state: absent
+
+  rescue:
+    - name: "Debug Elasticsearch removal failure for {{ flr_ctx.name }}"
+      ansible.builtin.debug:
+        msg: >
+          Failed task: {{ ansible_failed_task.name }}.
+          Error: {{ ansible_failed_result.msg | default(ansible_failed_result.stderr) | default('unknown') }}.
+          Failed to remove Elasticsearch user/role for {{ flr_ctx.name }}.
+
+    - name: "Abort after Elasticsearch removal failure for {{ flr_ctx.name }}"
+      ansible.builtin.fail:
+        msg: "Cannot continue: Elasticsearch removal for {{ flr_ctx.name }} failed."

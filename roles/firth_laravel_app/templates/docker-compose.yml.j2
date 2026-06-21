@@ -30,6 +30,13 @@ services:
       SESSION_DRIVER: redis
       QUEUE_CONNECTION: redis
 {% endif %}
+{% if fla_ctx.elasticsearch %}
+      ELASTICSEARCH_HOST: "{{ fla_ctx.elasticsearch.host | default('host.docker.internal') }}"
+      ELASTICSEARCH_PORT: "{{ fla_ctx.elasticsearch.port | default(9200) }}"
+      ELASTICSEARCH_SCHEME: https
+      ELASTICSEARCH_USER: "{{ fla_ctx.elasticsearch.username }}"
+      ELASTICSEARCH_PASS: "{{ fla_ctx.elasticsearch.password }}"
+{% endif %}
 {% if fla_ctx.mail %}
       MAIL_MAILER: smtp
       MAIL_HOST: "{{ fla_ctx.mail.host }}"
