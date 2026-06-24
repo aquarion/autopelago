@@ -140,7 +140,12 @@
   ansible.builtin.include_tasks: zones/novelathon.yml
   tags:
     - aws
-    - novelathon
+    - novelathon_aws
+
+- name: Novelathon DNS - Cloudflare
+  ansible.builtin.include_tasks: zones/novelathon_cf.yml
+  tags:
+    - always
 
 - name: Update Route53 for dagon_church
   ansible.builtin.include_tasks: zones/dagon_church.yml

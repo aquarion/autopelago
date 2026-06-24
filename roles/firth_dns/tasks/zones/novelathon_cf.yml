@@ -1,0 +1,56 @@
+---
+- name: Novelathon Cloudflare Tasks
+  tags:
+    - cloudflare
+    - cloudflare_dns
+    - novelathon
+  block:
+    - name: (CF) Novelathon.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: novelathon.com
+        proxied: true
+        record: "@"
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        value: "{{ loadbalancer_ip }}"
+
+    - name: (CF) Dev.novelathon.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: novelathon.com
+        proxied: true
+        record: dev
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        value: "{{ loadbalancer_ip }}"
+
+    - name: (CF) Www.novelathon.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: novelathon.com
+        proxied: true
+        record: www
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        value: "{{ loadbalancer_ip }}"
+
+    - name: (CF) Widget.novelathon.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: novelathon.com
+        proxied: true
+        record: widget
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        value: "{{ loadbalancer_ip }}"
+
+    - name: (CF) Local.novelathon.com. - A
+      community.general.cloudflare_dns:
+        state: present
+        zone: novelathon.com
+        proxied: false
+        record: local
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        value: 127.0.0.1
