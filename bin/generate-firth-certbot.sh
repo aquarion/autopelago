@@ -32,6 +32,8 @@ echo "Generating certificates for Socks & Puppets"
 sudo certbot certonly --non-interactive --cert-name socksandpuppets.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d socksandpuppets.com,*.socksandpuppets.com --preferred-challenges dns-01
 echo "Generating certificates for Aquarionics"
 sudo certbot certonly --non-interactive --cert-name aquarionics.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d aquarionics.com,*.aquarionics.com --preferred-challenges dns-01
+echo "Generating certificates for novelathon"
+sudo certbot certonly --non-interactive --cert-name novelathon.com --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini -d novelathon.com,*.novelathon.com --preferred-challenges dns-01
 
 ## Istic wildcards
 
@@ -50,8 +52,6 @@ echo "Generating certificates for ludoistic"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name ludoistic.com --dns-route53 -d "ludoistic.com" -d "*.ludoistic.com"
 echo "Generating certificates for nanocountdown"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name nanocountdown.com --dns-route53 -d nanocountdown.com -d "*.nanocountdown.com"
-echo "Generating certificates for novelathon"
-sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name novelathon.com --dns-route53 -d novelathon.com -d "*.novelathon.com"
 echo "Generating certificates for bloomfeed.app"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name bloomfeed.app --dns-route53 -d bloomfeed.app -d "*.bloomfeed.app"
 
