@@ -277,11 +277,13 @@ firth_laravel_app_apps:
     app_key: "{{ vault_thalium_app_key }}"
     app_name: Thalium
     ssl_snippet: aquarionics
+    nginx_snippet: thalium
     github_repo: aquarion/thalium
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     worker: true
+    worker_command: horizon
     redis:
       username: thalium
       password: "{{ vault_thalium_redis_password }}"
@@ -299,6 +301,8 @@ firth_laravel_app_apps:
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
+      - src: /home/docker/thalium/database.sqlite
+        dest: /var/www/html/database/database.sqlite
     staging:
       image_tag: staging
       port: 8003
@@ -312,3 +316,11 @@ firth_laravel_app_apps:
       additional_env:
         DOCKER_PDF_LIBRARY: /mnt/rpg
         LIBRARY_URL: https://thalium.istic.dev/_libris/
+      additional_volumes:
+        - src: /home/library/RPG/Systems
+          dest: /mnt/rpg
+        - name: elasticsearch_certs
+          dest: /usr/share/elasticsearch/config/certs
+          external: true
+        - src: /home/docker/thalium-staging/database.sqlite
+          dest: /var/www/html/database/database.sqlite

@@ -37,6 +37,10 @@ server {
         add_header Cache-Control "public, immutable";
     }
 
+{% if fla_ctx.nginx_snippet %}
+    include /etc/nginx/snippets/apps/{{ fla_ctx.nginx_snippet }}.conf;
+{% endif %}
+
     location / {
 {% if fla_ctx.backend == 'fpm' %}
         fastcgi_pass 127.0.0.1:{{ fla_ctx.port }};

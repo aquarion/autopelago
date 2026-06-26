@@ -17,6 +17,7 @@
       ssl_snippet: "{{ firth_laravel_app_item.ssl_snippet }}"
       www_redirect: "{{ firth_laravel_app_item.www_redirect | default(false) }}"
       worker: "{{ firth_laravel_app_item.worker | default(false) }}"
+      worker_command: "{{ firth_laravel_app_item.worker_command | default('queue:work') }}"
       workdir: "{{ firth_laravel_app_item.workdir | default('/var/www/html') }}"
       mysql: "{{ firth_laravel_app_item.mysql | default({}) }}"
       redis: "{{ firth_laravel_app_item.redis | default({}) }}"
@@ -25,6 +26,7 @@
       additional_env: "{{ firth_laravel_app_item.additional_env | default({}) }}"
       additional_files: "{{ firth_laravel_app_item.additional_files | default([]) }}"
       additional_volumes: "{{ firth_laravel_app_item.additional_volumes | default([]) }}"
+      nginx_snippet: "{{ firth_laravel_app_item.nginx_snippet | default('') }}"
       system_user: "{{ firth_laravel_app_item.name }}"
   tags: [always, firth_laravel_app, firth_laravel_app_install]
 

@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+
+location /_libris/ {
+    alias /home/library/RPG/Systems/;
+    gzip_static on;
+    auth_request /_authcheck;
+}
+
+location /_thumbnails/ {
+    alias {{ docker_root }}/{{ fla_ctx.name }}/storage/app/thumbnails/;
+    gzip_static on;
+}
+
+location /_authcheck {
+    internal;
+    proxy_pass https://{{ fla_ctx.server_name }}/auth/checkLogin;
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
+    proxy_set_header X-Original-URI $request_uri;
+}

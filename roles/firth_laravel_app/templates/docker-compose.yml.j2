@@ -77,7 +77,7 @@ services:
   worker:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
-    command: ["php", "artisan", "queue:work"]
+    command: ["php", "artisan", "{{ fla_ctx.worker_command }}"]
     environment: *app-env
     volumes:
       - storage:{{ fla_ctx.workdir }}/storage

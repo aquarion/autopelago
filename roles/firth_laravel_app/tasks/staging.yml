@@ -46,6 +46,7 @@
       ssl_snippet: "{{ fla.staging.ssl_snippet | default(fla.ssl_snippet) }}"
       www_redirect: "{{ fla.staging.www_redirect | default(false) }}"
       worker: "{{ fla.staging.worker | default(fla.worker | default(false)) }}"
+      worker_command: "{{ fla.staging.worker_command | default(fla.worker_command | default('queue:work')) }}"
       workdir: "{{ fla.staging.workdir | default(fla.workdir | default('/var/www/html')) }}"
       mysql: "{{ fla.staging.mysql | default({}) }}"
       redis: "{{ fla.staging.redis | default({}) }}"
@@ -54,6 +55,7 @@
       additional_env: "{{ fla.staging.additional_env | default(fla.additional_env | default({})) }}"
       additional_files: "{{ fla.staging.additional_files | default(fla.additional_files | default([])) }}"
       additional_volumes: "{{ fla.staging.additional_volumes | default(fla.additional_volumes | default([])) }}"
+      nginx_snippet: "{{ fla.staging.nginx_snippet | default(fla.nginx_snippet | default('')) }}"
       system_user: "{{ fla.name }}"
   tags: [firth_laravel_app, firth_laravel_app_install]
 
