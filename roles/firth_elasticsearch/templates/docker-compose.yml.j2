@@ -282,9 +282,9 @@ services:
           retries=0; max_retries=60;
           until curl -s --cacert config/certs/ca/ca.crt https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }} | grep -q "missing authentication credentials"; do
             sleep 30;
-            retries=$((retries+1));
-            if [ $retries -ge $max_retries ]; then
-              echo "ERROR: Elasticsearch did not become available after $((max_retries * 30)) seconds";
+            retries=$$((retries+1));
+            if [ $$retries -ge $$max_retries ]; then
+              echo "ERROR: Elasticsearch did not become available after $$((max_retries * 30)) seconds";
               exit 1;
             fi;
           done;
@@ -292,9 +292,9 @@ services:
           retries=0; max_retries=30;
           until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:$ELASTIC_PASSWORD" -H "Content-Type: application/json" https://{{ firth_elasticsearch_host }}:{{ firth_elasticsearch_es_port }}/_security/user/kibana_system/_password -d "{\"password\":\"$KIBANA_PASSWORD\"}" | grep -q "^{}"; do
             sleep 10;
-            retries=$((retries+1));
-            if [ $retries -ge $max_retries ]; then
-              echo "ERROR: Failed to set kibana_system password after $((max_retries * 10)) seconds";
+            retries=$$((retries+1));
+            if [ $$retries -ge $$max_retries ]; then
+              echo "ERROR: Failed to set kibana_system password after $$((max_retries * 10)) seconds";
               exit 1;
             fi;
           done;
@@ -303,7 +303,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - '[ -f config/certs/setup_complete ]'
+        - '[ -f config/certs/ca/ca.crt ]'
       timeout: 5s
       interval: 10s
       retries: 120
