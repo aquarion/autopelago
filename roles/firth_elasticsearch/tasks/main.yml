@@ -1,0 +1,46 @@
+---
+- name: Configure Elasticsearch
+  tags:
+    - elasticsearch
+  block:
+    - name: Create Elasticsearch directory
+      ansible.builtin.file:
+        path: "{{ docker_root }}/elasticsearch"
+        state: directory
+        owner: root
+        group: docker
+        mode: "0755"
+
+    - name: Template elasticsearch-plugins.yml
+      ansible.builtin.template:
+        src: elasticsearch-plugins.yml.j2
+        dest: "{{ docker_root }}/elasticsearch/elasticsearch-plugins.yml"
+        owner: root
+        group: docker
+        mode: "0644"
+      notify: Restart Elasticsearch
+
+    - name: Template docker-compose.yml for Elasticsearch
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ docker_root }}/elasticsearch/docker-compose.yml"
+        owner: root
+        group: docker
+        mode: "0640"
+      notify: Restart Elasticsearch
+
+    - name: Start Elasticsearch stack
+      community.docker.docker_compose_v2:
+        project_src: "{{ docker_root }}/elasticsearch"
+        pull: always
+        state: present
+        recreate: auto
+
+  rescue:
+    - name: Debug Elasticsearch setup failure
+      ansible.builtin.debug:
+        var: ansible_failed_result
+
+    - name: Abort Elasticsearch setup failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: Elasticsearch setup failed."

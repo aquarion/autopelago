@@ -86,6 +86,7 @@
     - jellyfin
     - getmail
     - firth_sftp_docker
+    - firth_elasticsearch
     - firth_laravel_app
     - firth_laravel_app_remove
 

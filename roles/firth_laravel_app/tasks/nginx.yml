@@ -1,4 +1,25 @@
 ---
+- name: Ensure nginx snippets/apps directory exists
+  ansible.builtin.file:
+    path: /etc/nginx/snippets/apps
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: fla_ctx.nginx_snippet | length > 0
+  tags: [firth_laravel_app, firth_laravel_app_install]
+
+- name: Deploy nginx snippet for {{ fla_ctx.name }}
+  ansible.builtin.template:
+    src: "vhosts/snippets/{{ fla_ctx.nginx_snippet }}.conf.j2"
+    dest: "/etc/nginx/snippets/apps/{{ fla_ctx.nginx_snippet }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  when: fla_ctx.nginx_snippet | length > 0
+  notify: Reload Nginx
+  tags: [firth_laravel_app, firth_laravel_app_install]
+
 - name: Deploy nginx vhost for {{ fla_ctx.name }}
   tags: [firth_laravel_app, firth_laravel_app_install]
   block:
