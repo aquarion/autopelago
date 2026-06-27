@@ -243,6 +243,9 @@ firth_laravel_app_apps:
     additional_files:
       - src: files/laravel/wereabouts/google_credentials.vault.json
         dest: google/credentials.json
+    additional_volumes:
+      - src: /home/docker/wereabouts/database.sqlite
+        dest: /var/www/html/database/database.sqlite
     staging:
       image_tag: staging
       port: 9006
@@ -259,6 +262,9 @@ firth_laravel_app_apps:
       additional_files:
         - src: files/laravel/wereabouts/google_credentials.vault.json
           dest: google/credentials.json
+      additional_volumes:
+        - src: /home/docker/wereabouts-staging/database.sqlite
+          dest: /var/www/html/database/database.sqlite
 
   # Vault variables required (add to vault manually):
   #   vault_thalium_app_key

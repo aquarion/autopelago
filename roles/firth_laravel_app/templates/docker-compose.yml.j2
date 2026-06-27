@@ -78,7 +78,13 @@ services:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
     command: ["php", "artisan", "{{ fla_ctx.worker_command }}"]
-    environment: *app-env
+    environment: &app-env
+      APP_NAME: "{{ fla_ctx.app_name }}"
+      APP_ENV: "{{ fla_ctx.app_env }}"
+      APP_KEY: "{{ fla_ctx.app_key }}"
+      APP_DEBUG: "{{ fla_ctx.app_debug }}"
+      APP_URL: "{{ fla_ctx.app_url }}"
+      LOG_STACK: "stderr,single"
     volumes:
       - storage:{{ fla_ctx.workdir }}/storage
 {% for file in fla_ctx.additional_files %}
