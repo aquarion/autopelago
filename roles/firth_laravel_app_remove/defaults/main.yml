@@ -2,3 +2,8 @@
 firth_laravel_app_remove_apps: []
 firth_laravel_app_remove_mysql_login_host: 127.0.0.1
 firth_laravel_app_remove_mysql_login_user: root
+
+firth_laravel_app_remove_elasticsearch_host: localhost
+firth_laravel_app_remove_elasticsearch_port: 9200
+firth_laravel_app_remove_elasticsearch_password: "{{ firth_elasticsearch_elastic_password }}"
+firth_laravel_app_remove_elasticsearch_ca_cert: /var/lib/docker/volumes/elasticsearch_certs/_data/ca/ca.crt

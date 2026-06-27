@@ -23,6 +23,8 @@ Generate secrets for the new app and add them to a vault file at `host_vars/firt
 vault_<appname>_app_key: "base64:..."   # php artisan key:generate --show
 vault_<appname>_db_password: "..."
 vault_<appname>_redis_password: "..."   # if using Redis
+vault_<appname>_es_user: "..."          # if using Elasticsearch
+vault_<appname>_es_pass: "..."          # if using Elasticsearch
 ```
 
 For staging add corresponding `vault_<appname>_staging_*` variants.
@@ -58,6 +60,8 @@ In `host_vars/firth.water.gkhs.net/laravel_apps.yml`, add an entry to `firth_lar
   github_deploy_token: "{{ laravel_apps_deploy_token_myorg }}"
   ghcr_username: "{{ ghcr_username }}"
   ghcr_token: "{{ ghcr_token }}"
+  worker: false                              # optional; spin up a second container running the queue worker
+  worker_command: queue:work                 # optional; artisan command for the worker (default: queue:work, use 'horizon' for Laravel Horizon)
   mysql:
     db_name: myapp
     db_user: myapp
@@ -72,6 +76,11 @@ In `host_vars/firth.water.gkhs.net/laravel_apps.yml`, add an entry to `firth_lar
     password: "{{ laravel_apps_mail_password }}"
     from_address: "{{ laravel_apps_mail_from_address }}"
     from_name: "My App Support"
+  elasticsearch:                           # optional; provisions a scoped ES role/user and injects env vars
+    username: myapp
+    password: "{{ vault_myapp_es_pass }}"
+    index_pattern: "myapp-*"             # optional; defaults to "<name>-*"
+    host: "{{ firth_elasticsearch_host }}"          # optional; defaults to host.docker.internal
   additional_env:                          # optional; arbitrary env vars passed to the container
     MY_API_KEY: "{{ vault_myapp_api_key }}"
   additional_files:                        # optional; files copied into container at storage/app/<dest>
@@ -116,7 +125,37 @@ Add a `staging:` block to the app entry to get a second deployment at a separate
       MY_API_KEY: "{{ vault_myapp_staging_api_key }}"
 ```
 
-Staging inherits `mail`, `worker`, `workdir`, `ssl_snippet`, `www_redirect`, `additional_files`, and `additional_env` from the prod entry unless overridden. Note that `additional_env` is replaced entirely if provided — it is not merged with the prod value.
+Staging inherits `mail`, `worker`, `worker_command`, `workdir`, `ssl_snippet`, `www_redirect`, `nginx_snippet`, `additional_files`, and `additional_env` from the prod entry unless overridden. Note that `additional_env` is replaced entirely if provided — it is not merged with the prod value.
+
+### Optional: Elasticsearch
+
+If the app needs Elasticsearch, add an `elasticsearch:` block to the app entry. The role will:
+
+1. Create an Elasticsearch role named `<appname>` scoped to `<index_pattern>` indices with `all` privileges and `monitor` cluster access
+2. Create or update an Elasticsearch user with the given credentials and assign them to that role (password is always synced from the vault value)
+3. Inject the following env vars into the container:
+
+| Env var | Value |
+|---|---|
+| `ELASTICSEARCH_HOST` | `host.docker.internal` (or `host:`) |
+| `ELASTICSEARCH_PORT` | `9200` (or `port:`) |
+| `ELASTICSEARCH_SCHEME` | `https` |
+| `ELASTICSEARCH_USER` | `username:` |
+| `ELASTICSEARCH_PASS` | `password:` |
+
+Staging inherits the prod `elasticsearch:` block unless overridden. If you need separate staging credentials, add an `elasticsearch:` key under `staging:` — note the staging username should differ from prod to ensure a separate ES user is created.
+
+### Optional: custom nginx locations
+
+If the app needs extra nginx location blocks (e.g. auth-gated file serving, internal subrequests), create a snippet template and reference it by name:
+
+```yaml
+  nginx_snippet: myapp                     # -> roles/firth_laravel_app/templates/vhosts/snippets/myapp.conf.j2
+```
+
+The snippet is deployed to `/etc/nginx/snippets/apps/myapp.conf` on the server and included inside the vhost's server block before `location /`. The template has access to all `fla_ctx` variables, so you can use `{{ fla_ctx.name }}`, `{{ fla_ctx.server_name }}`, `{{ docker_root }}`, etc.
+
+Staging inherits `nginx_snippet` from prod unless overridden with `staging.nginx_snippet`. Since the snippet template is parameterised, a single snippet usually works for both — staging gets its own `fla_ctx.name` and `fla_ctx.server_name` automatically.
 
 ### Optional: additional files
 
@@ -144,7 +183,8 @@ This creates:
 - SSH deploy keypair, uploaded as `FIRTH_SSH_KEY` to the GitHub repo's Actions secrets
 - MySQL database and user
 - Redis ACL user (if configured)
-- nginx vhost at `/etc/nginx/sites-enabled/myapp.example.com.conf`
+- Elasticsearch role and user (if configured)
+- nginx vhost at `/etc/nginx/sites-enabled/myapp.example.com.conf` (plus snippet at `/etc/nginx/snippets/apps/` if configured)
 - Working directory at `{{ docker_root }}/myapp/`
 
 ### Step 2: build and push the initial image

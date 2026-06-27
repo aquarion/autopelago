@@ -21,6 +21,10 @@ firth_laravel_app_apps:
   #   redis: # optional Redis config, these will be created in redis.
   #     username: example
   #     password: "{{ vault_example_redis_password }}"
+  #   elasticsearch: # optional Elasticsearch config - creates a scoped role and user.
+  #     username: example
+  #     password: "{{ vault_example_es_password }}"
+  #     index_pattern: "example-*" # optional, defaults to "<name>-*"
   #   mail:
   #     host: smtp.example.com
   #     port: 587
@@ -239,6 +243,9 @@ firth_laravel_app_apps:
     additional_files:
       - src: files/laravel/wereabouts/google_credentials.vault.json
         dest: google/credentials.json
+    additional_volumes:
+      - src: /home/docker/wereabouts/database.sqlite
+        dest: /var/www/html/database/database.sqlite
     staging:
       image_tag: staging
       port: 9006
@@ -255,6 +262,9 @@ firth_laravel_app_apps:
       additional_files:
         - src: files/laravel/wereabouts/google_credentials.vault.json
           dest: google/credentials.json
+      additional_volumes:
+        - src: /home/docker/wereabouts-staging/database.sqlite
+          dest: /var/www/html/database/database.sqlite
 
   # Vault variables required (add to vault manually):
   #   vault_thalium_app_key
@@ -273,20 +283,22 @@ firth_laravel_app_apps:
     app_key: "{{ vault_thalium_app_key }}"
     app_name: Thalium
     ssl_snippet: aquarionics
+    nginx_snippet: thalium
     github_repo: aquarion/thalium
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
     worker: true
+    worker_command: horizon
     redis:
       username: thalium
       password: "{{ vault_thalium_redis_password }}"
+    elasticsearch:
+      host: "{{ firth_elasticsearch_host }}"
+      username: "{{ vault_thalium_es_user }}"
+      password: "{{ vault_thalium_es_pass }}"
+      index_pattern: "libris"
     additional_env:
-      ELASTICSEARCH_HOST: host.docker.internal
-      ELASTICSEARCH_PORT: "9200"
-      ELASTICSEARCH_SCHEME: https
-      ELASTICSEARCH_USER: "{{ vault_thalium_es_user }}"
-      ELASTICSEARCH_PASS: "{{ vault_thalium_es_pass }}"
       DOCKER_PDF_LIBRARY: /mnt/rpg
       LIBRARY_URL: https://thalium.aquarionics.com/_libris/
     additional_volumes:
@@ -295,6 +307,8 @@ firth_laravel_app_apps:
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
+      - src: /home/docker/thalium/database.sqlite
+        dest: /var/www/html/database/database.sqlite
     staging:
       image_tag: staging
       port: 8003
@@ -306,10 +320,13 @@ firth_laravel_app_apps:
         username: thalium_staging
         password: "{{ vault_thalium_staging_redis_password }}"
       additional_env:
-        ELASTICSEARCH_HOST: host.docker.internal
-        ELASTICSEARCH_PORT: "9200"
-        ELASTICSEARCH_SCHEME: https
-        ELASTICSEARCH_USER: "{{ vault_thalium_es_user }}"
-        ELASTICSEARCH_PASS: "{{ vault_thalium_es_pass }}"
         DOCKER_PDF_LIBRARY: /mnt/rpg
         LIBRARY_URL: https://thalium.istic.dev/_libris/
+      additional_volumes:
+        - src: /home/library/RPG/Systems
+          dest: /mnt/rpg
+        - name: elasticsearch_certs
+          dest: /usr/share/elasticsearch/config/certs
+          external: true
+        - src: /home/docker/thalium-staging/database.sqlite
+          dest: /var/www/html/database/database.sqlite

@@ -1,0 +1,67 @@
+---
+- name: "Provision Elasticsearch for {{ fla_ctx.name }}"
+  tags: [firth_laravel_app, firth_laravel_app_install]
+  block:
+    - name: "Wait for Elasticsearch to be reachable"
+      ansible.builtin.uri:
+        url: "https://{{ firth_laravel_app_elasticsearch_host }}:{{ firth_laravel_app_elasticsearch_port }}/"
+        method: GET
+        url_username: elastic
+        url_password: "{{ firth_laravel_app_elasticsearch_password }}"
+        force_basic_auth: true
+        ca_path: "{{ firth_laravel_app_elasticsearch_ca_cert }}"
+        status_code: [200]
+      register: firth_laravel_app_es_ready
+      until: firth_laravel_app_es_ready.status == 200
+      retries: 30
+      delay: 10
+      changed_when: false
+
+    - name: "Create Elasticsearch role: {{ fla_ctx.name }}"
+      ansible.builtin.uri:
+        url: "https://{{ firth_laravel_app_elasticsearch_host }}:{{ firth_laravel_app_elasticsearch_port }}/_security/role/{{ fla_ctx.name }}"
+        method: PUT
+        url_username: elastic
+        url_password: "{{ firth_laravel_app_elasticsearch_password }}"
+        force_basic_auth: true
+        ca_path: "{{ firth_laravel_app_elasticsearch_ca_cert }}"
+        body_format: json
+        body:
+          indices:
+            - names: ["{{ fla_ctx.elasticsearch.index_pattern | default(fla_ctx.name + '-*') }}"]
+              privileges: ["all"]
+          cluster:
+            - monitor
+        status_code: [200, 201]
+      register: firth_laravel_app_es_role_result
+      changed_when: firth_laravel_app_es_role_result.status == 201
+
+    - name: "Ensure Elasticsearch user exists: {{ fla_ctx.elasticsearch.username }}"
+      ansible.builtin.uri:
+        url: "https://{{ firth_laravel_app_elasticsearch_host }}:{{ firth_laravel_app_elasticsearch_port }}/_security/user/{{ fla_ctx.elasticsearch.username }}"
+        method: PUT
+        url_username: elastic
+        url_password: "{{ firth_laravel_app_elasticsearch_password }}"
+        force_basic_auth: true
+        ca_path: "{{ firth_laravel_app_elasticsearch_ca_cert }}"
+        body_format: json
+        body:
+          password: "{{ fla_ctx.elasticsearch.password }}"
+          roles:
+            - "{{ fla_ctx.name }}"
+        status_code: [200, 201]
+      register: firth_laravel_app_es_user_result
+      changed_when: firth_laravel_app_es_user_result.status == 201
+
+  rescue:
+    - name: "Debug Elasticsearch failure: {{ fla_ctx.name }}"
+      ansible.builtin.debug:
+        msg: >
+          Failed task: {{ ansible_failed_task.name }}.
+          HTTP status: {{ ansible_failed_result.status | default('unknown') }}.
+          Response: {{ ansible_failed_result.json | default(ansible_failed_result.content) | default(ansible_failed_result.msg) | default('no response') }}.
+          Failed to provision Elasticsearch for {{ fla_ctx.name }}.
+
+    - name: "Abort Elasticsearch setup failure: {{ fla_ctx.name }}"
+      ansible.builtin.fail:
+        msg: "Cannot continue: Elasticsearch setup for {{ fla_ctx.name }} failed."

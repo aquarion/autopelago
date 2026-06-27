@@ -18,7 +18,7 @@
   when: not firth_laravel_app_remove_archive_stat.stat.exists
   block:
     - name: Check if database exists for {{ flr_ctx.name }}
-      community.mysql.mysql_info:
+      ansible.mysql.mysql_info:
         login_host: "{{ firth_laravel_app_remove_mysql_login_host }}"
         login_user: "{{ firth_laravel_app_remove_mysql_login_user }}"
         login_password: "{{ mysql_root_password }}"

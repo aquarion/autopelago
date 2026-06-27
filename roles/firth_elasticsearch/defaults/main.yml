@@ -1,0 +1,14 @@
+---
+firth_elasticsearch_version: "9.0.3"
+firth_elasticsearch_cluster_name: docker-cluster
+firth_elasticsearch_mem_limit: "1073741824"
+firth_elasticsearch_es_port: "9200"
+firth_elasticsearch_kibana_port: "5601"
+firth_elasticsearch_host: "host.docker.internal"
+
+firth_elasticsearch_plugins:
+  - ingest-attachment
+
+# Set in vault
+firth_elasticsearch_elastic_password: "{{ vault_elasticsearch_elastic_password }}"
+firth_elasticsearch_kibana_password: "{{ vault_elasticsearch_kibana_password }}"

@@ -1,0 +1,10 @@
+---
+# Vault variables required (add to vault manually):
+#   vault_elasticsearch_elastic_password  - the 'elastic' superuser password
+#   vault_elasticsearch_kibana_password   - the 'kibana_system' user password
+
+firth_elasticsearch_version: "9.0.3"
+firth_elasticsearch_plugins:
+  - ingest-attachment
+
+firth_elasticsearch_host: "elasticsearch.svc.istic.systems"

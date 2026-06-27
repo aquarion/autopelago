@@ -3,7 +3,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -23,32 +23,32 @@ repos:
         language: script
         files: \.vault\..*$
   - repo: https://github.com/bridgecrewio/checkov
-    rev: 3.2.513
+    rev: 3.3.2
     hooks:
       - id: checkov
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.23.1
+    rev: v1.26.1
     hooks:
       - id: zizmor
         args: ["--config", ".zizmor.yml"]
   - repo: https://github.com/PyCQA/pylint
-    rev: v4.0.5
+    rev: v4.0.6
     hooks:
       - id: pylint
         args: ["--disable=import-error"]
         additional_dependencies: ["pynacl", "jinja2"]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.1
+    rev: v2.1.0
     hooks:
       - id: mypy
         args: ["--ignore-missing-imports"]
         exclude: "filter_plugins/nacl.py"
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.13.0-1
+    rev: v3.13.1-1
     hooks:
       - id: shfmt
   - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v26.2.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
+    rev: v26.4.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
     hooks:
       - id: ansible-lint
         entry: python3 -m ansiblelint -v --force-color --fix

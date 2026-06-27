@@ -6,11 +6,13 @@
       name: "{{ firth_laravel_app_remove_item.name }}"
       mysql: "{{ firth_laravel_app_remove_item.mysql | default({}) }}"
       redis: "{{ firth_laravel_app_remove_item.redis | default({}) }}"
+      elasticsearch: "{{ firth_laravel_app_remove_item.elasticsearch | default({}) }}"
       server_name: "{{ firth_laravel_app_remove_item.server_name }}"
       remove:
         containers: "{{ firth_laravel_app_remove_item.remove.containers | default(false) }}"
         mysql: "{{ firth_laravel_app_remove_item.remove.mysql | default(false) }}"
         redis: "{{ firth_laravel_app_remove_item.remove.redis | default(false) }}"
+        elasticsearch: "{{ firth_laravel_app_remove_item.remove.elasticsearch | default(false) }}"
         nginx: "{{ firth_laravel_app_remove_item.remove.nginx | default(false) }}"
         workdir: "{{ firth_laravel_app_remove_item.remove.workdir | default(false) }}"
         system_user: "{{ firth_laravel_app_remove_item.remove.system_user | default(false) }}"
@@ -44,6 +46,13 @@
   when:
     - flr_ctx.remove.redis | bool
     - flr_ctx.redis | length > 0
+  tags: [firth_laravel_app, firth_laravel_app_remove]
+
+- name: Remove Elasticsearch user and role for {{ flr.name }}
+  ansible.builtin.include_tasks: elasticsearch.yml
+  when:
+    - flr_ctx.remove.elasticsearch | bool
+    - flr_ctx.elasticsearch | length > 0
   tags: [firth_laravel_app, firth_laravel_app_remove]
 
 - name: Remove workdir for {{ flr.name }}
