@@ -1,4 +1,6 @@
 ---
+laravel_apps_matomo_url: "https://stat.istic.net"
+
 firth_laravel_app_apps:
   # - name: example
   #   image: ghcr.io/istic/example

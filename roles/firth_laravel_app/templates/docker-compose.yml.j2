@@ -13,6 +13,8 @@ services:
       APP_DEBUG: "{{ fla_ctx.app_debug }}"
       APP_URL: "{{ fla_ctx.app_url }}"
       LOG_STACK: "stderr,single"
+      MATOMO_AUTH_TOKEN: "{{ laravel_apps_matomo_auth_token }}"
+      MATOMO_URL: "{{ laravel_apps_matomo_url }}"
 {% if fla_ctx.mysql %}
       DB_CONNECTION: mysql
       DB_HOST: "{{ fla_ctx.mysql.db_host | default('host.docker.internal') }}"
