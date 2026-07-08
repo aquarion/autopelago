@@ -77,7 +77,7 @@
 - name: Hubris.house. - MX
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: hubris.house
     record: hubris.house.
     type: MX

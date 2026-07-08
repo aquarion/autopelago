@@ -2,7 +2,7 @@
 - name: Factionfiction.net. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: factionfiction.net
     record: factionfiction.net.
     aws_profile: aqcom
@@ -13,7 +13,7 @@
 - name: Factionfiction.net. - NS
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: factionfiction.net
     record: factionfiction.net.
     aws_profile: aqcom
@@ -24,7 +24,7 @@
 # - name: Factionfiction.net. - SOA
 #  amazon.aws.route53:
 #      overwrite: true
-#      command: "create"
+#      state: present
 #      zone: "factionfiction.net"
 #      record: "factionfiction.net."
 #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -36,7 +36,7 @@
 - name: Www.factionfiction.net. - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: factionfiction.net
     record: www.factionfiction.net.
     aws_profile: aqcom

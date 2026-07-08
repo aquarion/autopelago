@@ -2,7 +2,7 @@
 - name: Novelathon.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: novelathon.com
     record: novelathon.com.
     type: A
@@ -15,7 +15,7 @@
 - name: Dev.novelathon.com - CNAME - remove
   amazon.aws.route53:
     overwrite: true
-    command: absent
+    state: absent
     zone: novelathon.com
     record: dev.novelathon.com.
     type: CNAME
@@ -28,7 +28,7 @@
 - name: Dev.novelathon.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: novelathon.com
     record: dev.novelathon.com.
     type: A
@@ -41,7 +41,7 @@
 - name: Www.novelathon.com - CNAME - remove
   amazon.aws.route53:
     overwrite: true
-    command: absent
+    state: absent
     zone: novelathon.com
     record: www.novelathon.com.
     type: CNAME
@@ -54,7 +54,7 @@
 - name: Www.novelathon.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: novelathon.com
     record: www.novelathon.com.
     type: A
@@ -67,7 +67,7 @@
 - name: Widget.novelathon.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: novelathon.com
     record: widget.novelathon.com.
     type: A
@@ -80,7 +80,7 @@
 - name: Local.novelathon.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: novelathon.com
     record: local.novelathon.com.
     type: A

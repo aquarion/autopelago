@@ -7,7 +7,7 @@
     - name: Istic.net - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: istic.net.
         type: A
@@ -20,7 +20,7 @@
     - name: Istic.net - MX
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: istic.net.
         type: MX
@@ -33,7 +33,7 @@
     - name: Istic.net - TXT
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: istic.net.
         type: TXT
@@ -46,7 +46,7 @@
     - name: Wildcard.istic.net - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: "*.istic.net."
         type: A
@@ -59,7 +59,7 @@
     - name: _0ed69ff5c31a07f040dcb35337eb4a66.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: _0ed69ff5c31a07f040dcb35337eb4a66.istic.net.
         type: CNAME
@@ -72,7 +72,7 @@
     - name: 20131117185804.pm._domainkey.istic.net - TXT
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: 20131117185804.pm._domainkey.istic.net.
         type: TXT
@@ -85,7 +85,7 @@
     - name: _f3745362c222f5b3b80d97e5e65e1e5d.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: _f3745362c222f5b3b80d97e5e65e1e5d.istic.net.
         type: CNAME
@@ -98,7 +98,7 @@
     - name: Art.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: art.istic.net.
         type: CNAME
@@ -111,7 +111,7 @@
     - name: _e30ae5c849fa50c37f4ad7471b665d56.art.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: _e30ae5c849fa50c37f4ad7471b665d56.art.istic.net.
         type: CNAME
@@ -124,7 +124,7 @@
     - name: Webcdn.art.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: webcdn.art.istic.net.
         type: CNAME
@@ -137,7 +137,7 @@
     - name: Cal.g.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: cal.g.istic.net.
         type: CNAME
@@ -150,7 +150,7 @@
     - name: Docs.g.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: docs.g.istic.net.
         type: CNAME
@@ -163,7 +163,7 @@
     - name: Mail.g.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: mail.g.istic.net.
         type: CNAME
@@ -176,7 +176,7 @@
     - name: Test.g.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: test.g.istic.net.
         type: CNAME
@@ -189,7 +189,7 @@
     - name: Ludo.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: absent
+        state: absent
         zone: istic.net
         record: ludo.istic.net.
         type: CNAME
@@ -202,7 +202,7 @@
     - name: Mailgun.istic.net - MX
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: mailgun.istic.net.
         type: MX
@@ -215,7 +215,7 @@
     - name: Mailgun.istic.net - TXT
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: mailgun.istic.net.
         type: TXT
@@ -228,7 +228,7 @@
     - name: Pic._domainkey.mailgun.istic.net - TXT
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: pic._domainkey.mailgun.istic.net.
         type: TXT
@@ -241,7 +241,7 @@
     - name: Email.mailgun.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: email.mailgun.istic.net.
         type: CNAME
@@ -254,7 +254,7 @@
     - name: Material.istic.net - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: material.istic.net.
         type: A
@@ -269,7 +269,7 @@
     - name: Wildcard.melior.istic.net - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: "*.melior.istic.net."
         type: A
@@ -282,7 +282,7 @@
     - name: Www.istic.net - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: www.istic.net.
         type: CNAME
@@ -297,7 +297,7 @@
     - name: Istic.co - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.co
         record: istic.co.
         type: A
@@ -310,7 +310,7 @@
     - name: Istic.co - MX
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.co
         record: istic.co.
         type: MX
@@ -323,7 +323,7 @@
     - name: Istic.co - SPF
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.co
         record: istic.co.
         type: SPF
@@ -336,7 +336,7 @@
     - name: Istic.co - TXT
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.co
         record: istic.co.
         type: TXT
@@ -349,7 +349,7 @@
     - name: Wildcard.istic.co - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.co
         record: "*.istic.co."
         type: A
@@ -362,7 +362,7 @@
     - name: 20131117185804.pm._domainkey.istic.co - TXT
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.co
         record: 20131117185804.pm._domainkey.istic.co.
         type: TXT
@@ -375,7 +375,7 @@
     - name: Www.istic.co - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.co
         record: www.istic.co.
         type: CNAME
@@ -401,7 +401,7 @@
     - name: Istic.network - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.network
         record: istic.network.
         type: A
@@ -414,7 +414,7 @@
     - name: Www.istic.network - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.network
         record: www.istic.network.
         type: A
@@ -429,7 +429,7 @@
     - name: Istic.systems - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: istic.systems.
         type: A
@@ -443,7 +443,7 @@
     - name: Www.istic.systems - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: www.istic.systems.
         type: A
@@ -459,7 +459,7 @@
     - name: Cenote.istic.systems - A
       amazon.aws.route53:
         overwrite: true
-        command: absent
+        state: absent
         zone: istic.systems
         record: cenote.istic.systems.
         type: A
@@ -473,7 +473,7 @@
     - name: Atoll.istic.systems - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: atoll.istic.systems.
         type: A
@@ -487,7 +487,7 @@
     - name: Firth.istic.systems - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: firth.istic.systems.
         type: A
@@ -501,7 +501,7 @@
     - name: Tributary.istic.systems - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: tributary.istic.systems.
         type: A
@@ -515,7 +515,7 @@
     - name: "ElasticSearch DNS"
       amazon.aws.route53:
         overwrite: true
-        command: absent
+        state: absent
         zone: istic.systems
         record: elasticsearch.svc.istic.systems.
         type: CNAME
@@ -529,7 +529,7 @@
     - name: "ElasticSearch DNS"
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: elasticsearch.svc.istic.systems.
         type: A
@@ -558,7 +558,7 @@
     - name: "SFTP DNS"
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: sftp.svc.istic.systems.
         type: A
@@ -569,7 +569,7 @@
     - name: "SFTP DNS alias"
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.systems
         record: sftp.istic.systems.
         type: CNAME

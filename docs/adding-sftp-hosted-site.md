@@ -47,7 +47,7 @@ Route53 example:
 - name: Example.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: example.com
     record: example.com.
     aws_profile: aqcom
@@ -60,7 +60,7 @@ Route53 example:
 - name: Www.example.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: example.com
     record: www.example.com.
     aws_profile: aqcom

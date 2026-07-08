@@ -2,7 +2,7 @@
 - name: Aqxs.net. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: aqxs.net
     record: aqxs.net.
     aws_profile: aqcom
@@ -13,7 +13,7 @@
 - name: Aqxs.net. - NS
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: aqxs.net
     record: aqxs.net.
     aws_profile: aqcom
@@ -24,7 +24,7 @@
 # - name: Aqxs.net. - SOA
 #  amazon.aws.route53:
 #      overwrite: true
-#      command: "create"
+#      state: present
 #      zone: "aqxs.net"
 #      record: "aqxs.net."
 #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -36,7 +36,7 @@
 - name: Aqxs.net. - TXT Records
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: aqxs.net
     record: aqxs.net.
     aws_profile: aqcom
@@ -49,7 +49,7 @@
 - name: Wildcard.aqxs.net. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: aqxs.net
     record: "*.aqxs.net."
     aws_profile: aqcom
@@ -60,7 +60,7 @@
 - name: 20151026232244.pm._domainkey.aqxs.net. - TXT
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: aqxs.net
     record: 20151026232244.pm._domainkey.aqxs.net.
     aws_profile: aqcom
@@ -71,7 +71,7 @@
 - name: Aqxs.net. - MX
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: aqxs.net
     record: lists.aqxs.net.
     aws_profile: aqcom
@@ -82,7 +82,7 @@
 - name: Pmbounce.aqxs.net. - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: aqxs.net
     record: pmbounce.aqxs.net.
     aws_profile: aqcom

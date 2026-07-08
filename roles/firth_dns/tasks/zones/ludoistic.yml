@@ -5,7 +5,7 @@
 - name: Ludoistic.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: ludoistic.com
     record: ludoistic.com.
     type: A
@@ -18,7 +18,7 @@
 - name: Www.ludoistic.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: ludoistic.com
     record: www.ludoistic.com.
     type: A
@@ -31,7 +31,7 @@
 - name: Google._domainkey.ludoistic.com. - TXT
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: ludoistic.com
     record: google._domainkey.ludoistic.com.
     type: TXT
@@ -46,7 +46,7 @@
 - name: Ludoistic.com. - MX
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: ludoistic.com
     record: ludoistic.com.
     type: MX
