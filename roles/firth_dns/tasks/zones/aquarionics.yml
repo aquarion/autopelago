@@ -8,7 +8,7 @@
     - name: Aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: aquarionics.com.
         aws_profile: aqcom
@@ -19,7 +19,7 @@
     - name: Aquarionics.com. - AAAA
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: aquarionics.com.
         aws_profile: aqcom
@@ -30,7 +30,7 @@
     - name: Aquarionics.com. - MX
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: aquarionics.com.
         aws_profile: aqcom
@@ -41,7 +41,7 @@
     # - name: Aquarionics.com. - NS
     #   amazon.aws.route53:
     #     overwrite: true
-    #     command: create
+    #     state: present
     #     zone: aquarionics.com
     #     record: aquarionics.com.
     #     aws_profile: aqcom
@@ -52,7 +52,7 @@
     # - name: Aquarionics.com. - SOA
     #  amazon.aws.route53:
     #      overwrite: true
-    #      command: "create"
+    #      state: present
     #      zone: "aquarionics.com"
     #      record: "aquarionics.com."
     #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -64,7 +64,7 @@
     - name: Aquarionics.com. - SPF
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: aquarionics.com.
         aws_profile: aqcom
@@ -75,7 +75,7 @@
     - name: Aquarionics.com. - TXT
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: aquarionics.com.
         aws_profile: aqcom
@@ -86,7 +86,7 @@
     - name: Google._domainkey.aquarionics.com. - TXT
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: google._domainkey.aquarionics.com.
         aws_profile: aqcom
@@ -97,7 +97,7 @@
     - name: Stream.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: stream.aquarionics.com.
         aws_profile: aqcom
@@ -108,7 +108,7 @@
     - name: Live.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: live.aquarionics.com.
         aws_profile: aqcom
@@ -119,7 +119,7 @@
     - name: Cdn.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: cdn.aquarionics.com.
         aws_profile: aqcom
@@ -130,7 +130,7 @@
     - name: Amazon DNS Validation for aqcom - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: _718a5f89a82bf1a5111be33a782c832a.aquarionics.com.
         aws_profile: aqcom
@@ -141,7 +141,7 @@
     - name: Amazon DNS Validation for cdn.aqcom - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: _7ca693a0f8f72e0865bf5335a6877adb.cdn.aquarionics.com.
         aws_profile: aqcom
@@ -152,7 +152,7 @@
     - name: \*.cdn.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: "*.cdn.aquarionics.com."
         aws_profile: aqcom
@@ -163,7 +163,7 @@
     - name: 1.cdn.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: delete
+        state: absent
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         aws_profile: aqcom
@@ -173,7 +173,7 @@
     - name: 2.cdn.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: delete
+        state: absent
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         value: d2r0e8lumqw3g1.cloudfront.net
@@ -183,7 +183,7 @@
     - name: 3.cdn.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: delete
+        state: absent
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         value: d2r0e8lumqw3g1.cloudfront.net
@@ -193,7 +193,7 @@
     - name: 4.cdn.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: delete
+        state: absent
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         value: d2r0e8lumqw3g1.cloudfront.net
@@ -203,7 +203,7 @@
     - name: Dailyphoto.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: dailyphoto.aquarionics.com.
         aws_profile: aqcom
@@ -214,7 +214,7 @@
     - name: Live.dailyphoto.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: live.dailyphoto.aquarionics.com.
         aws_profile: aqcom
@@ -225,7 +225,7 @@
     - name: Feeds.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: feeds.aquarionics.com.
         aws_profile: aqcom
@@ -236,7 +236,7 @@
     - name: Mail.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: mail.aquarionics.com.
         aws_profile: aqcom
@@ -247,7 +247,7 @@
     - name: Thalium. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: thalium.aquarionics.com.
         aws_profile: aqcom
@@ -258,7 +258,7 @@
     - name: Old.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: old.aquarionics.com.
         aws_profile: aqcom
@@ -269,7 +269,7 @@
     - name: Old.aquarionics.com. - AAAA
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: old.aquarionics.com.
         aws_profile: aqcom
@@ -280,7 +280,7 @@
     - name: Tumblr.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: tumblr.aquarionics.com.
         aws_profile: aqcom
@@ -291,7 +291,7 @@
     - name: Wiki.aquarionics.com. - AAAA
       amazon.aws.route53:
         overwrite: true
-        command: delete
+        state: absent
         zone: aquarionics.com
         record: wiki.aquarionics.com.
         aws_profile: aqcom
@@ -302,7 +302,7 @@
     - name: Wiki.aquarionics.com. - CNAME
       amazon.aws.route53:
         overwrite: true
-        command: delete
+        state: absent
         zone: aquarionics.com
         record: wiki.aquarionics.com.
         aws_profile: aqcom
@@ -318,12 +318,12 @@
         zone: aquarionics.com
         record: wiki.aquarionics.com.
         value: "{{ loadbalancer_ip }}"
-        command: create
+        state: present
 
     - name: Www.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: www.aquarionics.com.
         aws_profile: aqcom
@@ -334,7 +334,7 @@
     - name: Wywo.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: wywo.aquarionics.com.
         aws_profile: aqcom
@@ -345,7 +345,7 @@
     - name: Vis.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: vis.aquarionics.com.
         aws_profile: aqcom
@@ -358,7 +358,7 @@
     - name: Vtt.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: vtt.aquarionics.com.
         aws_profile: aqcom
@@ -371,7 +371,7 @@
     - name: Panopticon.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: panopticon.aquarionics.com.
         aws_profile: aqcom
@@ -382,7 +382,7 @@
     - name: Flix.aquarionics.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: flix.aquarionics.com.
         aws_profile: aqcom
@@ -393,7 +393,7 @@
     - name: Aquarionics.com. - BlueSky Validation
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: aquarionics.com
         record: _atproto.aquarionics.com
         aws_profile: aqcom

@@ -211,7 +211,7 @@ git commit -m "🎇 Add firth_novelathon role skeleton — defaults, meta, handl
     - name: novelathon.com - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: novelathon.com
         record: "novelathon.com."
         type: A
@@ -224,7 +224,7 @@ git commit -m "🎇 Add firth_novelathon role skeleton — defaults, meta, handl
     - name: novelathon.istic.dev - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.dev
         record: "novelathon.istic.dev."
         type: A

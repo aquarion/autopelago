@@ -8,7 +8,7 @@
 - name: Foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: foip.me.
     aws_profile: aqcom
@@ -16,21 +16,21 @@
     ttl: "86400"
     value: 67.199.248.13,67.199.248.12
 
-- name: Foip.me. - NS
-  amazon.aws.route53:
-    overwrite: true
-    command: delete
-    zone: foip.me
-    record: foip.me.
-    aws_profile: aqcom
-    type: NS
-    ttl: "172800"
-    value: ns-1164.awsdns-17.org.,ns-1794.awsdns-32.co.uk.,ns-76.awsdns-09.com.,ns-979.awsdns-58.net.
+# - name: Foip.me. - NS
+#   amazon.aws.route53:
+#     overwrite: true
+#     state: absent
+#     zone: foip.me
+#     record: foip.me.
+#     aws_profile: aqcom
+#     type: NS
+#     ttl: "172800"
+#     value: ns-1164.awsdns-17.org.,ns-1794.awsdns-32.co.uk.,ns-76.awsdns-09.com.,ns-979.awsdns-58.net.
 
 # - name: Foip.me. - SOA
 #  amazon.aws.route53:
 #      overwrite: true
-#      command: "create"
+#      state: present
 #      zone: "foip.me"
 #      record: "foip.me."
 #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -42,7 +42,7 @@
 - name: Dud.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: dud.foip.me.
     aws_profile: aqcom
@@ -53,7 +53,7 @@
 - name: Sands.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: sands.foip.me.
     aws_profile: aqcom
@@ -61,21 +61,21 @@
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
 
-- name: Strangelrp.foip.me. - A
-  amazon.aws.route53:
-    overwrite: true
-    command: delete
-    zone: foip.me
-    record: strangelrp.foip.me.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
+# - name: Strangelrp.foip.me. - A
+#   amazon.aws.route53:
+#     overwrite: true
+#     state: absent
+#     zone: foip.me
+#     record: strangelrp.foip.me.
+#     aws_profile: aqcom
+#     type: A
+#     ttl: "300"
+#     value: "{{ loadbalancer_ip }}"
 
 - name: Wakingnightmare.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: wakingnightmare.foip.me.
     aws_profile: aqcom
@@ -86,7 +86,7 @@
 - name: Fourrivers.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: fourrivers.foip.me.
     aws_profile: aqcom
@@ -97,7 +97,7 @@
 - name: Forgotten.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: forgotten.foip.me.
     aws_profile: aqcom
@@ -108,7 +108,7 @@
 - name: Ojaqs.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: ojaqs.foip.me.
     aws_profile: aqcom
@@ -119,7 +119,7 @@
 - name: Bless.ojaqs.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: bless.ojaqs.foip.me.
     aws_profile: aqcom
@@ -130,7 +130,7 @@
 - name: Diaspora.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: diaspora.foip.me.
     aws_profile: aqcom
@@ -141,7 +141,7 @@
 - name: Herodiaries.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: herodiaries.foip.me.
     aws_profile: aqcom
@@ -152,7 +152,7 @@
 - name: Sevenmirrors.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: sevenmirrors.foip.me.
     aws_profile: aqcom
@@ -163,7 +163,7 @@
 - name: Idlespeculation.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: idlespeculation.foip.me.
     aws_profile: aqcom
@@ -174,7 +174,7 @@
 - name: Bobbitworm.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: bobbitworm.foip.me.
     aws_profile: aqcom
@@ -185,7 +185,7 @@
 - name: Obviouslyfakeurl.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: delete
+    state: absent
     zone: foip.me
     record: obviouslyfakeurl.foip.me.
     aws_profile: aqcom

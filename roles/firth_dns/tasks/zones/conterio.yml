@@ -11,7 +11,7 @@
 - name: Conterio.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: conterio.co.uk
     record: conterio.co.uk.
     aws_profile: aqcom
@@ -24,7 +24,7 @@
 # - name: Conterio.co.uk. - NS
 #   amazon.aws.route53:
 #       overwrite: true
-#       command: "create"
+#       state: present
 #       zone: "conterio.co.uk"
 #       record: "conterio.co.uk."
 #       aws_access_key: '{{ aqcom_aws_key }}'
@@ -36,7 +36,7 @@
 # - name: Conterio.co.uk. - SOA
 #  amazon.aws.route53:
 #      overwrite: true
-#      command: "create"
+#      state: present
 #      zone: "conterio.co.uk"
 #      record: "conterio.co.uk."
 #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -48,7 +48,7 @@
 - name: Michael.conterio.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: conterio.co.uk
     record: michael.conterio.co.uk.
     aws_profile: aqcom
@@ -61,7 +61,7 @@
 - name: Www.Michael.conterio.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: conterio.co.uk
     record: www.michael.conterio.co.uk.
     aws_profile: aqcom
@@ -74,7 +74,7 @@
 - name: Www.conterio.co.uk. - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: conterio.co.uk
     record: www.conterio.co.uk.
     aws_profile: aqcom

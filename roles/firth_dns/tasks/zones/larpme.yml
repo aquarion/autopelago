@@ -2,7 +2,7 @@
 - name: Larpme DNS - larpme root
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: larp.me
     type: A
@@ -13,7 +13,7 @@
 - name: Larpme DNS - MX
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: larp.me
     type: MX
@@ -24,7 +24,7 @@
 - name: Larpme DNS - NS
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: larp.me
     type: NS
@@ -35,7 +35,7 @@
 # - name: Larpme DNS - SOA
 #  amazon.aws.route53:
 #      overwrite: true
-#      command: "create"
+#      state: present
 #      zone: "larp.me"
 #      record: "larp.me"
 #      type: "SOA"
@@ -45,7 +45,7 @@
 - name: Larpme DNS - SPF
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: larp.me
     type: SPF
@@ -56,7 +56,7 @@
 - name: Larpme DNS - DKIM
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: 20170201160036pm._domainkey.larp.me
     type: TXT
@@ -67,7 +67,7 @@
 - name: Larpme DNS - Prod API
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: api.larp.me
     type: CNAME
@@ -78,7 +78,7 @@
 - name: Larpme DNS - Fic
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: fic.larp.me
     type: CNAME
@@ -89,7 +89,7 @@
 - name: Larpme DNS - Blog
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: blog.larp.me
     type: CNAME
@@ -100,7 +100,7 @@
 - name: Larpme DNS - Dev
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: dev.larp.me
     type: A
@@ -111,7 +111,7 @@
 - name: Larpme DNS - Prod WWW
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: www.larp.me
     type: A
@@ -122,7 +122,7 @@
 - name: Larpme DNS - Local Dev
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: local.larp.me
     type: A
@@ -133,7 +133,7 @@
 - name: Larpme DNS - Staging
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: staging.larp.me
     type: A
@@ -144,7 +144,7 @@
 - name: Larpme DNS - Staging API
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: api.staging.larp.me
     type: CNAME
@@ -155,7 +155,7 @@
 - name: Larpme DNS - WIKI
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: wiki.larp.me
     type: A
@@ -166,7 +166,7 @@
 - name: Larpme DNS - LOCATIONS
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: locations.larp.me
     type: A
@@ -185,7 +185,7 @@
 - name: Larp.me.uk
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me.uk
     record: larp.me.uk
     type: A
@@ -198,7 +198,7 @@
 - name: Larp.me.uk - Prod WWW
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me.uk
     record: www.larp.me.uk
     type: A
@@ -211,7 +211,7 @@
 - name: Larp.me.uk - PD Forums
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: larp.me.uk
     record: pdforums.larp.me.uk
     type: A

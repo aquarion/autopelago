@@ -8,7 +8,7 @@
     - name: Camlarp.co.uk. - A
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: camlarp.co.uk
         record: camlarp.co.uk.
         aws_profile: aqcom
@@ -19,7 +19,7 @@
     - name: Camlarp.co.uk. - NS
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: camlarp.co.uk
         record: camlarp.co.uk.
         aws_profile: aqcom
@@ -30,7 +30,7 @@
     # - name: Camlarp.co.uk. - SOA
     #  amazon.aws.route53:
     #      overwrite: true
-    #      command: "create"
+    #      state: present
     #      zone: "camlarp.co.uk"
     #      record: "camlarp.co.uk."
     #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -42,7 +42,7 @@
     - name: "[event].camlarp.co.uk. - A"
       amazon.aws.route53:
         overwrite: true
-        command: create
+        state: present
         zone: camlarp.co.uk
         record: "{{ item }}"
         aws_profile: aqcom

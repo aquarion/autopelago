@@ -27,7 +27,7 @@
     - name: Carcosadreams.co.uk. - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.co.uk
         record: carcosadreams.co.uk.
         type: A
@@ -39,7 +39,7 @@
     - name: Carcosadreams.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: carcosadreams.com.
         type: A
@@ -51,7 +51,7 @@
     - name: Carcosadreams.uk. - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.uk
         record: carcosadreams.uk.
         type: A
@@ -63,7 +63,7 @@
     - name: Www.carcosadreams.co.uk. - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.co.uk
         record: www.carcosadreams.co.uk.
         type: A
@@ -75,7 +75,7 @@
     - name: Www.carcosadreams.com. - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: www.carcosadreams.com.
         type: A
@@ -87,7 +87,7 @@
     - name: Www.carcosadreams.uk. - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.uk
         record: www.carcosadreams.uk.
         type: A
@@ -99,7 +99,7 @@
     - name: "*.carcosadreams.co.uk. - A"
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.co.uk
         record: "*.carcosadreams.co.uk."
         type: A
@@ -111,7 +111,7 @@
     - name: "*.carcosadreams.com. - A"
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: "*.carcosadreams.com."
         type: A
@@ -123,7 +123,7 @@
     - name: Carcosadreams.com old records
       amazon.aws.route53:
         overwrite: true
-        command: absent
+        state: absent
         zone: carcosadreams.com
         record: "{{ item }}"
         type: A
@@ -139,7 +139,7 @@
     - name: Carcosadreams.co.uk. - MX
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.co.uk
         record: carcosadreams.co.uk
         type: MX
@@ -151,7 +151,7 @@
     - name: Carcosadreams.com. - MX
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: carcosadreams.com
         type: MX
@@ -163,7 +163,7 @@
     - name: Carcosadreams.com. - autodiscover
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: autodiscover.carcosadreams.com
         type: CNAME
@@ -175,7 +175,7 @@
     - name: Carcosadreams.co.uk. - autodiscover
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.co.uk
         record: autodiscover.carcosadreams.co.uk
         type: CNAME
@@ -187,7 +187,7 @@
     - name: Carcosadreams.com. - sipdir
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: sip.carcosadreams.com
         type: CNAME
@@ -199,7 +199,7 @@
     - name: Carcosadreams.com. - sipdir.TLS
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: _sip._tls.carcosadreams.com
         type: SRV
@@ -211,7 +211,7 @@
     - name: Carcosadreams.com. - sipdir.Federated
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: _sipfederationtls._tcp.carcosadreams.com
         type: SRV
@@ -223,7 +223,7 @@
     - name: Carcosadreams.com. - lyncdiscover
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: lyncdiscover.carcosadreams.com
         type: CNAME
@@ -235,7 +235,7 @@
     - name: Carcosadreams.com. - enterpriseregistration
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: enterpriseregistration.carcosadreams.com
         type: CNAME
@@ -247,7 +247,7 @@
     - name: Carcosadreams.com. - enterpriseenrollment
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: enterpriseenrollment.carcosadreams.com
         type: CNAME
@@ -259,7 +259,7 @@
     - name: Carcosadreams.com. - SPF
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: carcosadreams.com
         type: TXT
@@ -271,7 +271,7 @@
     - name: Carcosadreams.co.uk. - SPF
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.co.uk
         record: carcosadreams.co.uk
         type: TXT
@@ -283,7 +283,7 @@
     - name: Carcosadreams.com. - Mailchimp Domainkey
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: k2._domainkey.carcosadreams.com
         type: CNAME
@@ -295,7 +295,7 @@
     - name: Carcosadreams.com. - Mailchimp Domainkey 2
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: k3._domainkey.carcosadreams.com
         type: CNAME
@@ -307,7 +307,7 @@
     - name: Carcosadreams.com. - Mailchimp Domainkey 2
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: k3._domainkey.carcosadreams.com
         type: CNAME
@@ -319,7 +319,7 @@
     - name: Freshdesk DKIM 1/4
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: zuda3._domainkey.carcosadreams.com
         type: CNAME
@@ -331,7 +331,7 @@
     - name: Freshdesk DKIM 2/4
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: zc1p2._domainkey.carcosadreams.com
         type: CNAME
@@ -343,7 +343,7 @@
     - name: Freshdesk DKIM 3/4
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: 1s3._domainkey.carcosadreams.com
         type: CNAME
@@ -355,7 +355,7 @@
     - name: Freshdesk DKIM 4/4
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: fwdkim1.carcosadreams.com
         type: CNAME
@@ -367,7 +367,7 @@
     - name: Bluesky
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: carcosadreams.com
         record: _atproto.carcosadreams.com
         type: TXT

@@ -2,7 +2,7 @@
 - name: Bromioscreations.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: bromioscreations.com.
     aws_profile: aqcom
@@ -13,7 +13,7 @@
 - name: Bromioscreations.com. - AAAA
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: bromioscreations.com.
     aws_profile: aqcom
@@ -24,7 +24,7 @@
 - name: Bromioscreations.com. - MX
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: bromioscreations.com.
     aws_profile: aqcom
@@ -35,7 +35,7 @@
 # - name: Bromioscreations.com. - NS
 #   amazon.aws.route53:
 #       overwrite: true
-#       command: "create"
+#       state: present
 #       zone: "bromioscreations.com"
 #       record: "bromioscreations.com."
 #       aws_access_key: '{{ aqcom_aws_key }}'
@@ -47,7 +47,7 @@
 # - name: Bromioscreations.com. - SOA
 #  amazon.aws.route53:
 #      overwrite: true
-#      command: "create"
+#      state: present
 #      zone: "bromioscreations.com"
 #      record: "bromioscreations.com."
 #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -59,7 +59,7 @@
 - name: Bromioscreations.com. - SPF
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: bromioscreations.com.
     aws_profile: aqcom
@@ -70,7 +70,7 @@
 - name: Bromioscreations.com. - TXT
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: bromioscreations.com.
     aws_profile: aqcom
@@ -81,7 +81,7 @@
 - name: Google._domainkey.bromioscreations.com. - TXT
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: google._domainkey.bromioscreations.com.
     aws_profile: aqcom
@@ -92,7 +92,7 @@
 - name: Cdn.bromioscreations.com. - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: cdn.bromioscreations.com.
     aws_profile: aqcom
@@ -103,7 +103,7 @@
 # - name: Amazon DNS Validation for aqcom - CNAME
 #   amazon.aws.route53:
 #       overwrite: true
-#       command: "create"
+#       state: present
 #       zone: "bromioscreations.com"
 #       record: "_718a5f89a82bf1a5111be33a782c832a.bromioscreations.com."
 #       aws_access_key: '{{ aqcom_aws_key }}'
@@ -115,7 +115,7 @@
 # - name: Amazon DNS Validation for cdn.aqcom - CNAME
 #   amazon.aws.route53:
 #       overwrite: true
-#       command: "create"
+#       state: present
 #       zone: "bromioscreations.com"
 #       record: "_7ca693a0f8f72e0865bf5335a6877adb.cdn.bromioscreations.com."
 #       aws_access_key: '{{ aqcom_aws_key }}'
@@ -127,7 +127,7 @@
 - name: \*.cdn.bromioscreations.com. - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: "*.cdn.bromioscreations.com."
     aws_profile: aqcom
@@ -138,7 +138,7 @@
 - name: Mail.bromioscreations.com. - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: mail.bromioscreations.com.
     aws_profile: aqcom
@@ -149,7 +149,7 @@
 - name: Www.bromioscreations.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: bromioscreations.com
     record: www.bromioscreations.com.
     aws_profile: aqcom

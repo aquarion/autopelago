@@ -101,7 +101,7 @@
     # - name: (CF) Aquarionics.com. - SOA
     #  community.general.cloudflare_dns:
     #      overwrite: true
-    #      command: "create"
+    #      state: present
     #      zone: "aquarionics.com"
     #      record: "
     #      aws_access_key: '{{ aqcom_aws_key }}'

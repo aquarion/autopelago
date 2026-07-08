@@ -2,7 +2,7 @@
 - name: Warehousebasement.com. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: warehousebasement.com
     record: warehousebasement.com.
     aws_profile: aqcom
@@ -15,7 +15,7 @@
 - name: Warehousebasement.com. - NS
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: warehousebasement.com
     record: warehousebasement.com.
     aws_profile: aqcom
@@ -28,7 +28,7 @@
 # - name: Warehousebasement.com. - SOA
 #  amazon.aws.route53:
 #      overwrite: true
-#      command: "create"
+#      state: present
 #      zone: "warehousebasement.com"
 #      record: "warehousebasement.com."
 #      aws_access_key: '{{ aqcom_aws_key }}'
@@ -40,7 +40,7 @@
 - name: Www.warehousebasement.com. - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: create
+    state: present
     zone: warehousebasement.com
     record: www.warehousebasement.com.
     aws_profile: aqcom

@@ -2,7 +2,7 @@
 - name: Nanocountdown.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: nanocountdown.com
     record: nanocountdown.com.
     type: A
@@ -15,7 +15,7 @@
 - name: Dev.nanocountdown.com - CNAME - remove
   amazon.aws.route53:
     overwrite: true
-    command: absent
+    state: absent
     zone: nanocountdown.com
     record: dev.nanocountdown.com.
     type: CNAME
@@ -28,7 +28,7 @@
 - name: Dev.nanocountdown.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: nanocountdown.com
     record: dev.nanocountdown.com.
     type: A
@@ -41,7 +41,7 @@
 - name: Www.nanocountdown.com - CNAME - remove
   amazon.aws.route53:
     overwrite: true
-    command: absent
+    state: absent
     zone: nanocountdown.com
     record: www.nanocountdown.com.
     type: CNAME
@@ -54,7 +54,7 @@
 - name: Www.nanocountdown.com - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: nanocountdown.com
     record: www.nanocountdown.com.
     type: A

@@ -2,7 +2,7 @@
 - name: Dagon.church - A
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: dagon.church
     record: dagon.church.
     type: A
@@ -15,7 +15,7 @@
 - name: Live.dagon.church - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: dagon.church
     record: live.dagon.church.
     type: CNAME
@@ -28,7 +28,7 @@
 - name: Wiki.dagon.church - CNAME
   amazon.aws.route53:
     overwrite: true
-    command: present
+    state: present
     zone: dagon.church
     record: wiki.dagon.church.
     type: CNAME

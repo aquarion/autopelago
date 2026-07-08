@@ -3,7 +3,7 @@
   amazon.aws.route53:
     profile: aqcom
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: 20170201153337pm._domainkey.pdforums.larp.me
     type: TXT
@@ -15,7 +15,7 @@
 # - name: PD Forums DNS - PDForums SPF
 #  amazon.aws.route53:
 #    overwrite: true
-#    command: "create"
+#    state: present
 #    zone: "larp.me"
 #    record: "postmark.pdforums.larp.me"
 #    value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
@@ -28,7 +28,7 @@
   amazon.aws.route53:
     profile: aqcom
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: postmark.pdforums.larp.me
     value: pm.mtasv.net
@@ -41,7 +41,7 @@
   amazon.aws.route53:
     profile: aqcom
     overwrite: true
-    command: create
+    state: present
     zone: larp.me
     record: pdforums.larp.me
     value: 138.201.60.152
@@ -54,7 +54,7 @@
   amazon.aws.route53:
     profile: aqcom
     overwrite: true
-    command: delete
+    state: absent
     zone: larp.me
     record: old.pdforums.larp.me
     value: 138.201.60.152

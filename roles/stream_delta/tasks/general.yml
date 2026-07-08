@@ -7,7 +7,7 @@
     - name: Voyeur.istic.net - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: voyeur.istic.net.
         type: A
@@ -20,7 +20,7 @@
     - name: Ws.voyeur.istic.net - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.net
         record: ws.voyeur.istic.net.
         type: A
@@ -33,7 +33,7 @@
     - name: Voyeur.istic.dev - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.dev
         record: voyeur.istic.dev.
         type: A
@@ -46,7 +46,7 @@
     - name: Ws.voyeur.istic.dev - A
       amazon.aws.route53:
         overwrite: true
-        command: present
+        state: present
         zone: istic.dev
         record: ws.voyeur.istic.dev.
         type: A
