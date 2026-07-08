@@ -9,17 +9,16 @@ set -o errtrace #Cascade that to all functions
 echo "Generating certificates for firth"
 sudo certbot -n -t certonly --expand --nginx --deploy-hook "service dovecot restart" --cert-name firth.water.gkhs.net \
 	--domains firth.water.gkhs.net -d "istic.net" \
-	-d "stream.aquarionics.com,www.aquarionics.com,aquarionics.com,old.aquarionics.com,plex.aquarionics.com,vis.aquarionics.com,panopticon.aquarionics.com,thalium.aquarionics.com,vtt.aquarionics.com,flix.aquarionics.com,dailyphoto.aquarionics.com,live.dailyphoto.aquarionics.com,feeds.aquarionics.com,wywo.aquarionics.com" \
 	-d "factionfiction.net,www.factionfiction.net" \
-	-d "idlespeculation.foip.me,herodiaries.foip.me,sevenmirrors.foip.me,istic.co" \
 	-d "themonthlymoon.com" \
-	-d "ludo.istic.co,imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,live.art.istic.net,imperial.istic.net,material.istic.net" \
+	-d "ludo.istic.co,imperial.istic.net,altru.istic.net,log.istic.net,hol.istic.net,live.art.istic.net,imperial.istic.net,material.istic.net,istic.co" \
 	-d "warehousebasement.com,www.warehousebasement.com" \
 	-d "dagon.church,live.dagon.church,wiki.dagon.church" \
 	-d "mechan.istic.net,optim.istic.net" \
 	-d "www.larpfic.com,larpfic.com,www.lrpfic.com,lrpfic.com" \
 	-d "www.deathuntodarkness.org" \
-	-d "deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk"
+	-d "deadbadgerdesigns.co.uk,www.deadbadgerdesigns.co.uk" \
+	-d "live.dailyphoto.aquarionics.com"
 
 #forums.profounddecisions.co.uk
 # omnyom.com,www.omnyom.com,\

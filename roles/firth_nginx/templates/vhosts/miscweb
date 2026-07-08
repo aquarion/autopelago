@@ -64,12 +64,28 @@ server {
   warehousebasement.com
   dagon.church live.dagon.church wiki.dagon.church
   istic.co
-  old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
-  live.dailyphoto.aquarionics.com dailyphoto.aquarionics.com
+  live.dailyphoto.aquarionics.com
   www.deathuntodarkness.org
   deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
   include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
+
+  error_log /var/log/nginx/miscweb.error.log;
+  access_log /var/log/nginx/miscweb.access.log;
+  add_header X-WhyAmI miscweb;
+
+  location / {
+    proxy_pass http://docker-miscweb;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com dailyphoto.aquarionics.com;
+  include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
 
   error_log /var/log/nginx/miscweb.error.log;
   access_log /var/log/nginx/miscweb.access.log;

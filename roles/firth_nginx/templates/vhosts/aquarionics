@@ -54,7 +54,28 @@ server {
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
-  server_name wywo.aquarionics.com www.aquarionics.com factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me;
+  server_name wywo.aquarionics.com www.aquarionics.com;
+  add_header X-WhyAmI wordpress;
+  add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
+  include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
+
+  error_log /var/log/nginx/wordpress.error.log;
+  access_log /var/log/nginx/wordpress.access.log;
+
+  location / {
+    proxy_pass http://container-wordpress;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  include /etc/nginx/snippets/errors.conf;
+  client_max_body_size 32M;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me;
   add_header X-WhyAmI wordpress;
   add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
   include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
@@ -105,7 +126,7 @@ server {
   listen [::]:443 ssl proxy_protocol;
   root /var/www/;
   include /etc/nginx/snippets/errors.conf;
-  include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
+  include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
   add_header X-WhyAmI "feeds redirect";
   return 301 https://www.aquarionics.com/feed/;
 }
