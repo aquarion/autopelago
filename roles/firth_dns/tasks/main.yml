@@ -18,17 +18,8 @@
 #   tags:
 #     - aws
 
-- name: Aquarionics DNS - AWS
-  ansible.builtin.include_tasks: zones/aquarionics.yml
-  tags:
-    - aws
-    - aquarionics
-    - aquarionics_aws
-
-- name: Aquarionics DNS - Cloudflare
-  ansible.builtin.include_tasks: zones/aquarionics_cf.yml
-  tags:
-    - always
+- name: Aquarionics DNS
+  ansible.builtin.import_tasks: zones/aquarionics.yml
 
 - name: Socksandpuppets DNS - Cloudflare
   ansible.builtin.include_tasks: zones/socksandpuppets.yml
@@ -61,6 +52,7 @@
   ansible.builtin.include_tasks: zones/foipme.yml
   tags:
     - aws
+    - foipme
 
 - name: Update Route53 for warehouse
   ansible.builtin.include_tasks: zones/warehouse.yml
