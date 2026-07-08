@@ -4,14 +4,6 @@ upstream container-wordpress {
 }
 
 server {
-  listen 443 ssl proxy_protocol;
-  listen 80;
-  server_name herodiaries.blogs.water.gkhs.net;
-  return 301 $scheme://herodiaries.foip.me;
-  add_header X-WhyAmI "wordpress heroediaries redirect";
-}
-
-server {
   listen 80;
   listen [::]:80;
   server_name
@@ -22,9 +14,7 @@ server {
   blogs.water.gkhs.net *.blogs.water.gkhs.net
   omnyom.com
   www.cleartextcontent.co.uk
-  herodiaries.foip.me
   themonthlymoon.com
-  idlespeculation.foip.me
   blogs.istic.network *.blogs.istic.network;
   return 301 https://$host$request_uri;
   include /etc/nginx/snippets/errors.conf;
@@ -75,7 +65,7 @@ server {
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
-  server_name factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk herodiaries.foip.me themonthlymoon.com idlespeculation.foip.me;
+  server_name factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk themonthlymoon.com;
   add_header X-WhyAmI wordpress;
   add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
   include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;

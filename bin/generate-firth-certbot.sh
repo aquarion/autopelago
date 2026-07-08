@@ -61,8 +61,6 @@ echo "Generating certificates for nicholasavenell.com"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name nicholasavenell.com -d "*.nicholasavenell.com" -d "*.nicholasavenell.net" -d nicholasavenell.com -d nicholasavenell.net
 echo "Generating certificates for bromioscreations.com"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name bromioscreations.com -d "*.bromioscreations.com"
-echo "Generating certificates for foip.me"
-sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name foip.me -d "*.foip.me"
 echo "Generating certificates for larp.me"
 sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 --cert-name larp.me -d "larp.me" -d "*.larp.me" -d "larp.me.uk" -d "*.larp.me.uk"
 echo "Generating certificates for camlarp"
