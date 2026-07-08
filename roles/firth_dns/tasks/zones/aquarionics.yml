@@ -25,7 +25,7 @@
         aws_profile: aqcom
         type: AAAA
         ttl: "300"
-        value: "{{ ansible_default_ipv6.address }}"
+        value: "{{ loadbalancer_ipv6 }}"
 
     - name: Aquarionics.com. - MX
       amazon.aws.route53:
@@ -275,7 +275,7 @@
         aws_profile: aqcom
         type: AAAA
         ttl: "300"
-        value: "{{ ansible_default_ipv6.address }}"
+        value: "{{ loadbalancer_ipv6 }}"
 
     - name: Tumblr.aquarionics.com. - CNAME
       amazon.aws.route53:
@@ -297,7 +297,7 @@
         aws_profile: aqcom
         type: AAAA
         ttl: "300"
-        value: "{{ ansible_default_ipv6.address }}"
+        value: "{{ loadbalancer_ipv6 }}"
 
     - name: Wiki.aquarionics.com. - CNAME
       amazon.aws.route53:
