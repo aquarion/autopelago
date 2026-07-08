@@ -1,8 +1,14 @@
 ---
+# We no longer own foip.me - every record below is explicitly deleted
+# (rather than just removing this file) so a real ansible run actually
+# tears down the Route53 records instead of merely stopping future
+# creates. Once this has run successfully against firth, this file and
+# its include in main.yml can be removed entirely.
+
 - name: Foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: foip.me.
     aws_profile: aqcom
@@ -13,7 +19,7 @@
 - name: Foip.me. - NS
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: foip.me.
     aws_profile: aqcom
@@ -36,7 +42,7 @@
 - name: Dud.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: dud.foip.me.
     aws_profile: aqcom
@@ -47,7 +53,7 @@
 - name: Sands.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: sands.foip.me.
     aws_profile: aqcom
@@ -91,7 +97,7 @@
 - name: Forgotten.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: forgotten.foip.me.
     aws_profile: aqcom
@@ -102,7 +108,7 @@
 - name: Ojaqs.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: ojaqs.foip.me.
     aws_profile: aqcom
@@ -113,7 +119,7 @@
 - name: Bless.ojaqs.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: bless.ojaqs.foip.me.
     aws_profile: aqcom
@@ -124,7 +130,7 @@
 - name: Diaspora.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: diaspora.foip.me.
     aws_profile: aqcom
@@ -135,7 +141,7 @@
 - name: Herodiaries.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: herodiaries.foip.me.
     aws_profile: aqcom
@@ -146,7 +152,7 @@
 - name: Sevenmirrors.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: sevenmirrors.foip.me.
     aws_profile: aqcom
@@ -157,7 +163,7 @@
 - name: Idlespeculation.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: idlespeculation.foip.me.
     aws_profile: aqcom
@@ -168,7 +174,7 @@
 - name: Bobbitworm.foip.me. - A
   amazon.aws.route53:
     overwrite: true
-    command: create
+    command: delete
     zone: foip.me
     record: bobbitworm.foip.me.
     aws_profile: aqcom

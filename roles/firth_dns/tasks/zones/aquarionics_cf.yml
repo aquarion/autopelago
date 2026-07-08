@@ -27,7 +27,7 @@
         api_token: "{{ cloudflare_api_key }}"
         type: AAAA
         # ttl: "300"
-        value: "{{ ansible_default_ipv6.address }}"
+        value: "{{ loadbalancer_ipv6 }}"
 
     - name: (CF) Aquarionics.com. - MX 1/5
       community.general.cloudflare_dns:
@@ -307,7 +307,7 @@
         api_token: "{{ cloudflare_api_key }}"
         type: AAAA
         # ttl: "300" # Don't set ttl on proxied records
-        value: "{{ ansible_default_ipv6.address }}"
+        value: "{{ loadbalancer_ipv6 }}"
         proxied: true
 
     - name: (CF) Tumblr.aquarionics.com. - CNAME

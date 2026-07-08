@@ -19,7 +19,7 @@
     aws_profile: aqcom
     type: AAAA
     ttl: "300"
-    value: "{{ ansible_default_ipv6.address }}"
+    value: "{{ loadbalancer_ipv6 }}"
 
 - name: Bromioscreations.com. - MX
   amazon.aws.route53:

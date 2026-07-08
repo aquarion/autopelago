@@ -21,7 +21,6 @@ server {
   www.deathuntodarkness.org
   *.istic.net
   *.istic.dev
-  *.foip.me
   *.bromioscreations.com
   *.aquarionics.com
   *.hubris.house
@@ -64,12 +63,28 @@ server {
   warehousebasement.com
   dagon.church live.dagon.church wiki.dagon.church
   istic.co
-  old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com
-  live.dailyphoto.aquarionics.com dailyphoto.aquarionics.com
+  live.dailyphoto.aquarionics.com
   www.deathuntodarkness.org
   deadbadgerdesigns.co.uk www.deadbadgerdesigns.co.uk;
   include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
+
+  error_log /var/log/nginx/miscweb.error.log;
+  access_log /var/log/nginx/miscweb.access.log;
+  add_header X-WhyAmI miscweb;
+
+  location / {
+    proxy_pass http://docker-miscweb;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
+  }
+  include /etc/nginx/snippets/errors.conf;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com dailyphoto.aquarionics.com;
+  include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
 
   error_log /var/log/nginx/miscweb.error.log;
   access_log /var/log/nginx/miscweb.access.log;
@@ -160,26 +175,6 @@ server {
   server_name *.hubris.house hubris.house;
   include /etc/nginx/snippets/ssl/hubris_ssl.conf;
   add_header X-WhyAmI "miscweb hubris";
-
-  location / {
-    proxy_pass http://docker-miscweb;
-    include /etc/nginx/snippets/proxy_params.nginx.conf;
-  }
-  include /etc/nginx/snippets/errors.conf;
-}
-
-#  ___    _        __  __
-# | __|__(_)_ __  |  \/  |___
-# | _/ _ \ | '_ \_| |\/| / -_)
-# |_|\___/_| .__(_)_|  |_\___|
-#          |_|
-
-server {
-  listen 443 ssl proxy_protocol;
-  listen [::]:443 ssl proxy_protocol;
-  server_name *.foip.me;
-  include /etc/nginx/snippets/ssl/foipme_ssl.conf;
-  add_header X-WhyAmI "miscweb foipme";
 
   location / {
     proxy_pass http://docker-miscweb;
