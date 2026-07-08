@@ -3,3 +3,4 @@ firth_ip: 46.4.84.119
 
 loadbalancer_domain: tributary.water.gkhs.net
 loadbalancer_ip: 49.12.23.194
+loadbalancer_ipv6: 2a01:4f8:c011:f6::1
