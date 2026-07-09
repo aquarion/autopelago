@@ -55,3 +55,31 @@
     aws_profile: istic
   tags:
     - ludoistic
+
+# ################################################################### ludoistic.net
+
+- name: Ludoistic.net. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: ludoistic.net
+    record: ludoistic.net.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - ludoistic
+
+- name: Www.ludoistic.net. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: ludoistic.net
+    record: www.ludoistic.net.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - ludoistic

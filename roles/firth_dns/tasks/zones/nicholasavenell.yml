@@ -66,3 +66,73 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
+
+# ################################################################### .info
+
+- name: Nicholasavenell.info. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.info
+    record: nicholasavenell.info.
+    aws_profile: aqcom
+    type: A
+    ttl: "86400"
+    value: "{{ loadbalancer_ip }}"
+
+- name: Nicholasavenell.info. - AAAA
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.info
+    record: nicholasavenell.info.
+    aws_profile: aqcom
+    type: AAAA
+    ttl: "300"
+    value: "{{ loadbalancer_ipv6 }}"
+
+- name: Www.nicholasavenell.info. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.info
+    record: www.nicholasavenell.info.
+    aws_profile: aqcom
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+
+# ################################################################### .org
+
+- name: Nicholasavenell.org. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.org
+    record: nicholasavenell.org.
+    aws_profile: aqcom
+    type: A
+    ttl: "86400"
+    value: "{{ loadbalancer_ip }}"
+
+- name: Nicholasavenell.org. - AAAA
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.org
+    record: nicholasavenell.org.
+    aws_profile: aqcom
+    type: AAAA
+    ttl: "300"
+    value: "{{ loadbalancer_ipv6 }}"
+
+- name: Www.nicholasavenell.org. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.org
+    record: www.nicholasavenell.org.
+    aws_profile: aqcom
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"

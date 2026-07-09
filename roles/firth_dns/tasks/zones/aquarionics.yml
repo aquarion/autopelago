@@ -5,6 +5,8 @@
     _records:
       - { name: "@", type: A, state: present, value: "{{ loadbalancer_ip }}", ttl: "86400", cf_proxied: true }
       - { name: "@", type: AAAA, state: present, value: "{{ loadbalancer_ipv6 }}", cf_proxied: true }
+      - { name: "@", type: AAAA, state: absent, value: "{{ firth_ipv6 }}", cf_only: true }
+      - { name: "@", type: AAAA, state: absent, value: "{{ atoll_ipv6 }}", cf_only: true }
       - { name: "@", type: TXT, state: present, value: '"v=spf1 include:aspmx.googlemail.com ~all"', ttl: "300" }
       - { name: "@", type: SPF, state: present, value: '"v=spf1 include:aspmx.googlemail.com ~all"', ttl: "86400", r53_only: true }
       - name: _718a5f89a82bf1a5111be33a782c832a
@@ -12,8 +14,14 @@
         state: present
         value: _02827ed4ad6fed8455c7ece69808224e.hkvuiqjoua.acm-validations.aws.
         ttl: "300"
+      - { name: _amazonses, type: TXT, state: present, value: '"9NYumAijDahFmehteVK7U21h6ltPCHiQfqlzs0jH3mE="', ttl: "300" }
       - { name: _atproto, type: TXT, state: present, value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"', ttl: "300" }
       - { name: _atproto.twitch, type: TXT, state: present, value: '"did=did:plc:wetrwknoxgx4tik4oewkukkl"', ttl: "300" }
+      - name: _dmarc
+        type: TXT
+        state: present
+        value: '"v=DMARC1; p=none; rua=mailto:4961dee8d8534125b4569b234d0fdbf6@dmarc-reports.cloudflare.net"'
+        ttl: "300"
       - name: "_7ca693a0f8f72e0865bf5335a6877adb.cdn"
         type: CNAME
         state: present
@@ -35,7 +43,10 @@
       - { name: mail, type: CNAME, state: present, value: ghs.google.com, ttl: "86400" }
       - { name: old, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
       - { name: old, type: AAAA, state: present, value: "{{ loadbalancer_ipv6 }}", cf_proxied: true }
+      - { name: old, type: AAAA, state: absent, value: "{{ firth_ipv6 }}", cf_only: true }
+      - { name: old, type: AAAA, state: absent, value: "{{ atoll_ipv6 }}", cf_only: true }
       - { name: panopticon, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+      - { name: plex, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
       - { name: stream, type: CNAME, state: present, value: "{{ stream_delta_app_domain }}", ttl: "300" }
       - { name: thalium, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
       - { name: tumblr, type: CNAME, state: present, value: domains.tumblr.com, ttl: "3600" }

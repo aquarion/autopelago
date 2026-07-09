@@ -128,16 +128,8 @@
     - aws
     - nanocountdown
 
-- name: Update Route53 for novelathon
-  ansible.builtin.include_tasks: zones/novelathon.yml
-  tags:
-    - aws
-    - novelathon_aws
-
-- name: Novelathon DNS - Cloudflare
-  ansible.builtin.include_tasks: zones/novelathon_cf.yml
-  tags:
-    - always
+- name: Novelathon DNS
+  ansible.builtin.import_tasks: zones/novelathon.yml
 
 - name: Update Route53 for dagon_church
   ansible.builtin.include_tasks: zones/dagon_church.yml
@@ -156,3 +148,27 @@
   tags:
     - aws
     - bloomfeedapp
+
+- name: Update Route53 for deathuntodarkness
+  ansible.builtin.include_tasks: zones/deathuntodarkness.yml
+  tags:
+    - aws
+    - deathuntodarkness
+
+- name: Update Route53 for bromios
+  ansible.builtin.include_tasks: zones/bromios.yml
+  tags:
+    - aws
+    - bromios
+
+- name: Cernunnosdionysus DNS
+  ansible.builtin.include_tasks: zones/cernunnosdionysus.yml
+  tags:
+    - aws
+    - cernunnosdionysus
+
+- name: Update Route53 for istic_dev
+  ansible.builtin.include_tasks: zones/istic_dev.yml
+  tags:
+    - aws
+    - istic_dev

@@ -1,5 +1,7 @@
 atoll_ip: 65.108.48.68
+atoll_ipv6: "2a01:4f9:c012:4053::1"
 firth_ip: 46.4.84.119
+firth_ipv6: "2a01:4f8:141:61cb::2"
 
 loadbalancer_domain: tributary.water.gkhs.net
 loadbalancer_ip: 49.12.23.194
