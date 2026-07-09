@@ -48,12 +48,6 @@
   tags:
     - aws
 
-- name: Update Route53 for foipme
-  ansible.builtin.include_tasks: zones/foipme.yml
-  tags:
-    - aws
-    - foipme
-
 - name: Update Route53 for warehouse
   ansible.builtin.include_tasks: zones/warehouse.yml
   tags:

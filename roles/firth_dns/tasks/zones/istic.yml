@@ -194,7 +194,7 @@
         record: ludo.istic.net.
         type: CNAME
         ttl: "300"
-        value: water.gkhs.net
+        value: cenote.water.gkhs.net
         aws_profile: istic
       tags:
         - istic_net

@@ -1,3 +1,8 @@
 ---
 # cernunnosdionysus.uk is registered in the istic AWS account.
 # The zone exists with no records beyond NS/SOA.
+- name: Cernunnosdionysus.uk - no records
+  ansible.builtin.debug:
+    msg: "cernunnosdionysus.uk has no records beyond NS/SOA"
+  tags:
+    - cernunnosdionysus
