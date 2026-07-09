@@ -5,32 +5,87 @@ Compare Route53 records against Ansible zone files to find unmanaged records.
 Run from the repo root:
     python3 bin/r53_drift_check.py
 
+Uses Ansible's DataLoader (with vault decryption via the configured
+vault_password_file) to load all group_vars, then Jinja2 to resolve
+templates in task files. This handles {{ loadbalancer_ip }}, loop item
+expansion, and _zone-style block vars correctly.
+
 Handles two Ansible task formats:
-  1. Individual amazon.aws.route53 tasks with explicit zone/record/type fields
-  2. _records list pattern (aquarionics/novelathon style) with _zone var and loop
+  1. Individual amazon.aws.route53 tasks (explicit zone/record/type/loop fields)
+  2. _records list pattern (aquarionics/novelathon style) with a zone var and loop
 """
 
 import glob
 import os
+import re
 import sys
 
 import boto3
+from ansible import constants as C  # type: ignore[import]
+from ansible.parsing.dataloader import DataLoader  # type: ignore[import]
+from ansible.parsing.vault import get_file_vault_secret  # type: ignore[import]
+from jinja2 import Environment, Undefined
 import yaml
 
 ZONES_DIR = "roles/firth_dns/tasks/zones"
+GROUP_VARS_DIR = "group_vars/all"
 
-# Skip these record types - Route53 auto-manages them
 SKIP_TYPES = {"NS", "SOA"}
-
-# AWS profiles to check
 AWS_PROFILES = ["aqcom", "istic"]
+
+
+# ---------------------------------------------------------------------------
+# Variable loading + Jinja2 rendering
+# ---------------------------------------------------------------------------
+
+def load_vars() -> dict:
+    """Load all group_vars (including vault) via Ansible's DataLoader."""
+    loader = DataLoader()
+    if C.DEFAULT_VAULT_PASSWORD_FILE:
+        secret = get_file_vault_secret(C.DEFAULT_VAULT_PASSWORD_FILE, loader=loader)
+        secret.load()
+        loader.set_vault_secrets([("default", secret)])
+
+    variables: dict = {}
+    for path in sorted(glob.glob(os.path.join(GROUP_VARS_DIR, "*.yml"))):
+        data = loader.load_from_file(path)
+        if isinstance(data, dict):
+            variables.update(data)
+    return variables
+
+
+def make_renderer(base_vars: dict):
+    """Return a render(template_str, extra_vars) function backed by Jinja2."""
+    env = Environment(undefined=Undefined)
+
+    def render(template_str: str, extra: dict | None = None) -> str:
+        ctx = {**base_vars, **(extra or {})}
+        try:
+            result = env.from_string(str(template_str)).render(**ctx)
+            # If the result still contains {{ }}, the var was missing — return as-is
+            return result
+        except Exception:  # pylint: disable=broad-exception-caught
+            return str(template_str)
+
+    return render
+
+
+# ---------------------------------------------------------------------------
+# Route53 querying
+# ---------------------------------------------------------------------------
+
+_R53_WILDCARD = re.compile(r"\\052")
+
+
+def normalize_r53_name(name: str) -> str:
+    """Strip trailing dot and convert Route53 octal wildcard \\052 to *."""
+    return _R53_WILDCARD.sub("*", name.rstrip("."))
 
 
 def get_r53_records(profile: str) -> dict[str, set[tuple[str, str]]]:
     """Returns {zone: {(name, type)}} for all records in all hosted zones."""
     session = boto3.Session(profile_name=profile)
     client = session.client("route53")
-
     result: dict[str, set[tuple[str, str]]] = {}
 
     paginator = client.get_paginator("list_hosted_zones")
@@ -43,11 +98,8 @@ def get_r53_records(profile: str) -> dict[str, set[tuple[str, str]]]:
             rr_paginator = client.get_paginator("list_resource_record_sets")
             for rr_page in rr_paginator.paginate(HostedZoneId=zone_id):
                 for rr in rr_page["ResourceRecordSets"]:
-                    rtype = rr["Type"]
-                    if rtype in SKIP_TYPES:
-                        continue
-                    name = rr["Name"].rstrip(".")
-                    records.add((name, rtype))
+                    if rr["Type"] not in SKIP_TYPES:
+                        records.add((normalize_r53_name(rr["Name"]), rr["Type"]))
 
             result[zone_name] = records
             print(f"  [{profile}] {zone_name}: {len(records)} records", file=sys.stderr)
@@ -55,19 +107,24 @@ def get_r53_records(profile: str) -> dict[str, set[tuple[str, str]]]:
     return result
 
 
+# ---------------------------------------------------------------------------
+# Ansible zone file parsing
+# ---------------------------------------------------------------------------
+
 def normalize_record_name(name: str, zone: str) -> str:
     """Convert @ or relative name to absolute (without trailing dot)."""
+    name = name.rstrip(".")
     if name == "@":
         return zone
-    if not name.endswith("." + zone) and not name.endswith("."):
+    if not name.endswith("." + zone):
         return f"{name}.{zone}"
-    return name.rstrip(".")
+    return name
 
 
-def parse_ansible_zones(zones_dir: str) -> dict[str, set[tuple[str, str]]]:
+def parse_ansible_zones(zones_dir: str, render) -> dict[str, set[tuple[str, str]]]:
     """
     Parse all zone YAML files, returning {zone: {(name, type)}}.
-    Covers both individual task format and _records list format.
+    Templates are resolved via the provided render function.
     """
     managed: dict[str, set[tuple[str, str]]] = {}
 
@@ -83,58 +140,101 @@ def parse_ansible_zones(zones_dir: str) -> dict[str, set[tuple[str, str]]]:
         if not tasks or not isinstance(tasks, list):
             continue
 
-        _extract_from_tasks(tasks, managed, filename)
+        _extract_from_tasks(tasks, managed, render)
 
     return managed
 
 
-def _add_records_list(records_list: list, zone: str, managed: dict):
-    """Extract records from a _records list into managed, skipping cf_only entries."""
+def _add_records_list(records_list: list, zone: str, managed: dict, render, extra: dict):
+    """Extract records from a _records list, skipping cf_only entries."""
     managed.setdefault(zone, set())
     for rec in records_list:
-        if isinstance(rec, dict) and "name" in rec and "type" in rec and not rec.get("cf_only"):
-            name = normalize_record_name(str(rec["name"]), zone)
-            managed[zone].add((name, rec["type"]))
+        if not isinstance(rec, dict) or "name" not in rec or "type" not in rec:
+            continue
+        if rec.get("cf_only"):
+            continue
+        raw_name = render(str(rec["name"]), extra)
+        name = normalize_record_name(raw_name, zone)
+        managed[zone].add((name, rec["type"]))
+
+
+def _resolve_zone_from_vars(task_vars: dict, render, extra: dict) -> str | None:
+    """Find and render the zone name from a task's vars block."""
+    zone_raw = next(
+        (v for k, v in task_vars.items() if k.endswith("zone") or k == "_zone"),
+        None,
+    )
+    if zone_raw is None:
+        for v in task_vars.values():
+            if isinstance(v, str) and "." in v and " " not in v:
+                zone_raw = v
+                break
+    return render(zone_raw, extra).rstrip(".") if zone_raw else None
+
+
+def _handle_vars_block(task: dict, managed: dict, render, extra: dict):
+    """Handle a block-with-vars task (_records list pattern)."""
+    task_vars = task.get("vars", {})
+    zone = _resolve_zone_from_vars(task_vars, render, extra)
+    child_extra = {**extra, **({"_zone": zone} if zone else {})}
+    for k, v in task_vars.items():
+        if isinstance(v, str):
+            child_extra[k] = render(v, extra)
+
+    records_list = task_vars.get("_records", [])
+    if zone and records_list:
+        _add_records_list(records_list, zone, managed, render, child_extra)
+
+    _extract_from_tasks(task.get("block", []), managed, render, child_extra)
+
+
+def _handle_route53_task(task: dict, managed: dict, render, extra: dict):
+    """Handle an individual amazon.aws.route53 task."""
+    params = task["amazon.aws.route53"]
+    zone = render(str(params.get("zone", "")), extra).rstrip(".")
+    rtype = params.get("type")
+
+    if not zone or not rtype or rtype in SKIP_TYPES:
+        return
+
+    managed.setdefault(zone, set())
+    record_raw = str(params.get("record", ""))
+    loop_items = task.get("loop") or task.get("with_items")
+
+    if loop_items and "item" in record_raw:
+        for item in loop_items:
+            if isinstance(item, str):
+                resolved = render(record_raw, {**extra, "item": item})
+                managed[zone].add((resolved.rstrip("."), rtype))
+    elif record_raw:
+        managed[zone].add((render(record_raw, extra).rstrip("."), rtype))
 
 
 def _extract_from_tasks(
     tasks: list,
     managed: dict,
-    filename: str,
-    inherited_zone: str | None = None,
+    render,
+    extra: dict | None = None,
 ):
     """Recursively extract route53 records from a task list."""
+    extra = extra or {}
+
     for task in tasks:
         if not isinstance(task, dict):
             continue
-
-        # _records list pattern (aquarionics/novelathon style)
         if "vars" in task and "block" in task:
-            zone = task.get("vars", {}).get("_zone", inherited_zone)
-            records_list = task.get("vars", {}).get("_records", [])
-            if zone and records_list:
-                _add_records_list(records_list, zone, managed)
-            _extract_from_tasks(
-                task.get("block", []), managed, filename, zone or inherited_zone
-            )
-            continue
+            _handle_vars_block(task, managed, render, extra)
+        elif "amazon.aws.route53" in task:
+            _handle_route53_task(task, managed, render, extra)
+        else:
+            for key in ("block", "rescue", "always"):
+                if key in task and isinstance(task[key], list):
+                    _extract_from_tasks(task[key], managed, render, extra)
 
-        # Individual amazon.aws.route53 task
-        if "amazon.aws.route53" in task:
-            params = task["amazon.aws.route53"]
-            zone = params.get("zone", "").rstrip(".")
-            record = params.get("record", "").rstrip(".")
-            rtype = params.get("type")
-            if zone and record and rtype and rtype not in SKIP_TYPES:
-                managed.setdefault(zone, set())
-                managed[zone].add((record, rtype))
-            continue
 
-        # Recurse into block/rescue/always
-        for key in ("block", "rescue", "always"):
-            if key in task and isinstance(task[key], list):
-                _extract_from_tasks(task[key], managed, filename, inherited_zone)
-
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 
 def main():
     """Entry point: parse Ansible zones, query Route53, print drift report."""
@@ -142,8 +242,13 @@ def main():
         print(f"ERROR: {ZONES_DIR} not found. Run from the repo root.", file=sys.stderr)
         sys.exit(1)
 
+    print("=== Loading Ansible variables ===", file=sys.stderr)
+    base_vars = load_vars()
+    render = make_renderer(base_vars)
+    print(f"  Loaded {len(base_vars)} variables from group_vars\n", file=sys.stderr)
+
     print("=== Parsing Ansible zone files ===", file=sys.stderr)
-    managed = parse_ansible_zones(ZONES_DIR)
+    managed = parse_ansible_zones(ZONES_DIR, render)
     print(f"Found {len(managed)} zones in Ansible\n", file=sys.stderr)
 
     print("=== Querying Route53 ===", file=sys.stderr)
