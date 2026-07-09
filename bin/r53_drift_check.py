@@ -5,10 +5,15 @@ Compare Route53 records against Ansible zone files to find unmanaged records.
 Run from the repo root:
     python3 bin/r53_drift_check.py
 
+Discovers task files by loading playbook.yml via Ansible's DataLoader,
+extracting the roles list from each play, then recursively following
+import_tasks/include_tasks directives from each role's tasks/main.yml.
+This means any role added to the playbook is automatically included.
+
 Uses Ansible's DataLoader (with vault decryption via the configured
 vault_password_file) to load all group_vars, then Jinja2 to resolve
-templates in task files. This handles {{ loadbalancer_ip }}, loop item
-expansion, and _zone-style block vars correctly.
+templates. This handles {{ loadbalancer_ip }}, loop item expansion,
+and _zone-style block vars correctly.
 
 Handles two Ansible task formats:
   1. Individual amazon.aws.route53 tasks (explicit zone/record/type/loop fields)
@@ -25,9 +30,9 @@ from ansible import constants as C  # type: ignore[import]
 from ansible.parsing.dataloader import DataLoader  # type: ignore[import]
 from ansible.parsing.vault import get_file_vault_secret  # type: ignore[import]
 from jinja2 import Environment, Undefined
-import yaml
 
-ZONES_DIR = "roles/firth_dns/tasks/zones"
+PLAYBOOK = "playbook.yml"
+ROLES_DIR = "roles"
 GROUP_VARS_DIR = "group_vars/all"
 
 SKIP_TYPES = {"NS", "SOA"}
@@ -38,7 +43,7 @@ AWS_PROFILES = ["aqcom", "istic"]
 # Variable loading + Jinja2 rendering
 # ---------------------------------------------------------------------------
 
-def load_vars() -> dict:
+def load_vars() -> tuple[DataLoader, dict]:
     """Load all group_vars (including vault) via Ansible's DataLoader."""
     loader = DataLoader()
     if C.DEFAULT_VAULT_PASSWORD_FILE:
@@ -51,7 +56,7 @@ def load_vars() -> dict:
         data = loader.load_from_file(path)
         if isinstance(data, dict):
             variables.update(data)
-    return variables
+    return loader, variables
 
 
 def make_renderer(base_vars: dict):
@@ -61,13 +66,88 @@ def make_renderer(base_vars: dict):
     def render(template_str: str, extra: dict | None = None) -> str:
         ctx = {**base_vars, **(extra or {})}
         try:
-            result = env.from_string(str(template_str)).render(**ctx)
-            # If the result still contains {{ }}, the var was missing — return as-is
-            return result
+            return env.from_string(str(template_str)).render(**ctx)
         except Exception:  # pylint: disable=broad-exception-caught
             return str(template_str)
 
     return render
+
+
+# ---------------------------------------------------------------------------
+# Playbook-driven task file discovery
+# ---------------------------------------------------------------------------
+
+def _role_name(entry) -> str:
+    """Extract role name from a play's roles list entry (string or dict)."""
+    if isinstance(entry, str):
+        return entry
+    return entry.get("role", entry.get("name", ""))
+
+
+class _TaskCollector:
+    """Walks the task include graph, collecting file paths without duplicates."""
+
+    _INCLUDE_KEYS = frozenset({
+        "import_tasks", "include_tasks",
+        "ansible.builtin.import_tasks", "ansible.builtin.include_tasks",
+    })
+
+    def __init__(self, loader: DataLoader, render):
+        self.loader = loader
+        self.render = render
+        self.seen: set = set()
+        self.files: list[str] = []
+
+    def collect(self, filepath: str):
+        """Load filepath and recursively follow all include directives."""
+        if filepath in self.seen or not os.path.exists(filepath):
+            return
+        self.seen.add(filepath)
+        self.files.append(filepath)
+
+        try:
+            tasks = self.loader.load_from_file(filepath)
+        except Exception:  # pylint: disable=broad-exception-caught
+            return
+
+        if tasks and isinstance(tasks, list):
+            self.follow(tasks, os.path.dirname(filepath))
+
+    def follow(self, tasks: list, basedir: str):
+        """Follow include directives in a task list, collecting referenced files."""
+        for task in tasks:
+            if not isinstance(task, dict):
+                continue
+            for key in self._INCLUDE_KEYS:
+                if key in task and isinstance(task[key], str):
+                    path = os.path.normpath(os.path.join(basedir, self.render(task[key])))
+                    self.collect(path)
+            for block_key in ("block", "rescue", "always"):
+                if block_key in task and isinstance(task[block_key], list):
+                    self.follow(task[block_key], basedir)
+
+
+def discover_task_files(loader: DataLoader, render) -> list[str]:
+    """
+    Walk playbook.yml → roles → tasks/main.yml, following all
+    import_tasks/include_tasks recursively. Returns all discovered task file paths.
+    """
+    playbook_data = loader.load_from_file(PLAYBOOK)
+    if not playbook_data or not isinstance(playbook_data, list):
+        return []
+
+    collector = _TaskCollector(loader, render)
+    for play in playbook_data:
+        if not isinstance(play, dict):
+            continue
+        for role_entry in play.get("roles", []):
+            role_name = _role_name(role_entry)
+            if not role_name:
+                continue
+            main_path = os.path.join(ROLES_DIR, role_name, "tasks", "main.yml")
+            collector.collect(main_path)
+
+    return collector.files
 
 
 # ---------------------------------------------------------------------------
@@ -108,7 +188,7 @@ def get_r53_records(profile: str) -> dict[str, set[tuple[str, str]]]:
 
 
 # ---------------------------------------------------------------------------
-# Ansible zone file parsing
+# Ansible task file parsing
 # ---------------------------------------------------------------------------
 
 def normalize_record_name(name: str, zone: str) -> str:
@@ -121,25 +201,21 @@ def normalize_record_name(name: str, zone: str) -> str:
     return name
 
 
-def parse_ansible_zones(zones_dir: str, render) -> dict[str, set[tuple[str, str]]]:
-    """
-    Parse all zone YAML files, returning {zone: {(name, type)}}.
-    Templates are resolved via the provided render function.
-    """
+def parse_managed_records(
+    task_files: list[str],
+    loader: DataLoader,
+    render,
+) -> dict[str, set[tuple[str, str]]]:
+    """Parse task files, returning {zone: {(name, type)}} for all route53 tasks."""
     managed: dict[str, set[tuple[str, str]]] = {}
 
-    for filepath in sorted(glob.glob(os.path.join(zones_dir, "*.yml"))):
-        filename = os.path.basename(filepath)
-        with open(filepath, encoding="utf-8") as f:
-            try:
-                tasks = yaml.safe_load(f)
-            except yaml.YAMLError as e:
-                print(f"  WARN: could not parse {filename}: {e}", file=sys.stderr)
-                continue
-
+    for filepath in task_files:
+        try:
+            tasks = loader.load_from_file(filepath)
+        except Exception:  # pylint: disable=broad-exception-caught
+            continue
         if not tasks or not isinstance(tasks, list):
             continue
-
         _extract_from_tasks(tasks, managed, render)
 
     return managed
@@ -236,32 +312,11 @@ def _extract_from_tasks(
 # Main
 # ---------------------------------------------------------------------------
 
-def main():
-    """Entry point: parse Ansible zones, query Route53, print drift report."""
-    if not os.path.isdir(ZONES_DIR):
-        print(f"ERROR: {ZONES_DIR} not found. Run from the repo root.", file=sys.stderr)
-        sys.exit(1)
-
-    print("=== Loading Ansible variables ===", file=sys.stderr)
-    base_vars = load_vars()
-    render = make_renderer(base_vars)
-    print(f"  Loaded {len(base_vars)} variables from group_vars\n", file=sys.stderr)
-
-    print("=== Parsing Ansible zone files ===", file=sys.stderr)
-    managed = parse_ansible_zones(ZONES_DIR, render)
-    print(f"Found {len(managed)} zones in Ansible\n", file=sys.stderr)
-
-    print("=== Querying Route53 ===", file=sys.stderr)
-    all_r53: dict[str, tuple[str, set[tuple[str, str]]]] = {}
-    for profile in AWS_PROFILES:
-        try:
-            for zone, records in get_r53_records(profile).items():
-                all_r53[zone] = (profile, records)
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            print(f"  ERROR with profile {profile}: {e}", file=sys.stderr)
-
-    print(f"\nFound {len(all_r53)} zones in Route53\n", file=sys.stderr)
-
+def _print_report(
+    all_r53: dict[str, tuple[str, set[tuple[str, str]]]],
+    managed: dict[str, set[tuple[str, str]]],
+):
+    """Print drift and unmanaged-zone sections."""
     print("=" * 60)
     print("DRIFT REPORT: Records in Route53 NOT covered by Ansible")
     print("=" * 60)
@@ -269,12 +324,9 @@ def main():
     any_drift = False
     for zone in sorted(all_r53.keys()):
         profile, r53_records = all_r53[zone]
-        ansible_records = managed.get(zone, set())
-
-        unmanaged = r53_records - ansible_records
+        unmanaged = r53_records - managed.get(zone, set())
         if not unmanaged:
             continue
-
         any_drift = True
         print(f"\n[{profile}] {zone}:")
         for name, rtype in sorted(unmanaged):
@@ -290,6 +342,38 @@ def main():
         if zone not in managed:
             profile, _ = all_r53[zone]
             print(f"  [{profile}] {zone}")
+
+
+def main():
+    """Entry point: parse Ansible zones, query Route53, print drift report."""
+    if not os.path.exists(PLAYBOOK):
+        print(f"ERROR: {PLAYBOOK} not found. Run from the repo root.", file=sys.stderr)
+        sys.exit(1)
+
+    print("=== Loading Ansible variables ===", file=sys.stderr)
+    loader, base_vars = load_vars()
+    render = make_renderer(base_vars)
+    print(f"  Loaded {len(base_vars)} variables from group_vars\n", file=sys.stderr)
+
+    print("=== Discovering task files from playbook ===", file=sys.stderr)
+    task_files = discover_task_files(loader, render)
+    print(f"  Found {len(task_files)} task files\n", file=sys.stderr)
+
+    print("=== Parsing Ansible task files ===", file=sys.stderr)
+    managed = parse_managed_records(task_files, loader, render)
+    print(f"  Found {len(managed)} zones in Ansible\n", file=sys.stderr)
+
+    print("=== Querying Route53 ===", file=sys.stderr)
+    all_r53: dict[str, tuple[str, set[tuple[str, str]]]] = {}
+    for profile in AWS_PROFILES:
+        try:
+            for zone, records in get_r53_records(profile).items():
+                all_r53[zone] = (profile, records)
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            print(f"  ERROR with profile {profile}: {e}", file=sys.stderr)
+
+    print(f"\nFound {len(all_r53)} zones in Route53\n", file=sys.stderr)
+    _print_report(all_r53, managed)
 
 
 if __name__ == "__main__":
