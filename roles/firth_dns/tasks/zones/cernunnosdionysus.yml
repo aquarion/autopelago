@@ -1,8 +1,27 @@
 ---
 # cernunnosdionysus.uk is registered in the istic AWS account.
-# The zone exists with no records beyond NS/SOA.
-- name: Cernunnosdionysus.uk - no records
-  ansible.builtin.debug:
-    msg: "cernunnosdionysus.uk has no records beyond NS/SOA"
+- name: Cernunnosdionysus.uk. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: cernunnosdionysus.uk
+    record: cernunnosdionysus.uk.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - cernunnosdionysus
+
+- name: Www.cernunnosdionysus.uk. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: cernunnosdionysus.uk
+    record: www.cernunnosdionysus.uk.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
   tags:
     - cernunnosdionysus
