@@ -62,4 +62,4 @@
         record: _atproto
         api_token: "{{ cloudflare_api_key }}"
         type: TXT
-        value: '"did=did:plc:6gbricujupbk2veztj36cdit"'
+        value: "did=did:plc:6gbricujupbk2veztj36cdit"
