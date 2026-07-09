@@ -28,6 +28,19 @@
   tags:
     - ludoistic
 
+- name: Wildcard.ludoistic.com. - CNAME
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: ludoistic.com
+    record: "*.ludoistic.com."
+    type: CNAME
+    ttl: "300"
+    value: "{{ loadbalancer_domain }}"
+    aws_profile: istic
+  tags:
+    - ludoistic
+
 - name: Google._domainkey.ludoistic.com. - TXT
   amazon.aws.route53:
     overwrite: true

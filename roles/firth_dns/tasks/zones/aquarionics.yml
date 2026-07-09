@@ -28,10 +28,20 @@
         value: _a610429fde9cdbee8f486a8f8ee9c28e.hkvuiqjoua.acm-validations.aws.
         ttl: "300"
       - { name: "*.cdn", type: CNAME, state: present, value: d2r0e8lumqw3g1.cloudfront.net, ttl: "3600" }
+      - { name: 1.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
+      - { name: 2.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
+      - { name: 3.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
+      - { name: 4.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
       - { name: cdn, type: CNAME, state: present, value: d2r0e8lumqw3g1.cloudfront.net, ttl: "300" }
       - { name: dailyphoto, type: CNAME, state: present, value: dc80vpukp1283.cloudfront.net, ttl: "300" }
       - { name: feeds, type: CNAME, state: present, value: "{{ loadbalancer_domain }}", cf_proxied: true }
       - { name: flix, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+      - name: aqcom._domainkey
+        type: TXT
+        state: present
+        value: '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt0Qde2vAyvpm2qi6F8ZR5fikHpl/UjT3NWqqP1v64Pef31Lpn9FpOLC0Ky70aNqX6YUL2DaCmTIXiCqDL+jIHAkxtIXh2OCmsldjYGotq2jZ9fQnQhMUU4QMbEBHyy26PEbldGGQBT11ZYG8jdVUpL","hgDasiAQrpGLGGJyHZ202gi8okum8AasCpN8mkG5SEYar8G5RpFaB4t1HZd9WbBgg4ztcGkTPpEiJuiEW/EPy/h2zbxps2A/8TQT29xYmyVTY0Tx8ZesCSDrb2MtzviU+E3iNl9U5L3J+wVv0D2U5uNNz3k2R1CkPf39FFLeRaL67zvhVOGMz29FdoPjepQwIDAQAB"'
+        ttl: "300"
+        r53_only: true
       - name: google._domainkey
         type: TXT
         state: present

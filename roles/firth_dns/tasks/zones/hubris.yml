@@ -60,6 +60,19 @@
   tags:
     - hubris.house
 
+- name: Wildcard.local.hubris.house. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: hubris.house
+    record: "*.local.hubris.house."
+    type: A
+    ttl: "300"
+    value: 10.42.0.42
+    aws_profile: aqcom
+  tags:
+    - hubris.house
+
 - name: Google Validation for hubris
   amazon.aws.route53:
     overwrite: true

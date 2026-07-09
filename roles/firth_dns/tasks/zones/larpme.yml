@@ -10,6 +10,17 @@
     value: "{{ loadbalancer_ip }}"
     aws_profile: aqcom
 
+- name: Larpme DNS - larpme root TXT
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: larp.me
+    type: TXT
+    ttl: "3600"
+    value: '"v=spf1 a mx include:smtp1.uservoice.com include:_spf.google.com include:spf.mtasv.net ~all"'
+    aws_profile: aqcom
+
 - name: Larpme DNS - MX
   amazon.aws.route53:
     overwrite: true
@@ -53,15 +64,70 @@
     value: '"v=spf1 a mx include:smtp1.uservoice.com include:_spf.google.com include:spf.mtasv.net ~all"'
     aws_profile: aqcom
 
-- name: Larpme DNS - DKIM
+- name: Larpme DNS - ACM Validation
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: _4a383a3e91231c3e1b49f47dfa8f96dd.larp.me.
+    type: CNAME
+    ttl: "300"
+    value: _bea47bb7aa83999f272fe5cad0e1b8fc.jkddzztszm.acm-validations.aws.
+    aws_profile: aqcom
+
+- name: Larpme DNS - SES Verification
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: _amazonses.larp.me.
+    type: TXT
+    ttl: "300"
+    value: '"aFZYDqIH6R7XI/mZPOXT/bQddC73klXFuhVX90L+nN0="'
+    aws_profile: aqcom
+
+- name: Larpme DNS - DKIM (Postmark)
   amazon.aws.route53:
     overwrite: true
     state: present
     zone: larp.me
     record: 20170201160036pm._domainkey.larp.me
     type: TXT
-    ttl: 300
+    ttl: "300"
     value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNNNCDLsEMUlCnWkjtJ9pQnWAACeQHJG8PYBhfiZPb7XRtWf5eK0XRKSGJzTOJFaS8b+PBaB3cT6VWvTSNYJqQGtfdhLnE6xh5yaiBssdCNQZgeO/OffFVZRB/yyBNSjoXNSTTHXeonLLKxpaZTs7s2MBTJvpE5nl5kM5haRbwVwIDAQAB"'
+    aws_profile: aqcom
+
+- name: Larpme DNS - DKIM (SES)
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: yyu3f5h33oi5szljul3skojxqju5ezmn._domainkey.larp.me.
+    type: CNAME
+    ttl: "300"
+    value: yyu3f5h33oi5szljul3skojxqju5ezmn.dkim.amazonses.com
+    aws_profile: aqcom
+
+- name: Larpme DNS - DKIM broken double-zone - remove
+  amazon.aws.route53:
+    overwrite: true
+    state: absent
+    zone: larp.me
+    record: 46xwx4wr66z2sxbr2de3ptbsbr5g2kya._domainkey.larp.me.larp.me.
+    type: CNAME
+    ttl: "300"
+    value: 46xwx4wr66z2sxbr2de3ptbsbr5g2kya.dkim.amazonses.com
+    aws_profile: aqcom
+
+- name: Larpme DNS - DKIM broken double-zone 2 - remove
+  amazon.aws.route53:
+    overwrite: true
+    state: absent
+    zone: larp.me
+    record: vykqrdlncepc53cdvxsjm4bumlechdqf._domainkey.larp.me.larp.me.
+    type: CNAME
+    ttl: "300"
+    value: vykqrdlncepc53cdvxsjm4bumlechdqf.dkim.amazonses.com
     aws_profile: aqcom
 
 - name: Larpme DNS - Prod API
@@ -172,6 +238,73 @@
     type: A
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
+    aws_profile: aqcom
+
+- name: Pdforum-assets.larp.me. - A (CloudFront alias)
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: pdforum-assets.larp.me.
+    type: A
+    alias: true
+    alias_hosted_zone_id: Z2FDTNDATAQYW2
+    value: d28s71p6brygbb.cloudfront.net.
+    aws_profile: aqcom
+
+- name: Pdforums.larp.me. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: pdforums.larp.me.
+    type: A
+    ttl: "300"
+    value: "{{ firth_ip }}"
+    aws_profile: aqcom
+
+- name: Pdforums.larp.me. - SPF
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: pdforums.larp.me.
+    type: SPF
+    ttl: "300"
+    value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
+    aws_profile: aqcom
+
+- name: Pdforums.larp.me. - TXT
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: pdforums.larp.me.
+    type: TXT
+    ttl: "300"
+    value: '"v=spf1 a mx include:spf.mtasv.net ~all"'
+    aws_profile: aqcom
+
+- name: 20170201153337pm._domainkey.pdforums.larp.me. - TXT (Postmark DKIM)
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: 20170201153337pm._domainkey.pdforums.larp.me.
+    type: TXT
+    ttl: "300"
+    value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCj7W/8a+Nl3ucgDgHCU1ROWW1lzktsq6fq/YQXSbIpBbQX+zpTmEWUE7baIrbEBXggEF15RwYknSEN33W1kGRYqc1uAeoaHQolg+q++2UliaT1p1AXJdK4hphEvh62k6FZ6muu8XvxqDzwnao6B8KLD54E7+PIu4ErMzciLXLM6wIDAQAB"'
+    aws_profile: aqcom
+
+- name: Postmark.pdforums.larp.me. - CNAME
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: postmark.pdforums.larp.me.
+    type: CNAME
+    ttl: "300"
+    value: pm.mtasv.net
     aws_profile: aqcom
 
 - name: Larp.me.uk Zone

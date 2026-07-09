@@ -61,7 +61,30 @@
         - refs.bw.camlarp.co.uk.
         - refs.nfnc.camlarp.co.uk.
         - uh.camlarp.co.uk.
+        - wiki.camlarp.co.uk.
         - www.camlarp.co.uk.
+
+    - name: Wildcard.camlarp.co.uk. - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: camlarp.co.uk
+        record: "*.camlarp.co.uk."
+        aws_profile: aqcom
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+
+    - name: Wildcard.refs.camlarp.co.uk. - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: camlarp.co.uk
+        record: "*.refs.camlarp.co.uk."
+        aws_profile: aqcom
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
 
   rescue:
     - name: "Failure warning"

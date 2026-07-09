@@ -148,6 +148,18 @@
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 
+    - name: Www.carcosadreams.co.uk. - MX - remove (invalid)
+      amazon.aws.route53:
+        overwrite: true
+        state: absent
+        zone: carcosadreams.co.uk
+        record: www.carcosadreams.co.uk.
+        type: MX
+        ttl: "300"
+        value: 1 ms98988510.msv1.invalid
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
     - name: Carcosadreams.com. - MX
       amazon.aws.route53:
         overwrite: true
@@ -373,6 +385,54 @@
         type: TXT
         ttl: "300"
         value: '"did=did:plc:2ij27abhkpexsfql2xkhqtb4"'
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+    - name: Carcosadreams.com. - Postmark DKIM
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: carcosadreams.com
+        record: 20201030223637pm._domainkey.carcosadreams.com.
+        type: TXT
+        ttl: "300"
+        value: '"k=rsa;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2+ZEoXZHwuj2AeGT6bAU9VEnkDgKfueK8WfqH+WEw58ZP7WbWGT5x5BOpYrC1bR7byCkr3WUuilk/Bp8h6QX5GmRSktBLgNI3LtK+fGrFstsUuimNhLoJzeKFqCaW8F/Jdi/IfhGfnMyxHjFpbSxYilLVdlzefEI0cHCyP3bQYQIDAQAB"'
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+    - name: Pm-bounces.carcosadreams.com. - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: carcosadreams.com
+        record: pm-bounces.carcosadreams.com.
+        type: CNAME
+        ttl: "300"
+        value: pm.mtasv.net
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+    - name: Gd-internal.carcosadreams.com. - A - remove
+      amazon.aws.route53:
+        overwrite: true
+        state: absent
+        zone: carcosadreams.com
+        record: gd-internal.carcosadreams.com.
+        type: A
+        ttl: "300"
+        value: 78.46.38.44
+        aws_access_key: "{{ istic_aws_key }}"
+        aws_secret_key: "{{ istic_aws_secret }}"
+
+    - name: Grand-designs.carcosadreams.com. - A - remove
+      amazon.aws.route53:
+        overwrite: true
+        state: absent
+        zone: carcosadreams.com
+        record: grand-designs.carcosadreams.com.
+        type: A
+        ttl: "300"
+        value: 78.46.38.44
         aws_access_key: "{{ istic_aws_key }}"
         aws_secret_key: "{{ istic_aws_secret }}"
 

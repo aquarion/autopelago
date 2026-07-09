@@ -384,6 +384,19 @@
         aws_profile: istic
       tags:
         - istic_net
+
+    - name: _539bdb6bdc13156018f1fa46f1b6e61d.istic.co - CNAME (ACM)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.co
+        record: _539bdb6bdc13156018f1fa46f1b6e61d.istic.co.
+        type: CNAME
+        ttl: "300"
+        value: _01846086965f112ce47765432a4a5ec0.zrvsvrxrgs.acm-validations.aws.
+        aws_profile: istic
+      tags:
+        - istic_net
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:
@@ -420,6 +433,45 @@
         type: A
         ttl: "300"
         value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Blogs.istic.network - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.network
+        record: blogs.istic.network.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: Wildcard.blogs.istic.network - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.network
+        record: "*.blogs.istic.network."
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+
+    - name: _c1183ee4420cdfb985ea6b5cf8dbcd17.istic.network - CNAME (ACM)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.network
+        record: _c1183ee4420cdfb985ea6b5cf8dbcd17.istic.network.
+        type: CNAME
+        ttl: "300"
+        value: _09ed8ecd27379ac538a345e2e732fd30.zrvsvrxrgs.acm-validations.aws.
         aws_profile: istic
       tags:
         - istic_net
@@ -507,6 +559,49 @@
         type: A
         ttl: "300"
         value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Manage.istic.systems - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.systems
+        record: manage.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: Files-voyeur.istic.systems - A (CloudFront alias)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.systems
+        record: files-voyeur.istic.systems.
+        type: A
+        alias: true
+        alias_hosted_zone_id: Z2FDTNDATAQYW2
+        value: d14zhwhwrp2p47.cloudfront.net.
+        aws_profile: istic
+      tags:
+        - istic_net
+        - istic_sys
+
+    - name: _f210fac1759ae4a6cd375df08ab6de4c.istic.systems - CNAME (ACM)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.systems
+        record: _f210fac1759ae4a6cd375df08ab6de4c.istic.systems.
+        type: CNAME
+        ttl: "300"
+        value: _eae841e7d9904b7f2792cec3dbd82da6.zrvsvrxrgs.acm-validations.aws.
         aws_profile: istic
       tags:
         - istic_net
