@@ -516,7 +516,7 @@
         record: cenote.istic.systems.
         type: A
         ttl: "300"
-        value: "{{ loadbalancer_ip }}"
+        value: 109.74.192.161
         aws_profile: istic
       tags:
         - istic_net
