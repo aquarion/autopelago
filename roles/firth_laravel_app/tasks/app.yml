@@ -28,6 +28,7 @@
       additional_volumes: "{{ firth_laravel_app_item.additional_volumes | default([]) }}"
       nginx_snippet: "{{ firth_laravel_app_item.nginx_snippet | default('') }}"
       system_user: "{{ firth_laravel_app_item.name }}"
+      container_uid: "{{ firth_laravel_app_item.container_uid | default('82') }}"
   tags: [always, firth_laravel_app, firth_laravel_app_install]
 
 - name: Reset files changed state for {{ firth_laravel_app_item.name }} # noqa: var-naming[no-role-prefix]

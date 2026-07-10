@@ -57,6 +57,7 @@
       additional_volumes: "{{ fla.staging.additional_volumes | default(fla.additional_volumes | default([])) }}"
       nginx_snippet: "{{ fla.staging.nginx_snippet | default(fla.nginx_snippet | default('')) }}"
       system_user: "{{ fla.name }}"
+      container_uid: "{{ fla.container_uid | default('82') }}"
   tags: [firth_laravel_app, firth_laravel_app_install]
 
 - name: Provision staging database for {{ fla.name }}
