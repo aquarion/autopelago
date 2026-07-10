@@ -76,7 +76,7 @@
   rescue:
     - name: Rescue - Remove credentials file if access key was created before failure
       ansible.builtin.file:
-        path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
+        path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.vault.yml"
         state: absent
       delegate_to: localhost
       when: stream_delta_iam_access_key is defined and stream_delta_iam_access_key.changed

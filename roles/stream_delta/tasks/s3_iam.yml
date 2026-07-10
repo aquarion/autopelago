@@ -53,7 +53,7 @@
 # Access key management
 - name: Check if credentials file already exists
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
+    path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.vault.yml"
   delegate_to: localhost
   register: _stream_delta_aws_creds_file
 
@@ -66,7 +66,7 @@
 
 - name: Delete credentials file if access key is no longer active in IAM
   ansible.builtin.file:
-    path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
+    path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.vault.yml"
     state: absent
   delegate_to: localhost
   when: >
@@ -105,7 +105,7 @@
 
         - name: Write plaintext credentials to temp file
           ansible.builtin.copy:
-            content: "{{ lookup('ansible.builtin.template', 'stream_delta_aws.yml.j2') }}"
+            content: "{{ lookup('ansible.builtin.template', 'stream_delta_aws.vault.yml.j2') }}"
             dest: "{{ _stream_delta_creds_tmp.path }}"
             mode: "0600"
           no_log: true
@@ -115,13 +115,13 @@
             cmd: >
               {{ ansible_playbook_python | dirname }}/ansible-vault encrypt
               --vault-password-file {{ lookup('env', 'HOME') }}/.vault_pass.txt
-              --output {{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml
+              --output {{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.vault.yml
               {{ _stream_delta_creds_tmp.path }}
           changed_when: true
 
         - name: Set credentials file ownership
           ansible.builtin.file:
-            path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.yml"
+            path: "{{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.vault.yml"
             owner: "{{ lookup('env', 'USER') }}"
             group: "{{ lookup('env', 'USER') }}"
             mode: "0660"
@@ -137,4 +137,4 @@
       ansible.builtin.debug:
         msg: >
           Vault-encrypted credentials written to
-          host_vars/atoll.water.gkhs.net/stream_delta_aws.yml — commit this file.
+          host_vars/atoll.water.gkhs.net/stream_delta_aws.vault.yml — commit this file.
