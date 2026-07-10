@@ -1,0 +1,68 @@
+---
+- name: Novelathon DNS
+  vars:
+    _zone: novelathon.com
+    _records:
+      - { name: "@", type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+      - { name: dev, type: CNAME, state: absent, value: tributary.water.gkhs.net, r53_only: true }
+      - { name: dev, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+      - { name: local, type: A, state: present, value: 127.0.0.1, cf_proxied: false }
+      - { name: widget, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+      - { name: www, type: CNAME, state: absent, value: tributary.water.gkhs.net, r53_only: true }
+      - { name: www, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+  block:
+    - name: Novelathon Route53 DNS
+      tags:
+        - aws
+        - novelathon
+        - novelathon_aws
+      block:
+        - name: "Novelathon.com Route53 {{ item.name ~ ' ' ~ item.type }}"
+          amazon.aws.route53:
+            overwrite: true
+            state: "{{ item.state }}"
+            zone: "{{ _zone }}"
+            record: "{{ (item.name == '@') | ternary(_zone + '.', item.name + '.' + _zone + '.') }}"
+            aws_profile: istic
+            type: "{{ item.type }}"
+            ttl: "{{ item.ttl | default('300') }}"
+            value: "{{ item.value }}"
+          loop: "{{ _records | rejectattr('cf_only', 'defined') | list }}"
+          loop_control:
+            label: "{{ item.name }} {{ item.type }}"
+
+      rescue:
+        - name: Failure warning
+          ansible.builtin.debug:
+            msg: AWS Route53 tasks failed
+        - name: Failure execution
+          ansible.builtin.command:
+            cmd: "false"
+
+    - name: Novelathon Cloudflare DNS
+      tags:
+        - cloudflare
+        - cloudflare_dns
+        - novelathon
+      block:
+        - name: "(CF) Novelathon.com {{ item.name ~ ' ' ~ item.type }}"
+          community.general.cloudflare_dns:
+            state: "{{ item.state }}"
+            zone: "{{ _zone }}"
+            record: "{{ item.name }}"
+            api_token: "{{ cloudflare_api_key }}"
+            type: "{{ item.type }}"
+            ttl: "{{ item.ttl | default(omit) }}"
+            value: "{{ item.value }}"
+            proxied: "{{ item.cf_proxied | default(false) }}"
+          loop: "{{ _records | rejectattr('r53_only', 'defined') | list }}"
+          loop_control:
+            label: "{{ item.name }} {{ item.type }}"
+
+      rescue:
+        - name: Failure warning
+          ansible.builtin.debug:
+            msg: Cloudflare DNS tasks failed
+        - name: Failure execution
+          ansible.builtin.command:
+            cmd: "false"

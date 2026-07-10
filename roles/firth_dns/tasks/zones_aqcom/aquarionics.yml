@@ -5,6 +5,8 @@
     _records:
       - { name: "@", type: A, state: present, value: "{{ loadbalancer_ip }}", ttl: "86400", cf_proxied: true }
       - { name: "@", type: AAAA, state: present, value: "{{ loadbalancer_ipv6 }}", cf_proxied: true }
+      - { name: "@", type: AAAA, state: absent, value: "{{ firth_ipv6 }}", cf_only: true }
+      - { name: "@", type: AAAA, state: absent, value: "{{ atoll_ipv6 }}", cf_only: true }
       - { name: "@", type: TXT, state: present, value: '"v=spf1 include:aspmx.googlemail.com ~all"', ttl: "300" }
       - { name: "@", type: SPF, state: present, value: '"v=spf1 include:aspmx.googlemail.com ~all"', ttl: "86400", r53_only: true }
       - name: _718a5f89a82bf1a5111be33a782c832a
@@ -12,18 +14,34 @@
         state: present
         value: _02827ed4ad6fed8455c7ece69808224e.hkvuiqjoua.acm-validations.aws.
         ttl: "300"
+      - { name: _amazonses, type: TXT, state: present, value: '"9NYumAijDahFmehteVK7U21h6ltPCHiQfqlzs0jH3mE="', ttl: "300" }
       - { name: _atproto, type: TXT, state: present, value: '"did=did:plc:acfoshntvxza6ac45bkttyiw"', ttl: "300" }
       - { name: _atproto.twitch, type: TXT, state: present, value: '"did=did:plc:wetrwknoxgx4tik4oewkukkl"', ttl: "300" }
+      - name: _dmarc
+        type: TXT
+        state: present
+        value: '"v=DMARC1; p=none; rua=mailto:4961dee8d8534125b4569b234d0fdbf6@dmarc-reports.cloudflare.net"'
+        ttl: "300"
       - name: "_7ca693a0f8f72e0865bf5335a6877adb.cdn"
         type: CNAME
         state: present
         value: _a610429fde9cdbee8f486a8f8ee9c28e.hkvuiqjoua.acm-validations.aws.
         ttl: "300"
       - { name: "*.cdn", type: CNAME, state: present, value: d2r0e8lumqw3g1.cloudfront.net, ttl: "3600" }
+      - { name: 1.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
+      - { name: 2.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
+      - { name: 3.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
+      - { name: 4.cdn, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }
       - { name: cdn, type: CNAME, state: present, value: d2r0e8lumqw3g1.cloudfront.net, ttl: "300" }
       - { name: dailyphoto, type: CNAME, state: present, value: dc80vpukp1283.cloudfront.net, ttl: "300" }
       - { name: feeds, type: CNAME, state: present, value: "{{ loadbalancer_domain }}", cf_proxied: true }
       - { name: flix, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+      - name: aqcom._domainkey
+        type: TXT
+        state: present
+        value: '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt0Qde2vAyvpm2qi6F8ZR5fikHpl/UjT3NWqqP1v64Pef31Lpn9FpOLC0Ky70aNqX6YUL2DaCmTIXiCqDL+jIHAkxtIXh2OCmsldjYGotq2jZ9fQnQhMUU4QMbEBHyy26PEbldGGQBT11ZYG8jdVUpL","hgDasiAQrpGLGGJyHZ202gi8okum8AasCpN8mkG5SEYar8G5RpFaB4t1HZd9WbBgg4ztcGkTPpEiJuiEW/EPy/h2zbxps2A/8TQT29xYmyVTY0Tx8ZesCSDrb2MtzviU+E3iNl9U5L3J+wVv0D2U5uNNz3k2R1CkPf39FFLeRaL67zvhVOGMz29FdoPjepQwIDAQAB"'
+        ttl: "300"
+        r53_only: true
       - name: google._domainkey
         type: TXT
         state: present
@@ -35,7 +53,10 @@
       - { name: mail, type: CNAME, state: present, value: ghs.google.com, ttl: "86400" }
       - { name: old, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
       - { name: old, type: AAAA, state: present, value: "{{ loadbalancer_ipv6 }}", cf_proxied: true }
+      - { name: old, type: AAAA, state: absent, value: "{{ firth_ipv6 }}", cf_only: true }
+      - { name: old, type: AAAA, state: absent, value: "{{ atoll_ipv6 }}", cf_only: true }
       - { name: panopticon, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
+      - { name: plex, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
       - { name: stream, type: CNAME, state: present, value: "{{ stream_delta_app_domain }}", ttl: "300" }
       - { name: thalium, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
       - { name: tumblr, type: CNAME, state: present, value: domains.tumblr.com, ttl: "3600" }

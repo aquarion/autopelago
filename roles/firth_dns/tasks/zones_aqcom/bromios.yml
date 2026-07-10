@@ -1,0 +1,38 @@
+---
+- name: Bromios DNS
+  tags:
+    - aws
+    - bromios
+  block:
+    - name: Bromios.net. - MX
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: bromios.net
+        record: bromios.net.
+        aws_profile: aqcom
+        type: MX
+        ttl: "300"
+        value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
+
+    - name: Bromios.net. - TXT
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: bromios.net
+        record: bromios.net.
+        aws_profile: aqcom
+        type: TXT
+        ttl: "300"
+        value: '"google-site-verification=W1MysORnENmHi3aBPrkIPcVUuhdVLIsEzCD8jy2wCn4","v=spf1 include:_spf.google.com ~all"'
+
+    - name: Google._domainkey.bromios.net. - TXT (DKIM)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: bromios.net
+        record: google._domainkey.bromios.net.
+        aws_profile: aqcom
+        type: TXT
+        ttl: "300"
+        value: '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzeJlDcUCoRsMemMyZfI5MeQouLFwFI+bER9cHOsY/9ID3cjDtt48W1B1oT7YC3EiTFxSFP8E6q8wXPs0RyIjG7d3iOJLI7thQr1l2C3QiaUhYwuSJQuVscBg80bNGe/gHmDDe1TkcQXdMjXMMVd/","3fmxecXIuSuWDpgaacCy2DlxWUoPkh0zPRdHiqgXPP9T+Bwkga4NlHT/fB1nJo0z8KyMqj1jBQtQ8Tk/8uZkRlw/ZugI8z3mjZnY4UXuVsION/1jgFD5kRTINMIe/GqZVaayjIL7NCxw0Fvkbm1up9N7IX3AQTFAjryBrCBGPRs1hixDnALWpYi0RSQHz+uwCQIDAQAB"'

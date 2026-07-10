@@ -1,0 +1,49 @@
+---
+- name: Deathuntodarkness DNS
+  tags:
+    - aws
+    - deathuntodarkness
+  block:
+    - name: Deathuntodarkness.org. - PTR - remove
+      amazon.aws.route53:
+        overwrite: true
+        state: absent
+        zone: deathuntodarkness.org
+        record: deathuntodarkness.org.
+        aws_profile: aqcom
+        type: PTR
+        ttl: "300"
+        value: www.deathuntodarkness.org
+
+    - name: Www.deathuntodarkness.org. - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: deathuntodarkness.org
+        record: www.deathuntodarkness.org.
+        aws_profile: aqcom
+        type: CNAME
+        ttl: "300"
+        value: tributary.water.gkhs.net
+
+    - name: _atproto.deathuntodarkness.org. - TXT
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: deathuntodarkness.org
+        record: _atproto.deathuntodarkness.org.
+        aws_profile: aqcom
+        type: TXT
+        ttl: "300"
+        value: '"did=did:plc:wyhg6qkalevdg4ziff3m467i"'
+
+    - name: _338fee8103d4fcbd7a999eba43c2bffd.deathuntodarkness.org. - CNAME (ACM)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: deathuntodarkness.org
+        record: _338fee8103d4fcbd7a999eba43c2bffd.deathuntodarkness.org.
+        aws_profile: aqcom
+        type: CNAME
+        ttl: "300"
+        value: _02dcfe4b2c02abf0fc60b8a3e7be66aa.nhqijqilxf.acm-validations.aws.

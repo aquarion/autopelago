@@ -1,0 +1,60 @@
+---
+- name: Istic.dev DNS
+  tags:
+    - aws
+    - istic_dev
+  block:
+    - name: Istic.dev. - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.dev
+        record: istic.dev.
+        aws_profile: istic
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+
+    - name: Wildcard.istic.dev. - CNAME
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.dev
+        record: "*.istic.dev."
+        aws_profile: istic
+        type: CNAME
+        ttl: "300"
+        value: tributary.water.gkhs.net
+
+    - name: Novelathon.istic.dev. - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.dev
+        record: novelathon.istic.dev.
+        aws_profile: istic
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+
+    - name: Voyeur.istic.dev. - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.dev
+        record: voyeur.istic.dev.
+        aws_profile: istic
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"
+
+    - name: Ws.voyeur.istic.dev. - A
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.dev
+        record: ws.voyeur.istic.dev.
+        aws_profile: istic
+        type: A
+        ttl: "300"
+        value: "{{ atoll_ip }}"

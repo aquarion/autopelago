@@ -28,6 +28,19 @@
   tags:
     - ludoistic
 
+- name: Wildcard.ludoistic.com. - CNAME
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: ludoistic.com
+    record: "*.ludoistic.com."
+    type: CNAME
+    ttl: "300"
+    value: "{{ loadbalancer_domain }}"
+    aws_profile: istic
+  tags:
+    - ludoistic
+
 - name: Google._domainkey.ludoistic.com. - TXT
   amazon.aws.route53:
     overwrite: true
@@ -52,6 +65,34 @@
     type: MX
     ttl: "300"
     value: 1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM.
+    aws_profile: istic
+  tags:
+    - ludoistic
+
+# ################################################################### ludoistic.net
+
+- name: Ludoistic.net. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: ludoistic.net
+    record: ludoistic.net.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: istic
+  tags:
+    - ludoistic
+
+- name: Www.ludoistic.net. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: ludoistic.net
+    record: www.ludoistic.net.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
     aws_profile: istic
   tags:
     - ludoistic
