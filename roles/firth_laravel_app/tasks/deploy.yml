@@ -19,6 +19,24 @@
         loop_var: vol
       when: fla_ctx.additional_volumes | length > 0
 
+    - name: Ensure host bind-mount directories exist for {{ fla_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ vol.src }}"
+        state: directory
+        owner: "{{ fla_ctx.container_uid | default('82') }}"
+        group: "{{ fla_ctx.system_user }}"
+        mode: "0750"
+      loop: "{{ fla_ctx.additional_volumes | selectattr('src', 'defined') | list }}"
+      loop_control:
+        loop_var: vol
+      when: fla_ctx.additional_volumes | selectattr('src', 'defined') | list | length > 0
+      register: firth_laravel_app_bind_mount_dirs
+
+    - name: Force container recreation if bind-mount directories were created for {{ fla_ctx.name }}
+      ansible.builtin.set_fact:
+        firth_laravel_app_files_changed: true
+      when: firth_laravel_app_bind_mount_dirs.changed | default(false)
+
     - name: Template docker-compose.yml for {{ fla_ctx.name }}
       ansible.builtin.template:
         src: docker-compose.yml.j2
