@@ -95,6 +95,9 @@ firth_laravel_app_apps:
       password: "{{ laravel_apps_mail_password }}"
       from_address: "{{ laravel_apps_mail_from_address }}"
       from_name: "Novelathon Support"
+    additional_volumes:
+      - src: /home/docker/novelathon/storage/app
+        dest: /var/www/html/storage/app
     staging:
       image_tag: staging
       port: 9002
@@ -109,6 +112,9 @@ firth_laravel_app_apps:
       redis:
         username: "{{ firth_novelathon_staging_redis_username }}"
         password: "{{ firth_novelathon_staging_redis_password }}"
+      additional_volumes:
+        - src: /home/docker/novelathon-staging/storage/app
+          dest: /var/www/html/storage/app
 
   - name: bloom
     image: ghcr.io/aquarion/bloom
@@ -242,12 +248,13 @@ firth_laravel_app_apps:
     additional_env:
       APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
       GOOGLE_CREDENTIALS_PATH: google/credentials.json
+      DB_DATABASE: /var/www/html/storage/database/production.sqlite
     additional_files:
       - src: files/laravel/wereabouts/google_credentials.vault.json
         dest: google/credentials.json
     additional_volumes:
-      - src: /home/docker/wereabouts/database.sqlite
-        dest: /var/www/html/database/database.sqlite
+      - src: /home/docker/wereabouts/storage/database
+        dest: /var/www/html/storage/database
     staging:
       image_tag: staging
       port: 9006
@@ -261,12 +268,13 @@ firth_laravel_app_apps:
       additional_env:
         APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
         GOOGLE_CREDENTIALS_PATH: google/credentials.json
+        DB_DATABASE: /var/www/html/storage/database/staging.sqlite
       additional_files:
         - src: files/laravel/wereabouts/google_credentials.vault.json
           dest: google/credentials.json
       additional_volumes:
-        - src: /home/docker/wereabouts-staging/database.sqlite
-          dest: /var/www/html/database/database.sqlite
+        - src: /home/docker/wereabouts-staging/storage/database
+          dest: /var/www/html/storage/database
 
   # Vault variables required (add to vault manually):
   #   vault_thalium_app_key
@@ -303,14 +311,15 @@ firth_laravel_app_apps:
     additional_env:
       DOCKER_PDF_LIBRARY: /mnt/rpg
       LIBRARY_URL: https://thalium.aquarionics.com/_libris/
+      DB_DATABASE: /var/www/html/storage/database/production.sqlite
     additional_volumes:
       - src: /home/library/RPG/Systems
         dest: /mnt/rpg
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
-      - src: /home/docker/thalium/database.sqlite
-        dest: /var/www/html/database/database.sqlite
+      - src: /home/docker/thalium/storage/database
+        dest: /var/www/html/storage/database
     staging:
       image_tag: staging
       port: 8003
@@ -324,11 +333,12 @@ firth_laravel_app_apps:
       additional_env:
         DOCKER_PDF_LIBRARY: /mnt/rpg
         LIBRARY_URL: https://thalium.istic.dev/_libris/
+        DB_DATABASE: /var/www/html/storage/database/staging.sqlite
       additional_volumes:
         - src: /home/library/RPG/Systems
           dest: /mnt/rpg
         - name: elasticsearch_certs
           dest: /usr/share/elasticsearch/config/certs
           external: true
-        - src: /home/docker/thalium-staging/database.sqlite
-          dest: /var/www/html/database/database.sqlite
+        - src: /home/docker/thalium-staging/storage/database
+          dest: /var/www/html/storage/database

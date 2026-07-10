@@ -50,6 +50,7 @@
       - restricted
       - universe
     signed_by: "{{ ubuntu_mirror_key | default('/usr/share/keyrings/ubuntu-archive-keyring.gpg') }}"
+    install_python_debian: true
   tags:
     - certbot
     - ubuntu_sources
@@ -68,6 +69,7 @@
       - restricted
       - universe
     signed_by: "{{ ubuntu_mirror_key | default('/usr/share/keyrings/ubuntu-archive-keyring.gpg') }}"
+    install_python_debian: true
   tags:
     - certbot
     - ubuntu_sources
@@ -224,7 +226,7 @@
 
 - name: Determine remote Python version.
   ansible.builtin.set_fact:
-    water_gkhs_common_python_version: "{% if 'python3' in ansible_python_interpreter | default('') %}python3{% else %}python{% endif %}"
+    water_gkhs_common_python_version: "{% if ansible_python_version.split('.')[0] | int >= 3 %}python3{% else %}python{% endif %}"
   tags: aws
 
 - name: Ensure Python libraries that ansible needs are installed.
@@ -232,7 +234,6 @@
     state: present
     pkg:
       - "{{ water_gkhs_common_python_version }}-boto3"
-      - "{{ water_gkhs_common_python_version }}-boto"
       - "{{ water_gkhs_common_python_version }}-passlib"
   tags:
     - aws
@@ -243,6 +244,8 @@
     state: present
     dest: /etc/sysctl.conf
     regexp: ^fs.inotify.max_user_watches
+    create: true
+    mode: "0644"
   notify: Kick sysctl
   tags: sysctl
 
