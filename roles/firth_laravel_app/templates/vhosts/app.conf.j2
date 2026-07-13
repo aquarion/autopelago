@@ -38,7 +38,7 @@ server {
     }
 
 {% if fla_ctx.nginx_snippet %}
-    include /etc/nginx/snippets/apps/{{ fla_ctx.nginx_snippet }}.conf;
+    include /etc/nginx/snippets/apps/{{ fla_ctx.name }}.conf;
 {% endif %}
 
     location / {
