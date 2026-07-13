@@ -36,6 +36,10 @@ firth_laravel_app_apps:
   #     from_name: "Example Support"
   #  additional_env: # optional additional environment variables to pass to the container, can be used for things like third-party API keys
   #    EXAMPLE_API_KEY: "{{ vault_example_api_key }}"
+  #  additional_volumes: # optional extra bind mounts/named volumes for the container
+  #    - src: /home/docker/example/storage/app # bind mount from the host
+  #      dest: /var/www/html/storage/app
+  #      manage_owner: false # optional, defaults to true - set false for pre-existing/shared paths (e.g. a media library) so the role doesn't overwrite their ownership/mode every deploy
   #  staging: # optional staging config, if you want a separate staging environment with a different image tag and environment variables
   #      ## This is a duplicate of the config above, but with overrides for staging.
   #      ## The staging image should be built and pushed to GHCR by your CI pipeline when you push to your staging branch.
@@ -315,6 +319,7 @@ firth_laravel_app_apps:
     additional_volumes:
       - src: /home/library/RPG/Systems
         dest: /mnt/rpg
+        manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
@@ -337,6 +342,7 @@ firth_laravel_app_apps:
       additional_volumes:
         - src: /home/library/RPG/Systems
           dest: /mnt/rpg
+          manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
         - name: elasticsearch_certs
           dest: /usr/share/elasticsearch/config/certs
           external: true
