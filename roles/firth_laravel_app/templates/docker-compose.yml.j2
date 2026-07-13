@@ -1,12 +1,5 @@
 # {{ ansible_managed }}
-name: {{ fla_ctx.name }}
-services:
-  app:
-    image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:{{ fla_ctx.port }}:{% if fla_ctx.backend == 'fpm' %}9000{% else %}8000{% endif %}"
-    environment: &app-env
+{% macro app_environment() %}
       APP_NAME: "{{ fla_ctx.app_name }}"
       APP_ENV: "{{ fla_ctx.app_env }}"
       APP_KEY: "{{ fla_ctx.app_key }}"
@@ -54,7 +47,8 @@ services:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-    volumes:
+{%- endmacro %}
+{% macro app_volumes() %}
       - storage:{{ fla_ctx.workdir }}/storage
 {% for file in fla_ctx.additional_files %}
       - {{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ file.dest }}:{{ fla_ctx.workdir }}/storage/app/{{ file.dest }}:ro
@@ -66,6 +60,18 @@ services:
       - {{ vol.name }}:{{ vol.dest }}
 {% endif %}
 {% endfor %}
+{%- endmacro %}
+name: {{ fla_ctx.name }}
+services:
+  app:
+    image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ fla_ctx.port }}:{% if fla_ctx.backend == 'fpm' %}9000{% else %}8000{% endif %}"
+    environment:
+{{ app_environment() }}
+    volumes:
+{{ app_volumes() }}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -80,25 +86,29 @@ services:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
     command: ["php", "artisan", "{{ fla_ctx.worker_command }}"]
-    environment: &app-env
-      APP_NAME: "{{ fla_ctx.app_name }}"
-      APP_ENV: "{{ fla_ctx.app_env }}"
-      APP_KEY: "{{ fla_ctx.app_key }}"
-      APP_DEBUG: "{{ fla_ctx.app_debug }}"
-      APP_URL: "{{ fla_ctx.app_url }}"
-      LOG_STACK: "stderr,single"
+    environment:
+{{ app_environment() }}
     volumes:
-      - storage:{{ fla_ctx.workdir }}/storage
-{% for file in fla_ctx.additional_files %}
-      - {{ docker_root }}/{{ fla_ctx.name }}/secrets/{{ file.dest }}:{{ fla_ctx.workdir }}/storage/app/{{ file.dest }}:ro
-{% endfor %}
-{% for vol in fla_ctx.additional_volumes %}
-{% if vol.src is defined %}
-      - {{ vol.src }}:{{ vol.dest }}
-{% else %}
-      - {{ vol.name }}:{{ vol.dest }}
+{{ app_volumes() }}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - firth_services
+    logging:
+      driver: journald
+      options:
+        tag: "$${.Name}/$${.ID}"
+
 {% endif %}
-{% endfor %}
+{% if fla_ctx.scheduler %}
+  scheduler:
+    image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
+    restart: unless-stopped
+    command: ["php", "artisan", "schedule:work"]
+    environment:
+{{ app_environment() }}
+    volumes:
+{{ app_volumes() }}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

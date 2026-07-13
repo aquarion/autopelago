@@ -36,6 +36,9 @@ firth_laravel_app_apps:
   #     from_name: "Example Support"
   #  additional_env: # optional additional environment variables to pass to the container, can be used for things like third-party API keys
   #    EXAMPLE_API_KEY: "{{ vault_example_api_key }}"
+  #  scheduler: true # optional - runs `php artisan schedule:work` in its own container for apps using Laravel's task scheduler
+  #  worker: true # optional - runs a queue worker in its own container
+  #  worker_command: horizon # optional - defaults to "queue:work"
   #  staging: # optional staging config, if you want a separate staging environment with a different image tag and environment variables
   #      ## This is a duplicate of the config above, but with overrides for staging.
   #      ## The staging image should be built and pushed to GHCR by your CI pipeline when you push to your staging branch.
@@ -130,6 +133,7 @@ firth_laravel_app_apps:
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
+    scheduler: true
     mysql:
       db_name: bloom
       db_user: bloom
