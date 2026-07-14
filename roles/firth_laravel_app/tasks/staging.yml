@@ -47,6 +47,7 @@
       www_redirect: "{{ fla.staging.www_redirect | default(false) }}"
       worker: "{{ fla.staging.worker | default(fla.worker | default(false)) }}"
       worker_command: "{{ fla.staging.worker_command | default(fla.worker_command | default('queue:work')) }}"
+      scheduler: "{{ fla.staging.scheduler | default(fla.scheduler | default(false)) }}"
       workdir: "{{ fla.staging.workdir | default(fla.workdir | default('/var/www/html')) }}"
       mysql: "{{ fla.staging.mysql | default({}) }}"
       redis: "{{ fla.staging.redis | default({}) }}"

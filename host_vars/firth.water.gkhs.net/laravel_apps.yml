@@ -36,6 +36,15 @@ firth_laravel_app_apps:
   #     from_name: "Example Support"
   #  additional_env: # optional additional environment variables to pass to the container, can be used for things like third-party API keys
   #    EXAMPLE_API_KEY: "{{ vault_example_api_key }}"
+  #  additional_volumes: # optional extra bind mounts/named volumes for the container
+  #    - src: /home/docker/example/storage/app # bind mount from the host
+  #      dest: /var/www/html/storage/app
+  #      manage_owner: false # optional, defaults to true - set false for pre-existing/shared paths (e.g. a media library) so the role doesn't overwrite their ownership/mode every deploy
+  #  scheduler: true # optional - runs `php artisan schedule:work` in its own container for apps using Laravel's task scheduler
+  #    # caution: if the app uses SQLite (DB_DATABASE pointing at a bind-mounted .sqlite file), running scheduler
+  #    # and worker containers together adds concurrent writers and can hit "database is locked" under contention
+  #  worker: true # optional - runs a queue worker in its own container
+  #  worker_command: horizon # optional - defaults to "queue:work"
   #  staging: # optional staging config, if you want a separate staging environment with a different image tag and environment variables
   #      ## This is a duplicate of the config above, but with overrides for staging.
   #      ## The staging image should be built and pushed to GHCR by your CI pipeline when you push to your staging branch.
@@ -130,6 +139,7 @@ firth_laravel_app_apps:
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
     ghcr_username: "{{ ghcr_username }}"
     ghcr_token: "{{ ghcr_token }}"
+    scheduler: true
     mysql:
       db_name: bloom
       db_user: bloom
@@ -279,6 +289,8 @@ firth_laravel_app_apps:
   # Vault variables required (add to vault manually):
   #   vault_thalium_app_key
   #   vault_thalium_staging_app_key
+  #   vault_thalium_db_password
+  #   vault_thalium_staging_db_password
   #   vault_thalium_redis_password
   #   vault_thalium_staging_redis_password
   #   vault_thalium_es_user
@@ -300,6 +312,11 @@ firth_laravel_app_apps:
     ghcr_token: "{{ ghcr_token }}"
     worker: true
     worker_command: horizon
+    scheduler: true
+    mysql:
+      db_name: thalium
+      db_user: thalium
+      db_password: "{{ vault_thalium_db_password }}"
     redis:
       username: thalium
       password: "{{ vault_thalium_redis_password }}"
@@ -311,15 +328,13 @@ firth_laravel_app_apps:
     additional_env:
       DOCKER_PDF_LIBRARY: /mnt/rpg
       LIBRARY_URL: https://thalium.aquarionics.com/_libris/
-      DB_DATABASE: /var/www/html/storage/database/production.sqlite
     additional_volumes:
       - src: /home/library/RPG/Systems
         dest: /mnt/rpg
+        manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
-      - src: /home/docker/thalium/storage/database
-        dest: /var/www/html/storage/database
     staging:
       image_tag: staging
       port: 8003
@@ -327,18 +342,21 @@ firth_laravel_app_apps:
       app_url: https://thalium.istic.dev
       app_key: "{{ vault_thalium_staging_app_key }}"
       ssl_snippet: istic_dev
+      scheduler: false # staging shares prod's elasticsearch index - don't run a second scheduler against it
+      mysql:
+        db_name: thalium_staging
+        db_user: thalium_staging
+        db_password: "{{ vault_thalium_staging_db_password }}"
       redis:
         username: thalium_staging
         password: "{{ vault_thalium_staging_redis_password }}"
       additional_env:
         DOCKER_PDF_LIBRARY: /mnt/rpg
         LIBRARY_URL: https://thalium.istic.dev/_libris/
-        DB_DATABASE: /var/www/html/storage/database/staging.sqlite
       additional_volumes:
         - src: /home/library/RPG/Systems
           dest: /mnt/rpg
+          manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
         - name: elasticsearch_certs
           dest: /usr/share/elasticsearch/config/certs
           external: true
-        - src: /home/docker/thalium-staging/storage/database
-          dest: /var/www/html/storage/database

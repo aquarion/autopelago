@@ -12,7 +12,7 @@
 - name: Deploy nginx snippet for {{ fla_ctx.name }}
   ansible.builtin.template:
     src: "vhosts/snippets/{{ fla_ctx.nginx_snippet }}.conf.j2"
-    dest: "/etc/nginx/snippets/apps/{{ fla_ctx.nginx_snippet }}.conf"
+    dest: "/etc/nginx/snippets/apps/{{ fla_ctx.name }}.conf"
     owner: root
     group: root
     mode: "0644"

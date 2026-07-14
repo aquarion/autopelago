@@ -18,6 +18,7 @@
       www_redirect: "{{ firth_laravel_app_item.www_redirect | default(false) }}"
       worker: "{{ firth_laravel_app_item.worker | default(false) }}"
       worker_command: "{{ firth_laravel_app_item.worker_command | default('queue:work') }}"
+      scheduler: "{{ firth_laravel_app_item.scheduler | default(false) }}"
       workdir: "{{ firth_laravel_app_item.workdir | default('/var/www/html') }}"
       mysql: "{{ firth_laravel_app_item.mysql | default({}) }}"
       redis: "{{ firth_laravel_app_item.redis | default({}) }}"
