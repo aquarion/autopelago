@@ -44,6 +44,7 @@
         owner: root
         group: docker
         mode: "0660"
+        validate: docker compose -f %s config -q
 
     - name: Pull and start {{ fla_ctx.name }}
       community.docker.docker_compose_v2:
