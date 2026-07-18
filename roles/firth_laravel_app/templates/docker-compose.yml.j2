@@ -87,6 +87,7 @@ services:
     restart: unless-stopped
     command: ["php", "artisan", "{{ fla_ctx.worker_command }}"]
     environment:
+      RUN_MIGRATIONS: false # Do not run migrations in the worker container, only in the app container
 {{ app_environment() }}
     volumes:
 {{ app_volumes() }}

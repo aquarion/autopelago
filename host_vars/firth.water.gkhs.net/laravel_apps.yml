@@ -257,7 +257,7 @@ firth_laravel_app_apps:
       from_name: "Wereabouts Support"
     additional_env:
       APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
-      GOOGLE_CREDENTIALS_PATH: google/credentials.json
+      APP_GOOGLE_CREDENTIALS_FILENAME: google/credentials.json
       DB_DATABASE: /var/www/html/storage/database/production.sqlite
     additional_files:
       - src: files/laravel/wereabouts/google_credentials.vault.json
@@ -277,7 +277,7 @@ firth_laravel_app_apps:
         password: "{{ vault_wereabouts_staging_redis_password }}"
       additional_env:
         APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
-        GOOGLE_CREDENTIALS_PATH: google/credentials.json
+        APP_GOOGLE_CREDENTIALS_FILENAME: google/credentials.json
         DB_DATABASE: /var/www/html/storage/database/staging.sqlite
       additional_files:
         - src: files/laravel/wereabouts/google_credentials.vault.json
