@@ -23,11 +23,11 @@ repos:
         language: script
         files: \.vault\..*$
   - repo: https://github.com/bridgecrewio/checkov
-    rev: 3.3.2
+    rev: 3.3.8
     hooks:
       - id: checkov
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.26.1
+    rev: v1.27.0
     hooks:
       - id: zizmor
         args: ["--config", ".zizmor.yml"]
@@ -38,7 +38,7 @@ repos:
         args: ["--disable=import-error"]
         additional_dependencies: ["pynacl", "jinja2"]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.1.0
+    rev: v2.3.0
     hooks:
       - id: mypy
         args: ["--ignore-missing-imports"]
@@ -48,7 +48,7 @@ repos:
     hooks:
       - id: shfmt
   - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v26.4.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
+    rev: v26.6.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
     hooks:
       - id: ansible-lint
         entry: python3 -m ansiblelint -v --force-color --fix
