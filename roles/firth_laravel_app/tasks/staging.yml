@@ -45,6 +45,7 @@
       server_name: "{{ fla.staging.server_name }}"
       ssl_snippet: "{{ fla.staging.ssl_snippet | default(fla.ssl_snippet) }}"
       www_redirect: "{{ fla.staging.www_redirect | default(false) }}"
+      healthcheck_path: "{{ fla.staging.healthcheck_path | default(fla.healthcheck_path | default('', true), true) }}"
       worker: "{{ fla.staging.worker | default(fla.worker | default(false)) }}"
       worker_command: "{{ fla.staging.worker_command | default(fla.worker_command | default('queue:work')) }}"
       scheduler: "{{ fla.staging.scheduler | default(fla.scheduler | default(false)) }}"

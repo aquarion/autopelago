@@ -16,6 +16,7 @@
       server_name: "{{ firth_laravel_app_item.server_name }}"
       ssl_snippet: "{{ firth_laravel_app_item.ssl_snippet }}"
       www_redirect: "{{ firth_laravel_app_item.www_redirect | default(false) }}"
+      healthcheck_path: "{{ firth_laravel_app_item.healthcheck_path | default('', true) }}"
       worker: "{{ firth_laravel_app_item.worker | default(false) }}"
       worker_command: "{{ firth_laravel_app_item.worker_command | default('queue:work') }}"
       scheduler: "{{ firth_laravel_app_item.scheduler | default(false) }}"

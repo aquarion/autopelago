@@ -1,4 +1,6 @@
 # {{ ansible_managed }}
+
+{% set fla_internal_port = 9000 if fla_ctx.backend == 'fpm' else 8000 %}
 {% macro app_environment() %}
       APP_NAME: "{{ fla_ctx.app_name }}"
       APP_ENV: "{{ fla_ctx.app_env }}"
@@ -47,7 +49,7 @@
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-{%- endmacro %}
+{% endmacro %}
 {% macro app_volumes() %}
       - storage:{{ fla_ctx.workdir }}/storage
 {% for file in fla_ctx.additional_files %}
@@ -60,14 +62,21 @@
       - {{ vol.name }}:{{ vol.dest }}
 {% endif %}
 {% endfor %}
-{%- endmacro %}
+{% endmacro %}
 name: {{ fla_ctx.name }}
 services:
   app:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
     ports:
-      - "127.0.0.1:{{ fla_ctx.port }}:{% if fla_ctx.backend == 'fpm' %}9000{% else %}8000{% endif %}"
+      - "127.0.0.1:{{ fla_ctx.port }}:{{ fla_internal_port }}"
+{% if fla_ctx.healthcheck_path %}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:{{ fla_internal_port }}/{{ fla_ctx.healthcheck_path }}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+{% endif %}
     environment:
 {{ app_environment() }}
     volumes:
@@ -86,8 +95,9 @@ services:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
     command: ["php", "artisan", "{{ fla_ctx.worker_command }}"]
+    depends_on:
+      - app
     environment:
-      RUN_MIGRATIONS: false # Do not run migrations in the worker container, only in the app container
 {{ app_environment() }}
     volumes:
 {{ app_volumes() }}
@@ -106,8 +116,9 @@ services:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
     command: ["php", "artisan", "schedule:work"]
+    depends_on:
+      - app
     environment:
-      RUN_MIGRATIONS: false # Do not run migrations in the scheduler either
 {{ app_environment() }}
     volumes:
 {{ app_volumes() }}
