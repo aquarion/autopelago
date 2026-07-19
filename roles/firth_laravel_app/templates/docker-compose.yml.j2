@@ -107,6 +107,7 @@ services:
     restart: unless-stopped
     command: ["php", "artisan", "schedule:work"]
     environment:
+      RUN_MIGRATIONS: false # Do not run migrations in the scheduler either
 {{ app_environment() }}
     volumes:
 {{ app_volumes() }}
