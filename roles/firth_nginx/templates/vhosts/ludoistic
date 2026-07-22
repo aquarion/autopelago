@@ -45,7 +45,7 @@ server {
     server_name
       *.larp.me;
     add_header X-WhyAmI ludoistic-wordpress;
-    add_header Access-Control-Allow-Origin: *;
+    add_header Access-Control-Allow-Origin $cors_origin_ludoistic always;
     include /etc/nginx/snippets/ssl/larpme_ssl.conf;
 
     error_log  /var/log/nginx/ludoistic-wordpress.error.log;
