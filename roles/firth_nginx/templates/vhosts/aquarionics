@@ -46,7 +46,6 @@ server {
   listen [::]:443 ssl proxy_protocol;
   server_name wywo.aquarionics.com www.aquarionics.com;
   add_header X-WhyAmI wordpress;
-  add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
   include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
 
   error_log /var/log/nginx/wordpress.error.log;
@@ -67,7 +66,6 @@ server {
   listen [::]:443 ssl proxy_protocol;
   server_name factionfiction.net blogs.water.gkhs.net *.blogs.water.gkhs.net omnyom.com www.cleartextcontent.co.uk themonthlymoon.com;
   add_header X-WhyAmI wordpress;
-  add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
   include /etc/nginx/snippets/ssl/letsencrypt_ssl.conf;
 
   error_log /var/log/nginx/wordpress.error.log;
