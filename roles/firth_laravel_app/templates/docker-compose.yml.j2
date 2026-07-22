@@ -44,6 +44,17 @@
       MAIL_FROM_ADDRESS: "{{ fla_ctx.mail.from_address }}"
       MAIL_FROM_NAME: "{{ fla_ctx.mail.from_name }}"
 {% endif %}
+{% if fla_ctx.otel %}
+      OTEL_PHP_AUTOLOAD_ENABLED: "true"
+      OTEL_SERVICE_NAME: "{{ fla_ctx.name }}"
+      OTEL_RESOURCE_ATTRIBUTES: "service.version={{ fla_ctx.image_tag }},service.environment={{ fla_ctx.app_env }},service.name={{ fla_ctx.app_name }},service.revision={{ fla_ctx.image_tag }},service.branch=main"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_METRICS_EXPORTER: "otlp"
+      OTEL_LOGS_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://otel.svc.istic.systems:4317"
+      OTEL_PROPAGATORS: "baggage,tracecontext"
+{% endif %}
 {% if fla_ctx.additional_env %}
 {% for key, value in fla_ctx.additional_env.items() %}
       {{ key }}: "{{ value }}"
