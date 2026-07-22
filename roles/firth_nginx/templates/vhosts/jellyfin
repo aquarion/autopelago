@@ -42,7 +42,7 @@ server {
 
     # COOP/COEP. Disable if you use external plugins/images/assets
     add_header Cross-Origin-Opener-Policy "same-origin" always;
-    add_header Cross-Origin-Embedder-Policy "require-corp" always;
+    add_header Cross-Origin-Embedder-Policy "credentialless" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
     # Permissions policy. May cause issues on some clients
