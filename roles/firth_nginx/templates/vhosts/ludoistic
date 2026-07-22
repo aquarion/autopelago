@@ -6,7 +6,8 @@ server {
     listen [::]:80;
     server_name
       ludoistic.com ludoistic.net
-      *.ludoistic.com *.ludoistic.net;
+      *.ludoistic.com *.ludoistic.net
+      *.larp.me;
     include /etc/nginx/snippets/errors.conf;
     client_max_body_size 32M;
     add_header X-WhyAmI "ludoistic-wordpress redirect";
@@ -23,6 +24,29 @@ server {
     add_header X-WhyAmI ludoistic-wordpress;
     add_header Access-Control-Allow-Origin: https://*.aquarionics.com/;
     include /etc/nginx/snippets/ssl/ludoistic_ssl.conf;
+
+    error_log  /var/log/nginx/ludoistic-wordpress.error.log;
+    access_log /var/log/nginx/ludoistic-wordpress.access.log;
+
+  location    / {
+    proxy_pass http://container-ludoistic-wordpress;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  include /etc/nginx/snippets/errors.conf;
+   client_max_body_size 32M;
+}
+
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name
+      *.larp.me;
+    add_header X-WhyAmI ludoistic-wordpress;
+    add_header Access-Control-Allow-Origin: *;
+    include /etc/nginx/snippets/ssl/larpme_ssl.conf;
 
     error_log  /var/log/nginx/ludoistic-wordpress.error.log;
     access_log /var/log/nginx/ludoistic-wordpress.access.log;
