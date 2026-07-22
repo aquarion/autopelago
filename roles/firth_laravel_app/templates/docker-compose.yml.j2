@@ -52,7 +52,8 @@
       OTEL_METRICS_EXPORTER: "otlp"
       OTEL_LOGS_EXPORTER: "otlp"
       OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "https://otel.svc.istic.systems:4317"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://ingester:4317"
+      OTEL_EXPORTER_OTLP_INSECURE: "true"
       OTEL_PROPAGATORS: "baggage,tracecontext"
 {% endif %}
 {% if fla_ctx.additional_env %}
