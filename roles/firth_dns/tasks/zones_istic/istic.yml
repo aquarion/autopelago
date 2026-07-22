@@ -405,8 +405,8 @@
       ansible.builtin.command:
         cmd: "false"
 
-# Istic.systems
-- name: Istic.Systems DNS
+# Istic.Networks DNS
+- name: Istic.Networks DNS
   tags:
     - aws
     - istic_sys
@@ -633,6 +633,32 @@
         aws_profile: istic
       tags:
         - istic_net
+        - istic_sys
+
+    - name: "Signoz DNS"
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.systems
+        record: signoz.svc.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ loadbalancer_ip }}"
+        aws_profile: istic
+      tags:
+        - istic_sys
+
+    - name: "OTLP DNS"
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: istic.systems
+        record: otlp.svc.istic.systems.
+        type: A
+        ttl: "300"
+        value: "{{ firth_ip }}"
+        aws_profile: istic
+      tags:
         - istic_sys
 
   rescue:

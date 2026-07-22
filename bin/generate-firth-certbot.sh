@@ -43,6 +43,8 @@ sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name isti
 	-d "istic.network" -d "*.istic.network" \
 	-d "*.blogs.istic.network" \
 	-d "*.istic.systems" -d "*.istic.systems"
+echo "Generating certificates for Istic Systems Services"
+sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name svc.istic.systems --dns-route53 -d svc.istic.systems -d "*.svc.istic.systems"
 echo "Generating certificates for istic.dev"
 sudo --preserve-env=AWS_PROFILE -E certbot -n certonly --expand --cert-name istic.dev --dns-route53 -d "*.istic.dev"
 echo "Generating certificates for Carcosa Dreams"

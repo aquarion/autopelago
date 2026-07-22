@@ -45,6 +45,7 @@
     - { cert_name: "nanocountdown.com", file_name: "nanocountdown.com" }
     - { cert_name: "novelathon.com", file_name: "novelathon.com" }
     - { cert_name: "kastark.co.uk", file_name: "kastark" }
+    - { cert_name: "svc.istic.systems", file_name: "svc_istic_systems" }
   notify:
     - Restart nginx
   tags:
