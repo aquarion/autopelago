@@ -1,0 +1,4 @@
+---
+firth_signoz_user: aquarion
+firth_signoz_root: "/home/{{ firth_signoz_user }}/docker/signoz"
+firth_signoz_foundryctl_bin: "/home/{{ firth_signoz_user }}/.local/bin/foundryctl"

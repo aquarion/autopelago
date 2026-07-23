@@ -1,0 +1,30 @@
+---
+- name: Deploy SigNoz
+  tags: [firth_signoz, firth_signoz_install]
+  become: false
+  block:
+    - name: Template casting.yaml for SigNoz
+      ansible.builtin.template:
+        src: casting.yaml.j2
+        dest: "{{ firth_signoz_root }}/casting.yaml"
+        owner: "{{ firth_signoz_user }}"
+        group: "{{ firth_signoz_user }}"
+        mode: "0644"
+      register: firth_signoz_casting
+
+    - name: Forge and cast SigNoz deployment
+      ansible.builtin.command: "{{ firth_signoz_foundryctl_bin }} cast"
+      args:
+        chdir: "{{ firth_signoz_root }}"
+      when: firth_signoz_casting.changed
+      register: firth_signoz_cast
+      changed_when: "'Recreated' in firth_signoz_cast.stderr"
+
+  rescue:
+    - name: Debug SigNoz deploy failure
+      ansible.builtin.debug:
+        msg: "Failed to deploy SigNoz. Check casting.yaml and foundryctl output."
+
+    - name: Abort after SigNoz deploy failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SigNoz deploy failed."

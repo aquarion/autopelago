@@ -101,9 +101,10 @@ services:
     networks:
       - firth_services
     logging:
-      driver: journald
+      driver: json-file
       options:
-        tag: "$${.Name}/$${.ID}"
+        max-size: "10m"
+        max-file: "3"
 
 {% if fla_ctx.worker %}
   worker:
@@ -121,9 +122,10 @@ services:
     networks:
       - firth_services
     logging:
-      driver: journald
+      driver: json-file
       options:
-        tag: "$${.Name}/$${.ID}"
+        max-size: "10m"
+        max-file: "3"
 
 {% endif %}
 {% if fla_ctx.scheduler %}
@@ -142,9 +144,10 @@ services:
     networks:
       - firth_services
     logging:
-      driver: journald
+      driver: json-file
       options:
-        tag: "$${.Name}/$${.ID}"
+        max-size: "10m"
+        max-file: "3"
 
 {% endif %}
 volumes:
