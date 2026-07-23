@@ -3,6 +3,18 @@
   tags: [firth_signoz, firth_signoz_install]
   become: false
   block:
+    - name: Ensure system user exists for {{ firth_signoz_user }}
+      ansible.builtin.user:
+        name: "{{ firth_signoz_user }}"
+        system: true
+        home: "/var/lib/{{ firth_signoz_user }}"
+        create_home: true
+        shell: /usr/sbin/nologin
+        groups: "{{ firth_signoz_group }}"
+        append: true
+        state: present
+      become: true
+
     - name: Check for foundryctl
       ansible.builtin.stat:
         path: "{{ firth_signoz_foundryctl_bin }}"
@@ -56,22 +68,36 @@
         path: "{{ firth_signoz_root }}"
         state: directory
         owner: "{{ firth_signoz_user }}"
-        group: "{{ firth_signoz_user }}"
+        group: "{{ firth_signoz_group }}"
         mode: "0775"
+      become: true
+
+    - name: Backfill ownership of existing SigNoz files for {{ firth_signoz_user }}
+      ansible.builtin.file:
+        path: "{{ firth_signoz_root }}"
+        state: directory
+        owner: "{{ firth_signoz_user }}"
+        group: "{{ firth_signoz_group }}"
+        recurse: true
+      become: true
 
     - name: Template casting.yaml for SigNoz
       ansible.builtin.template:
         src: casting.yaml.j2
         dest: "{{ firth_signoz_root }}/casting.yaml"
         owner: "{{ firth_signoz_user }}"
-        group: "{{ firth_signoz_user }}"
+        group: "{{ firth_signoz_group }}"
         mode: "0644"
+      become: true
+      become_user: "{{ firth_signoz_user }}"
       register: firth_signoz_casting
 
     - name: Forge and cast SigNoz deployment
       ansible.builtin.command: "{{ firth_signoz_foundryctl_bin }} cast"
       args:
         chdir: "{{ firth_signoz_root }}"
+      become: true
+      become_user: "{{ firth_signoz_user }}"
       when: firth_signoz_casting.changed
       changed_when: true
 

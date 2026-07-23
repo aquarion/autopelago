@@ -1,4 +1,5 @@
 ---
-firth_signoz_user: aquarion
+firth_signoz_user: svc-signoz
+firth_signoz_group: docker
 firth_signoz_root: "{{ docker_root }}/signoz"
 firth_signoz_foundryctl_bin: "/usr/local/bin/foundryctl"
