@@ -45,15 +45,18 @@
       MAIL_FROM_NAME: "{{ fla_ctx.mail.from_name }}"
 {% endif %}
 {% if fla_ctx.otel %}
+      {%- set signoz_method = 'grpc' if fla_ctx.otel == 'grpc' else 'http/protobuf' %}
+      {%- set signoz_port = signoz_ingester_grpc_port if signoz_method == 'grpc' else signoz_ingester_http_port %}
+      {%- set signoz_endpoint = signoz_ingester_scheme + '://' + signoz_ingester_hostname + ':' + signoz_port|string %}
       OTEL_PHP_AUTOLOAD_ENABLED: "true"
       OTEL_SERVICE_NAME: "{{ fla_ctx.name }}"
       OTEL_RESOURCE_ATTRIBUTES: "service.version={{ fla_ctx.image_tag }},service.environment={{ fla_ctx.app_env }},service.name={{ fla_ctx.app_name }},service.revision={{ fla_ctx.image_tag }},service.branch=main"
       OTEL_TRACES_EXPORTER: "otlp"
       OTEL_METRICS_EXPORTER: "otlp"
       OTEL_LOGS_EXPORTER: "otlp"
-      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://ingester:4317"
-      OTEL_EXPORTER_OTLP_INSECURE: "true"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "{{ signoz_method }}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "{{ signoz_endpoint }}"
+      OTEL_EXPORTER_OTLP_INSECURE: "{{ signoz_ingester_is_insecure }}"
       OTEL_PROPAGATORS: "baggage,tracecontext"
 {% endif %}
 {% if fla_ctx.additional_env %}

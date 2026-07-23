@@ -31,7 +31,7 @@
       nginx_snippet: "{{ firth_laravel_app_item.nginx_snippet | default('') }}"
       system_user: "{{ firth_laravel_app_item.name }}"
       container_uid: "{{ firth_laravel_app_item.container_uid | default('82') }}"
-      otel: "{{ firth_laravel_app_item.otel | default(true) }}"
+      otel: "{{ firth_laravel_app_item.otel | default(signoz_ingester_default_protocol) }}"
   tags: [always, firth_laravel_app, firth_laravel_app_install]
 
 - name: Reset files changed state for {{ firth_laravel_app_item.name }} # noqa: var-naming[no-role-prefix]
