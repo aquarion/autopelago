@@ -1,0 +1,60 @@
+# {{ ansible_managed }}
+apiVersion: v1alpha1
+kind: Installation
+metadata:
+  name: signoz
+spec:
+  deployment:
+    flavor: compose
+    mode: docker
+  ingester:
+    spec:
+      config:
+        data:
+          ingester.yaml: |
+            receivers:
+              filelog:
+                include:
+                  - /var/lib/docker/containers/*/*-json.log
+                start_at: beginning
+                include_file_path: true
+                include_file_name: false
+                operators:
+                  - type: json_parser
+                    id: parser-docker
+                    output: extract_metadata_from_filepath
+                    timestamp:
+                      parse_from: attributes.time
+                      layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+                  - type: regex_parser
+                    id: extract_metadata_from_filepath
+                    regex: '^.*containers/(?P<container_id>[^_]+)/.*log$'
+                    parse_from: attributes["log.file.path"]
+                    output: parse_body
+                  - type: move
+                    id: parse_body
+                    from: attributes.log
+                    to: body
+            service:
+              pipelines:
+                logs:
+                  receivers:
+                    - otlp
+                    - filelog
+  patches:
+     - target: "deployment/compose.yaml"
+       operations:
+         - op: add
+           path: /services/ingester/networks/{{ firth_services_docker_network }}
+           value: {}
+         - op: add
+           path: /networks/{{ firth_services_docker_network }}
+           value:
+              external: true
+              name: "{{ firth_services_docker_network }}"
+         - op: add
+           path: /services/ingester/volumes/-
+           value: "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+         - op: add
+           path: /services/ingester/user
+           value: "root"

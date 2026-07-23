@@ -1,0 +1,6 @@
+signoz_ingester_hostname: ingester.svc.istic.local # This doesn't work yet, but will be fixed in the future. For now, use the hostname of the ingester container in the same docker network as the app container.
+signoz_ingester_grpc_port: 4317
+signoz_ingester_http_port: 4318
+signoz_ingester_scheme: http
+signoz_ingester_is_insecure: "true"
+signoz_ingester_default_protocol: http/protobuf

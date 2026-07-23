@@ -1,0 +1,111 @@
+---
+- name: Deploy SigNoz
+  tags: [firth_signoz, firth_signoz_install]
+  become: false
+  block:
+    - name: Ensure system user exists for {{ firth_signoz_user }}
+      ansible.builtin.user:
+        name: "{{ firth_signoz_user }}"
+        system: true
+        home: "/var/lib/{{ firth_signoz_user }}"
+        create_home: true
+        shell: /usr/sbin/nologin
+        groups: "{{ firth_signoz_group }}"
+        append: true
+        state: present
+      become: true
+
+    - name: Check for foundryctl
+      ansible.builtin.stat:
+        path: "{{ firth_signoz_foundryctl_bin }}"
+      register: firth_signoz_foundryctl_stat
+
+    - name: Install foundryctl
+      when: not firth_signoz_foundryctl_stat.stat.exists
+      vars:
+        firth_signoz_foundry_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+        firth_signoz_foundry_extracted_dir: "/tmp/foundry_linux_{{ firth_signoz_foundry_arch }}"
+      block:
+        - name: Ensure foundryctl install directory exists
+          ansible.builtin.file:
+            path: "{{ firth_signoz_foundryctl_bin | dirname }}"
+            state: directory
+            mode: "0755"
+          become: true
+
+        - name: Download foundry release archive
+          ansible.builtin.get_url:
+            url: "https://github.com/SigNoz/foundry/releases/latest/download/foundry_linux_{{ firth_signoz_foundry_arch }}.tar.gz"
+            dest: /tmp/foundry.tar.gz
+            mode: "0644"
+
+        - name: Extract foundry release archive
+          ansible.builtin.unarchive:
+            src: /tmp/foundry.tar.gz
+            dest: /tmp
+            remote_src: true
+
+        - name: Install foundryctl binary
+          ansible.builtin.copy:
+            src: "{{ firth_signoz_foundry_extracted_dir }}/bin/foundryctl"
+            dest: "{{ firth_signoz_foundryctl_bin }}"
+            owner: root
+            group: root
+            mode: "0755"
+            remote_src: true
+          become: true
+
+        - name: Clean up foundry release archive
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - /tmp/foundry.tar.gz
+            - "{{ firth_signoz_foundry_extracted_dir }}"
+
+    - name: Ensure SigNoz directory exists
+      ansible.builtin.file:
+        path: "{{ firth_signoz_root }}"
+        state: directory
+        owner: "{{ firth_signoz_user }}"
+        group: "{{ firth_signoz_group }}"
+        mode: "0775"
+      become: true
+
+    - name: Backfill ownership of existing SigNoz files for {{ firth_signoz_user }}
+      ansible.builtin.file:
+        path: "{{ firth_signoz_root }}"
+        state: directory
+        owner: "{{ firth_signoz_user }}"
+        group: "{{ firth_signoz_group }}"
+        recurse: true
+      become: true
+
+    - name: Template casting.yaml for SigNoz
+      ansible.builtin.template:
+        src: casting.yaml.j2
+        dest: "{{ firth_signoz_root }}/casting.yaml"
+        owner: "{{ firth_signoz_user }}"
+        group: "{{ firth_signoz_group }}"
+        mode: "0644"
+      become: true
+      become_user: "{{ firth_signoz_user }}"
+      register: firth_signoz_casting
+
+    - name: Forge and cast SigNoz deployment
+      ansible.builtin.command: "{{ firth_signoz_foundryctl_bin }} cast"
+      args:
+        chdir: "{{ firth_signoz_root }}"
+      become: true
+      become_user: "{{ firth_signoz_user }}"
+      when: firth_signoz_casting.changed
+      changed_when: true
+
+  rescue:
+    - name: Debug SigNoz deploy failure
+      ansible.builtin.debug:
+        msg: "Failed to deploy SigNoz. Check casting.yaml and foundryctl output."
+
+    - name: Abort after SigNoz deploy failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: SigNoz deploy failed."

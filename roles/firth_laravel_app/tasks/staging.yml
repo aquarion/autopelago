@@ -49,6 +49,7 @@
       worker: "{{ fla.staging.worker | default(fla.worker | default(false)) }}"
       worker_command: "{{ fla.staging.worker_command | default(fla.worker_command | default('queue:work')) }}"
       scheduler: "{{ fla.staging.scheduler | default(fla.scheduler | default(false)) }}"
+      otel: "{{ fla.staging.otel | default(fla.otel | default(signoz_ingester_default_protocol)) }}"
       workdir: "{{ fla.staging.workdir | default(fla.workdir | default('/var/www/html')) }}"
       mysql: "{{ fla.staging.mysql | default({}) }}"
       redis: "{{ fla.staging.redis | default({}) }}"
