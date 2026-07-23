@@ -3,6 +3,54 @@
   tags: [firth_signoz, firth_signoz_install]
   become: false
   block:
+    - name: Check for foundryctl
+      ansible.builtin.stat:
+        path: "{{ firth_signoz_foundryctl_bin }}"
+      register: firth_signoz_foundryctl_stat
+
+    - name: Install foundryctl
+      when: not firth_signoz_foundryctl_stat.stat.exists
+      vars:
+        firth_signoz_foundry_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+        firth_signoz_foundry_extracted_dir: "/tmp/foundry_linux_{{ firth_signoz_foundry_arch }}"
+      block:
+        - name: Ensure foundryctl install directory exists
+          ansible.builtin.file:
+            path: "{{ firth_signoz_foundryctl_bin | dirname }}"
+            state: directory
+            owner: "{{ firth_signoz_user }}"
+            group: "{{ firth_signoz_user }}"
+            mode: "0755"
+
+        - name: Download foundry release archive
+          ansible.builtin.get_url:
+            url: "https://github.com/SigNoz/foundry/releases/latest/download/foundry_linux_{{ firth_signoz_foundry_arch }}.tar.gz"
+            dest: /tmp/foundry.tar.gz
+            mode: "0644"
+
+        - name: Extract foundry release archive
+          ansible.builtin.unarchive:
+            src: /tmp/foundry.tar.gz
+            dest: /tmp
+            remote_src: true
+
+        - name: Install foundryctl binary
+          ansible.builtin.copy:
+            src: "{{ firth_signoz_foundry_extracted_dir }}/bin/foundryctl"
+            dest: "{{ firth_signoz_foundryctl_bin }}"
+            owner: "{{ firth_signoz_user }}"
+            group: "{{ firth_signoz_user }}"
+            mode: "0755"
+            remote_src: true
+
+        - name: Clean up foundry release archive
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - /tmp/foundry.tar.gz
+            - "{{ firth_signoz_foundry_extracted_dir }}"
+
     - name: Ensure SigNoz directory exists
       ansible.builtin.file:
         path: "{{ firth_signoz_root }}"
