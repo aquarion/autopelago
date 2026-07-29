@@ -161,8 +161,5 @@
     - aws
     - cernunnosdionysus
 
-- name: Update Route53 for istic_dev
-  ansible.builtin.include_tasks: zones_istic/istic_dev.yml
-  tags:
-    - aws
-    - istic_dev
+- name: Istic.dev DNS
+  ansible.builtin.import_tasks: zones_istic/istic_dev.yml
