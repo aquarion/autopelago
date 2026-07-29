@@ -64,3 +64,13 @@
         - name: Failure execution
           ansible.builtin.command:
             cmd: "false"
+
+    - name: Delegate istic.dev to Cloudflare on Namecheap
+      ansible.builtin.include_tasks: ../../included_tasks/namecheap_delegate.yml
+      vars:
+        namecheap_sld: istic
+        namecheap_tld: dev
+        namecheap_nameservers: carol.ns.cloudflare.com,phil.ns.cloudflare.com
+      tags:
+        - istic_dev
+        - namecheap
