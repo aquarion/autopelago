@@ -56,6 +56,34 @@
       tags:
         - istic_dev
 
+    - name: "(CF) Voyeur.istic.dev - A"
+      community.general.cloudflare_dns:
+        state: present
+        zone: istic.dev
+        record: voyeur
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        value: "{{ atoll_ip }}"
+        proxied: true
+      tags:
+        - cloudflare
+        - cloudflare_dns
+        - istic_dev
+
+    - name: "(CF) Ws.voyeur.istic.dev - A"
+      community.general.cloudflare_dns:
+        state: present
+        zone: istic.dev
+        record: ws.voyeur
+        api_token: "{{ cloudflare_api_key }}"
+        type: A
+        value: "{{ atoll_ip }}"
+        proxied: true
+      tags:
+        - cloudflare
+        - cloudflare_dns
+        - istic_dev
+
   rescue:
     - name: "Failure warning"
       ansible.builtin.debug:
