@@ -47,6 +47,19 @@
   tags:
     - bloomfeedapp
 
+- name: Beta.bloomfeed.app. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: bloomfeed.app
+    record: beta.bloomfeed.app.
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+    aws_profile: aqcom
+  tags:
+    - bloomfeedapp
+
 - name: Delegate bloomfeed.app to Route53 on Namecheap
   ansible.builtin.include_tasks: ../../included_tasks/namecheap_delegate.yml
   vars:
