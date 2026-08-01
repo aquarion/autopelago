@@ -157,10 +157,10 @@ firth_laravel_app_apps:
     staging:
       image_tag: staging
       port: 8001
-      server_name: social.istic.dev
-      app_url: https://social.istic.dev
+      server_name: beta.bloomfeed.app
+      app_url: https://beta.bloomfeed.app
       app_key: "{{ vault_bloom_staging_app_key }}"
-      ssl_snippet: istic_dev
+      ssl_snippet: bloomfeedapp
       mysql:
         db_name: bloom_staging
         db_user: bloom_staging
