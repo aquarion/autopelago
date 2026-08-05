@@ -12,13 +12,11 @@ services:
         - ./keys/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
         - ./bin/bind_mounts.sh:/etc/sftp.d/bind_mounts.sh:ro
         - "{{ docker_root }}/sftp/home:/home:rw"
-{% for user in firth_sftp_docker_users %}
-{% if user.bind_mounts is defined %}
-{% for mount in user.bind_mounts %}
-        - {{ mount.source }}:/home/{{ user.name }}/{{ mount.target }}{% if mount.read_only is defined and mount.read_only %}:ro{% endif %}
+{% for username, mounts in firth_sftp_docker_bind_mounts.items() %}
+{% for mount in mounts %}
+        - {{ mount.source }}:/home/{{ username }}/{{ mount.target }}{% if mount.read_only is defined and mount.read_only %}:ro{% endif %}
 
 {% endfor %}
-{% endif %}
 {% endfor %}
     logging:
       driver: journald
@@ -27,14 +25,13 @@ services:
     networks:
       - firth_services
     restart: unless-stopped
-{% for user in firth_sftp_docker_users %}
-{% if user.php_web_domain is defined %}
+{% for username, site in firth_sftp_docker_php_sites.items() %}
 
-  phpfpm_{{ user.name }}:
-    image: "{{ user.php_image | default('php:8.3-fpm-alpine') }}"
+  phpfpm_{{ username }}:
+    image: "{{ site.php_image | default('php:8.3-fpm-alpine') }}"
     volumes:
-      - {{ docker_root }}/sftp/home/{{ user.name }}/{{ user.php_web_domain }}:/var/www/html:rw
-      - {{ docker_root }}/sftp/phpfpm/{{ user.name }}.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - {{ docker_root }}/sftp/home/{{ username }}/{{ site.php_web_domain }}:/var/www/html:rw
+      - {{ docker_root }}/sftp/phpfpm/{{ username }}.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - {{ docker_root }}/sftp/run:/run/phpfpm:rw
     networks:
       - firth_services
@@ -43,7 +40,6 @@ services:
       driver: journald
       options:
         tag: "$${.Name}/$${.ID}"
-{% endif %}
 {% endfor %}
 
 networks:

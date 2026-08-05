@@ -18,11 +18,19 @@ if [[ -z "$dirty" ]]; then
     exit 1
 fi
 
-if [[ "$dirty" != "1" ]]; then
-    exit 0
+# Always reconcile, regardless of the dirty flag: the flag only tracks
+# pending *data* changes, not container recreation. If the sftp container
+# is ever restarted/recreated, every OS account in it is gone, but nothing
+# would mark a fresh dirty=1 - a dirty-gated sync would leave the container
+# empty until the next unrelated data change. Reconciling is cheap and
+# idempotent (create-sftp-user skips existing users, chpasswd/chown are
+# no-ops when nothing changed), so just always run it. dirty is kept only
+# to distinguish the log line below.
+if [[ "$dirty" == "1" ]]; then
+    echo "sftp-sync: dirty flag set, syncing users..."
+else
+    echo "sftp-sync: no pending changes, reconciling anyway..."
 fi
-
-echo "sftp-sync: dirty flag set, syncing users..."
 
 # Write users.conf
 mysql -sNe "SELECT CONCAT(username, ':', COALESCE(NULLIF(password, ''), '*'), ':e:', uid, ':', gid) FROM sftp_users;" \
@@ -30,10 +38,15 @@ mysql -sNe "SELECT CONCAT(username, ':', COALESCE(NULLIF(password, ''), '*'), ':
 
 # Reconcile users in the running container; existing users are skipped by create-sftp-user.
 # Any failure here aborts the sync (set -e is active).
+# NOTE: each docker compose exec below is explicitly given "< /dev/null" -
+# without it, the exec'd process inherits this loop's own stdin (the
+# redirected $USERS_CONF), and can consume more of the file than the loop's
+# own `read` expects, silently truncating the loop to its first line. This
+# was invisible while there was ever only one row to reconcile.
 while IFS= read -r line; do
     username="${line%%:*}"
     if ! docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
-            /usr/local/bin/create-sftp-user "$line"; then
+            /usr/local/bin/create-sftp-user "$line" < /dev/null; then
         echo "ERROR: create-sftp-user failed for user: $username" >&2
         exit 1
     fi
@@ -42,7 +55,7 @@ done < "$USERS_CONF"
 # Verify that every users.conf entry resolves to an OS account inside the container.
 while IFS=':' read -r username _; do
     if ! docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
-            getent passwd "$username" > /dev/null; then
+            getent passwd "$username" < /dev/null > /dev/null; then
         echo "ERROR: User '$username' not found in SFTP container after sync. Check container logs." >&2
         exit 1
     fi

@@ -1,6 +1,10 @@
 ; PHP-FPM pool for {{ user.name }}
 ; {{ ansible_managed }}
-[{{ user.name }}]
+; Pool must be named "www" - the base php-fpm-alpine image's zz-docker.conf
+; overrides settings on a pool named "www"; any other name here leaves that
+; override creating a second, empty pool with no "user" directive, which
+; fails FPM startup.
+[www]
 user = www-data
 group = www-data
 listen = /run/phpfpm/{{ user.name }}.sock

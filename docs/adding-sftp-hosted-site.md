@@ -8,22 +8,18 @@ kastark.co.uk is the reference implementation for this pattern.
 
 ## 1. Add the SFTP user
 
-In `host_vars/firth.water.gkhs.net/sftp.yml` (vault-encrypted), add an entry to `firth_sftp_docker_users`:
+SFTP accounts (username, password, uid/gid, SSH public key) are managed entirely through Alchemistic — there's an admin flow at `manage.istic.systems` that creates an `sftp_users` row for an existing Alchemistic user, and `sftp-sync.sh` reconciles it into the running container within a minute (no ansible-playbook run needed for the account itself).
+
+If PHP support is needed, add a `php_web_domain` entry keyed by that same username to `firth_sftp_docker_php_sites` in `host_vars/firth.water.gkhs.net/sftp.vault.yml` (vault-encrypted):
 
 ```yaml
-firth_sftp_docker_users:
-  - name: example          # becomes the SFTP username and container name suffix
-    password: "hashed"     # MD5-crypt hash; generate with:
-                           #   echo -n "password" | docker run -i --rm atmoz/makepasswd --crypt-md5 --clearfrom=-
-    userid: 1099
-    groupid: 1099
+firth_sftp_docker_php_sites:
+  example:
     php_web_domain: example.com   # subdirectory under sftp/home/<user>/ served as webroot
-                                  # omit entirely for static-only sites (no PHP-FPM container)
+    # php_image: php:8.2-fpm-alpine  # optional, defaults to php:8.3-fpm-alpine
 ```
 
-The `php_web_domain` value must match the directory the user will upload to. The SFTP docker-compose will automatically create a `phpfpm_example` container mounting that path as `/var/www/html`, with a Unix socket at `docker_root/sftp/run/example.sock`.
-
-To use a different PHP version, add `php_image: php:8.2-fpm-alpine` (defaults to `php:8.3-fpm-alpine`).
+Omit the entry entirely for static-only sites (no PHP-FPM container). The `php_web_domain` value must match the directory the user will upload to. The SFTP docker-compose will automatically create a `phpfpm_example` container mounting that path as `/var/www/html`, with a Unix socket at `docker_root/sftp/run/example.sock`. This does require an `ansible-playbook` run (see step 5) since it changes the container's docker-compose file.
 
 ---
 
