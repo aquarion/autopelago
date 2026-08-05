@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+
+# Public OTLP/HTTP ingestion endpoint for browser-based (frontend) telemetry.
+# Unauthenticated write endpoint - locked down to known app origins via CORS,
+# a request body size cap, and rate limiting. See autopelago#268.
+server {
+
+    server_name             otlp.svc.istic.systems;
+
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+
+    # Browser telemetry batches are small; cap well below the ingester's own limits.
+    client_max_body_size 256k;
+
+    add_header X-WhyAmI OtlpIngest;
+    include /etc/nginx/snippets/ssl/svc_istic_systems_ssl.conf;
+
+    location / {
+        # Deny anything whose Origin isn't on the allow-list (including no Origin
+        # at all, e.g. curl/non-browser callers) - see cors_otlp_ingest.conf.
+        if ($cors_origin_otlp_ingest = "") {
+            return 403;
+        }
+
+        add_header Access-Control-Allow-Origin $cors_origin_otlp_ingest always;
+        add_header Access-Control-Allow-Methods "POST, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "content-type,traceparent,tracestate" always;
+        add_header Access-Control-Max-Age 600 always;
+
+        if ($request_method = OPTIONS) {
+            return 204;
+        }
+
+        limit_req zone=otlp_ingest burst=20 nodelay;
+        limit_req_status 429;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_pass http://127.0.0.1:4318;
+    }
+}

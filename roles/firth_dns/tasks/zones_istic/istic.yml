@@ -656,7 +656,7 @@
         record: otlp.svc.istic.systems.
         type: A
         ttl: "300"
-        value: "{{ firth_ip }}"
+        value: "{{ loadbalancer_ip }}"
         aws_profile: istic
       tags:
         - istic_sys

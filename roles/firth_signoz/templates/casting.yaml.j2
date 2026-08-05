@@ -58,3 +58,11 @@ spec:
          - op: add
            path: /services/ingester/user
            value: "root"
+         # Publish the OTLP/HTTP receiver to localhost only, so the firth_nginx
+         # otlp_ingest vhost can reverse-proxy to it. Container-to-container traffic
+         # (Laravel apps) keeps using the "ingester" docker-network hostname directly
+         # and is unaffected by this.
+         - op: add
+           path: /services/ingester/ports
+           value:
+             - "127.0.0.1:4318:4318"
