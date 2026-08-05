@@ -157,7 +157,7 @@ server {
 
 The socket path (`sftp/run/example.sock`) and webroot path (`sftp/home/example/example.com`) are both derived from the username and `php_web_domain` — no extra variables needed beyond `docker_root`.
 
-For a static-only site (no `php_web_domain` in the user config), omit the `location ~ \.php$` block and the `try_files` fallback.
+For a static-only site (no entry for that username in `firth_sftp_docker_php_sites`), omit the `location ~ \.php$` block and the `try_files` fallback.
 
 ---
 

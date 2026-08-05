@@ -4,6 +4,7 @@ set -euo pipefail
 
 DEFAULTS_FILE="/etc/sftp-sync.cnf"
 USERS_CONF="{{ docker_root }}/sftp/etc/users.conf"
+KEYS_CONF="{{ docker_root }}/sftp/etc/.keys-sync-tmp"
 SFTP_DIR="{{ docker_root }}/sftp"
 HOME_DIR="{{ docker_root }}/sftp/home"
 
@@ -61,7 +62,16 @@ while IFS=':' read -r username _; do
     fi
 done < "$USERS_CONF"
 
-# Sync authorized_keys and ownership for each user home
+# Sync authorized_keys and ownership for each user home.
+# NOTE: mysql's output is written to a file first, not read via a
+# `< <(mysql ...)` process substitution - a failure inside a process
+# substitution is invisible to `set -e` (the loop just sees whatever
+# partial output arrived, if any, and the script reports success either
+# way). Writing to a file first means a failed query aborts the script
+# here, before any (possibly partial) data reaches the loop below.
+mysql -sNe "SELECT username, uid, gid, COALESCE(public_key, '') FROM sftp_users;" \
+    > "$KEYS_CONF"
+
 while IFS=$'\t' read -r username uid gid public_key; do
     user_home="$HOME_DIR/$username"
     ssh_dir="$HOME_DIR/$username/.ssh"
@@ -79,19 +89,26 @@ while IFS=$'\t' read -r username uid gid public_key; do
     else
         rm -f "$auth_keys"
     fi
-done < <(mysql -sNe "SELECT username, uid, gid, COALESCE(public_key, '') FROM sftp_users;")
+done < "$KEYS_CONF"
 
 # Update passwords for all users (handles existing users that were skipped above)
 password_updates="$(mysql -sNe "SELECT CONCAT(username, ':', password) FROM sftp_users WHERE password IS NOT NULL AND password <> '';")"
 
 if [[ -n "$password_updates" ]]; then
-    printf '%s\n' "$password_updates" | \
-        docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp chpasswd -e
+    usernames="$(printf '%s\n' "$password_updates" | cut -d: -f1 | paste -sd, -)"
+    if ! printf '%s\n' "$password_updates" | \
+            docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp chpasswd -e; then
+        echo "ERROR: password sync failed for one or more users: $usernames" >&2
+        exit 1
+    fi
 fi
 
 # Reload sshd to pick up account/password updates without recreating the container.
-docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
-    sh -c 'pkill -HUP sshd 2>/dev/null || kill -HUP 1'
+if ! docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+        sh -c 'pkill -HUP sshd 2>/dev/null || kill -HUP 1'; then
+    echo "ERROR: sshd reload failed" >&2
+    exit 1
+fi
 
 mysql -e "UPDATE sftp_sync SET dirty = 0, last_synced_at = NOW() WHERE id = 1;"
 

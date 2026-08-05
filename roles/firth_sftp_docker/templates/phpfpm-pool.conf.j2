@@ -1,9 +1,14 @@
 ; PHP-FPM pool for {{ user.name }}
 ; {{ ansible_managed }}
-; Pool must be named "www" - the base php-fpm-alpine image's zz-docker.conf
-; overrides settings on a pool named "www"; any other name here leaves that
-; override creating a second, empty pool with no "user" directive, which
-; fails FPM startup.
+; Pool must be named "www", not "{{ user.name }}": the base php-fpm-alpine
+; image ships /usr/local/etc/php-fpm.d/zz-docker.conf with an empty "[www]"
+; section (no directives, kept for backwards compatibility). Since pool
+; sections with the same name across included files merge, naming this
+; pool "www" merges harmlessly into that empty section. Naming it anything
+; else leaves zz-docker.conf's empty "[www]" as a second, distinct pool
+; with no "user" directive, which fails FPM startup for the whole process.
+; Safe to reuse "www" across every site: each site gets its own dedicated
+; phpfpm_<user> container, so there's no cross-site collision.
 [www]
 user = www-data
 group = www-data
