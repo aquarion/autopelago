@@ -16,6 +16,11 @@ server {
     add_header X-WhyAmI OtlpIngest;
     include /etc/nginx/snippets/ssl/svc_istic_systems_ssl.conf;
 
+    # Records $http_origin so a rejected/misconfigured CORS entry can be
+    # diagnosed from server logs alone. See nginx_confd/log_format_otlp_ingest.conf.
+    access_log /var/log/nginx/otlp_ingest.access.log otlp_ingest;
+    error_log  /var/log/nginx/otlp_ingest.error.log;
+
     location / {
         # Deny anything whose Origin isn't on the allow-list (including no Origin
         # at all, e.g. curl/non-browser callers) - see cors_otlp_ingest.conf.

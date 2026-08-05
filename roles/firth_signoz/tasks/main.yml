@@ -100,6 +100,32 @@
       become_user: "{{ firth_signoz_user }}"
       when: firth_signoz_casting.changed
       changed_when: true
+      register: firth_signoz_cast
+
+    # The casting.yaml.j2 patch uses `op: add` on /services/ingester/ports, which
+    # per RFC 6902 replaces the key wholesale if foundryctl's generated compose.yaml
+    # already defined ports there, rather than appending. Verify the patch landed
+    # as expected instead of silently trusting it.
+    - name: Slurp generated SigNoz compose file
+      ansible.builtin.slurp:
+        src: "{{ firth_signoz_root }}/deployment/compose.yaml"
+      become: true
+      become_user: "{{ firth_signoz_user }}"
+      when: firth_signoz_cast.changed
+      register: firth_signoz_compose
+
+    - name: Verify ingester ports patch applied as expected
+      ansible.builtin.assert:
+        that:
+          - (firth_signoz_compose.content | b64decode | from_yaml).services.ingester.ports == ["127.0.0.1:4318:4318"]
+        fail_msg: >-
+          services.ingester.ports in the generated compose.yaml is not exactly
+          ["127.0.0.1:4318:4318"]. The JSON-patch `add` in casting.yaml.j2 replaces
+          rather than appends, so foundryctl's generated compose likely already
+          defined other ports for the ingester and they were silently clobbered.
+          Inspect {{ firth_signoz_root }}/deployment/compose.yaml on the host.
+        success_msg: "Ingester ports patch applied as expected."
+      when: firth_signoz_cast.changed
 
   rescue:
     - name: Debug SigNoz deploy failure
