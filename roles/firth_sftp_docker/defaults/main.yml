@@ -11,21 +11,28 @@ firth_sftp_docker_db_password:
 firth_sftp_docker_db_name:
 firth_sftp_docker_www_data_uid:
 firth_sftp_docker_www_data_gid:
-# Example structure for firth_sftp_docker_users
-# firth_sftp_docker_users:
-#   - name: user1
-#     password: pass1
-#     userid: 1001
-#     groupid: 1001
-#     bind_mounts:
-#       - source: /data/user1/files
-#         target: files
-#         read_only: false
-#       - source: /data/user1/docs
-#         target: docs
-#         read_only: true
-#     # Optional: add a PHP-FPM sidecar container for this user's webroot.
+# SFTP user accounts (username, password, uid/gid, public key) are managed
+# entirely by Alchemistic's sftp_users table and reconciled at runtime by
+# sftp-sync.sh - this role no longer owns any user identity data.
+#
+# These two variables cover non-identity infra wiring that individual users
+# still need, keyed by plain username (must match an sftp_users.username
+# row for the mount/sidecar to actually be usable):
+#
+# firth_sftp_docker_bind_mounts:
+#   user1:
+#     - source: /data/user1/files
+#       target: files
+#       read_only: false
+#     - source: /data/user1/docs
+#       target: docs
+#       read_only: true
+#
+# firth_sftp_docker_php_sites:
+#   user1:
 #     php_web_domain: user1.example.com  # subdirectory under sftp/home/<user>/ to serve as webroot;
 #                                        # creates a phpfpm_<user> container with a Unix socket at
 #                                        # docker_root/sftp/run/<user>.sock
 #     php_image: php:8.3-fpm-alpine      # optional override, defaults to php:8.3-fpm-alpine
+firth_sftp_docker_bind_mounts: {}
+firth_sftp_docker_php_sites: {}

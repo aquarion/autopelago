@@ -124,26 +124,6 @@
       loop:
         - "{{ docker_root }}/sftp/home"
 
-    - name: Create user directories in SFTP Docker home
-      ansible.builtin.file:
-        path: "{{ docker_root }}/sftp/home/{{ item.name }}"
-        state: directory
-        owner: root
-        group: "{{ item.groupid }}"
-        mode: "0755"
-      no_log: true # Prevent logging sensitive info
-      loop: "{{ firth_sftp_docker_users | default([]) }}"
-
-    - name: Create SSH Key directories for SFTP Docker users
-      ansible.builtin.file:
-        path: "{{ docker_root }}/sftp/home/{{ item.name }}/.ssh"
-        state: directory
-        owner: '{{ firth_sftp_docker_user | default("sftp_docker") }}'
-        group: '{{ firth_sftp_docker_group | default("sftp_docker") }}'
-        mode: "0700"
-      no_log: true # Prevent logging sensitive info
-      loop: "{{ firth_sftp_docker_users | default([]) }}"
-
   rescue:
     - name: Debug failure to create SFTP Docker directories
       ansible.builtin.debug:
@@ -181,34 +161,6 @@
       ansible.builtin.fail:
         msg: "Cannot continue: SSH host key generation failed."
 
-- name: Setup SSH configuration
-  tags:
-    - sftp
-    - docker
-  notify: Restart SFTP Docker
-
-  block:
-    - name: Copy SSH public keys for SFTP Docker users
-      ansible.builtin.copy:
-        content: "{{ lookup('file', path_item) }}"
-        dest: "{{ docker_root }}/sftp/home/{{ path_item | splitext | basename }}/.ssh/authorized_keys"
-        owner: '{{ firth_sftp_docker_user | default("sftp_docker") }}'
-        group: '{{ firth_sftp_docker_group | default("sftp_docker") }}'
-        mode: "0600"
-      with_fileglob:
-        - "files/user_keys.d/*.pub"
-      loop_control:
-        loop_var: path_item
-
-  rescue:
-    - name: Debug failure to setup SSH configuration
-      ansible.builtin.debug:
-        msg: "Failed to setup SSH configuration for SFTP Docker: {{ ansible_failed_result.msg | default('unknown error') }}"
-
-    - name: Abort after SSH configuration failure
-      ansible.builtin.fail:
-        msg: "Cannot continue: SSH configuration setup failed."
-
 - name: Setup SFTP Docker configuration
   tags:
     - sftp
@@ -227,13 +179,13 @@
     - name: Template PHP-FPM pool configs for web users
       ansible.builtin.template:
         src: phpfpm-pool.conf.j2
-        dest: "{{ docker_root }}/sftp/phpfpm/{{ item.name }}.conf"
+        dest: "{{ docker_root }}/sftp/phpfpm/{{ item.key }}.conf"
         owner: root
         group: root
         mode: "0644"
       vars:
-        user: "{{ item }}"
-      loop: "{{ firth_sftp_docker_users | default([]) | selectattr('php_web_domain', 'defined') | list }}"
+        user: { name: "{{ item.key }}" }
+      loop: "{{ firth_sftp_docker_php_sites | default({}) | dict2items }}"
 
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
