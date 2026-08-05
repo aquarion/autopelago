@@ -22,8 +22,9 @@ server {
     error_log  /var/log/nginx/otlp_ingest.error.log;
 
     location / {
-        # Deny anything whose Origin isn't on the allow-list (including no Origin
-        # at all, e.g. curl/non-browser callers) - see cors_otlp_ingest.conf.
+        # CORS enforcement for browsers, not authentication - Origin is client-
+        # supplied and trivially spoofable by non-browser callers (curl etc).
+        # Deny anything whose Origin isn't on the allow-list - see cors_otlp_ingest.conf.
         if ($cors_origin_otlp_ingest = "") {
             return 403;
         }
@@ -35,6 +36,12 @@ server {
 
         if ($request_method = OPTIONS) {
             return 204;
+        }
+
+        # OTLP/HTTP ingestion is POST-only - don't proxy anything else through
+        # to the ingester just because the caller supplied an allowed Origin.
+        if ($request_method != POST) {
+            return 405;
         }
 
         limit_req zone=otlp_ingest burst=20 nodelay;
