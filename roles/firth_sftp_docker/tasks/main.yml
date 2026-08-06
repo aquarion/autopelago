@@ -264,6 +264,9 @@
     - sftp
     - docker
     - sftp_docker_compose
+
+  notify: Restart SFTP Docker
+
   block:
     - name: Template docker-compose.yml for SFTP Docker container
       ansible.builtin.template:
