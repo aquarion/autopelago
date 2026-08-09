@@ -71,9 +71,10 @@ The role creates the following directory structure:
 ├── bin/
 │   └── bind_mounts.sh
 └── home/
-    └── <username>/         # created and chowned by sftp-sync.sh, not by Ansible
-        └── .ssh/
-            └── authorized_keys
+    └── <username>/         # created by sftp-sync.sh, kept root:root for sshd's ChrootDirectory check
+        ├── .ssh/           # user-owned; created only if a public_key is set
+        │   └── authorized_keys
+        └── files/          # user-owned; the only writable path inside the chroot by default
 ```
 
 ## Security Features
@@ -82,7 +83,7 @@ The role creates the following directory structure:
 - SSH key and/or password authentication, both sourced from Alchemistic's `sftp_users` table (password stored as SHA-512 crypt)
 - Dedicated system user runs the container
 - Proper file permissions and ownership
-- Per-user home roots are reconciled to each user UID/GID on every sync tick so content under `username/` stays user-owned
+- Per-user home roots stay `root:root` (required for sshd's `ChrootDirectory` check); content under `username/` is reconciled to each user's UID/GID on every sync tick
 - SSH host key persistence across container restarts
 - `sftp-sync.sh` reconciles unconditionally on every tick (not gated on the `dirty` flag), so a container restart/recreate doesn't strand accounts until the next unrelated data change
 

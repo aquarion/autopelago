@@ -46,9 +46,16 @@ mysql -sNe "SELECT CONCAT(username, ':', COALESCE(NULLIF(password, ''), '*'), ':
 # was invisible while there was ever only one row to reconcile.
 while IFS= read -r line; do
     username="${line%%:*}"
-    if ! docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
-            /usr/local/bin/create-sftp-user "$line" < /dev/null; then
+    hash="${line#*:}"; hash="${hash%%:*}"
+    # create-sftp-user logs its raw argument (including the password hash) to
+    # stdout on every call; capture it instead of letting it flow straight to
+    # the journal, and only print it if the call actually failed - with the
+    # hash redacted even then, since failing ticks are the ones most likely
+    # to get copied into a chat or issue.
+    if ! output=$(docker compose -f "$SFTP_DIR/docker-compose.yml" exec -T sftp \
+            /usr/local/bin/create-sftp-user "$line" < /dev/null 2>&1); then
         echo "ERROR: create-sftp-user failed for user: $username" >&2
+        echo "${output//"$hash"/<redacted>}" >&2
         exit 1
     fi
 done < "$USERS_CONF"
@@ -78,7 +85,21 @@ while IFS=$'\t' read -r username uid gid public_key; do
     auth_keys="$ssh_dir/authorized_keys"
 
     mkdir -p "$user_home"
-    chown -R "$uid:$gid" "$user_home"
+    # The chroot directory itself must stay root:root, not-group/other-writable,
+    # or sshd rejects it post-auth ("bad ownership or modes for chroot directory")
+    # and drops the connection before the SFTP subsystem opens - this is sshd's
+    # requirement, not atmoz/sftp's, so it holds regardless of image version.
+    # Only content *under* the home dir should be user-owned.
+    chown root:root "$user_home"
+    chmod 755 "$user_home"
+
+    # Users need somewhere writable inside the chroot - the chroot root itself
+    # can't be it. Bind mounts / PHP sites (if configured) provide their own
+    # writable subdirs, but every user gets this one regardless so plain
+    # SFTP-only accounts aren't left unable to upload anything.
+    mkdir -p "$user_home/files"
+
+    find "$user_home" -mindepth 1 -maxdepth 1 -exec chown -R "$uid:$gid" {} +
 
     if [[ -n "$public_key" ]]; then
         mkdir -p "$ssh_dir"
