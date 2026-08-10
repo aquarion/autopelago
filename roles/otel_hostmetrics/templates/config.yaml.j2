@@ -9,14 +9,17 @@ receivers:
       memory: {}
       disk: {}
       filesystem:
+        # Mount points here are the host's own (as read from its /proc/mounts
+        # via root_path), not prefixed with /hostfs - that prefix only applies
+        # to where the receiver itself reads host files from inside the container.
         exclude_mount_points:
           match_type: regexp
           mount_points:
-            - /hostfs/var/lib/docker/.*
-            - /hostfs/proc/.*
-            - /hostfs/sys/.*
-            - /hostfs/dev/.*
-            - /hostfs/run/.*
+            - /var/lib/docker/.*
+            - /proc/.*
+            - /sys/.*
+            - /dev/.*
+            - /run/.*
         exclude_fs_types:
           match_type: strict
           fs_types:
