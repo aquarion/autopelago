@@ -1,0 +1,13 @@
+---
+otel_hostmetrics_image: otel/opentelemetry-collector-contrib
+otel_hostmetrics_image_tag: latest
+otel_hostmetrics_collection_interval: 60s
+otel_hostmetrics_root: "{{ docker_root }}/otel-hostmetrics"
+
+# Default targets the public internal-only otel_agents_ingest nginx vhost
+# (roles/firth_nginx/templates/vhosts/otel_agents_ingest), for hosts that
+# aren't firth itself and so can't reach the ingester over the docker
+# network. Firth overrides these to hit the ingester's localhost-published
+# port directly - see host_vars/firth.water.gkhs.net/signoz.yml.
+otel_hostmetrics_otlp_endpoint: "https://otel-agents.svc.istic.systems"
+otel_hostmetrics_otlp_insecure: false

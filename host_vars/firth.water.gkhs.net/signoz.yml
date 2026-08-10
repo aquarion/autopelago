@@ -6,3 +6,9 @@ signoz_ingester_hostname: ingester
 # signoz_ingester_scheme: http
 # signoz_ingester_is_insecure: "true"
 # signoz_ingester_default_protocol: http/protobuf
+
+# otel_hostmetrics runs on firth itself, so it can skip the public
+# otel_agents_ingest vhost and hit the ingester's localhost-published OTLP/HTTP
+# port directly (see roles/firth_signoz/templates/casting.yaml.j2).
+otel_hostmetrics_otlp_endpoint: "http://127.0.0.1:4318"
+otel_hostmetrics_otlp_insecure: true
