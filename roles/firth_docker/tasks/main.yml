@@ -48,6 +48,14 @@
         - docker-ce
         - docker-ce-cli
 
+    - name: Ensure docker_root exists
+      ansible.builtin.file:
+        path: "{{ docker_root }}"
+        state: directory
+        owner: root
+        group: docker
+        mode: "0775"
+
     - name: Allow docker to access redis
       ansible.builtin.lineinfile:
         path: /etc/redis/redis.conf
