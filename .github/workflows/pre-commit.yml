@@ -19,7 +19,7 @@ jobs:
         run: |
           sed -i '/vault_password_file/d' ansible.cfg
           git update-index --assume-unchanged ansible.cfg
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.x"
       - name: Install ansible and collections
