@@ -1,0 +1,38 @@
+---
+- name: Deploy OTel host metrics collector
+  tags: [otel_hostmetrics]
+  become: true
+  block:
+    - name: Ensure otel-hostmetrics directory exists
+      ansible.builtin.file:
+        path: "{{ otel_hostmetrics_root }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0750"
+
+    - name: Template otel-hostmetrics collector config
+      ansible.builtin.template:
+        src: config.yaml.j2
+        dest: "{{ otel_hostmetrics_root }}/config.yaml"
+        owner: root
+        group: root
+        mode: "0640"
+      register: otel_hostmetrics_config
+
+    - name: Template otel-hostmetrics docker-compose.yml
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ otel_hostmetrics_root }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: "0640"
+        validate: docker compose -f %s config -q
+      register: otel_hostmetrics_compose_file
+
+    - name: Pull and start otel-hostmetrics
+      community.docker.docker_compose_v2:
+        project_src: "{{ otel_hostmetrics_root }}"
+        pull: always
+        state: present
+        recreate: "{{ 'always' if (otel_hostmetrics_config.changed or otel_hostmetrics_compose_file.changed) else 'auto' }}"

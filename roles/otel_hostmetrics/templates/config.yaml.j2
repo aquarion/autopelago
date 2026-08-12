@@ -1,0 +1,74 @@
+# {{ ansible_managed }}
+receivers:
+  hostmetrics:
+    root_path: /hostfs
+    collection_interval: "{{ otel_hostmetrics_collection_interval }}"
+    scrapers:
+      cpu: {}
+      load: {}
+      memory: {}
+      disk: {}
+      filesystem:
+        # Mount points here are the host's own (as read from its /proc/mounts
+        # via root_path), not prefixed with /hostfs - that prefix only applies
+        # to where the receiver itself reads host files from inside the container.
+        exclude_mount_points:
+          match_type: regexp
+          mount_points:
+            - /var/lib/docker/.*
+            - /proc/.*
+            - /sys/.*
+            - /dev/.*
+            - /run/.*
+        exclude_fs_types:
+          match_type: strict
+          fs_types:
+            - autofs
+            - binfmt_misc
+            - bpf
+            - cgroup2
+            - configfs
+            - debugfs
+            - devpts
+            - devtmpfs
+            - fusectl
+            - hugetlbfs
+            - mqueue
+            - nsfs
+            - overlay
+            - proc
+            - pstore
+            - securityfs
+            - selinuxfs
+            - squashfs
+            - sysfs
+            - tracefs
+      network: {}
+      paging: {}
+      processes: {}
+
+processors:
+  # Explicit host.name instead of relying on resourcedetection - the
+  # container's own hostname resolution isn't reliably the real host's
+  # identity, and we only ever run this against two known hosts.
+  resource:
+    attributes:
+      - key: host.name
+        value: "{{ inventory_hostname }}"
+        action: upsert
+  batch:
+    send_batch_size: 10000
+    timeout: 10s
+
+exporters:
+  otlphttp:
+    endpoint: "{{ otel_hostmetrics_otlp_endpoint }}"
+    tls:
+      insecure: {{ 'true' if otel_hostmetrics_otlp_insecure else 'false' }}
+
+service:
+  pipelines:
+    metrics:
+      receivers: [hostmetrics]
+      processors: [resource, batch]
+      exporters: [otlphttp]

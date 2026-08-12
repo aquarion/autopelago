@@ -84,6 +84,7 @@
     - firth_sftp_docker
     - firth_elasticsearch
     - firth_signoz
+    - otel_hostmetrics
     - firth_laravel_app
     - firth_laravel_app_remove
 
@@ -101,4 +102,5 @@
     - aws_profiles
     - geerlingguy.nodejs
     - firth_docker
+    - otel_hostmetrics
     - stream_delta

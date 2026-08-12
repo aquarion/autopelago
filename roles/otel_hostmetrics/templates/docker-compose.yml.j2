@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+services:
+  otel-hostmetrics:
+    image: "{{ otel_hostmetrics_image }}:{{ otel_hostmetrics_image_tag }}"
+    hostname: "{{ inventory_hostname }}"
+    restart: unless-stopped
+    # host networking + pid so the hostmetrics receiver sees the real host's
+    # interfaces/processes rather than this container's own, and so firth can
+    # reach the ingester on 127.0.0.1 without joining its docker network.
+    network_mode: host
+    pid: host
+    user: root
+    volumes:
+      - ./config.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - /:/hostfs:ro
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
