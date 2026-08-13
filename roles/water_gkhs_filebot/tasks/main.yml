@@ -39,7 +39,7 @@
 
 - name: Add sync_or_swim script to bin
   ansible.builtin.template:
-    src: sync_or_swim.sh
+    src: sync_or_swim.j2.sh
     dest: "{{ media_home }}/bin/sync_or_swim.sh"
     mode: "0755"
     owner: "{{ media_user }}"
@@ -51,7 +51,7 @@
 
 - name: Add organise_media_downloads script to bin
   ansible.builtin.template:
-    src: organise_media_downloads.sh
+    src: organise_media_downloads.j2.sh
     dest: "{{ media_home }}/bin/organise_media_downloads.sh"
     mode: "0755"
     owner: "{{ media_user }}"
@@ -60,7 +60,7 @@
 
 - name: Add verbose organise_media_downloads script to bin
   ansible.builtin.template:
-    src: organise_media_downloads.sh
+    src: organise_media_downloads.j2.sh
     dest: "{{ media_home }}/bin/organise_media_downloads_verbose.sh"
     mode: "0755"
     owner: "{{ media_user }}"
@@ -85,7 +85,7 @@
 
 - name: Add Clear Bullshit script to bin
   ansible.builtin.template:
-    src: clear_bullshit.sh
+    src: clear_bullshit.j2.sh
     dest: "{{ media_home }}/bin/clear_bullshit.sh"
     mode: "0755"
     owner: "{{ media_user }}"
@@ -114,7 +114,7 @@
 
 - name: Add download_youtube script to bin
   ansible.builtin.template:
-    src: download_youtube.sh
+    src: download_youtube.j2.sh
     dest: "{{ media_home }}/bin/download_youtube.sh"
     mode: "0755"
     owner: "{{ media_user }}"
@@ -148,7 +148,7 @@
 
 - name: Add remove_completed_torrents script to bin
   ansible.builtin.template:
-    src: remove_completed_torrents.sh
+    src: remove_completed_torrents.j2.sh
     dest: "{{ media_home }}/bin/remove_completed_torrents.sh"
     mode: "0755"
     owner: "{{ media_user }}"
