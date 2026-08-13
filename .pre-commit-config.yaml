@@ -47,6 +47,9 @@ repos:
     rev: v3.13.1-1
     hooks:
       - id: shfmt
+        # Jinja2 templates disguised as shell scripts (Ansible role templates/).
+        # shfmt doesn't understand {% %} control tags and mangles them.
+        exclude: \.j2\.sh$
   - repo: https://github.com/ansible-community/ansible-lint.git
     rev: v26.6.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
     hooks:

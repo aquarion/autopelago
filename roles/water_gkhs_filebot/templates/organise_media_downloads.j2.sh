@@ -26,6 +26,6 @@ filebot -script fn:amc \
 	"animeFormat=Anime/{n}/{fn}" \
 	"movieFormat=Movies/{n} {y}/{fn}" \
 	"musicFormat=Music/{n}/{fn}" \
-	"$FILEPATH"{% if verbose is not defined %} endif %} >"$LOG_LOCATION/amc.stdout.log"{%
+	"$FILEPATH"{% if verbose is not defined %} >"$LOG_LOCATION/amc.stdout.log"{% endif %}
 
 {{ media_home }}/bin/sync_or_swim.sh
