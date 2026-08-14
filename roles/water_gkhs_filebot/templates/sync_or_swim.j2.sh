@@ -103,6 +103,12 @@ for dir in "$MEDIAHOME"/*; do
 		if [[ -d "$MEDIAHOME/$SOURCEDIR/$show" ]]; then
 			debug_out "   - Syncing " "$SOURCEDIR"/"$show" " -> " "$dir"/"$show"
 			merge_dir "$MEDIAHOME/$SOURCEDIR/$show" "$dir/$show" || ((TOTAL_FAILURES++))
+		elif [[ "$show" =~ ^(.*)\ \([0-9]{4}\)$ ]] && [[ -d "$MEDIAHOME/$SOURCEDIR/${BASH_REMATCH[1]}" ]]; then
+			# Destination is named "Show (Year)" but filebot drops new
+			# downloads under the plain "Show" name in TV/ - match on the
+			# year-stripped name so those don't pile up unsynced.
+			debug_out "   - Syncing (year-stripped) " "$SOURCEDIR"/"${BASH_REMATCH[1]}" " -> " "$dir"/"$show"
+			merge_dir "$MEDIAHOME/$SOURCEDIR/${BASH_REMATCH[1]}" "$dir/$show" || ((TOTAL_FAILURES++))
 		fi
 	done < <(find -L "$dir" -maxdepth 1 -mindepth 1 -type d -print0)
 done
