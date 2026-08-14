@@ -78,7 +78,7 @@ if [[ -z $MEDIAHOME ]]; then
 	error_out "Directory not set"
 fi
 
-if [[ ! -d $MEDIAHOME ]]; then
+if [[ ! -d "$MEDIAHOME" ]]; then
 	error_out "Directory not found at $MEDIAHOME"
 fi
 
