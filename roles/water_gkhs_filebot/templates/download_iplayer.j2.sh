@@ -1,5 +1,5 @@
 #!/bin/bash
-# "{{ ansible_managed }}"
+# {{ ansible_managed }}
 
 # Download BBC iPlayer shows using get_iplayer
 

@@ -1,12 +1,6 @@
 #!/bin/sh
 # {{ ansible_managed }}
 
-{% if verbose is not defined %}
-{% set verbose = "" %}
-{% else %}
-{% set verbose = "#" %}
-{% endif %}
-
 LOG_LOCATION="{{ media_home }}/Logs"
 
 if [ -z "$1" ]; then
@@ -18,8 +12,8 @@ fi
 export JAVA_OPTS=-Xmx1024m
 filebot -script fn:amc \
 	--output "{{ media_library }}" \
-	--log-file $LOG_LOCATION/amc.log \
-	--def excludeList=$LOG_LOCATION/amc_seen.txt \
+	--log-file "$LOG_LOCATION/amc.log" \
+	--def excludeList="$LOG_LOCATION/amc_seen.txt" \
 	--def discord={{ discord_webhook_medialibrary }} \
 	--def clean=y \
 	--def minLengthMS=60000 \
@@ -32,6 +26,6 @@ filebot -script fn:amc \
 	"animeFormat=Anime/{n}/{fn}" \
 	"movieFormat=Movies/{n} {y}/{fn}" \
 	"musicFormat=Music/{n}/{fn}" \
-	"$FILEPATH" {{ verbose }} >$LOG_LOCATION/amc.stdout.log
+	"$FILEPATH"{% if verbose is not defined %} >"$LOG_LOCATION/amc.stdout.log"{% endif %}
 
 {{ media_home }}/bin/sync_or_swim.sh

@@ -4,8 +4,8 @@
 #certbot_auto_renew_minute: 30
 #certbot_auto_renew_options: "--quiet --no-self-upgrade"
 
-filebot_version: 5.2.0
-flexget_version: 3.18.28
+filebot_version: 5.2.3
+flexget_version: 3.20.5
 get_iplayer_version: 3.31
 
 b2_version: 3.17.0

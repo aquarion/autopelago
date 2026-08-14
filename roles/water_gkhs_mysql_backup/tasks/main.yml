@@ -121,7 +121,7 @@
 
     - name: Setup backup script
       ansible.builtin.template:
-        src: mysql_backup.sh
+        src: mysql_backup.j2.sh
         dest: /usr/local/bin/mysql_backup.sh
         mode: "0755"
 
@@ -189,7 +189,7 @@
 
     - name: Check if backup template exists
       ansible.builtin.stat:
-        path: "{{ role_path }}/templates/mysql_backup.sh"
+        path: "{{ role_path }}/templates/mysql_backup.j2.sh"
       register: water_gkhs_mysql_backup_backup_template_stat
       ignore_errors: true
 

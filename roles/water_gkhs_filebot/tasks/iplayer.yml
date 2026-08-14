@@ -65,7 +65,7 @@
 
 - name: Add update iplayer script to bin
   ansible.builtin.template:
-    src: download_iplayer.sh
+    src: download_iplayer.j2.sh
     dest: "{{ media_home }}/bin/download_iplayer.sh"
     mode: "0755"
     owner: "{{ media_user }}"

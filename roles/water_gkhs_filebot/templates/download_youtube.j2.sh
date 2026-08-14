@@ -1,5 +1,5 @@
 #!/bin/bash
-# "{{ ansible_managed }}"
+# {{ ansible_managed }}
 
 ### HEADER ###
 
@@ -50,10 +50,12 @@ function download {
 	SEASON="$4"
 	FILTER_VALUE="$5"
 
-	if [ $6 == 'only' ]; then
-		FILTER='--match-title'
-	elif [ $6 == 'except' ]; then
-		FILTER='--reject-title'
+	FILTER_TYPE="${6:-}"
+	FILTER=()
+	if [ "$FILTER_TYPE" = 'only' ]; then
+		FILTER=(--match-title "$FILTER_VALUE")
+	elif [ "$FILTER_TYPE" = 'except' ]; then
+		FILTER=(--reject-title "$FILTER_VALUE")
 	fi
 
 	echo $CHANNEL $SERIES
@@ -78,7 +80,7 @@ function download {
 		--write-info-json \
 		--all-subs \
 		--external-downloader aria2c --external-downloader-args "-q -c -j 3 -x 3 -s 3 -k 1M" \
-		$FILTER "$FILTER_VALUE" \
+		"${FILTER[@]}" \
 		$PLAYLIST
 	rsync -r --remove-source-files $SCRATCH/ $DIR
 	rm -rf $SCRATCH
