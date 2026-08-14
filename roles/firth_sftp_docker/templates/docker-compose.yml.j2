@@ -26,12 +26,30 @@ services:
     networks:
       - firth_services
     restart: unless-stopped
-{% for username, site in firth_sftp_docker_php_sites.items() %}
+{% for username, site in firth_sftp_docker_web_sites.items() %}
+{% if site.backend | default('fpm') == 'apache' %}
+
+  web_{{ username }}:
+    image: "{{ site.apache_image | default('httpd:2.4-alpine') }}"
+    ports:
+      - "127.0.0.1:{{ site.port }}:80"
+    volumes:
+      - {{ docker_root }}/sftp/home/{{ username }}/{{ site.web_domain }}:/usr/local/apache2/htdocs:rw
+      - {{ docker_root }}/sftp/phpfpm/{{ username }}.conf:/usr/local/apache2/conf/httpd.conf:ro
+    networks:
+      - firth_services
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+{% else %}
 
   phpfpm_{{ username }}:
     image: "{{ site.php_image | default('php:8.3-fpm-alpine') }}"
     volumes:
-      - {{ docker_root }}/sftp/home/{{ username }}/{{ site.php_web_domain }}:/var/www/html:rw
+      - {{ docker_root }}/sftp/home/{{ username }}/{{ site.web_domain }}:/var/www/html:rw
       - {{ docker_root }}/sftp/phpfpm/{{ username }}.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - {{ docker_root }}/sftp/run:/run/phpfpm:rw
     networks:
@@ -42,6 +60,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+{% endif %}
 {% endfor %}
 
 networks:

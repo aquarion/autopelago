@@ -176,7 +176,7 @@
         group: "{{ firth_sftp_docker_group | default('sftp_docker') }}"
         mode: "0755"
 
-    - name: Template PHP-FPM pool configs for web users
+    - name: Template PHP-FPM pool configs for fpm-backed web users
       ansible.builtin.template:
         src: phpfpm-pool.conf.j2
         dest: "{{ docker_root }}/sftp/phpfpm/{{ item.key }}.conf"
@@ -185,7 +185,16 @@
         mode: "0644"
       vars:
         user: { name: "{{ item.key }}" }
-      loop: "{{ firth_sftp_docker_php_sites | default({}) | dict2items }}"
+      loop: "{{ firth_sftp_docker_web_sites | default({}) | dict2items | selectattr('value.backend', 'ne', 'apache') | list }}"
+
+    - name: Template Apache configs for apache-backed web users
+      ansible.builtin.template:
+        src: httpd.conf.j2
+        dest: "{{ docker_root }}/sftp/phpfpm/{{ item.key }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ firth_sftp_docker_web_sites | default({}) | dict2items | selectattr('value.backend', 'equalto', 'apache') | list }}"
 
   rescue:
     - name: Debug failure to setup SFTP Docker configuration
