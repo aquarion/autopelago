@@ -2,7 +2,16 @@
 # handlers file for roles/firth_sftp_docker
 
 - name: Restart SFTP Docker
-  ansible.builtin.command: docker compose up -d
+  # --force-recreate and --remove-orphans: this handler is notified for
+  # bind-mounted config file changes (phpfpm/apache pool configs,
+  # bind_mounts.sh) as well as docker-compose.yml itself. Compose only
+  # recreates a service when the *compose config* changes - a bind-mounted
+  # file's content changing on disk is invisible to it otherwise, so
+  # without --force-recreate a config edit silently never takes effect
+  # until something else touches the container. --remove-orphans clears
+  # out containers for services removed from docker-compose.yml (e.g. a
+  # site switching backend from fpm to apache).
+  ansible.builtin.command: docker compose up -d --force-recreate --remove-orphans
   args:
     chdir: "{{ docker_root }}/sftp"
 

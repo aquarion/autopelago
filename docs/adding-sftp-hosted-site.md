@@ -1,8 +1,8 @@
 # Adding a new SFTP-hosted site to firth
 
-SFTP-hosted sites let a user upload files over SFTP and have them served as a website with PHP support. Each site gets a PHP-FPM sidecar container that shares the SFTP user's webroot volume; nginx on the host serves static files directly and FastCGI-passes PHP requests to a Unix socket.
+SFTP-hosted sites let a user upload files over SFTP and have them served as a website. Sites needing PHP or working directory listings get a sidecar container that shares the SFTP user's webroot volume — either a PHP-FPM sidecar (nginx serves static files directly and FastCGI-passes PHP requests to a Unix socket) or an Apache sidecar (nginx proxies everything to it; used for static sites needing `mod_autoindex`-style directory listings, since nginx has no equivalent). Purely static sites with no directory-listing needs skip the sidecar entirely.
 
-kastark.co.uk is the reference implementation for this pattern.
+kastark.co.uk is the reference implementation for the PHP-FPM pattern; socksandpuppets.com is the reference implementation for the Apache pattern.
 
 ---
 
@@ -10,16 +10,32 @@ kastark.co.uk is the reference implementation for this pattern.
 
 SFTP accounts (username, password, uid/gid, SSH public key) are managed entirely through Alchemistic — there's an admin flow at `manage.istic.systems` that creates an `sftp_users` row for an existing Alchemistic user, and `sftp-sync.sh` reconciles it into the running container within a minute (no ansible-playbook run needed for the account itself).
 
-If PHP support is needed, add a `php_web_domain` entry keyed by that same username to `firth_sftp_docker_php_sites` in `host_vars/firth.water.gkhs.net/sftp.vault.yml` (vault-encrypted):
+If the site needs a web-serving sidecar, add an entry keyed by that same username to `firth_sftp_docker_web_sites` in `host_vars/firth.water.gkhs.net/sftp.vault.yml` (vault-encrypted). Two backends are supported:
 
 ```yaml
-firth_sftp_docker_php_sites:
+firth_sftp_docker_web_sites:
   example:
-    php_web_domain: example.com   # subdirectory under sftp/home/<user>/ served as webroot
+    web_domain: example.com       # subdirectory under sftp/home/<user>/ served as webroot
+    backend: fpm                  # default; omit this line for a plain PHP-FPM sidecar
     # php_image: php:8.2-fpm-alpine  # optional, defaults to php:8.3-fpm-alpine
 ```
 
-Omit the entry entirely for static-only sites (no PHP-FPM container). The `php_web_domain` value must match the directory the user will upload to. The SFTP docker-compose will automatically create a `phpfpm_example` container mounting that path as `/var/www/html`, with a Unix socket at `docker_root/sftp/run/example.sock`. This does require an `ansible-playbook` run (see step 5) since it changes the container's docker-compose file.
+Omit the entry entirely for a purely static site with no directory browsing needed (nginx serves it straight from `sftp/home/<user>/` via `root`, no sidecar container at all). For a static site that *does* need working directory listings (e.g. photo/art galleries with no per-directory `index.html`) — nginx has no equivalent for Apache's `.htaccess`-driven `mod_autoindex` (`IndexOptions`, `HeaderName`, `ReadmeName`) — use the `apache` backend instead:
+
+```yaml
+firth_sftp_docker_web_sites:
+  example:
+    web_domain: example.com
+    backend: apache
+    port: 4081                    # required, must be unique across all apache-backend sites
+    # apache_image: httpd:2.4-alpine  # optional
+```
+
+`socksandpuppets.com` (ahdok's account) is the reference implementation for the `apache` backend; `kastark.co.uk` is the reference implementation for the default `fpm` backend.
+
+The `web_domain` value must match the directory the user will upload to. This does require an `ansible-playbook` run (see step 5) since it changes the container's docker-compose file:
+- `backend: fpm` creates a `phpfpm_example` container mounting that path as `/var/www/html`, with a Unix socket at `docker_root/sftp/run/example.sock`.
+- `backend: apache` creates a `web_example` container mounting that path as `/usr/local/apache2/htdocs`, published on `127.0.0.1:<port>` for nginx to `proxy_pass` to (there's no Unix socket for this backend — it speaks plain HTTP).
 
 ---
 
@@ -155,9 +171,18 @@ server {
 }
 ```
 
-The socket path (`sftp/run/example.sock`) and webroot path (`sftp/home/example/example.com`) are both derived from the username and `php_web_domain` — no extra variables needed beyond `docker_root`.
+The socket path (`sftp/run/example.sock`) and webroot path (`sftp/home/example/example.com`) are both derived from the username and `web_domain` — no extra variables needed beyond `docker_root`.
 
-For a static-only site (no entry for that username in `firth_sftp_docker_php_sites`), omit the `location ~ \.php$` block and the `try_files` fallback.
+For a static-only site (no entry for that username in `firth_sftp_docker_web_sites`), omit the `location ~ \.php$` block and the `try_files` fallback.
+
+For an `apache`-backend site (see step 1), skip `root`/`try_files`/`fastcgi_pass` entirely and proxy the whole `location /` to the sidecar's published port instead — see `roles/firth_nginx/templates/vhosts/sftp_socksandpuppets` for the reference implementation:
+
+```nginx
+location / {
+  proxy_pass http://127.0.0.1:4081;
+  include /etc/nginx/snippets/proxy_params.nginx.conf;
+}
+```
 
 ---
 
