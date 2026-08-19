@@ -56,20 +56,20 @@ resolvelib = ">=0.8.0,<2.0.0"
 
 [[package]]
 name = "ansible-lint"
-version = "26.6.0"
+version = "26.8.0"
 description = "Checks playbooks for practices and behavior that could potentially be improved"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 markers = "platform_system != \"Windows\""
 files = [
-    {file = "ansible_lint-26.6.0-py3-none-any.whl", hash = "sha256:162939615eae3b59f38bd829542642b586ccee17eefb0df8718ea4b092eee222"},
-    {file = "ansible_lint-26.6.0.tar.gz", hash = "sha256:790d08ff6ee56525244677411c90a17b374245d3913bc6a462b5d913ece6d615"},
+    {file = "ansible_lint-26.8.0-py3-none-any.whl", hash = "sha256:94e58501cc7fafaa505dd9daea3bddb4affa6e8efe8217323c06d7194a312f57"},
+    {file = "ansible_lint-26.8.0.tar.gz", hash = "sha256:65cb5efab1ffaedbe23af0fff241a8834294f8ac80a8c838c2143024afc103a4"},
 ]
 
 [package.dependencies]
 ansible-compat = ">=26.3.0"
-ansible-core = ">=2.16.14"
+ansible-core = ">=2.16.19,<2.17.dev0 || >=2.18.dev0"
 black = ">=24.3.0"
 cffi = ">=1.15.1"
 cryptography = ">=37"
