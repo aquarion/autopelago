@@ -37,20 +37,7 @@
   tags:
     - aws
 
-- name: PD Forums DNS - PDForums A
-  amazon.aws.route53:
-    profile: aqcom
-    overwrite: true
-    state: present
-    zone: larp.me
-    record: pdforums.larp.me
-    value: 138.201.60.152
-    type: A
-    ttl: 300
-  tags:
-    - aws
-
-- name: PD Forums DNS - PDForums A
+- name: PD Forums DNS - Old PDForums A - remove
   amazon.aws.route53:
     profile: aqcom
     overwrite: true
