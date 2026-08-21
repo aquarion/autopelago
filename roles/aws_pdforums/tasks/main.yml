@@ -8,3 +8,8 @@
   ansible.builtin.include_tasks: iam.yml
   tags:
     - aws
+
+- name: Do SES things
+  ansible.builtin.include_tasks: ses.yml
+  tags:
+    - aws

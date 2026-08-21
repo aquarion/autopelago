@@ -1,0 +1,167 @@
+---
+- name: Create pdforums.larp.me SES domain identity (Easy DKIM)
+  sesv2_domain_identity:
+    identity: pdforums.larp.me
+    state: present
+    profile: aqcom
+    region: "{{ aqcom_aws_default_region }}"
+  register: aws_pdforums_ses_identity
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: PD Forums DNS - SES DKIM CNAME records
+  amazon.aws.route53:
+    profile: aqcom
+    overwrite: true
+    state: present
+    zone: larp.me
+    record: "{{ item }}._domainkey.pdforums.larp.me"
+    type: CNAME
+    ttl: 300
+    value: "{{ item }}.dkim.amazonses.com"
+  loop: "{{ aws_pdforums_ses_identity.dkim_tokens }}"
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: Get AWS account ID for SES identity ARN
+  amazon.aws.aws_caller_info:
+    profile: aqcom
+  register: aws_pdforums_ses_caller_info
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: Create pdforums-ses-smtp IAM user
+  amazon.aws.iam_user:
+    name: pdforums-ses-smtp
+    state: present
+    profile: aqcom
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: Attach SES send policy scoped to pdforums.larp.me identity
+  amazon.aws.iam_policy:
+    iam_type: user
+    iam_name: pdforums-ses-smtp
+    policy_name: pdforums-ses-send
+    state: present
+    profile: aqcom
+    policy_json: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": ["ses:SendEmail", "ses:SendRawEmail"],
+            "Resource": "arn:aws:ses:{{ aqcom_aws_default_region }}:{{ aws_pdforums_ses_caller_info.account }}:identity/pdforums.larp.me"
+          }
+        ]
+      }
+  tags:
+    - pdforums_ses
+    - aws
+
+# Access key management
+- name: Check if pdforums SES SMTP credentials file already exists
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/host_vars/firth.water.gkhs.net/pdforums_ses_smtp.vault.yml"
+  register: aws_pdforums_ses_creds_file
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: List existing IAM access keys for pdforums-ses-smtp user
+  amazon.aws.iam_access_key_info:
+    user_name: pdforums-ses-smtp
+    profile: aqcom
+  register: aws_pdforums_ses_existing_keys
+  when: aws_pdforums_ses_creds_file.stat.exists
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: Delete credentials file if access key is no longer active in IAM
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/host_vars/firth.water.gkhs.net/pdforums_ses_smtp.vault.yml"
+    state: absent
+  when: >
+    aws_pdforums_ses_creds_file.stat.exists and
+    (aws_pdforums_ses_existing_keys.access_keys | selectattr('status', 'equalto', 'Active') | list | length == 0)
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: Create IAM access key for pdforums-ses-smtp user
+  amazon.aws.iam_access_key:
+    user_name: pdforums-ses-smtp
+    state: present
+    profile: aqcom
+  register: aws_pdforums_ses_iam_access_key
+  no_log: true
+  when: >
+    not aws_pdforums_ses_creds_file.stat.exists or
+    (aws_pdforums_ses_existing_keys is defined and
+    aws_pdforums_ses_existing_keys.access_keys | selectattr('status', 'equalto', 'Active') | list | length == 0)
+  tags:
+    - pdforums_ses
+    - aws
+
+# Credentials file writing (all tasks share the same when condition)
+- name: Write vault-encrypted SES SMTP credentials file
+  when: aws_pdforums_ses_iam_access_key is defined and aws_pdforums_ses_iam_access_key.changed
+  tags:
+    - pdforums_ses
+    - aws
+  block:
+    - name: Inject new SES SMTP credentials into play variables
+      ansible.builtin.set_fact:
+        aws_pdforums_ses_smtp_access_key_id: "{{ aws_pdforums_ses_iam_access_key.access_key.access_key_id }}"
+        aws_pdforums_ses_smtp_password: "{{ aws_pdforums_ses_iam_access_key.secret_access_key | ses_smtp_password(aqcom_aws_default_region) }}"
+      no_log: true
+
+    - name: Write and vault-encrypt SES SMTP credentials file
+      block:
+        - name: Create temp file for plaintext SES SMTP credentials
+          ansible.builtin.tempfile:
+            suffix: .yml
+          register: aws_pdforums_ses_creds_tmp
+
+        - name: Write plaintext SES SMTP credentials to temp file
+          ansible.builtin.copy:
+            content: "{{ lookup('ansible.builtin.template', 'pdforums_ses_smtp.yml.j2') }}"
+            dest: "{{ aws_pdforums_ses_creds_tmp.path }}"
+            mode: "0600"
+          no_log: true
+
+        - name: Encrypt SES SMTP credentials file with ansible-vault
+          ansible.builtin.command:
+            cmd: >
+              {{ ansible_playbook_python | dirname }}/ansible-vault encrypt
+              --vault-password-file {{ lookup('env', 'HOME') }}/.vault_pass.txt
+              --output {{ playbook_dir }}/host_vars/firth.water.gkhs.net/pdforums_ses_smtp.vault.yml
+              {{ aws_pdforums_ses_creds_tmp.path }}
+          changed_when: true
+
+        - name: Set SES SMTP credentials file ownership
+          ansible.builtin.file:
+            path: "{{ playbook_dir }}/host_vars/firth.water.gkhs.net/pdforums_ses_smtp.vault.yml"
+            owner: "{{ lookup('env', 'USER') }}"
+            group: "{{ lookup('env', 'USER') }}"
+            mode: "0660"
+      always:
+        - name: Remove temp SES SMTP credentials file
+          ansible.builtin.file:
+            path: "{{ aws_pdforums_ses_creds_tmp.path }}"
+            state: absent
+          when: aws_pdforums_ses_creds_tmp is defined
+
+    - name: Remind operator to commit credentials file and configure Discourse
+      ansible.builtin.debug:
+        msg: >
+          Vault-encrypted SES SMTP credentials written to
+          host_vars/firth.water.gkhs.net/pdforums_ses_smtp.vault.yml — commit this file, then set
+          Discourse's SMTP settings (host: email-smtp.{{ aqcom_aws_default_region }}.amazonaws.com,
+          port 587, username/password from that file) in its app.yml.
