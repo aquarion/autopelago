@@ -13,3 +13,4 @@
   ansible.builtin.include_tasks: ses.yml
   tags:
     - aws
+    - pdforums_ses

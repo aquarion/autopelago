@@ -78,7 +78,20 @@
     user_name: pdforums-ses-smtp
     profile: aqcom
   register: aws_pdforums_ses_existing_keys
-  when: aws_pdforums_ses_creds_file.stat.exists
+  tags:
+    - pdforums_ses
+    - aws
+
+- name: Remove IAM access keys with no local vault record
+  amazon.aws.iam_access_key:
+    user_name: pdforums-ses-smtp
+    id: "{{ item.access_key_id }}"
+    state: absent
+    profile: aqcom
+  loop: "{{ aws_pdforums_ses_existing_keys.access_keys }}"
+  loop_control:
+    label: "{{ item.access_key_id }}"
+  when: not aws_pdforums_ses_creds_file.stat.exists
   tags:
     - pdforums_ses
     - aws
@@ -140,7 +153,6 @@
           ansible.builtin.command:
             cmd: >
               {{ ansible_playbook_python | dirname }}/ansible-vault encrypt
-              --vault-password-file {{ lookup('env', 'HOME') }}/.vault_pass.txt
               --output {{ playbook_dir }}/host_vars/firth.water.gkhs.net/pdforums_ses_smtp.vault.yml
               {{ aws_pdforums_ses_creds_tmp.path }}
           changed_when: true
