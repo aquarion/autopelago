@@ -62,7 +62,17 @@
     user_name: "{{ stream_delta_aws_iam_user }}"
     aws_profile: istic
   register: _stream_delta_existing_keys
-  when: _stream_delta_aws_creds_file.stat.exists
+
+- name: Remove IAM access keys with no local vault record
+  amazon.aws.iam_access_key:
+    user_name: "{{ stream_delta_aws_iam_user }}"
+    id: "{{ item.access_key_id }}"
+    state: absent
+    aws_profile: istic
+  loop: "{{ _stream_delta_existing_keys.access_keys }}"
+  loop_control:
+    label: "{{ item.access_key_id }}"
+  when: not _stream_delta_aws_creds_file.stat.exists
 
 - name: Delete credentials file if access key is no longer active in IAM
   ansible.builtin.file:
@@ -105,7 +115,7 @@
 
         - name: Write plaintext credentials to temp file
           ansible.builtin.copy:
-            content: "{{ lookup('ansible.builtin.template', 'stream_delta_aws.vault.yml.j2') }}"
+            content: "{{ lookup('ansible.builtin.template', 'stream_delta_aws.yml.j2') }}"
             dest: "{{ _stream_delta_creds_tmp.path }}"
             mode: "0600"
           no_log: true
@@ -114,7 +124,6 @@
           ansible.builtin.command:
             cmd: >
               {{ ansible_playbook_python | dirname }}/ansible-vault encrypt
-              --vault-password-file {{ lookup('env', 'HOME') }}/.vault_pass.txt
               --output {{ playbook_dir }}/host_vars/atoll.water.gkhs.net/stream_delta_aws.vault.yml
               {{ _stream_delta_creds_tmp.path }}
           changed_when: true
