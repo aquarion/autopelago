@@ -261,6 +261,7 @@ firth_laravel_app_apps:
       APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
       APP_GOOGLE_CREDENTIALS_FILENAME: google/credentials.json
       DB_DATABASE: /var/www/html/storage/database/production.sqlite
+      GOOGLE_MAPS_API_KEY: "{{ vault_wereabouts_google_maps_api_key }}"
     additional_files:
       - src: files/laravel/wereabouts/google_credentials.vault.json
         dest: credentials/google/credentials.json
@@ -281,6 +282,7 @@ firth_laravel_app_apps:
         APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
         APP_GOOGLE_CREDENTIALS_FILENAME: google/credentials.json
         DB_DATABASE: /var/www/html/storage/database/staging.sqlite
+        GOOGLE_MAPS_API_KEY: "{{ vault_wereabouts_google_maps_api_key }}"
       additional_files:
         - src: files/laravel/wereabouts/google_credentials.vault.json
           dest: credentials/google/credentials.json
