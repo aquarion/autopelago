@@ -51,7 +51,7 @@ repos:
         # shfmt doesn't understand {% %} control tags and mangles them.
         exclude: \.j2\.sh$
   - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v26.6.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
+    rev: v26.8.0 # put latest release tag from https://github.com/ansible-community/ansible-lint/releases/
     hooks:
       - id: ansible-lint
         entry: python3 -m ansiblelint -v --force-color --fix
