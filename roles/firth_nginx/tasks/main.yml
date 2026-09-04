@@ -15,6 +15,7 @@
   with_fileglob:
     - templates/ssl/*
   notify:
+    - Validate nginx configuration
     - Reload nginx
   tags:
     - nginx
@@ -28,6 +29,7 @@
   with_fileglob:
     - templates/ssl/*
   notify:
+    - Validate nginx configuration
     - Restart nginx
   tags:
     - nginx
@@ -47,6 +49,7 @@
     - { cert_name: "kastark.co.uk", file_name: "kastark" }
     - { cert_name: "svc.istic.systems", file_name: "svc_istic_systems" }
   notify:
+    - Validate nginx configuration
     - Restart nginx
   tags:
     - nginx
@@ -60,6 +63,7 @@
   with_fileglob:
     - templates/nginx_snippets/*
   notify:
+    - Validate nginx configuration
     - Reload nginx
   tags:
     - nginx
@@ -72,6 +76,7 @@
   with_fileglob:
     - templates/nginx_confd/*
   notify:
+    - Validate nginx configuration
     - Restart nginx
   tags:
     - nginx
@@ -84,6 +89,7 @@
   with_fileglob:
     - templates/vhosts/*
   notify:
+    - Validate nginx configuration
     - Restart nginx
   tags:
     - streamsite
@@ -99,6 +105,7 @@
   with_fileglob:
     - templates/vhosts/*
   notify:
+    - Validate nginx configuration
     - Restart nginx
   tags:
     - streamsite
@@ -112,6 +119,7 @@
   with_fileglob:
     - templates/deleted_vhosts/*
   notify:
+    - Validate nginx configuration
     - Restart nginx
   tags:
     - streamsite
@@ -125,6 +133,7 @@
   with_fileglob:
     - templates/deleted_vhosts/*
   notify:
+    - Validate nginx configuration
     - Restart nginx
   tags:
     - streamsite
