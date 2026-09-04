@@ -506,6 +506,9 @@
         body_format: json
         status_code: 200,201,204
       register: stream_delta_secrets_response
+      # GitHub returns 201 only when the secret is created and 204 on every
+      # subsequent overwrite, whether or not the plaintext actually changed
+      # So this doesn't indicate a change, annoyingly.
       changed_when: stream_delta_secrets_response.status == 201
       no_log: true
       loop: "{{ stream_delta_github_secrets }}"
