@@ -44,6 +44,13 @@
       register: firth_laravel_app_github_rebase_response
       delegate_to: localhost
       become: false
+      # GitHub returns 201 only when the secret is created and 204 on every
+      # subsequent overwrite, whether or not the plaintext actually changed -
+      # the encrypted_value payload is a libsodium sealed box with a random
+      # nonce, so it differs on every call even for an unchanged token, and
+      # the API gives no other signal. status == 201 is the only value that
+      # reliably means "this call changed something", so 204 is treated as
+      # ok, not changed, even on a genuine rotation.
       changed_when: firth_laravel_app_github_rebase_response.status == 201
       no_log: true
       when: not ansible_check_mode
