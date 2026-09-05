@@ -47,6 +47,7 @@
         state: present
         value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
         ttl: "300"
+      - { name: lifestream, type: A, state: present, value: "{{ loadbalancer_ip }}", cf_proxied: true }
       - { name: live, type: CNAME, state: present, value: www.aquarionics.com, ttl: "300" }
       - { name: live.dailyphoto, type: A, state: present, value: "{{ loadbalancer_ip }}", ttl: "300" }
       - { name: live.dailyphoto, type: CNAME, state: absent, value: d2r0e8lumqw3g1.cloudfront.net }

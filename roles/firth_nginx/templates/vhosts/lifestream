@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+server {
+    listen 80;
+    listen [::]:80;
+    server_name lifestream.aquarionics.com;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name lifestream.aquarionics.com;
+
+    include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
+
+    add_header X-WhyAmI lifestream;
+
+    error_log  /var/log/nginx/lifestream.error.log;
+    access_log /var/log/nginx/lifestream.access.log;
+
+    location / {
+        proxy_pass http://127.0.0.1:2871;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
