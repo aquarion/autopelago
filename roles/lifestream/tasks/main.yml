@@ -7,6 +7,7 @@
     path: /etc/redis/users.acl
     line: user lifestream on +@all -DEBUG ~* &* >{{ lifestream_redis_password }}
     regex: ^user lifestream
+  no_log: true
   notify:
     - Reload Redis ACL
   tags:
