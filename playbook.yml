@@ -72,6 +72,7 @@
     - firth_packages
     - firth_users
     - firth_docker
+    - lifestream
     - plexupdate_uninstall
     - { role: firth_nginx, tags: nginx }
     - water_gkhs_filebot

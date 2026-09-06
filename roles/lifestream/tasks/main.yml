@@ -1,0 +1,15 @@
+---
+- name: Configure Redis lifestream user password
+  # Own user (not sharing dockersites) so its permissions can be tuned
+  # independently — needs &* (pub/sub channel access) for the OAuth
+  # callback catcher's Redis pub/sub, which dockersites doesn't have.
+  ansible.builtin.lineinfile:
+    path: /etc/redis/users.acl
+    line: user lifestream on +@all -DEBUG ~* &* >{{ lifestream_redis_password }}
+    regex: ^user lifestream
+  no_log: true
+  notify:
+    - Reload Redis ACL
+  tags:
+    - redis
+    - lifestream
