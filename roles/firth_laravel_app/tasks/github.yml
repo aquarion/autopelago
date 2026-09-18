@@ -2,13 +2,13 @@
 - name: Configure GitHub Actions secrets for {{ fla.github_repo }}
   tags: [firth_laravel_app, firth_laravel_app_install]
   block:
-    - name: Assert laravel_apps_rebase_token is defined for {{ fla.github_repo }}
+    - name: Assert github_rebase_token is defined for {{ fla.github_repo }}
       ansible.builtin.assert:
         that:
-          - laravel_apps_rebase_token is defined
-          - laravel_apps_rebase_token | length > 0
+          - github_rebase_token is defined
+          - github_rebase_token | length > 0
         fail_msg: >
-          laravel_apps_rebase_token is undefined or empty.
+          github_rebase_token is undefined or empty.
           Define it in the host vault (laravel/laravel_apps.vault.yml) before running this role.
       when: not ansible_check_mode
 
@@ -37,7 +37,7 @@
           Accept: "application/vnd.github.v3+json"
           X-GitHub-Api-Version: "2022-11-28"
         body:
-          encrypted_value: "{{ laravel_apps_rebase_token | encrypt_secret(firth_laravel_app_github_pubkey.json.key) }}"
+          encrypted_value: "{{ github_rebase_token | encrypt_secret(firth_laravel_app_github_pubkey.json.key) }}"
           key_id: "{{ firth_laravel_app_github_pubkey.json.key_id }}"
         body_format: json
         status_code: [200, 201, 204]
