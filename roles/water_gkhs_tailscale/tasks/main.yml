@@ -31,6 +31,7 @@
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
+  when: water_gkhs_tailscale_repo.changed
 
 - name: Install tailscale
   ansible.builtin.apt:
