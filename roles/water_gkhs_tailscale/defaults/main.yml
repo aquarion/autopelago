@@ -1,0 +1,7 @@
+---
+water_gkhs_tailscale_hostname: "{{ inventory_hostname_short }}"
+water_gkhs_tailscale_extra_args: ""
+
+# Set in vault (e.g. group_vars/all/50-integrations.vault.yml) - a reusable or
+# pre-authorized Tailscale auth key from https://login.tailscale.com/admin/settings/keys
+water_gkhs_tailscale_authkey: "{{ vault_tailscale_authkey }}"
