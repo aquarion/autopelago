@@ -1,0 +1,92 @@
+---
+- name: Add Tailscale GPG key
+  ansible.builtin.apt_key:
+    url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
+    state: present
+    keyring: /etc/apt/keyrings/tailscale.gpg
+  tags:
+    - tailscale
+
+- name: Get DEB architecture
+  ansible.builtin.shell: dpkg --print-architecture
+  register: water_gkhs_tailscale_deb_architecture
+  tags:
+    - tailscale
+  changed_when: false
+
+- name: Tailscale Repo
+  ansible.builtin.deb822_repository:
+    name: tailscale
+    uris: https://pkgs.tailscale.com/stable/ubuntu
+    suites: "{{ ansible_distribution_release }}"
+    state: present
+    signed_by: /etc/apt/keyrings/tailscale.gpg
+    components: main
+    architectures: "{{ water_gkhs_tailscale_deb_architecture.stdout }}"
+  register: water_gkhs_tailscale_repo
+  notify:
+    - Apt Cache Update
+  tags:
+    - tailscale
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+  when: water_gkhs_tailscale_repo.changed
+
+- name: Install tailscale
+  ansible.builtin.apt:
+    name: tailscale
+    state: present
+    update_cache: true
+    # A cache refresh elsewhere in the same run can be within apt_cache_time
+    # and get skipped, leaving apt without the repo we just added above -
+    # force a real refresh whenever that task reported a change.
+    cache_valid_time: "{{ 0 if water_gkhs_tailscale_repo.changed else apt_cache_time }}"
+  tags:
+    - tailscale
+
+- name: Ensure tailscaled is running and enabled
+  ansible.builtin.service:
+    name: tailscaled
+    state: started
+    enabled: true
+  tags:
+    - tailscale
+
+- name: Check current tailscale status
+  ansible.builtin.command: tailscale status --json
+  register: water_gkhs_tailscale_status
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - tailscale
+
+- name: Warn that the tailnet auth key is not yet configured
+  ansible.builtin.debug:
+    msg: >-
+      water_gkhs_tailscale_authkey is not set - skipping `tailscale up`.
+      Add a vault_tailscale_authkey vault variable to join this host to the tailnet.
+  when:
+    - water_gkhs_tailscale_authkey | length == 0
+    - >-
+      water_gkhs_tailscale_status.stdout == '' or
+      (water_gkhs_tailscale_status.stdout | from_json).BackendState | default('') != 'Running'
+  tags:
+    - tailscale
+
+- name: Join the tailnet
+  ansible.builtin.command: >
+    tailscale up
+    --authkey={{ water_gkhs_tailscale_authkey }}
+    --hostname={{ water_gkhs_tailscale_hostname }}
+    {{ water_gkhs_tailscale_extra_args }}
+  when:
+    - water_gkhs_tailscale_authkey | length > 0
+    - >-
+      water_gkhs_tailscale_status.stdout == '' or
+      (water_gkhs_tailscale_status.stdout | from_json).BackendState | default('') != 'Running'
+  changed_when: true
+  no_log: true
+  tags:
+    - tailscale

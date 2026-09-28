@@ -38,6 +38,7 @@
   become: true
   roles:
     - water_gkhs_users
+    - water_gkhs_tailscale
     - water_gkhs_network
     - water_gkhs_php
     - water_gkhs_dovecot
