@@ -23,6 +23,7 @@
     signed_by: /etc/apt/keyrings/tailscale.gpg
     components: main
     architectures: "{{ water_gkhs_tailscale_deb_architecture.stdout }}"
+  register: water_gkhs_tailscale_repo
   notify:
     - Apt Cache Update
   tags:
@@ -36,7 +37,10 @@
     name: tailscale
     state: present
     update_cache: true
-    cache_valid_time: "{{ apt_cache_time }}"
+    # A cache refresh elsewhere in the same run can be within apt_cache_time
+    # and get skipped, leaving apt without the repo we just added above -
+    # force a real refresh whenever that task reported a change.
+    cache_valid_time: "{{ 0 if water_gkhs_tailscale_repo.changed else apt_cache_time }}"
   tags:
     - tailscale
 
