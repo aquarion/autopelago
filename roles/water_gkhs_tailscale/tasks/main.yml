@@ -53,6 +53,20 @@
   register: water_gkhs_tailscale_status
   changed_when: false
   failed_when: false
+  check_mode: false
+  tags:
+    - tailscale
+
+- name: Warn that the tailnet auth key is not yet configured
+  ansible.builtin.debug:
+    msg: >-
+      water_gkhs_tailscale_authkey is not set - skipping `tailscale up`.
+      Add a vault_tailscale_authkey vault variable to join this host to the tailnet.
+  when:
+    - water_gkhs_tailscale_authkey | length == 0
+    - >-
+      water_gkhs_tailscale_status.stdout == '' or
+      (water_gkhs_tailscale_status.stdout | from_json).BackendState | default('') != 'Running'
   tags:
     - tailscale
 
@@ -62,9 +76,12 @@
     --authkey={{ water_gkhs_tailscale_authkey }}
     --hostname={{ water_gkhs_tailscale_hostname }}
     {{ water_gkhs_tailscale_extra_args }}
-  when: >
-    water_gkhs_tailscale_status.stdout == '' or
-    (water_gkhs_tailscale_status.stdout | from_json).BackendState | default('') != 'Running'
+  when:
+    - water_gkhs_tailscale_authkey | length > 0
+    - >-
+      water_gkhs_tailscale_status.stdout == '' or
+      (water_gkhs_tailscale_status.stdout | from_json).BackendState | default('') != 'Running'
   changed_when: true
+  no_log: true
   tags:
     - tailscale
