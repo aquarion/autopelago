@@ -26,6 +26,17 @@
         ttl: "300"
         value: tributary.water.gkhs.net
 
+    - name: Deathuntodarkness.org. - MX (ImprovMX)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: deathuntodarkness.org
+        record: deathuntodarkness.org.
+        aws_profile: aqcom
+        type: MX
+        ttl: "300"
+        value: 10 mx1.improvmx.com.,20 mx2.improvmx.com.
+
     - name: _atproto.deathuntodarkness.org. - TXT
       amazon.aws.route53:
         overwrite: true

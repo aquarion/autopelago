@@ -11,6 +11,10 @@
       role: aws_profiles
       become: false
       tags: aws
+    # Before firth_dns, so aliases exist before the MX records go live
+    - role: improvmx
+      become: false
+      tags: improvmx
     - name: firth_dns
       role: firth_dns
       become: false

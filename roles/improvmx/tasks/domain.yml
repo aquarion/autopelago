@@ -1,0 +1,109 @@
+---
+# Idempotent reconcile of one ImprovMX domain and its aliases.
+# `changed` is only reported when we actually create, update or delete something.
+
+- name: "Get domain - {{ improvmx_domain.name }}"
+  ansible.builtin.uri:
+    url: "{{ improvmx_api_url }}/domains/{{ improvmx_domain.name }}"
+    method: GET
+    url_username: api
+    url_password: "{{ improvmx_api_key }}"
+    force_basic_auth: true
+    status_code: 200,404
+  register: improvmx_domain_response
+  changed_when: false
+
+- name: "Add domain - {{ improvmx_domain.name }}"
+  ansible.builtin.uri:
+    url: "{{ improvmx_api_url }}/domains"
+    method: POST
+    url_username: api
+    url_password: "{{ improvmx_api_key }}"
+    force_basic_auth: true
+    body:
+      domain: "{{ improvmx_domain.name }}"
+    body_format: json
+    status_code: 200,201
+  when: improvmx_domain_response.status == 404
+  changed_when: true
+
+# One page covers every plan: the most aliases per domain is 200 and the API's page limit is 200.
+- name: "List aliases - {{ improvmx_domain.name }}"
+  ansible.builtin.uri:
+    url: "{{ improvmx_api_url }}/domains/{{ improvmx_domain.name }}/aliases?limit=200"
+    method: GET
+    url_username: api
+    url_password: "{{ improvmx_api_key }}"
+    force_basic_auth: true
+    return_content: true
+  register: improvmx_aliases_response
+  changed_when: false
+
+- name: "Index existing aliases - {{ improvmx_domain.name }}"
+  ansible.builtin.set_fact:
+    improvmx_existing_aliases: >-
+      {{ dict(improvmx_aliases_response.json.aliases | map(attribute='alias') | map('lower')
+              | zip(improvmx_aliases_response.json.aliases)) }}
+
+- name: "Create aliases - {{ improvmx_domain.name }}"
+  ansible.builtin.uri:
+    url: "{{ improvmx_api_url }}/domains/{{ improvmx_domain.name }}/aliases"
+    method: POST
+    url_username: api
+    url_password: "{{ improvmx_api_key }}"
+    force_basic_auth: true
+    body:
+      alias: "{{ improvmx_alias.alias }}"
+      forward: "{{ improvmx_alias.forward | join(',') }}"
+    body_format: json
+    status_code: 200,201
+  when:
+    - improvmx_alias.state | default('present') == 'present'
+    - improvmx_alias.alias | lower not in improvmx_existing_aliases
+  changed_when: true
+  loop: "{{ improvmx_domain.aliases | default([]) }}"
+  loop_control:
+    loop_var: improvmx_alias
+    label: "{{ improvmx_alias.alias }}"
+
+# Compare as sets of lower-cased addresses so ordering and whitespace don't cause spurious updates.
+- name: "Update changed aliases - {{ improvmx_domain.name }}"
+  ansible.builtin.uri:
+    url: "{{ improvmx_api_url }}/domains/{{ improvmx_domain.name }}/aliases/{{ improvmx_existing_aliases[improvmx_alias.alias | lower].id }}"
+    method: PUT
+    url_username: api
+    url_password: "{{ improvmx_api_key }}"
+    force_basic_auth: true
+    body:
+      forward: "{{ improvmx_alias.forward | join(',') }}"
+    body_format: json
+    status_code: 200,201
+  when:
+    - improvmx_alias.state | default('present') == 'present'
+    - improvmx_alias.alias | lower in improvmx_existing_aliases
+    - >-
+      (improvmx_existing_aliases[improvmx_alias.alias | lower].forward.split(',') | map('trim') | map('lower') | sort | list)
+      != (improvmx_alias.forward | map('trim') | map('lower') | sort | list)
+  changed_when: true
+  loop: "{{ improvmx_domain.aliases | default([]) }}"
+  loop_control:
+    loop_var: improvmx_alias
+    label: "{{ improvmx_alias.alias }}"
+
+# Removing an alias from the list does not delete it (not garbage-collecting): set `state: absent` instead.
+- name: "Delete aliases marked absent - {{ improvmx_domain.name }}"
+  ansible.builtin.uri:
+    url: "{{ improvmx_api_url }}/domains/{{ improvmx_domain.name }}/aliases/{{ improvmx_existing_aliases[improvmx_alias.alias | lower].id }}"
+    method: DELETE
+    url_username: api
+    url_password: "{{ improvmx_api_key }}"
+    force_basic_auth: true
+    status_code: 200,204
+  when:
+    - improvmx_alias.state | default('present') == 'absent'
+    - improvmx_alias.alias | lower in improvmx_existing_aliases
+  changed_when: true
+  loop: "{{ improvmx_domain.aliases | default([]) }}"
+  loop_control:
+    loop_var: improvmx_alias
+    label: "{{ improvmx_alias.alias }}"
