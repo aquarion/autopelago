@@ -26,6 +26,28 @@
         ttl: "300"
         value: tributary.water.gkhs.net
 
+    - name: Deathuntodarkness.org. - MX (Forward Email)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: deathuntodarkness.org
+        record: deathuntodarkness.org.
+        aws_profile: aqcom
+        type: MX
+        ttl: "3600"
+        value: 0 mx1.forwardemail.net.,0 mx2.forwardemail.net.
+
+    - name: Deathuntodarkness.org. - TXT (Forward Email)
+      amazon.aws.route53:
+        overwrite: true
+        state: present
+        zone: deathuntodarkness.org
+        record: deathuntodarkness.org.
+        aws_profile: aqcom
+        type: TXT
+        ttl: "3600"
+        value: '"forward-email=nicholas@istic.net"'
+
     - name: _atproto.deathuntodarkness.org. - TXT
       amazon.aws.route53:
         overwrite: true
