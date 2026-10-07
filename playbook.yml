@@ -14,7 +14,9 @@
     # Before firth_dns, so aliases exist before the MX records go live
     - role: improvmx
       become: false
-      tags: improvmx
+      tags:
+        - improvmx
+        - deathuntodarkness
     - name: firth_dns
       role: firth_dns
       become: false

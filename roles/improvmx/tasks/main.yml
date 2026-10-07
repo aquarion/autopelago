@@ -9,8 +9,10 @@
   tags:
     - improvmx
 
+# ansible.builtin.uri skips its request in check mode, which would break the reconcile logic
 - name: Reconcile ImprovMX domains
   ansible.builtin.include_tasks: domain.yml
+  when: not ansible_check_mode
   loop: "{{ improvmx_domains }}"
   loop_control:
     loop_var: improvmx_domain

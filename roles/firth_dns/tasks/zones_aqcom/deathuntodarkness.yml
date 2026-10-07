@@ -36,6 +36,10 @@
         type: MX
         ttl: "300"
         value: 10 mx1.improvmx.com.,20 mx2.improvmx.com.
+      # Don't point mail at ImprovMX until at least one forwarding alias is defined
+      when: >-
+        (improvmx_domains | selectattr('name', 'eq', 'deathuntodarkness.org')
+        | map(attribute='aliases', default=[]) | flatten | length) > 0
 
     - name: _atproto.deathuntodarkness.org. - TXT
       amazon.aws.route53:
