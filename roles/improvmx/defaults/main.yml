@@ -1,0 +1,19 @@
+---
+# ImprovMX email forwarding (https://improvmx.com/api/)
+#
+# The API key is read from `improvmx_api_key` (vaulted, see group_vars/all/50-integrations.vault.yml).
+# Domains and their aliases are declared in `improvmx_domains`, e.g.:
+#
+#   improvmx_domains:
+#     - name: example.org
+#       aliases:
+#         - alias: hello
+#           forward:
+#             - one@example.net
+#             - two@example.net
+#         - alias: old
+#           state: absent
+#
+# MX records are NOT managed here, add them to the domain's zone file under roles/firth_dns.
+improvmx_api_url: https://api.improvmx.com/v3
+improvmx_domains: []

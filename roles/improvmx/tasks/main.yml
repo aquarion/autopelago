@@ -1,0 +1,21 @@
+---
+- name: Check ImprovMX API key is set
+  ansible.builtin.assert:
+    that:
+      - improvmx_api_key is defined
+      - improvmx_api_key | length > 0
+    fail_msg: improvmx_api_key must be set (vaulted) to manage ImprovMX
+    quiet: true
+  tags:
+    - improvmx
+
+# ansible.builtin.uri skips its request in check mode, which would break the reconcile logic
+- name: Reconcile ImprovMX domains
+  ansible.builtin.include_tasks: domain.yml
+  when: not ansible_check_mode
+  loop: "{{ improvmx_domains }}"
+  loop_control:
+    loop_var: improvmx_domain
+    label: "{{ improvmx_domain.name }}"
+  tags:
+    - improvmx
