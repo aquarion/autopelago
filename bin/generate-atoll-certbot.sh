@@ -57,18 +57,9 @@ function nginx_certbot() {
 }
 #### End Certbot Helper Functions ####
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INVENTORY="$SCRIPT_DIR/../etc/inventory.ini"
-
-get_host_var() {
-	local host="$1"
-	local var="$2"
-	ansible-inventory -i "$INVENTORY" --host "$host" 2>/dev/null |
-		jq -r --arg v "$var" '.[$v] // ""' 2>/dev/null ||
-		true
-}
-
-ARCHIVE_PUBLIC_DOMAIN="${ARCHIVE_PUBLIC_DOMAIN:-$(get_host_var atoll.water.gkhs.net stream_delta_archive_public_domain)}"
+# Passed in by update-all-certbots.sh (this script runs over ssh, so it has no inventory).
+# Empty/unset means the archive site has no public domain.
+ARCHIVE_PUBLIC_DOMAIN="${ARCHIVE_PUBLIC_DOMAIN:-}"
 
 route53_certbot "istic-r53" "voyeur.istic.net" "voyeur.istic.net" "*.voyeur.istic.net" "*.ws.voyeur.istic.net"
 cloudflare_certbot "voyeur.istic.dev" "*.ws.voyeur.istic.dev"
