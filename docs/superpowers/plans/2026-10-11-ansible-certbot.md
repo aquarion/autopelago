@@ -1039,6 +1039,7 @@ Create `host_vars/atoll.water.gkhs.net/certbot.yml`:
 # ssl_snippet: see host_vars/firth.water.gkhs.net/certbot.yml.
 certbot_deploy_commands:
   - service nginx reload
+  - service dovecot restart
 
 # The archive site's public domain is an Ansible variable; the cert is only requested if it is set.
 certbot_certs_archive: >-
@@ -1048,9 +1049,15 @@ certbot_certs_archive: >-
 certbot_certs_static:
   - { name: voyeur.istic.net, ssl_snippet: delta, challenge: route53, aws_profile: istic, domains: [voyeur.istic.net, "*.voyeur.istic.net", "*.ws.voyeur.istic.net"] }
   - { name: voyeur.istic.dev, ssl_snippet: delta_staging, challenge: cloudflare, domains: [voyeur.istic.dev, "*.voyeur.istic.dev", "*.ws.voyeur.istic.dev"] }
+  # Legacy cert dovecot's ssl_cert points at directly (not via an nginx snippet). Its own name
+  # doesn't match its SANs; it originally also covered the "voyuer" typo domain (dropped — not a
+  # live service name). Keep issuing it so dovecot's mail TLS doesn't go stale.
+  - { name: atoll.water.gkhs.net, challenge: route53, aws_profile: istic, domains: [atoll.istic.systems] }
 
 certbot_certs: "{{ certbot_certs_static + certbot_certs_archive }}"
 ```
+
+> **Found during Task 9 Step 3 on the real host, not during planning:** atoll's dovecot (`ssl_cert` in `doveconf -n`) points directly at `/etc/letsencrypt/live/atoll.water.gkhs.net/`, a cert whose live SANs (`atoll.istic.systems`, plus a typo'd `voyuer.istic.net`/`ws.voyuer.istic.net` that the owner confirmed is dead) don't match its own name. It is NOT the dead `atoll_ssl.conf` nginx snippet from Task 12 — those are unrelated; dovecot doesn't use nginx snippets at all. The cert above was added once this was confirmed live via `ssh atoll 'sudo certbot certificates'` and its renewal conf (`authenticator = dns-route53`, no persisted `aws_profile`, so `istic` per the zone owner). This also means the deploy commands needed `service dovecot restart`, so the "decision for the owner" bullet about atoll's nginx-only reload (further down this task, and in Task 13's PR body) is resolved, not deferred.
 
 - [ ] **Step 3: Check both files parse and the data resolves**
 
@@ -1214,7 +1221,7 @@ ansible-playbook playbook.yml --tags certbot --limit firth.water.gkhs.net 2>&1 |
 ```
 Expected: validation passes; the issuance loop reports `ok` for every cert (no `changed`, since nothing is due); the helper-install task and the unit-file tasks report `changed` on the first run; no failures. Then read `/tmp/certbot-firth.log` in full and confirm no cert shows `changed`.
 
-Decision for the PR description (do not change behaviour here): atoll's deploy command reloads only nginx, so dovecot on atoll does not pick up renewed certs. The old script had the same gap. List it in the PR as a deliberate decision for the owner.
+Resolved during Step 3 above (not a deferred decision): atoll's deploy commands now include `service dovecot restart`, because dovecot there turned out to depend directly on a renewed cert (`atoll.water.gkhs.net`).
 
 - [ ] **Step 6: Verify the timers, that EVERY cert in each group is checked, and real renewal paths**
 
@@ -1670,7 +1677,7 @@ gh pr create --draft --base main --title "🎇 Manage certbot with Ansible (fix 
 - New `certbot` role: certs are data in `host_vars/<host>/certbot.yml`, issued with `certbot certonly --expand`.
 - Renewal: one systemd service+timer per AWS profile (plus one for cloudflare/nginx certs), each with `AWS_PROFILE` set explicitly, replacing the packaged `certbot.timer`. Fixes route53 auto-renewals failing because the timer ran with no profile and fell back to root's `default` (the aqcom account).
 - Each service runs a helper (`/usr/local/sbin/certbot-renew-group`) that calls `certbot renew` once per cert, because `--cert-name` takes only one value.
-- Decision for the owner: atoll's deploy command reloads only nginx, so dovecot on atoll does not pick up renewed certs (the old script had the same gap); behaviour is unchanged here.
+- Found on atoll during rollout: dovecot there points `ssl_cert` directly at a legacy cert (`atoll.water.gkhs.net`, SANs `atoll.istic.systems` plus a now-dropped typo'd domain) that wasn't in the original data. It's now a managed cert, and atoll's deploy commands gained `service dovecot restart` so it actually gets picked up on renewal.
 - Service reloads move to a single deploy hook in `/etc/letsencrypt/renewal-hooks/deploy/`; the per-cert hooks the old scripts saved are stripped.
 - `aws_profiles` now runs on all external hosts; certs use the profile names `aqcom` / `istic` (the hand-added `istic-r53` is removed).
 - nginx SSL snippets (`/etc/nginx/snippets/ssl/<stem>_ssl.conf`) are generated from the same `certbot_certs` data via an `ssl_snippet` field that keeps each existing filename; the 17 static copies and the `firth_nginx` loop are removed, and the dead `atoll_ssl.conf` is deleted from atoll.

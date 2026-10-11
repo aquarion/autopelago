@@ -3,6 +3,7 @@
 # ssl_snippet: see host_vars/firth.water.gkhs.net/certbot.yml.
 certbot_deploy_commands:
   - service nginx reload
+  - service dovecot restart
 
 # The archive site's public domain is an Ansible variable; the cert is only requested if it is set.
 certbot_certs_archive: >-
@@ -12,5 +13,9 @@ certbot_certs_archive: >-
 certbot_certs_static:
   - { name: voyeur.istic.net, ssl_snippet: delta, challenge: route53, aws_profile: istic, domains: [voyeur.istic.net, "*.voyeur.istic.net", "*.ws.voyeur.istic.net"] }
   - { name: voyeur.istic.dev, ssl_snippet: delta_staging, challenge: cloudflare, domains: [voyeur.istic.dev, "*.voyeur.istic.dev", "*.ws.voyeur.istic.dev"] }
+  # Legacy cert dovecot's ssl_cert points at directly (not via an nginx snippet). Its own name
+  # doesn't match its SANs; it originally also covered the "voyuer" typo domain (dropped — not a
+  # live service name). Keep issuing it so dovecot's mail TLS doesn't go stale.
+  - { name: atoll.water.gkhs.net, challenge: route53, aws_profile: istic, domains: [atoll.istic.systems] }
 
 certbot_certs: "{{ certbot_certs_static + certbot_certs_archive }}"
