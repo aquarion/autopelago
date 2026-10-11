@@ -1190,9 +1190,11 @@ Expected: `Congratulations, all simulated renewals succeeded`. If it fails, stop
 
 ```bash
 HOST=firth.water.gkhs.net
+SSH_HOST="${HOST%%.*}" # the inventory name doesn't resolve; ssh needs the short alias your
+                       # ~/.ssh/config maps to the real address (independent of ansible_host)
 ansible "$HOST" -c local -m ansible.builtin.debug -a 'msg={{ certbot_certs | to_json }}' \
   | sed '1s/^[^{]*=> //' | jq -r '.msg | fromjson | .[] | .name + ": " + (.domains | sort | join(" "))' | sort > /tmp/expected.txt
-ssh "$HOST" 'sudo certbot certificates 2>/dev/null' \
+ssh "$SSH_HOST" 'sudo certbot certificates 2>/dev/null' \
   | python3 -c '
 import re, sys
 name = None
@@ -1208,13 +1210,13 @@ Expected: `IDENTICAL`. Any difference means a cert would be reissued with a diff
 
 Before deciding about any cert that appears only on the host, find out which cert dovecot and exim use. They use the cert named `{{ letsencrypt_dir }}`/`{{ cert_id }}`, which both default to `{{ ansible_fqdn }}` (`group_vars/all/00-core.yml:1`) — but that is a *fact gathered from the host*, not something you can get with `-c local` (that evaluates on the controller and gives the controller's own hostname, not the target's; it only works for host_vars like `certbot_certs` above, which is static data, not a live fact). On BOTH hosts run:
 ```bash
-ssh "$HOST" 'hostname -f'
-ssh "$HOST" 'sudo doveconf -n | grep ssl_cert'
-ssh "$HOST" 'sudo grep -i tls_certkey /etc/exim4/conf.d/main/00_water_gkhs_custom'
+ssh "$SSH_HOST" 'hostname -f'
+ssh "$SSH_HOST" 'sudo doveconf -n | grep ssl_cert'
+ssh "$SSH_HOST" 'sudo grep -i tls_certkey /etc/exim4/conf.d/main/00_water_gkhs_custom'
 ```
 and compare the fqdn and the cert names in the `ssl_cert`/`tls_certkey` paths with the names in the data. If the fqdn-named cert exists on a host but is not in `certbot_certs`, it is still in use by dovecot/exim: it must go into `certbot_certs`, NOT `certbot_certs_absent`.
 
-A cert that appears only in `/tmp/actual.txt` is on the host but not in the data. The role's validation guard will refuse to run until each such cert is either added to `certbot_certs` (if it is still used) or listed in `certbot_certs_absent` (if it should be deleted). Decide each one deliberately: with the packaged timer disabled, a cert in neither list would stop renewing. (Do not add a cert just because a snippet file mentions it, and do not assume a cert is a dead name just because it looks odd. This is exactly how `atoll.water.gkhs.net` was found during rollout: dovecot's `ssl_cert` pointed straight at it, even though its own SANs didn't contain its name and it isn't the `atoll_nginx`/`atoll_ssl.conf` nginx snippet — those are unrelated, since dovecot doesn't use nginx snippets at all. It's now in `host_vars/atoll.water.gkhs.net/certbot.yml`.) Repeat with `HOST=atoll.water.gkhs.net` before touching atoll.
+A cert that appears only in `/tmp/actual.txt` is on the host but not in the data. The role's validation guard will refuse to run until each such cert is either added to `certbot_certs` (if it is still used) or listed in `certbot_certs_absent` (if it should be deleted). Decide each one deliberately: with the packaged timer disabled, a cert in neither list would stop renewing. (Do not add a cert just because a snippet file mentions it, and do not assume a cert is a dead name just because it looks odd. This is exactly how `atoll.water.gkhs.net` was found during rollout: dovecot's `ssl_cert` pointed straight at it, even though its own SANs didn't contain its name and it isn't the `atoll_nginx`/`atoll_ssl.conf` nginx snippet — those are unrelated, since dovecot doesn't use nginx snippets at all. It's now in `host_vars/atoll.water.gkhs.net/certbot.yml`.) Repeat with `HOST=atoll.water.gkhs.net` (re-derive `SSH_HOST` from it) before touching atoll.
 
 - [ ] **Step 4: Confirm how the old hooks were saved**
 
