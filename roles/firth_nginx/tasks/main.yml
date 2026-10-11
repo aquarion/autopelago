@@ -35,26 +35,6 @@
     - nginx
     - nginx_ssl
 
-- name: Configure SSL Config
-  ansible.builtin.template:
-    src: ssl.nginx.conf.j2
-    dest: /etc/nginx/snippets/ssl/{{ item.file_name }}_ssl.conf
-    mode: "0644"
-  vars:
-    cert_name: "{{ item.cert_name }}"
-  loop:
-    - { cert_name: "camlarp.co.uk", file_name: "camlarp" }
-    - { cert_name: "nanocountdown.com", file_name: "nanocountdown.com" }
-    - { cert_name: "novelathon.com", file_name: "novelathon.com" }
-    - { cert_name: "kastark.co.uk", file_name: "kastark" }
-    - { cert_name: "svc.istic.systems", file_name: "svc_istic_systems" }
-  notify:
-    - Validate nginx configuration
-    - Restart nginx
-  tags:
-    - nginx
-    - nginx_ssl
-
 - name: Configure config overrides
   ansible.builtin.template:
     src: "{{ item }}"
