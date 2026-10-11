@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Renew Let's Encrypt certificates ({{ certbot_group_name }})
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+{% if certbot_group_profile | length > 0 %}
+Environment=AWS_PROFILE={{ certbot_group_profile }}
+{% endif %}
+ExecStart=/usr/bin/certbot renew --quiet --no-self-upgrade{% for cert in certbot_group_certs %} --cert-name {{ cert }}{% endfor %}
