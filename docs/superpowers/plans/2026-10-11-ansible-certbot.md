@@ -37,6 +37,8 @@
 | `roles/certbot/tasks/nginx_snippets.yml` | Generates `/etc/nginx/snippets/ssl/<stem>_ssl.conf` from `certbot_certs` (Task 12) |
 | `roles/certbot/handlers/main.yml` | Validates nginx config, then reloads it, after snippet changes (Task 12) |
 | `roles/certbot/tests/render.yml` | Renders the templates with sample data and asserts on the output |
+| `roles/certbot/files/certbot-renew-group.sh` | Helper installed as `/usr/local/sbin/certbot-renew-group`: runs `certbot renew` once per cert (`--cert-name` takes one value), continues after failures, exits non-zero if any failed |
+| `roles/certbot/tests/renew-group.sh` | Tests the helper against a fake `certbot` (all certs attempted in order; exit status reflects failures) |
 | `host_vars/firth.water.gkhs.net/certbot.yml` | Firth's certs, as data |
 | `host_vars/atoll.water.gkhs.net/certbot.yml` | Atoll's certs, as data (including the archive cert) |
 | `playbook.yml` | Move `aws_profiles`; add the certbot play |
@@ -156,9 +158,9 @@ Create `roles/certbot/tests/render.yml`:
           - "'Environment=AWS_PROFILE=istic\n' in (certbot_rendered.results[1].content | b64decode)"
           - "'Type=oneshot' in (certbot_rendered.results[1].content | b64decode)"
           - "'Environment=' not in (certbot_rendered.results[2].content | b64decode)"
-          - "'--cert-name istic.net --cert-name nanocountdown.com\n' in (certbot_rendered.results[1].content | b64decode)"
+          - "'ExecStart=/usr/local/sbin/certbot-renew-group istic.net nanocountdown.com\n' in (certbot_rendered.results[1].content | b64decode)"
           - "'AWS_PROFILE' not in (certbot_rendered.results[2].content | b64decode)"
-          - "'--cert-name socksandpuppets.com\n' in (certbot_rendered.results[2].content | b64decode)"
+          - "'ExecStart=/usr/local/sbin/certbot-renew-group socksandpuppets.com\n' in (certbot_rendered.results[2].content | b64decode)"
           - "'OnCalendar=' in (certbot_rendered.results[3].content | b64decode)"
           - "'Persistent=true' in (certbot_rendered.results[3].content | b64decode)"
           - "'(aws-istic)' in (certbot_rendered.results[3].content | b64decode)"
@@ -202,7 +204,7 @@ Type=oneshot
 {% if certbot_group_profile | length > 0 %}
 Environment=AWS_PROFILE={{ certbot_group_profile }}
 {% endif %}
-ExecStart=/usr/bin/certbot renew --quiet --no-self-upgrade{% for cert in certbot_group_certs %} --cert-name {{ cert }}{% endfor %}
+ExecStart=/usr/local/sbin/certbot-renew-group{% for cert in certbot_group_certs %} {{ cert }}{% endfor %}
 
 ```
 
@@ -616,17 +618,106 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 ### Task 5: Per-group renewal units
 
 **Files:**
+- Create: `roles/certbot/tests/renew-group.sh`
+- Create: `roles/certbot/files/certbot-renew-group.sh`
 - Create: `roles/certbot/tasks/renewal.yml`
 
-- [ ] **Step 1: Write the tasks**
+`certbot renew` accepts only ONE `--cert-name` (verified on certbot 4.0.0: with several, only the last is renewed), so each service runs a helper that calls certbot once per cert.
+
+- [ ] **Step 1: Write the failing helper test**
+
+Create `roles/certbot/tests/renew-group.sh` and make it executable (`chmod +x`):
+
+```bash
+#!/bin/bash
+# Tests certbot-renew-group.sh with a fake certbot.
+# Run from the repo root: roles/certbot/tests/renew-group.sh [path/to/certbot-renew-group.sh]
+helper=${1:-roles/certbot/files/certbot-renew-group.sh}
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+cat >"$tmp/certbot" <<'EOF'
+#!/bin/sh
+echo "$*" >>"$FAKE_CERTBOT_LOG"
+while [ $# -gt 0 ]; do
+	if [ "$1" = "--cert-name" ] && [ "$2" = "fail.example" ]; then
+		exit 1
+	fi
+	shift
+done
+exit 0
+EOF
+chmod +x "$tmp/certbot"
+
+failures=0
+
+# run_case NAME EXPECTED_RC CERT...
+run_case() {
+	local name=$1 want_rc=$2 rc rc_class want_class cert expected=""
+	shift 2
+	: >"$tmp/log"
+	CERTBOT="$tmp/certbot" FAKE_CERTBOT_LOG="$tmp/log" "$helper" "$@"
+	rc=$?
+	for cert in "$@"; do
+		expected+="renew --quiet --no-random-sleep-on-renew --cert-name $cert"$'\n'
+	done
+	[ "$rc" -ne 0 ] && rc_class=nonzero || rc_class=0
+	[ "$want_rc" -ne 0 ] && want_class=nonzero || want_class=0
+	if [ "$(cat "$tmp/log")"$'\n' = "$expected" ] && [ "$rc_class" = "$want_class" ]; then
+		echo "PASS: $name"
+	else
+		echo "FAIL: $name (rc=$rc, want rc $want_rc)"
+		echo "expected invocations:"
+		printf '%s' "$expected"
+		echo "actual invocations:"
+		cat "$tmp/log"
+		failures=1
+	fi
+}
+
+run_case "continues after a failure and exits non-zero" 1 a.example fail.example c.example
+run_case "all succeed and exit zero" 0 a.example b.example
+
+exit "$failures"
+```
+
+Run: `roles/certbot/tests/renew-group.sh`
+Expected: both cases `FAIL` (the helper does not exist yet) and a non-zero exit.
+
+- [ ] **Step 2: Write the helper**
+
+Create `roles/certbot/files/certbot-renew-group.sh` and make it executable (`chmod +x`); the role installs it as `/usr/local/sbin/certbot-renew-group`:
+
+```sh
+#!/bin/sh
+# Renew the given certificates, one `certbot renew` per cert: --cert-name only accepts a
+# single value, so a multi-name command would renew just the last one.
+# Keeps going after a failure so one broken cert can't stop the rest, and exits non-zero
+# if any of them failed so systemd marks the unit as failed.
+# Usage: certbot-renew-group CERT_NAME...
+rc=0
+for cert in "$@"; do
+	"${CERTBOT:-/usr/bin/certbot}" renew --quiet --no-random-sleep-on-renew --cert-name "$cert" || rc=1
+done
+exit "$rc"
+```
+
+`--no-random-sleep-on-renew` is there because the timer already has `RandomizedDelaySec`, and a per-cert random sleep would multiply. `--no-self-upgrade` is deprecated in certbot 4 and is dropped.
+
+- [ ] **Step 3: Run the helper test and shell linters**
+
+Run: `roles/certbot/tests/renew-group.sh && shellcheck roles/certbot/files/certbot-renew-group.sh roles/certbot/tests/renew-group.sh`
+Expected: `PASS` for both cases, and shellcheck prints nothing.
+
+- [ ] **Step 4: Write the tasks**
 
 Create `roles/certbot/tasks/renewal.yml`:
 
 ```yaml
 ---
 # One renewal group per AWS profile among the route53 certs, plus one "default" group for
-# cloudflare and nginx certs. Each group is its own systemd service+timer so a broken profile
-# fails (and alerts) on its own, and AWS_PROFILE can be set per group.
+# cloudflare and nginx certs. Each group is its own systemd service+timer so each group
+# fails on its own, and AWS_PROFILE can be set per group.
 - name: Work out renewal groups
   ansible.builtin.set_fact:
     certbot_renew_profiles: >-
@@ -651,6 +742,15 @@ Create `roles/certbot/tasks/renewal.yml`:
     state: stopped
   register: certbot_stock_timer
   failed_when: certbot_stock_timer is failed and 'Could not find' not in (certbot_stock_timer.msg | default(''))
+  tags: certbot
+
+- name: Install the per-cert renewal helper (certbot renew takes one --cert-name)
+  ansible.builtin.copy:
+    src: certbot-renew-group.sh
+    dest: /usr/local/sbin/certbot-renew-group
+    owner: root
+    group: root
+    mode: "0755"
   tags: certbot
 
 - name: Deploy the route53 renewal services (one per AWS profile)
@@ -753,12 +853,12 @@ Create `roles/certbot/tasks/renewal.yml`:
   tags: certbot
 ```
 
-- [ ] **Step 2: Lint**
+- [ ] **Step 5: Lint**
 
 Run: `ansible-lint roles/certbot`
 Expected: no violations.
 
-- [ ] **Step 3: Check the group/unit-name expressions with sample data**
+- [ ] **Step 6: Check the group/unit-name expressions with sample data**
 
 ```bash
 ansible localhost -c local -m ansible.builtin.debug -a "msg={{ ['aqcom','istic'] | map('regex_replace','^','certbot-renew-aws-') | map('regex_replace','\$','.timer') | list }}"
@@ -767,7 +867,7 @@ Expected: `["certbot-renew-aws-aqcom.timer", "certbot-renew-aws-istic.timer"]`.
 
 The expressions avoid regex backreferences and backslashes on purpose: `'^'` adds a prefix and `'$'` adds a suffix, and `select('search', 'timer$')` picks the timer units out of a list of unit names.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git branch --show-current   # expect: feature/ansible-certbot
@@ -1046,7 +1146,11 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 
 **Files:** none. Do this on one host at a time, firth first. Nothing here should be skipped: the first run can reissue certs.
 
+> **WARNING: always pass `--limit firth.water.gkhs.net` or `--limit atoll.water.gkhs.net` with `--tags certbot`.** Ten pre-existing tasks in `roles/water_gkhs_common` are also tagged `certbot`; without `--limit` they would run on the localhost/workstation too (apt-installing certbot and writing `/root/.secrets/cloudflare.ini` there).
+
 - [ ] **Step 1: Apply the AWS profiles (root's `~/.aws`)**
+
+> **WARNING:** the `aws_profiles` role will OVERWRITE root's hand-made `[aqcom]` keys on firth with the vault values (watch for `changed` on the `aqcom` tasks and make sure the vault values are the ones you want). Do NOT use `--diff` with `--tags aws`: those tasks have no `no_log` and would print key values. Also, `backup: true` leaves timestamped copies of root's credentials files in `/root/.aws`; delete them once you are satisfied.
 
 ```bash
 ansible-playbook playbook.yml --tags aws --limit firth.water.gkhs.net 2>&1 | tee /tmp/aws-firth.log
@@ -1087,7 +1191,14 @@ diff /tmp/expected.txt /tmp/actual.txt && echo IDENTICAL
 ```
 Expected: `IDENTICAL`. Any difference means a cert would be reissued with a different name set. Fix `certbot.yml` (not the host) until it matches.
 
-A cert that appears only in `/tmp/actual.txt` is on the host but not in the data. The role's validation guard will refuse to run until each such cert is either added to `certbot_certs` (if it is still used, for example `atoll.water.gkhs.net`, which `atoll_ssl.conf` points at) or listed in `certbot_certs_absent` (if it should be deleted). Decide each one deliberately: with the packaged timer disabled, a cert in neither list would stop renewing. (Do not add a cert just because a snippet file mentions it: for example `atoll_nginx`'s `atoll_ssl.conf` points at `atoll.water.gkhs.net`, which is not a valid host, and no vhost includes that snippet.) Repeat with `HOST=atoll.water.gkhs.net` before touching atoll.
+Before deciding about any cert that appears only on the host, find out which cert dovecot and exim use. They use the cert named `{{ letsencrypt_dir }}`, which is `{{ ansible_fqdn }}` (`group_vars/all/00-core.yml:1`). On BOTH hosts run:
+```bash
+ansible "$HOST" -c local -m ansible.builtin.setup -a filter=ansible_fqdn   # or on the host: hostname -f
+ssh "$HOST" 'sudo doveconf -n | grep ssl_cert'
+```
+and compare the fqdn and the cert name in the `ssl_cert` path with the names in the data. If the fqdn-named cert exists on a host but is not in `certbot_certs`, it is still in use by dovecot/exim: it must go into `certbot_certs`, NOT `certbot_certs_absent`.
+
+A cert that appears only in `/tmp/actual.txt` is on the host but not in the data. The role's validation guard will refuse to run until each such cert is either added to `certbot_certs` (if it is still used) or listed in `certbot_certs_absent` (if it should be deleted). Decide each one deliberately: with the packaged timer disabled, a cert in neither list would stop renewing. (Do not add a cert just because a snippet file mentions it, and do not assume a cert is a dead name just because it looks odd: for example `atoll_nginx`'s `atoll_ssl.conf` points at `atoll.water.gkhs.net`; check `ansible_fqdn` first, because dovecot/exim may reference it.) Repeat with `HOST=atoll.water.gkhs.net` before touching atoll.
 
 - [ ] **Step 4: Confirm how the old hooks were saved**
 
@@ -1099,18 +1210,33 @@ Expected: lines like `renew_hook = service nginx reload; service dovecot restart
 ```bash
 ansible-playbook playbook.yml --tags certbot --limit firth.water.gkhs.net 2>&1 | tee /tmp/certbot-firth.log
 ```
-Expected: validation passes; the issuance loop reports `ok` for every cert (no `changed`, since nothing is due); the unit-file tasks report `changed` on the first run; no failures. Then read `/tmp/certbot-firth.log` in full and confirm no cert shows `changed`.
+Expected: validation passes; the issuance loop reports `ok` for every cert (no `changed`, since nothing is due); the helper-install task and the unit-file tasks report `changed` on the first run; no failures. Then read `/tmp/certbot-firth.log` in full and confirm no cert shows `changed`.
 
-- [ ] **Step 6: Verify the timers and a real renewal path per group**
+Decision for the PR description (do not change behaviour here): atoll's deploy command reloads only nginx, so dovecot on atoll does not pick up renewed certs. The old script had the same gap. List it in the PR as a deliberate decision for the owner.
 
-On firth:
+- [ ] **Step 6: Verify the timers, that EVERY cert in each group is checked, and real renewal paths**
+
+A unit that merely succeeds proves little: confirm each cert was actually considered. On firth, for each group (`aws-istic`, `aws-aqcom`, `default`; use the real group names from `systemctl list-timers`):
 ```bash
 systemctl list-timers 'certbot*' --all
-sudo systemctl start certbot-renew-aws-istic.service && journalctl -u certbot-renew-aws-istic.service -n 20 --no-pager
-sudo systemctl start certbot-renew-aws-aqcom.service && journalctl -u certbot-renew-aws-aqcom.service -n 20 --no-pager
-sudo systemctl start certbot-renew-default.service && journalctl -u certbot-renew-default.service -n 20 --no-pager
+sudo systemctl start certbot-renew-<group>.service
+systemctl is-failed certbot-renew-<group>.service   # expect: inactive (not "failed")
+sudo grep -E 'not yet due for renewal|Certificate not yet due|Congratulations|Renewing an existing certificate|No renewals were attempted|renew' /var/log/letsencrypt/letsencrypt.log | tail -n 60
 ```
-Expected: `certbot.timer` is no longer listed; the three `certbot-renew-*` timers are; each service run ends with `Deactivated successfully` and no `Unable to find a Route53 hosted zone` error. (`certbot renew` skips certs that are not due, so a clean no-op is a pass.)
+(`journalctl -u certbot-renew-<group>.service` shows little because the helper runs certbot with `--quiet`; use `/var/log/letsencrypt/letsencrypt.log`.) For EVERY cert name listed in `certbot_certs` for that group, confirm the log's latest run mentions the cert (its `/etc/letsencrypt/renewal/<name>.conf` line) as not due for renewal (skipped) or renewed. A group whose unit succeeded but where one cert never appears means that cert was not checked.
+
+Expected: `certbot.timer` is no longer listed; the three `certbot-renew-*` timers are; each service run is not `failed`, every cert in the group appears in the log as skipped or renewed, and there is no `Unable to find a Route53 hosted zone` error.
+
+Then prove the real ACME path (a staging challenge through the same credential path as the unit):
+```bash
+# at least one cert per route53 group, with the group's profile
+sudo env AWS_PROFILE=istic certbot renew --dry-run --cert-name nanocountdown.com
+sudo env AWS_PROFILE=aqcom certbot renew --dry-run --cert-name <one aqcom cert from certbot_certs>
+# one nginx cert and one cloudflare cert on each host
+sudo certbot renew --dry-run --cert-name <one nginx-challenge cert>
+sudo certbot renew --dry-run --cert-name <one cloudflare-challenge cert>
+```
+Expected for each: `Congratulations, all simulated renewals succeeded` naming that cert, and no `No certificate found with name` error.
 
 - [ ] **Step 7: Repeat Steps 1–6 for atoll**
 
@@ -1245,6 +1371,8 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 12: Generate the nginx SSL snippets from `certbot_certs`
+
+> **WARNING:** as in Task 9, always pass `--limit firth.water.gkhs.net` or `--limit atoll.water.gkhs.net` with `--tags certbot`, because ten pre-existing `certbot`-tagged tasks in `roles/water_gkhs_common` would otherwise also run on the localhost/workstation.
 
 **Files:**
 - Create: `roles/certbot/templates/nginx-ssl-snippet.conf.j2`
@@ -1539,6 +1667,8 @@ gh pr create --draft --base main --title "🎇 Manage certbot with Ansible (fix 
 
 - New `certbot` role: certs are data in `host_vars/<host>/certbot.yml`, issued with `certbot certonly --expand`.
 - Renewal: one systemd service+timer per AWS profile (plus one for cloudflare/nginx certs), each with `AWS_PROFILE` set explicitly, replacing the packaged `certbot.timer`. Fixes route53 auto-renewals failing because the timer ran with no profile and fell back to root's `default` (the aqcom account).
+- Each service runs a helper (`/usr/local/sbin/certbot-renew-group`) that calls `certbot renew` once per cert, because `--cert-name` takes only one value.
+- Decision for the owner: atoll's deploy command reloads only nginx, so dovecot on atoll does not pick up renewed certs (the old script had the same gap); behaviour is unchanged here.
 - Service reloads move to a single deploy hook in `/etc/letsencrypt/renewal-hooks/deploy/`; the per-cert hooks the old scripts saved are stripped.
 - `aws_profiles` now runs on all external hosts; certs use the profile names `aqcom` / `istic` (the hand-added `istic-r53` is removed).
 - nginx SSL snippets (`/etc/nginx/snippets/ssl/<stem>_ssl.conf`) are generated from the same `certbot_certs` data via an `ssl_snippet` field that keeps each existing filename; the 17 static copies and the `firth_nginx` loop are removed, and the dead `atoll_ssl.conf` is deleted from atoll.

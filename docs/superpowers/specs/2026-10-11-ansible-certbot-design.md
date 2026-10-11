@@ -82,7 +82,7 @@ Cleanup: #341's `--deploy-hook` leaves a `renew_hook` line in the renewal config
 - It generates one oneshot service and one timer per renewal group:
   - one group per distinct `aws_profile` among the route53 certs,
   - one group for all cloudflare and nginx certs.
-- Each service runs `certbot renew --cert-name <a> --cert-name <b> ...` for only its group's certs, with `AWS_PROFILE` set in the unit for route53 groups. This includes the `aqcom` group, so nothing depends on root's `default` profile any more. Timer cadence matches the stock timer (twice daily with a randomised delay).
+- Each service runs the helper `/usr/local/sbin/certbot-renew-group <a> <b> ...` for only its group's certs, which runs `certbot renew --cert-name <x>` once per cert and exits non-zero if any failed (the helper exists because `certbot renew` takes only one `--cert-name`: with several, only the last is renewed). `AWS_PROFILE` is set in the unit for route53 groups. This includes the `aqcom` group, so nothing depends on root's `default` profile any more. Timer cadence matches the stock timer (twice daily with a randomised delay).
 - Each group succeeds or fails independently under systemd, so one broken profile cannot hide another.
 
 ### 5. nginx SSL snippets

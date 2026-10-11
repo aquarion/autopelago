@@ -1,7 +1,7 @@
 ---
 # One renewal group per AWS profile among the route53 certs, plus one "default" group for
-# cloudflare and nginx certs. Each group is its own systemd service+timer so a broken profile
-# fails (and alerts) on its own, and AWS_PROFILE can be set per group.
+# cloudflare and nginx certs. Each group is its own systemd service+timer so each group
+# fails on its own, and AWS_PROFILE can be set per group.
 - name: Work out renewal groups
   ansible.builtin.set_fact:
     certbot_renew_profiles: >-
@@ -26,6 +26,15 @@
     state: stopped
   register: certbot_stock_timer
   failed_when: certbot_stock_timer is failed and 'Could not find' not in (certbot_stock_timer.msg | default(''))
+  tags: certbot
+
+- name: Install the per-cert renewal helper (certbot renew takes one --cert-name)
+  ansible.builtin.copy:
+    src: certbot-renew-group.sh
+    dest: /usr/local/sbin/certbot-renew-group
+    owner: root
+    group: root
+    mode: "0755"
   tags: certbot
 
 - name: Deploy the route53 renewal services (one per AWS profile)
