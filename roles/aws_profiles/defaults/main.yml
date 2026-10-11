@@ -1,4 +1,6 @@
 ---
-# Set to false on a host that never uses the aqcom profile, so its credentials aren't written
-# there unnecessarily. Defaults true so existing hosts keep today's behaviour.
-aws_profiles_manage_aqcom: true
+# Which AWS profiles to write to this host's ~/.aws. Each name needs <name>_aws_key and
+# <name>_aws_secret vars (vaulted) to exist. Override per-host for a host that doesn't use one.
+aws_profiles_managed:
+  - aqcom
+  - istic

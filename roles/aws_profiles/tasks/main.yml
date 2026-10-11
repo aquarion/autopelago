@@ -1,81 +1,46 @@
 ---
-- name: AWS Config - Aqcom - Region
+- name: AWS Config - Region
   community.general.ini_file:
     path: ~/.aws/config
-    section: profile aqcom
+    section: "profile {{ item }}"
     option: region
     value: "{{ aqcom_aws_default_region }}"
     mode: "0600"
     backup: true
-  when: aws_profiles_manage_aqcom
+  loop: "{{ aws_profiles_managed }}"
   tags:
     - aws
     - aws_profiles
 
-- name: AWS Creds - Aqcom - Key
+- name: AWS Creds - Key
   community.general.ini_file:
     path: ~/.aws/credentials
-    section: aqcom
+    section: "{{ item }}"
     option: aws_access_key_id
-    value: "{{ aqcom_aws_key }}"
+    value: "{{ lookup('vars', item + '_aws_key') }}"
     mode: "0600"
     backup: true
-  when: aws_profiles_manage_aqcom
+  loop: "{{ aws_profiles_managed }}"
   tags:
     - aws
     - aws_profiles
 
-- name: AWS Creds - Aqcom - Secret
+- name: AWS Creds - Secret
   community.general.ini_file:
     path: ~/.aws/credentials
-    section: aqcom
+    section: "{{ item }}"
     option: aws_secret_access_key
-    value: "{{ aqcom_aws_secret }}"
+    value: "{{ lookup('vars', item + '_aws_secret') }}"
     mode: "0600"
     backup: true
-  when: aws_profiles_manage_aqcom
+  loop: "{{ aws_profiles_managed }}"
   tags:
     - aws
     - aws_profiles
 
-- name: AWS Config - Istic - Region
-  community.general.ini_file:
-    path: ~/.aws/config
-    section: profile istic
-    option: region
-    value: "{{ aqcom_aws_default_region }}"
-    mode: "0600"
-    backup: true
-  tags:
-    - aws
-    - aws_profiles
-
-- name: AWS Creds - istic - Key
-  community.general.ini_file:
-    path: ~/.aws/credentials
-    section: istic
-    option: aws_access_key_id
-    value: "{{ istic_aws_key }}"
-    mode: "0600"
-    backup: true
-  tags:
-    - aws
-    - aws_profiles
-
-- name: AWS Creds - istic - Secret
-  community.general.ini_file:
-    path: ~/.aws/credentials
-    section: istic
-    option: aws_secret_access_key
-    value: "{{ istic_aws_secret }}"
-    mode: "0600"
-    backup: true
-  tags:
-    - aws
-    - aws_profiles
-
-# Legacy section created by hand on firth before this role managed istic/aqcom; same key as
-# istic. Delete, not just omit, so the leftover section doesn't linger on the host.
+# Legacy section created by hand on firth before this role managed istic/aqcom; holds the same
+# AWS access key as the istic profile. Delete, not just omit, so the leftover section doesn't
+# linger on the host.
 - name: AWS Creds - remove legacy istic-r53 profile
   community.general.ini_file:
     path: ~/.aws/credentials

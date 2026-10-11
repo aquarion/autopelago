@@ -1,3 +1,4 @@
 ---
 # atoll's certbot_certs and stream_delta tasks only ever use the istic profile.
-aws_profiles_manage_aqcom: false
+aws_profiles_managed:
+  - istic
