@@ -36,7 +36,7 @@
     fail_msg: >-
       AWS profile(s) missing from {{ certbot_aws_credentials_file }}:
       {{ certbot_profile_check.results | rejectattr('rc', 'equalto', 0) | map(attribute='item') | list }}.
-      Run the aws_profiles role first (--tags aws).
+      Run the aws_profiles role first (--tags aws_profiles).
   tags: certbot
 
 # The role replaces the packaged certbot.timer, which renewed EVERY cert on the host. A cert that

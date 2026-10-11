@@ -105,7 +105,7 @@ The 17 SSL snippets in `firth_nginx` and `atoll_nginx` are all the same four dir
 
 The riskiest step is the first run, because `certbot certonly --expand --cert-name X` with a different domain set reissues the cert with exactly the requested set. A mistake in the data could drop domains from a live cert.
 
-0. Run `aws_profiles` on the external hosts (`--tags aws`) so root has the `aqcom` and `istic` profiles, then check `AWS_PROFILE=istic certbot renew --dry-run --cert-name nanocountdown.com` succeeds before changing any cert data. The `istic-r53` cleanup waits until after the new renewal units have run successfully.
+0. Run `aws_profiles` on the external hosts (`--tags aws_profiles`, a dedicated tag so this doesn't also trigger `firth_dns`'s live DNS sync) so root has the `aqcom` and `istic` profiles, then check `AWS_PROFILE=istic certbot renew --dry-run --cert-name nanocountdown.com` succeeds before changing any cert data. The `istic-r53` cleanup waits until after the new renewal units have run successfully.
 1. Generate the initial `certbot_certs` data from the merged #341 scripts, translating `istic-r53` to `istic`.
 2. On each host, compare the data against `certbot certificates` and confirm every cert's domain set is identical.
 3. Only then run `--tags certbot`.

@@ -9,6 +9,7 @@
     backup: true
   tags:
     - aws
+    - aws_profiles
 
 - name: AWS Creds - Aqcom - Key
   community.general.ini_file:
@@ -20,6 +21,7 @@
     backup: true
   tags:
     - aws
+    - aws_profiles
 
 - name: AWS Creds - Aqcom - Secret
   community.general.ini_file:
@@ -31,6 +33,7 @@
     backup: true
   tags:
     - aws
+    - aws_profiles
 
 - name: AWS Config - Istic - Region
   community.general.ini_file:
@@ -42,6 +45,7 @@
     backup: true
   tags:
     - aws
+    - aws_profiles
 
 - name: AWS Creds - istic - Key
   community.general.ini_file:
@@ -53,6 +57,7 @@
     backup: true
   tags:
     - aws
+    - aws_profiles
 
 - name: AWS Creds - istic - Secret
   community.general.ini_file:
@@ -64,3 +69,4 @@
     backup: true
   tags:
     - aws
+    - aws_profiles

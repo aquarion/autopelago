@@ -341,7 +341,7 @@ Create `roles/certbot/tasks/validate.yml`:
     fail_msg: >-
       AWS profile(s) missing from {{ certbot_aws_credentials_file }}:
       {{ certbot_profile_check.results | rejectattr('rc', 'equalto', 0) | map(attribute='item') | list }}.
-      Run the aws_profiles role first (--tags aws).
+      Run the aws_profiles role first (--tags aws_profiles).
   tags: certbot
 
 # The role replaces the packaged certbot.timer, which renewed EVERY cert on the host. A cert that
@@ -1150,10 +1150,12 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 
 - [ ] **Step 1: Apply the AWS profiles (root's `~/.aws`)**
 
-> **WARNING:** the `aws_profiles` role will OVERWRITE root's hand-made `[aqcom]` keys on firth with the vault values (watch for `changed` on the `aqcom` tasks and make sure the vault values are the ones you want). Do NOT use `--diff` with `--tags aws`: those tasks have no `no_log` and would print key values. Also, `backup: true` leaves timestamped copies of root's credentials files in `/root/.aws`; delete them once you are satisfied.
+> **WARNING:** the `aws_profiles` role will OVERWRITE root's hand-made `[aqcom]` keys on firth with the vault values (watch for `changed` on the `aqcom` tasks and make sure the vault values are the ones you want). Do NOT use `--diff` with `--tags aws_profiles`: those tasks have no `no_log` and would print key values. Also, `backup: true` leaves timestamped copies of root's credentials files in `/root/.aws`; delete them once you are satisfied.
+
+Use `--tags aws_profiles` (not the broader `--tags aws`), which runs only this role's credential tasks. The `aws` tag also covers `firth_dns`'s live Route53/Cloudflare DNS sync, `water_gkhs_common`'s apt/python-library tasks, and `stream_delta` on atoll, which you don't want running as a side effect here.
 
 ```bash
-ansible-playbook playbook.yml --tags aws --limit firth.water.gkhs.net 2>&1 | tee /tmp/aws-firth.log
+ansible-playbook playbook.yml --tags aws_profiles --limit firth.water.gkhs.net 2>&1 | tee /tmp/aws-firth.log
 ```
 Expected: the `AWS Creds`/`AWS Config` tasks run against firth (`changed` or `ok`), none fail. Per the project rules, redirect the full output to a file as above; do not pipe it through `tail`/`head`.
 
@@ -1352,7 +1354,7 @@ Expected: no violations.
 - [ ] **Step 3: Apply and verify**
 
 ```bash
-ansible-playbook playbook.yml --tags aws --limit 'firth.water.gkhs.net,atoll.water.gkhs.net' 2>&1 | tee /tmp/aws-cleanup.log
+ansible-playbook playbook.yml --tags aws_profiles --limit 'firth.water.gkhs.net,atoll.water.gkhs.net' 2>&1 | tee /tmp/aws-cleanup.log
 ```
 Then on each host: `sudo grep -c -x -F '[istic-r53]' /root/.aws/credentials`
 Expected: `0` (grep prints `0` and exits 1; that is the pass). Also run `sudo certbot renew --dry-run --cert-name nanocountdown.com` with `AWS_PROFILE=istic` once more to confirm renewals still work.
