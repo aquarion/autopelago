@@ -52,7 +52,7 @@ certbot_certs_absent: []        # cert names to remove with `certbot delete`
 
 Today `aws_profiles` runs on the workstation, on atoll (under `become`, so root's `~/.aws`), and in `deploy-stream-delta.yml`. It never runs on firth, so firth's root profiles (`default`, `aqcom`, `istic-r53`) are hand-maintained. The role also creates `istic`, not `istic-r53`, and `firth_dns` already uses `istic` throughout. The `istic-r53` key on firth was confirmed to be the same key as the vault's `istic_aws_key`.
 
-- Add `aws_profiles` (with `become`) to the Firth play, before the `certbot` role, so root's `~/.aws` on firth comes from the vault.
+- Move `aws_profiles` into the "Actions on all external hosts" play (which has `become: true`), before the `certbot` role, and remove the atoll-only entry from the Atoll play. Every external host (firth, atoll, and any added later) then gets root's `~/.aws` from the vault. The workstation keeps getting it from the existing local `AWS Roles` play. It is deliberately not added to the `hosts: all` play, since `become` there would write to root's `~/.aws` on the workstation.
 - `certbot_certs` uses the role's names: `aqcom` and `istic`. Nothing uses `istic-r53` any more.
 - Cleanup (explicit, since removing config doesn't delete anything from the host): remove the `istic-r53` section from root's `~/.aws/credentials` and `config` on firth and, if present, atoll. Leave `default` alone: other root processes may rely on it, and the renewal units no longer do.
 - The `certbot` role asserts each `aws_profile` it needs exists in `/root/.aws/credentials` (section names only, no values), so a missing profile fails fast with a clear message instead of a Route53 "hosted zone not found" error at renewal time.
@@ -93,7 +93,7 @@ Cleanup: #341's `--deploy-hook` leaves a `renew_hook` line in the renewal config
 
 The riskiest step is the first run, because `certbot certonly --expand --cert-name X` with a different domain set reissues the cert with exactly the requested set. A mistake in the data could drop domains from a live cert.
 
-0. Run `aws_profiles` on firth (`--tags aws`) so root has the `aqcom` and `istic` profiles, then check `AWS_PROFILE=istic certbot renew --dry-run --cert-name nanocountdown.com` succeeds before changing any cert data. The `istic-r53` cleanup waits until after the new renewal units have run successfully.
+0. Run `aws_profiles` on the external hosts (`--tags aws`) so root has the `aqcom` and `istic` profiles, then check `AWS_PROFILE=istic certbot renew --dry-run --cert-name nanocountdown.com` succeeds before changing any cert data. The `istic-r53` cleanup waits until after the new renewal units have run successfully.
 1. Generate the initial `certbot_certs` data from the merged #341 scripts, translating `istic-r53` to `istic`.
 2. On each host, compare the data against `certbot certificates` and confirm every cert's domain set is identical.
 3. Only then run `--tags certbot`.
