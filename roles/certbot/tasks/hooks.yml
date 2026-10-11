@@ -1,0 +1,32 @@
+---
+- name: Ensure the certbot deploy hook directory exists
+  ansible.builtin.file:
+    path: /etc/letsencrypt/renewal-hooks/deploy
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: certbot
+
+- name: Install the deploy hook that reloads services after issuance/renewal
+  ansible.builtin.template:
+    src: reload-services.j2.sh
+    dest: /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
+    owner: root
+    group: root
+    mode: "0755"
+  tags: certbot
+
+# certbot_renewal_confs is registered in validate.yml (which always runs first).
+# The old scripts passed --deploy-hook, which certbot saves into each cert's renewal config.
+# Left in place, services would reload twice (once from the config, once from the hook directory).
+- name: Remove per-cert deploy hooks saved by the old scripts
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "^renew_hook = ({{ certbot_legacy_deploy_hooks | map('regex_escape') | join('|') }})$"
+    state: absent
+  loop: "{{ certbot_renewal_confs.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+  when: certbot_legacy_deploy_hooks | length > 0
+  tags: certbot
