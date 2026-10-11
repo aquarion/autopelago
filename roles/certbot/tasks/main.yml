@@ -1,0 +1,15 @@
+---
+# Order matters: validate first; install the deploy hook BEFORE issuing so an issuance that
+# renews or expands an existing cert reloads services (certbot does not run the hook for a
+# first-time issuance); issue; then set up renewal.
+- name: Validate certbot data
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Install deploy hook
+  ansible.builtin.import_tasks: hooks.yml
+
+- name: Issue certificates
+  ansible.builtin.import_tasks: issue.yml
+
+- name: Configure renewal
+  ansible.builtin.import_tasks: renewal.yml
