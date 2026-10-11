@@ -948,6 +948,12 @@ certbot_deploy_commands:
   - service nginx reload
   - service dovecot restart
 
+# Dead certs found live on firth during Task 9 Step 3 (certbot certificates) that are not in
+# certbot_certs below. certbot delete removes them instead of leaving them unmanaged.
+certbot_certs_absent:
+  - archipelago.water.gkhs.net # pre-firth legacy server, long out of service
+  - foip.me # domain decommissioned (#246, #252); no DNS zone left
+
 certbot_certs:
   # --- nginx (http-01; no wildcards) ---
   - name: firth.water.gkhs.net
