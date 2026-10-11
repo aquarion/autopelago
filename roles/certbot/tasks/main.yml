@@ -1,18 +1,20 @@
 ---
 # Order matters: validate first; install the deploy hook BEFORE issuing so an issuance that
 # renews or expands an existing cert reloads services (certbot does not run the hook for a
-# first-time issuance); issue; then set up renewal.
+# first-time issuance); generate/remove nginx SSL snippets BEFORE issuing/deleting certs, so a
+# stale snippet is never left pointing at a cert that issue.yml is about to delete; then issue;
+# then set up renewal.
 - name: Validate certbot data
   ansible.builtin.import_tasks: validate.yml
 
 - name: Install deploy hook
   ansible.builtin.import_tasks: hooks.yml
 
+- name: Generate nginx SSL snippets
+  ansible.builtin.import_tasks: nginx_snippets.yml
+
 - name: Issue certificates
   ansible.builtin.import_tasks: issue.yml
 
 - name: Configure renewal
   ansible.builtin.import_tasks: renewal.yml
-
-- name: Generate nginx SSL snippets
-  ansible.builtin.import_tasks: nginx_snippets.yml

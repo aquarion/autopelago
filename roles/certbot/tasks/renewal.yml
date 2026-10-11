@@ -18,14 +18,23 @@
          + (certbot_renew_profiles | map('regex_replace', '^', 'certbot-renew-aws-') | map('regex_replace', '$', '.timer') | list) }}
   tags: certbot
 
+# Check structurally whether certbot.timer exists, rather than string-matching a stop/disable
+# failure message: a real stop failure's stderr could also happen to contain "Could not find".
+- name: Check whether the packaged certbot timer unit exists
+  ansible.builtin.command: systemctl list-unit-files certbot.timer # noqa command-instead-of-module (no module covers timer units; service_facts only queries --type service)
+  register: certbot_stock_timer_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags: certbot
+
 # If certbot.timer does not exist (certbot not installed from apt) there is nothing to disable.
 - name: Disable the packaged certbot timer (it renews with no AWS_PROFILE)
   ansible.builtin.systemd:
     name: certbot.timer
     enabled: false
     state: stopped
-  register: certbot_stock_timer
-  failed_when: certbot_stock_timer is failed and 'Could not find' not in (certbot_stock_timer.msg | default(''))
+  when: certbot_stock_timer_check.rc == 0
   tags: certbot
 
 - name: Install the per-cert renewal helper (certbot renew takes one --cert-name)
@@ -95,13 +104,10 @@
   notify: Reload systemd
   tags: certbot
 
-- name: Pick up new unit files before enabling timers
-  ansible.builtin.meta: flush_handlers
-  tags: certbot
-
 - name: Enable and start the renewal timers
   ansible.builtin.systemd:
     name: "{{ item }}"
+    daemon_reload: true
     enabled: true
     state: started
   loop: "{{ certbot_wanted_units | select('search', 'timer$') | list }}"

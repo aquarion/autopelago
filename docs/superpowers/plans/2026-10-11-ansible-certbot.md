@@ -1486,7 +1486,6 @@ Create `roles/certbot/handlers/main.yml`. A handler can notify another handler, 
 - name: Validate nginx for certbot snippets
   ansible.builtin.command: nginx -t
   changed_when: false
-  notify: Reload Nginx
 ```
 
 - [ ] **Step 6: Write the snippet tasks**
@@ -1515,7 +1514,9 @@ Create `roles/certbot/tasks/nginx_snippets.yml`:
   loop_control:
     loop_var: certbot_cert
     label: "{{ certbot_cert.ssl_snippet }}_ssl.conf"
-  notify: Validate nginx for certbot snippets
+  notify:
+    - Validate nginx for certbot snippets
+    - Reload Nginx
   tags: certbot
 
 # Dropping an entry from certbot_certs does not delete its snippet from the host; list it here.
@@ -1524,7 +1525,9 @@ Create `roles/certbot/tasks/nginx_snippets.yml`:
     path: "/etc/nginx/snippets/ssl/{{ item }}_ssl.conf"
     state: absent
   loop: "{{ certbot_ssl_snippets_absent }}"
-  notify: Validate nginx for certbot snippets
+  notify:
+    - Validate nginx for certbot snippets
+    - Reload Nginx
   tags: certbot
 ```
 
@@ -1732,3 +1735,13 @@ Expected: the command prints the new PR URL. Only tick the "Verified" boxes in t
 - **Names used consistently:** `certbot_certs`, `certbot_certs_absent`, `certbot_deploy_commands`, `certbot_legacy_deploy_hooks`, `certbot_plugin_args`, `certbot_group_name` / `certbot_group_profile` / `certbot_group_certs` (templates), `certbot_renew_profiles`, `certbot_default_certs`, `certbot_wanted_units`.
 - **Unit names:** `certbot-renew-aws-<profile>.service|timer` and `certbot-renew-default.service|timer`.
 - **Change detection:** `changed` is reported by comparing each cert's `fullchain.pem` checksum before and after `certbot certonly` (Task 4), not by parsing certbot's output, so it does not depend on certbot's wording. A failed `certbot` run fails the play at the command task before the comparison.
+
+## Post-PR review fixes (after Task 13, on PR #343)
+
+A four-agent review (code quality, tests, comments, silent failures) plus a ponytail-review pass found two critical bugs, verified against the real run log and the installed `systemd` module source, and three important issues. All fixed, verified (lint, syntax-check, render test, `renew-group.sh` test, and resolving `certbot_certs`/`aws_profiles_manage_aqcom` per host), and committed:
+
+1. **`roles/certbot/handlers/main.yml`**: the "validate" handler had `changed_when: false` and `notify: Reload Nginx` on itself — a handler's own notify only fires if it reports changed, so the reload chain was dead (confirmed in `scratch/snippets-firth.log`: no `RUNNING HANDLER [Reload Nginx]` ever ran). Fixed by moving `notify: [Validate nginx for certbot snippets, Reload Nginx]` onto the two tasks in `nginx_snippets.yml` that write/remove snippets, matching `firth_nginx`'s own established pattern. Empirically confirmed handler execution order is by *definition* order (role handlers before play-imported ones), not notify-list order, so this is deterministic.
+2. **`roles/certbot/tasks/renewal.yml`**: `failed_when: ... 'Could not find' not in (msg)` was meant to distinguish "unit doesn't exist" from a real stop/disable failure, but a real failure's raw stderr can also contain that substring (traced through `module_utils/service.py:117` vs `systemd.py:575` in the installed ansible-core), silently leaving the packaged timer enabled. Fixed with a structural pre-check (`systemctl list-unit-files certbot.timer`, `rc == 0`) instead of string-matching an error message. `service_facts` was considered and rejected — it only queries `--type service`, never timers.
+3. Nginx SSL snippets were generated/removed *after* `issue.yml` deleted certs, leaving a window where a stale snippet could reference a just-deleted cert during a handler flush. Fixed by reordering `roles/certbot/tasks/main.yml` so `nginx_snippets.yml` runs before `issue.yml`.
+4. `meta: flush_handlers` was used only to force a daemon-reload before enabling new systemd units — fragile (depends on meta/tag interaction, fires every pending handler). Replaced with `daemon_reload: true` directly on the "Enable and start the renewal timers" task; the `meta` task is removed.
+5. Moving `aws_profiles` to all external hosts (Task 8) wrote `aqcom` credentials to atoll, which never uses that profile (confirmed: atoll's `certbot_certs` and `stream_delta` tasks only ever reference `istic`, and the archive cert uses the `nginx` challenge, needing no AWS profile regardless of which account owns the domain's DNS zone). Fixed with a new `aws_profiles_manage_aqcom` default (`true`), set to `false` in `host_vars/atoll.water.gkhs.net/aws_profiles.yml`.

@@ -7,6 +7,7 @@
     value: "{{ aqcom_aws_default_region }}"
     mode: "0600"
     backup: true
+  when: aws_profiles_manage_aqcom
   tags:
     - aws
     - aws_profiles
@@ -19,6 +20,7 @@
     value: "{{ aqcom_aws_key }}"
     mode: "0600"
     backup: true
+  when: aws_profiles_manage_aqcom
   tags:
     - aws
     - aws_profiles
@@ -31,6 +33,7 @@
     value: "{{ aqcom_aws_secret }}"
     mode: "0600"
     backup: true
+  when: aws_profiles_manage_aqcom
   tags:
     - aws
     - aws_profiles

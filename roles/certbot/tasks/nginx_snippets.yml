@@ -19,7 +19,9 @@
   loop_control:
     loop_var: certbot_cert
     label: "{{ certbot_cert.ssl_snippet }}_ssl.conf"
-  notify: Validate nginx for certbot snippets
+  notify:
+    - Validate nginx for certbot snippets
+    - Reload Nginx
   tags: certbot
 
 # Dropping an entry from certbot_certs does not delete its snippet from the host; list it here.
@@ -28,5 +30,7 @@
     path: "/etc/nginx/snippets/ssl/{{ item }}_ssl.conf"
     state: absent
   loop: "{{ certbot_ssl_snippets_absent }}"
-  notify: Validate nginx for certbot snippets
+  notify:
+    - Validate nginx for certbot snippets
+    - Reload Nginx
   tags: certbot

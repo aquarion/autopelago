@@ -1,0 +1,4 @@
+---
+# Set to false on a host that never uses the aqcom profile, so its credentials aren't written
+# there unnecessarily. Defaults true so existing hosts keep today's behaviour.
+aws_profiles_manage_aqcom: true
