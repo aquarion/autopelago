@@ -102,7 +102,7 @@ The riskiest step is the first run, because `certbot certonly --expand --cert-na
 ## Testing
 
 - `ansible-lint` and `ansible-playbook --syntax-check` (both already enforced by pre-commit).
-- Role assertions: nginx certs have no wildcards, every route53 cert has an `aws_profile`, cert names are unique, and each needed `aws_profile` has a section in `/root/.aws/credentials` (checked by section name only, so no secret is read into output).
+- Role assertions: every cert on the host (`/etc/letsencrypt/renewal/*.conf`) is in `certbot_certs` or `certbot_certs_absent` (the role replaces the packaged timer that renewed everything, so an unlisted cert would silently stop renewing), nginx certs have no wildcards, every route53 cert has an `aws_profile`, cert names are unique, and each needed `aws_profile` has a section in `/root/.aws/credentials` (checked by section name only, so no secret is read into output).
 - Manual verification on firth and atoll as in the Migration section. The role cannot meaningfully run under `--check`, since `command` tasks are skipped.
 
 ## Out of scope

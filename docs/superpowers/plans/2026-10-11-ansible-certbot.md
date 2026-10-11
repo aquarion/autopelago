@@ -321,6 +321,27 @@ Create `roles/certbot/tasks/validate.yml`:
       {{ certbot_profile_check.results | rejectattr('rc', 'equalto', 0) | map(attribute='item') | list }}.
       Run the aws_profiles role first (--tags aws).
   tags: certbot
+
+# The role replaces the packaged certbot.timer, which renewed EVERY cert on the host. A cert that
+# exists on the host but is not in certbot_certs would silently stop renewing, so fail instead.
+- name: Find the certs certbot already has on this host
+  ansible.builtin.find:
+    paths: /etc/letsencrypt/renewal
+    patterns: "*.conf"
+  register: certbot_renewal_confs
+  tags: certbot
+
+- name: Fail if the host has certs this role does not manage (they would stop renewing)
+  ansible.builtin.assert:
+    that: >-
+      (certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '.conf$', '')
+       | difference(certbot_certs | map(attribute='name') | list) | difference(certbot_certs_absent)) | length == 0
+    fail_msg: >-
+      These certs exist on the host but are not in certbot_certs or certbot_certs_absent, so nothing would renew them:
+      {{ certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '.conf$', '')
+         | difference(certbot_certs | map(attribute='name') | list) | difference(certbot_certs_absent) | list }}.
+      Add each to certbot_certs, or to certbot_certs_absent if it should be deleted.
+  tags: certbot
 ```
 
 - [ ] **Step 3: Lint**
@@ -405,13 +426,7 @@ Create `roles/certbot/tasks/hooks.yml`:
     mode: "0755"
   tags: certbot
 
-- name: Find renewal configs
-  ansible.builtin.find:
-    paths: /etc/letsencrypt/renewal
-    patterns: "*.conf"
-  register: certbot_renewal_confs
-  tags: certbot
-
+# certbot_renewal_confs is registered in validate.yml (which always runs first).
 # The old scripts passed --deploy-hook, which certbot saves into each cert's renewal config.
 # Left in place, services would reload twice (once from the config, once from the hook directory).
 - name: Remove per-cert deploy hooks saved by the old scripts
@@ -1036,7 +1051,9 @@ for line in sys.stdin:
 ' | sort > /tmp/actual.txt
 diff /tmp/expected.txt /tmp/actual.txt && echo IDENTICAL
 ```
-Expected: `IDENTICAL`. Any difference means a cert would be reissued with a different name set. Fix `certbot.yml` (not the host) until it matches. Repeat with `HOST=atoll.water.gkhs.net` before touching atoll.
+Expected: `IDENTICAL`. Any difference means a cert would be reissued with a different name set. Fix `certbot.yml` (not the host) until it matches.
+
+A cert that appears only in `/tmp/actual.txt` is on the host but not in the data. The role's validation guard will refuse to run until each such cert is either added to `certbot_certs` (if it is still used, for example `atoll.water.gkhs.net`, which `atoll_ssl.conf` points at) or listed in `certbot_certs_absent` (if it should be deleted). Decide each one deliberately: with the packaged timer disabled, a cert in neither list would stop renewing. Repeat with `HOST=atoll.water.gkhs.net` before touching atoll.
 
 - [ ] **Step 4: Confirm how the old hooks were saved**
 
