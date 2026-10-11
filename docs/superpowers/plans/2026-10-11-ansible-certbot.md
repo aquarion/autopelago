@@ -1053,7 +1053,7 @@ diff /tmp/expected.txt /tmp/actual.txt && echo IDENTICAL
 ```
 Expected: `IDENTICAL`. Any difference means a cert would be reissued with a different name set. Fix `certbot.yml` (not the host) until it matches.
 
-A cert that appears only in `/tmp/actual.txt` is on the host but not in the data. The role's validation guard will refuse to run until each such cert is either added to `certbot_certs` (if it is still used, for example `atoll.water.gkhs.net`, which `atoll_ssl.conf` points at) or listed in `certbot_certs_absent` (if it should be deleted). Decide each one deliberately: with the packaged timer disabled, a cert in neither list would stop renewing. Repeat with `HOST=atoll.water.gkhs.net` before touching atoll.
+A cert that appears only in `/tmp/actual.txt` is on the host but not in the data. The role's validation guard will refuse to run until each such cert is either added to `certbot_certs` (if it is still used, for example `atoll.water.gkhs.net`, which `atoll_ssl.conf` points at) or listed in `certbot_certs_absent` (if it should be deleted). Decide each one deliberately: with the packaged timer disabled, a cert in neither list would stop renewing. (Do not add a cert just because a snippet file mentions it: for example `atoll_nginx`'s `atoll_ssl.conf` points at `atoll.water.gkhs.net`, which is not a valid host, and no vhost includes that snippet.) Repeat with `HOST=atoll.water.gkhs.net` before touching atoll.
 
 - [ ] **Step 4: Confirm how the old hooks were saved**
 
