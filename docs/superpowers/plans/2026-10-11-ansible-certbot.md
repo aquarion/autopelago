@@ -169,7 +169,7 @@ Create `roles/certbot/tests/render.yml`:
 
 - [ ] **Step 2: Run it to verify it fails**
 
-Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -15`
+Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml > /tmp/render-test.log 2>&1; tail -15 /tmp/render-test.log`
 Expected: FAIL on "Render the deploy hook" with a "Could not find or access ... reload-services.j2.sh" error (the templates don't exist yet).
 
 - [ ] **Step 3: Write the deploy hook template**
@@ -228,7 +228,7 @@ WantedBy=timers.target
 
 - [ ] **Step 6: Run the test to verify it passes**
 
-Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -8`
+Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml > /tmp/render-test.log 2>&1; tail -8 /tmp/render-test.log`
 Expected: `localhost : ok=7 changed=4 ... failed=0` (changed count may vary) and no failed assertion.
 
 If the `ExecStart=` assertion fails, check that the rendered line ends with a newline immediately after the last cert name (the blank line at the end of the service template is what guarantees this).
@@ -403,7 +403,7 @@ cat > "$SCRATCH/validate_test.yml" <<'EOF'
           ansible.builtin.assert:
             that: "'certbot_certs is malformed' in ansible_failed_result.msg"
 EOF
-ANSIBLE_ROLES_PATH="$PWD/roles" ansible-playbook "$SCRATCH/validate_test.yml" 2>&1 | tail -12
+ANSIBLE_ROLES_PATH="$PWD/roles" ansible-playbook "$SCRATCH/validate_test.yml" > /tmp/validate-test.log 2>&1; tail -12 /tmp/validate-test.log
 ```
 Expected: the validate task prints a failure containing `certbot_certs is malformed`, which the `rescue` block catches, and the playbook ends `failed=0`, `rescued=1`. If it ends with `Validation accepted bad data`, the assertions in `validate.yml` are too weak.
 
@@ -910,7 +910,7 @@ Create `roles/certbot/tasks/main.yml`:
 
 ```bash
 ansible-lint roles/certbot
-CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -4
+CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml > /tmp/render-test.log 2>&1; tail -4 /tmp/render-test.log
 ```
 Expected: ansible-lint clean; the render test still ends `failed=0`.
 
@@ -1457,7 +1457,7 @@ to
 
 - [ ] **Step 2: Run it to verify it fails**
 
-Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -8`
+Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml > /tmp/render-test.log 2>&1; tail -8 /tmp/render-test.log`
 Expected: FAIL on "Render an nginx SSL snippet" (the template does not exist yet).
 
 - [ ] **Step 3: Write the snippet template**
@@ -1474,7 +1474,7 @@ ssl_session_timeout 10m;
 
 - [ ] **Step 4: Run the test to verify it passes**
 
-Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -4`
+Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml > /tmp/render-test.log 2>&1; tail -4 /tmp/render-test.log`
 Expected: `failed=0` (now `ok=8 changed=5`).
 
 - [ ] **Step 5: Write the handler**
@@ -1691,7 +1691,7 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 ```bash
 ansible-playbook playbook.yml --syntax-check
 ansible-lint
-CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -3
+CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml > /tmp/render-test.log 2>&1; tail -3 /tmp/render-test.log
 ```
 Expected: syntax check passes, lint clean, render test `failed=0`.
 

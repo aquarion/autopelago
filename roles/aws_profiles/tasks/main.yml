@@ -21,6 +21,7 @@
     mode: "0600"
     backup: true
   loop: "{{ aws_profiles_managed }}"
+  no_log: true
   tags:
     - aws
     - aws_profiles
@@ -34,6 +35,7 @@
     mode: "0600"
     backup: true
   loop: "{{ aws_profiles_managed }}"
+  no_log: true
   tags:
     - aws
     - aws_profiles
