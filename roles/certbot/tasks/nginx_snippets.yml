@@ -1,0 +1,32 @@
+---
+- name: Ensure the nginx SSL snippet directory exists
+  ansible.builtin.file:
+    path: /etc/nginx/snippets/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: certbot
+
+- name: Generate nginx SSL snippets from certbot_certs
+  ansible.builtin.template:
+    src: nginx-ssl-snippet.conf.j2
+    dest: "/etc/nginx/snippets/ssl/{{ certbot_cert.ssl_snippet }}_ssl.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ certbot_certs | selectattr('ssl_snippet', 'defined') | list }}"
+  loop_control:
+    loop_var: certbot_cert
+    label: "{{ certbot_cert.ssl_snippet }}_ssl.conf"
+  notify: Validate nginx for certbot snippets
+  tags: certbot
+
+# Dropping an entry from certbot_certs does not delete its snippet from the host; list it here.
+- name: Remove nginx SSL snippets that no longer exist
+  ansible.builtin.file:
+    path: "/etc/nginx/snippets/ssl/{{ item }}_ssl.conf"
+    state: absent
+  loop: "{{ certbot_ssl_snippets_absent }}"
+  notify: Validate nginx for certbot snippets
+  tags: certbot

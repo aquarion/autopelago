@@ -1,0 +1,5 @@
+---
+- name: Validate nginx for certbot snippets
+  ansible.builtin.command: nginx -t
+  changed_when: false
+  notify: Reload Nginx

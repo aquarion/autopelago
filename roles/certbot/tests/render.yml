@@ -51,11 +51,20 @@
       vars:
         certbot_group_name: aws-istic
 
+    - name: Render an nginx SSL snippet
+      ansible.builtin.template:
+        src: "{{ certbot_templates }}/nginx-ssl-snippet.conf.j2"
+        dest: "{{ certbot_test_dir }}/nginx-snippet.conf"
+        mode: "0644"
+      vars:
+        certbot_cert:
+          name: istic.net
+
     - name: Read the rendered files
       ansible.builtin.slurp:
         src: "{{ certbot_test_dir }}/{{ item }}"
       register: certbot_rendered
-      loop: [reload-services.sh, aws-istic.service, default.service, aws-istic.timer]
+      loop: [reload-services.sh, aws-istic.service, default.service, aws-istic.timer, nginx-snippet.conf]
 
     - name: Check the rendered output
       ansible.builtin.assert:
@@ -73,4 +82,7 @@
           - "'OnCalendar=' in (certbot_rendered.results[3].content | b64decode)"
           - "'Persistent=true' in (certbot_rendered.results[3].content | b64decode)"
           - "'(aws-istic)' in (certbot_rendered.results[3].content | b64decode)"
+          - "'ssl_certificate /etc/letsencrypt/live/istic.net/fullchain.pem;\n' in (certbot_rendered.results[4].content | b64decode)"
+          - "'ssl_certificate_key /etc/letsencrypt/live/istic.net/privkey.pem;\n' in (certbot_rendered.results[4].content | b64decode)"
+          - "'ssl_session_timeout 10m;\n' in (certbot_rendered.results[4].content | b64decode)"
         fail_msg: Rendered certbot templates do not match expectations.

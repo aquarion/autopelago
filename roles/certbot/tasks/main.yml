@@ -13,3 +13,6 @@
 
 - name: Configure renewal
   ansible.builtin.import_tasks: renewal.yml
+
+- name: Generate nginx SSL snippets
+  ansible.builtin.import_tasks: nginx_snippets.yml

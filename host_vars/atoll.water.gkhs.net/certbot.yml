@@ -36,3 +36,7 @@ certbot_certs_static:
   - { name: atoll.water.gkhs.net, challenge: route53, aws_profile: istic, domains: [atoll.istic.systems] }
 
 certbot_certs: "{{ certbot_certs_static + certbot_certs_archive }}"
+
+# No vhost includes atoll_ssl.conf and the host it names does not exist.
+certbot_ssl_snippets_absent:
+  - atoll
