@@ -63,7 +63,7 @@ Runs before the nginx roles on firth and atoll (tag `certbot`). It depends on `w
 
 - For each entry in `certbot_certs`, runs `certbot certonly --non-interactive --expand --cert-name <name> <plugin args> -d <domain>...`.
   - Route53 entries run with `environment: AWS_PROFILE: <aws_profile>`.
-  - Reports `changed` only when certbot output says a certificate was issued. An unchanged run is quick and reports `ok`.
+  - Reports `changed` only when the cert's `fullchain.pem` checksum differs before and after the run (a `stat` before and after, with `changed_when` on the second). It does not parse certbot's output, so it doesn't depend on certbot's wording, and it also catches a first-time issuance. An unchanged run is quick and reports `ok`.
 - For each name in `certbot_certs_absent`, runs `certbot delete --cert-name <name>` if it exists. Removing an entry from `certbot_certs` alone does not delete anything from the host, so removals must be listed here.
 - Reapplies the `root:certbot_access` ownership and group-read permissions on `/etc/letsencrypt`.
 

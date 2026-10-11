@@ -27,7 +27,8 @@
 | `roles/certbot/tasks/main.yml` | Imports the other task files in order |
 | `roles/certbot/tasks/validate.yml` | Asserts `certbot_certs` is well-formed and each needed AWS profile exists in root's credentials |
 | `roles/certbot/tasks/hooks.yml` | Installs the deploy hook script; strips the per-cert `renew_hook` lines the old scripts saved |
-| `roles/certbot/tasks/issue.yml` | Issues/expands certs, deletes `certbot_certs_absent`, fixes `/etc/letsencrypt` permissions |
+| `roles/certbot/tasks/issue.yml` | Loops over `certbot_certs`, deletes `certbot_certs_absent`, fixes `/etc/letsencrypt` permissions |
+| `roles/certbot/tasks/issue_cert.yml` | Issues one cert and reports `changed` only if its `fullchain.pem` checksum changed |
 | `roles/certbot/tasks/renewal.yml` | Disables `certbot.timer`; generates, enables and prunes per-group renewal units |
 | `roles/certbot/templates/reload-services.j2.sh` | The deploy hook (named `.j2.sh` so shfmt skips it, per `.pre-commit-config.yaml`) |
 | `roles/certbot/templates/certbot-renew.service.j2` | One renewal service per group |
@@ -445,29 +446,64 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 ### Task 4: Issuance, removal and permissions
 
 **Files:**
+- Create: `roles/certbot/tasks/issue_cert.yml`
 - Create: `roles/certbot/tasks/issue.yml`
 
-- [ ] **Step 1: Write the tasks**
+Change detection watches the cert file rather than parsing certbot's output: a cert counts as changed exactly when its `fullchain.pem` checksum differs before and after the `certbot` run. That is true whatever certbot prints, and it also covers a cert being created for the first time.
+
+- [ ] **Step 1: Write the per-cert task file**
+
+Create `roles/certbot/tasks/issue_cert.yml`:
+
+```yaml
+---
+# Included once per entry in certbot_certs (loop variable: certbot_cert).
+#
+# `certbot certonly --expand` keeps a cert that is not due and already has exactly these names.
+# If the requested names differ from the existing cert, certbot reissues it with exactly the
+# requested set (non-interactive), so certbot_certs must list every name the cert needs.
+- name: Note the certificate before issuing ({{ certbot_cert.name }})
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ certbot_cert.name }}/fullchain.pem"
+    follow: true
+    get_checksum: true
+    checksum_algorithm: sha256
+  register: certbot_before
+  tags: certbot
+
+- name: Issue or expand the certificate ({{ certbot_cert.name }})
+  ansible.builtin.command:
+    argv: >-
+      {{ ['certbot', 'certonly', '--non-interactive', '--expand', '--cert-name', certbot_cert.name]
+         + certbot_plugin_args[certbot_cert.challenge]
+         + (certbot_cert.domains | map('regex_replace', '^', '--domain=') | list) }}
+  environment: "{{ {'AWS_PROFILE': certbot_cert.aws_profile} if certbot_cert.challenge == 'route53' else {} }}"
+  changed_when: false # change is reported by the checksum comparison below
+  tags: certbot
+
+- name: Report changed only if the certificate file changed ({{ certbot_cert.name }})
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ certbot_cert.name }}/fullchain.pem"
+    follow: true
+    get_checksum: true
+    checksum_algorithm: sha256
+  register: certbot_after
+  changed_when: (certbot_before.stat.checksum | default('')) != (certbot_after.stat.checksum | default(''))
+  tags: certbot
+```
+
+- [ ] **Step 2: Write the issuance tasks**
 
 Create `roles/certbot/tasks/issue.yml`:
 
 ```yaml
 ---
-# `certbot certonly --expand` keeps a cert that is not due and already has exactly these names.
-# If the requested names differ from the existing cert, certbot reissues it with exactly the
-# requested set (non-interactive), so certbot_certs must list every name the cert needs.
 - name: Issue or expand certificates
-  ansible.builtin.command:
-    argv: >-
-      {{ ['certbot', 'certonly', '--non-interactive', '--expand', '--cert-name', item.name]
-         + certbot_plugin_args[item.challenge]
-         + (item.domains | map('regex_replace', '^', '--domain=') | list) }}
-  environment: "{{ {'AWS_PROFILE': item.aws_profile} if item.challenge == 'route53' else {} }}"
+  ansible.builtin.include_tasks: issue_cert.yml
   loop: "{{ certbot_certs }}"
   loop_control:
-    label: "{{ item.name }}"
-  register: certbot_issue
-  changed_when: "'Successfully received certificate' in certbot_issue.stdout"
+    loop_var: certbot_cert
+    label: "{{ certbot_cert.name }}"
   tags: certbot
 
 - name: Remove certificates that are no longer wanted
@@ -488,19 +524,46 @@ Create `roles/certbot/tasks/issue.yml`:
   tags: certbot
 ```
 
-- [ ] **Step 2: Lint**
+- [ ] **Step 3: Lint**
 
 Run: `ansible-lint roles/certbot`
 Expected: no violations. (If ansible-lint flags `risky-file-permissions` on the final task, the explicit `mode` already satisfies it; if it flags `no-changed-when` on a command task, the `changed_when`/`removes` keys above are what satisfy it, so recheck indentation.)
 
-- [ ] **Step 3: Check the argv expression with sample data**
+- [ ] **Step 4: Check the argv expression with sample data**
 
 ```bash
 ansible localhost -c local -m ansible.builtin.debug -a "msg={{ ['certbot','certonly','--non-interactive','--expand','--cert-name','istic.net'] + ['--dns-route53'] + (['istic.net','*.istic.net'] | map('regex_replace','^','--domain=') | list) }}"
 ```
 Expected output includes: `"--cert-name", "istic.net", "--dns-route53", "--domain=istic.net", "--domain=*.istic.net"`.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 5: Check the change detection with a scratch cert**
+
+Outside the repo, simulate a cert file that is left alone, rewritten, and created, to confirm only the last two report `changed`:
+
+```bash
+SCRATCH=$(mktemp -d); mkdir -p "$SCRATCH/live/x" "$SCRATCH/arch"
+echo one > "$SCRATCH/arch/f1" && ln -sf ../../arch/f1 "$SCRATCH/live/x/fullchain.pem"
+cat > "$SCRATCH/t.yml" <<EOF
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Stat before
+      ansible.builtin.stat: { path: "$SCRATCH/live/x/fullchain.pem", follow: true, get_checksum: true, checksum_algorithm: sha256 }
+      register: certbot_before
+    - name: Rewrite the cert file
+      ansible.builtin.copy: { content: "two\n", dest: "$SCRATCH/arch/f1", mode: "0644" }
+    - name: Stat after
+      ansible.builtin.stat: { path: "$SCRATCH/live/x/fullchain.pem", follow: true, get_checksum: true, checksum_algorithm: sha256 }
+      register: certbot_after
+      changed_when: (certbot_before.stat.checksum | default('')) != (certbot_after.stat.checksum | default(''))
+EOF
+ansible-playbook "$SCRATCH/t.yml" 2>/dev/null | grep -E "^changed|^ok|PLAY RECAP|localhost "
+```
+Expected: `changed: [localhost]` for the rewrite and for "Stat after" (so `changed=2` in the recap).
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git branch --show-current   # expect: feature/ansible-certbot
@@ -1179,4 +1242,4 @@ Expected: the command prints the new PR URL. Only tick the "Verified" boxes in t
 - **Spec coverage:** §1 data → Task 7; §1b profiles on all external hosts + `istic-r53` cleanup + profile assertion → Tasks 2, 8, 11; §2 role (issue, absent, permissions) → Task 4; §3 deploy-hook directory + legacy `renew_hook` cleanup → Tasks 1, 3; §4 per-group renewal and stock-timer disable → Tasks 1, 5; §5 script/doc removal → Task 10; Migration steps 0–4 → Task 9; Testing (lint, syntax-check, assertions, manual) → Tasks 1, 2, 8, 9.
 - **Names used consistently:** `certbot_certs`, `certbot_certs_absent`, `certbot_deploy_commands`, `certbot_legacy_deploy_hooks`, `certbot_plugin_args`, `certbot_group_name` / `certbot_group_profile` / `certbot_group_certs` (templates), `certbot_renew_profiles`, `certbot_default_certs`, `certbot_wanted_units`.
 - **Unit names:** `certbot-renew-aws-<profile>.service|timer` and `certbot-renew-default.service|timer`.
-- **Known limit:** `changed_when` keys off the certbot message `Successfully received certificate`; Task 9 Step 5 confirms this on the real host.
+- **Change detection:** `changed` is reported by comparing each cert's `fullchain.pem` checksum before and after `certbot certonly` (Task 4), not by parsing certbot's output, so it does not depend on certbot's wording. A failed `certbot` run fails the play at the command task before the comparison.
