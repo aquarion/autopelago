@@ -1,0 +1,125 @@
+---
+# One renewal group per AWS profile among the route53 certs, plus one "default" group for
+# cloudflare and nginx certs. Each group is its own systemd service+timer so a broken profile
+# fails (and alerts) on its own, and AWS_PROFILE can be set per group.
+- name: Work out renewal groups
+  ansible.builtin.set_fact:
+    certbot_renew_profiles: >-
+      {{ certbot_certs | selectattr('challenge', 'equalto', 'route53') | map(attribute='aws_profile') | unique | list }}
+    certbot_default_certs: >-
+      {{ certbot_certs | rejectattr('challenge', 'equalto', 'route53') | map(attribute='name') | list }}
+  tags: certbot
+
+- name: Work out which renewal units should exist
+  ansible.builtin.set_fact:
+    certbot_wanted_units: >-
+      {{ (['certbot-renew-default.service', 'certbot-renew-default.timer'] if certbot_default_certs | length > 0 else [])
+         + (certbot_renew_profiles | map('regex_replace', '^', 'certbot-renew-aws-') | map('regex_replace', '$', '.service') | list)
+         + (certbot_renew_profiles | map('regex_replace', '^', 'certbot-renew-aws-') | map('regex_replace', '$', '.timer') | list) }}
+  tags: certbot
+
+- name: Disable the packaged certbot timer (it renews with no AWS_PROFILE)
+  ansible.builtin.systemd:
+    name: certbot.timer
+    enabled: false
+    state: stopped
+  tags: certbot
+
+- name: Deploy the route53 renewal services (one per AWS profile)
+  ansible.builtin.template:
+    src: certbot-renew.service.j2
+    dest: "/etc/systemd/system/certbot-renew-aws-{{ item }}.service"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    certbot_group_name: "aws-{{ item }}"
+    certbot_group_profile: "{{ item }}"
+    certbot_group_certs: >-
+      {{ certbot_certs | selectattr('challenge', 'equalto', 'route53') | selectattr('aws_profile', 'equalto', item)
+         | map(attribute='name') | list }}
+  loop: "{{ certbot_renew_profiles }}"
+  notify: Reload systemd
+  tags: certbot
+
+- name: Deploy the route53 renewal timers
+  ansible.builtin.template:
+    src: certbot-renew.timer.j2
+    dest: "/etc/systemd/system/certbot-renew-aws-{{ item }}.timer"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    certbot_group_name: "aws-{{ item }}"
+  loop: "{{ certbot_renew_profiles }}"
+  notify: Reload systemd
+  tags: certbot
+
+- name: Deploy the default renewal service (cloudflare and nginx certs)
+  ansible.builtin.template:
+    src: certbot-renew.service.j2
+    dest: /etc/systemd/system/certbot-renew-default.service
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    certbot_group_name: default
+    certbot_group_profile: ""
+    certbot_group_certs: "{{ certbot_default_certs }}"
+  when: certbot_default_certs | length > 0
+  notify: Reload systemd
+  tags: certbot
+
+- name: Deploy the default renewal timer
+  ansible.builtin.template:
+    src: certbot-renew.timer.j2
+    dest: /etc/systemd/system/certbot-renew-default.timer
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    certbot_group_name: default
+  when: certbot_default_certs | length > 0
+  notify: Reload systemd
+  tags: certbot
+
+- name: Pick up new unit files before enabling timers
+  ansible.builtin.meta: flush_handlers
+  tags: certbot
+
+- name: Enable and start the renewal timers
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ certbot_wanted_units | select('search', 'timer$') | list }}"
+  tags: certbot
+
+# Removing a group (e.g. an AWS profile no longer used) must delete its units explicitly;
+# dropping the entry from certbot_certs does not remove anything from the host.
+- name: Find existing renewal units
+  ansible.builtin.find:
+    paths: /etc/systemd/system
+    patterns:
+      - certbot-renew-*.service
+      - certbot-renew-*.timer
+  register: certbot_existing_units
+  tags: certbot
+
+- name: Stop and disable stale renewal timers
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop: >-
+    {{ certbot_existing_units.files | map(attribute='path') | map('basename')
+       | difference(certbot_wanted_units) | select('search', 'timer$') | list }}
+  tags: certbot
+
+- name: Remove stale renewal units
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item }}"
+    state: absent
+  loop: "{{ certbot_existing_units.files | map(attribute='path') | map('basename') | difference(certbot_wanted_units) | list }}"
+  notify: Reload systemd
+  tags: certbot
