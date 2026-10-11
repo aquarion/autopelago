@@ -70,7 +70,7 @@ Runs before the nginx roles on firth and atoll (tag `certbot`). It depends on `w
 
 ### 3. Service reloads: renewal-hooks directory
 
-The role templates one script into `/etc/letsencrypt/renewal-hooks/deploy/`. Certbot runs it after any successful issuance of any cert. Per-host content comes from a variable (for example `certbot_deploy_commands`: firth reloads nginx and restarts dovecot, atoll reloads nginx).
+The role templates one script into `/etc/letsencrypt/renewal-hooks/deploy/`. Certbot runs it after any renewal of an existing cert, whether via `certbot renew` or `certbot certonly` on an existing cert name (for example when expanding its domains). It does not run when a cert is first created. That is fine: a new cert is referenced by nothing until its nginx SSL snippet is deployed, and that step validates and reloads nginx. Per-host content comes from a variable (for example `certbot_deploy_commands`: firth reloads nginx and restarts dovecot, atoll reloads nginx).
 
 This replaces the per-cert `--deploy-hook` from #341. Hooks given on the command line are saved in each cert's renewal config and only land when that cert is next issued. The directory hook applies to every cert immediately.
 

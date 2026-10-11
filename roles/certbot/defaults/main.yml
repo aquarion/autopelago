@@ -7,7 +7,7 @@ certbot_certs: []
 certbot_certs_absent: []
 # nginx SSL snippet stems (file /etc/nginx/snippets/ssl/<stem>_ssl.conf) to delete from the host.
 certbot_ssl_snippets_absent: []
-# Commands the deploy hook runs after any cert is issued or renewed (set per host).
+# Commands the deploy hook runs after a renewal of an existing cert (set per host).
 certbot_deploy_commands: []
 # Per-cert `renew_hook` values saved by the old bin/generate-*-certbot.sh scripts (--deploy-hook).
 # The role strips these from renewal configs so services are not reloaded twice.

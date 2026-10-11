@@ -5,6 +5,8 @@
       - certbot_certs | selectattr('name', 'undefined') | list | length == 0
       - certbot_certs | selectattr('challenge', 'undefined') | list | length == 0
       - certbot_certs | selectattr('domains', 'undefined') | list | length == 0
+      - certbot_certs | map(attribute='name') | list | intersect(certbot_certs_absent) | length == 0
+      - certbot_certs | selectattr('domains', 'defined') | map(attribute='domains') | map('length') | select('equalto', 0) | list | length == 0
       - certbot_certs | map(attribute='challenge') | difference(['route53', 'cloudflare', 'nginx']) | length == 0
       - (certbot_certs | map(attribute='name') | list | length) == (certbot_certs | map(attribute='name') | unique | list | length)
       - certbot_certs | selectattr('challenge', 'equalto', 'route53') | rejectattr('aws_profile', 'defined') | list | length == 0
@@ -13,7 +15,8 @@
         'defined') | map(attribute='ssl_snippet') | unique | list | length)
     fail_msg: >-
       certbot_certs is malformed. Every entry needs name, challenge (route53|cloudflare|nginx) and domains;
-      names must be unique; route53 entries need aws_profile; nginx entries cannot contain wildcards
+      names must be unique and must not also be in certbot_certs_absent; domains must be a non-empty list; route53 entries need aws_profile; nginx entries cannot
+      contain wildcards
       (http-01 cannot validate them); ssl_snippet values must be unique.
   tags: certbot
 
@@ -48,11 +51,11 @@
 - name: Fail if the host has certs this role does not manage (they would stop renewing)
   ansible.builtin.assert:
     that: >-
-      (certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '.conf$', '')
+      (certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '\\.conf$', '')
        | difference(certbot_certs | map(attribute='name') | list) | difference(certbot_certs_absent)) | length == 0
     fail_msg: >-
       These certs exist on the host but are not in certbot_certs or certbot_certs_absent, so nothing would renew them:
-      {{ certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '.conf$', '')
+      {{ certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '\\.conf$', '')
          | difference(certbot_certs | map(attribute='name') | list) | difference(certbot_certs_absent) | list }}.
       Add each to certbot_certs, or to certbot_certs_absent if it should be deleted.
   tags: certbot

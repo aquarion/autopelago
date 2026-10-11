@@ -149,13 +149,18 @@ Create `roles/certbot/tests/render.yml`:
     - name: Check the rendered output
       ansible.builtin.assert:
         that:
-          - "'service nginx reload\n' in (certbot_rendered.results[0].content | b64decode)"
-          - "'service dovecot restart\n' in (certbot_rendered.results[0].content | b64decode)"
+          - "'service nginx reload || rc=$?\n' in (certbot_rendered.results[0].content | b64decode)"
+          - "'service dovecot restart || rc=$?\n' in (certbot_rendered.results[0].content | b64decode)"
+          - "'rc=0\n' in (certbot_rendered.results[0].content | b64decode)"
+          - "'exit $rc\n' in (certbot_rendered.results[0].content | b64decode)"
           - "'Environment=AWS_PROFILE=istic\n' in (certbot_rendered.results[1].content | b64decode)"
+          - "'Type=oneshot' in (certbot_rendered.results[1].content | b64decode)"
+          - "'Environment=' not in (certbot_rendered.results[2].content | b64decode)"
           - "'--cert-name istic.net --cert-name nanocountdown.com\n' in (certbot_rendered.results[1].content | b64decode)"
           - "'AWS_PROFILE' not in (certbot_rendered.results[2].content | b64decode)"
           - "'--cert-name socksandpuppets.com\n' in (certbot_rendered.results[2].content | b64decode)"
           - "'OnCalendar=' in (certbot_rendered.results[3].content | b64decode)"
+          - "'Persistent=true' in (certbot_rendered.results[3].content | b64decode)"
           - "'(aws-istic)' in (certbot_rendered.results[3].content | b64decode)"
         fail_msg: Rendered certbot templates do not match expectations.
 ```
@@ -172,11 +177,13 @@ Create `roles/certbot/templates/reload-services.j2.sh`:
 ```sh
 #!/bin/sh
 # {{ ansible_managed }}
-# Run by certbot after any certificate is issued or renewed.
-set -e
+# Run by certbot after a renewal of an existing certificate.
+# Every command runs even if an earlier one fails; the exit status reports any failure.
+rc=0
 {% for cmd in certbot_deploy_commands %}
-{{ cmd }}
+{{ cmd }} || rc=$?
 {% endfor %}
+exit $rc
 ```
 
 - [ ] **Step 4: Write the renewal service template**
@@ -261,7 +268,7 @@ certbot_certs_absent: []
 # nginx SSL snippet stems (file /etc/nginx/snippets/ssl/<stem>_ssl.conf) to delete from the host.
 certbot_ssl_snippets_absent: []
 
-# Commands the deploy hook runs after any cert is issued or renewed (set per host).
+# Commands the deploy hook runs after a renewal of an existing cert (set per host).
 certbot_deploy_commands: []
 
 # Per-cert `renew_hook` values saved by the old bin/generate-*-certbot.sh scripts (--deploy-hook).
@@ -301,14 +308,18 @@ Create `roles/certbot/tasks/validate.yml`:
       - certbot_certs | selectattr('name', 'undefined') | list | length == 0
       - certbot_certs | selectattr('challenge', 'undefined') | list | length == 0
       - certbot_certs | selectattr('domains', 'undefined') | list | length == 0
+      - certbot_certs | map(attribute='name') | list | intersect(certbot_certs_absent) | length == 0
+      - certbot_certs | selectattr('domains', 'defined') | map(attribute='domains') | map('length') | select('equalto', 0) | list | length == 0
       - certbot_certs | map(attribute='challenge') | difference(['route53', 'cloudflare', 'nginx']) | length == 0
       - (certbot_certs | map(attribute='name') | list | length) == (certbot_certs | map(attribute='name') | unique | list | length)
       - certbot_certs | selectattr('challenge', 'equalto', 'route53') | rejectattr('aws_profile', 'defined') | list | length == 0
       - certbot_certs | selectattr('challenge', 'equalto', 'nginx') | map(attribute='domains') | flatten | select('match', '^\*\.') | list | length == 0
-      - (certbot_certs | selectattr('ssl_snippet', 'defined') | map(attribute='ssl_snippet') | list | length) == (certbot_certs | selectattr('ssl_snippet', 'defined') | map(attribute='ssl_snippet') | unique | list | length)
+      - (certbot_certs | selectattr('ssl_snippet', 'defined') | map(attribute='ssl_snippet') | list | length) == (certbot_certs | selectattr('ssl_snippet',
+        'defined') | map(attribute='ssl_snippet') | unique | list | length)
     fail_msg: >-
       certbot_certs is malformed. Every entry needs name, challenge (route53|cloudflare|nginx) and domains;
-      names must be unique; route53 entries need aws_profile; nginx entries cannot contain wildcards
+      names must be unique and must not also be in certbot_certs_absent; domains must be a non-empty list; route53 entries need aws_profile; nginx entries cannot
+      contain wildcards
       (http-01 cannot validate them); ssl_snippet values must be unique.
   tags: certbot
 
@@ -343,11 +354,11 @@ Create `roles/certbot/tasks/validate.yml`:
 - name: Fail if the host has certs this role does not manage (they would stop renewing)
   ansible.builtin.assert:
     that: >-
-      (certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '.conf$', '')
+      (certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '\\.conf$', '')
        | difference(certbot_certs | map(attribute='name') | list) | difference(certbot_certs_absent)) | length == 0
     fail_msg: >-
       These certs exist on the host but are not in certbot_certs or certbot_certs_absent, so nothing would renew them:
-      {{ certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '.conf$', '')
+      {{ certbot_renewal_confs.files | map(attribute='path') | map('basename') | map('regex_replace', '\\.conf$', '')
          | difference(certbot_certs | map(attribute='name') | list) | difference(certbot_certs_absent) | list }}.
       Add each to certbot_certs, or to certbot_certs_absent if it should be deleted.
   tags: certbot
@@ -426,7 +437,7 @@ Create `roles/certbot/tasks/hooks.yml`:
     mode: "0755"
   tags: certbot
 
-- name: Install the deploy hook that reloads services after issuance/renewal
+- name: Install the deploy hook that reloads services after a renewal
   ansible.builtin.template:
     src: reload-services.j2.sh
     dest: /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
@@ -438,6 +449,7 @@ Create `roles/certbot/tasks/hooks.yml`:
 # certbot_renewal_confs is registered in validate.yml (which always runs first).
 # The old scripts passed --deploy-hook, which certbot saves into each cert's renewal config.
 # Left in place, services would reload twice (once from the config, once from the hook directory).
+# Only strip the old per-cert hooks once the replacement hook actually has commands.
 - name: Remove per-cert deploy hooks saved by the old scripts
   ansible.builtin.lineinfile:
     path: "{{ item.path }}"
@@ -446,7 +458,7 @@ Create `roles/certbot/tasks/hooks.yml`:
   loop: "{{ certbot_renewal_confs.files }}"
   loop_control:
     label: "{{ item.path | basename }}"
-  when: certbot_legacy_deploy_hooks | length > 0
+  when: certbot_legacy_deploy_hooks | length > 0 and certbot_deploy_commands | length > 0
   tags: certbot
 ```
 
@@ -773,8 +785,9 @@ Create `roles/certbot/tasks/main.yml`:
 
 ```yaml
 ---
-# Order matters: validate first; install the deploy hook BEFORE issuing so a first issuance
-# reloads services; issue; then set up renewal.
+# Order matters: validate first; install the deploy hook BEFORE issuing so an issuance that
+# renews or expands an existing cert reloads services (certbot does not run the hook for a
+# first-time issuance); issue; then set up renewal.
 - name: Validate certbot data
   ansible.builtin.import_tasks: validate.yml
 
