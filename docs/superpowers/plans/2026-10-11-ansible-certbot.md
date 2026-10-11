@@ -4,7 +4,7 @@
 
 **Goal:** Replace `bin/generate-*-certbot.sh` and `bin/update-all-certbots.sh` with an Ansible `certbot` role that issues certs from per-host data and renews each route53 profile with the right `AWS_PROFILE`.
 
-**Architecture:** A new `certbot` role (tag `certbot`) loops over `certbot_certs` (host_vars data) running `certbot certonly`, installs one deploy hook in `/etc/letsencrypt/renewal-hooks/deploy/`, and generates one systemd renewal service + timer per renewal group (one per AWS profile, plus one for cloudflare/nginx certs), replacing the packaged `certbot.timer`. `aws_profiles` moves to the "all external hosts" play so root's `~/.aws` is Ansible-managed everywhere.
+**Architecture:** A new `certbot` role (tag `certbot`) loops over `certbot_certs` (host_vars data) running `certbot certonly`, installs one deploy hook in `/etc/letsencrypt/renewal-hooks/deploy/`, and generates one systemd renewal service + timer per renewal group (one per AWS profile, plus one for cloudflare/nginx certs), replacing the packaged `certbot.timer`. `aws_profiles` moves to the "all external hosts" play so root's `~/.aws` is Ansible-managed everywhere. A final task generates the nginx SSL snippets from the same data (Task 12).
 
 **Tech Stack:** Ansible (ansible-lint + pre-commit enforced), certbot (apt) with the route53, cloudflare and nginx plugins, systemd units, Jinja2 templates.
 
@@ -33,12 +33,17 @@
 | `roles/certbot/templates/reload-services.j2.sh` | The deploy hook (named `.j2.sh` so shfmt skips it, per `.pre-commit-config.yaml`) |
 | `roles/certbot/templates/certbot-renew.service.j2` | One renewal service per group |
 | `roles/certbot/templates/certbot-renew.timer.j2` | One renewal timer per group |
+| `roles/certbot/templates/nginx-ssl-snippet.conf.j2` | The 4-line nginx SSL snippet (Task 12) |
+| `roles/certbot/tasks/nginx_snippets.yml` | Generates `/etc/nginx/snippets/ssl/<stem>_ssl.conf` from `certbot_certs` (Task 12) |
+| `roles/certbot/handlers/main.yml` | Validates nginx config, then reloads it, after snippet changes (Task 12) |
 | `roles/certbot/tests/render.yml` | Renders the templates with sample data and asserts on the output |
 | `host_vars/firth.water.gkhs.net/certbot.yml` | Firth's certs, as data |
 | `host_vars/atoll.water.gkhs.net/certbot.yml` | Atoll's certs, as data (including the archive cert) |
 | `playbook.yml` | Move `aws_profiles`; add the certbot play |
 | `roles/aws_profiles/tasks/main.yml` | Remove the legacy `istic-r53` profile (last task, after verification) |
-| `docs/adding-sftp-hosted-site.md` | Point at `certbot.yml` instead of the scripts |
+| `docs/adding-sftp-hosted-site.md` | Point at `certbot.yml` instead of the scripts and the snippet loop |
+| `roles/firth_nginx/tasks/main.yml`, `roles/atoll_nginx/tasks/main.yml` | Drop the snippet-generating tasks (Task 12); firth keeps the static `letsencrypt_ssl.conf` task |
+| `roles/firth_nginx/templates/ssl*`, `roles/atoll_nginx/templates/ssl/` | Static snippets and `ssl.nginx.conf.j2` deleted (Task 12); `letsencrypt_ssl.conf` stays |
 | `bin/generate-firth-certbot.sh`, `bin/generate-atoll-certbot.sh`, `bin/update-all-certbots.sh` | Deleted |
 
 ---
@@ -253,6 +258,9 @@ certbot_certs: []
 # delete the cert from the host, so list removals here.
 certbot_certs_absent: []
 
+# nginx SSL snippet stems (file /etc/nginx/snippets/ssl/<stem>_ssl.conf) to delete from the host.
+certbot_ssl_snippets_absent: []
+
 # Commands the deploy hook runs after any cert is issued or renewed (set per host).
 certbot_deploy_commands: []
 
@@ -297,10 +305,11 @@ Create `roles/certbot/tasks/validate.yml`:
       - (certbot_certs | map(attribute='name') | list | length) == (certbot_certs | map(attribute='name') | unique | list | length)
       - certbot_certs | selectattr('challenge', 'equalto', 'route53') | rejectattr('aws_profile', 'defined') | list | length == 0
       - certbot_certs | selectattr('challenge', 'equalto', 'nginx') | map(attribute='domains') | flatten | select('match', '^\*\.') | list | length == 0
+      - (certbot_certs | selectattr('ssl_snippet', 'defined') | map(attribute='ssl_snippet') | list | length) == (certbot_certs | selectattr('ssl_snippet', 'defined') | map(attribute='ssl_snippet') | unique | list | length)
     fail_msg: >-
       certbot_certs is malformed. Every entry needs name, challenge (route53|cloudflare|nginx) and domains;
       names must be unique; route53 entries need aws_profile; nginx entries cannot contain wildcards
-      (http-01 cannot validate them).
+      (http-01 cannot validate them); ssl_snippet values must be unique.
   tags: certbot
 
 - name: Check required AWS profiles exist in root's credentials (section names only)
@@ -815,6 +824,8 @@ Create `host_vars/firth.water.gkhs.net/certbot.yml`:
 ---
 # Certificates on firth. See docs/superpowers/specs/2026-10-11-ansible-certbot-design.md.
 # Domain lists must be complete: certbot reissues a cert with exactly the names listed here.
+# ssl_snippet is the file stem of /etc/nginx/snippets/ssl/<stem>_ssl.conf that vhosts include.
+# It keeps each snippet's existing filename; it is used from Task 12 onwards.
 certbot_deploy_commands:
   - service nginx reload
   - service dovecot restart
@@ -853,20 +864,23 @@ certbot_certs:
       - www.deadbadgerdesigns.co.uk
       - live.dailyphoto.aquarionics.com
   - name: forums.profounddecisions.co.uk
+    ssl_snippet: pddiscourse
     challenge: nginx
     domains: [forums.profounddecisions.co.uk]
   - name: michael.conterio.co.uk
+    ssl_snippet: conterio
     challenge: nginx
     domains: [michael.conterio.co.uk, www.michael.conterio.co.uk, conterio.co.uk, www.conterio.co.uk]
 
   # --- cloudflare ---
-  - { name: socksandpuppets.com, challenge: cloudflare, domains: [socksandpuppets.com, "*.socksandpuppets.com"] }
-  - { name: aquarionics.com, challenge: cloudflare, domains: [aquarionics.com, "*.aquarionics.com"] }
-  - { name: novelathon.com, challenge: cloudflare, domains: [novelathon.com, "*.novelathon.com"] }
-  - { name: istic.dev, challenge: cloudflare, domains: [istic.dev, "*.istic.dev"] }
+  - { name: socksandpuppets.com, ssl_snippet: socksandpuppets, challenge: cloudflare, domains: [socksandpuppets.com, "*.socksandpuppets.com"] }
+  - { name: aquarionics.com, ssl_snippet: aquarionics, challenge: cloudflare, domains: [aquarionics.com, "*.aquarionics.com"] }
+  - { name: novelathon.com, ssl_snippet: novelathon.com, challenge: cloudflare, domains: [novelathon.com, "*.novelathon.com"] }
+  - { name: istic.dev, ssl_snippet: istic_dev, challenge: cloudflare, domains: [istic.dev, "*.istic.dev"] }
 
   # --- route53, istic account ---
   - name: istic.net
+    ssl_snippet: istic
     challenge: route53
     aws_profile: istic
     domains:
@@ -877,23 +891,24 @@ certbot_certs:
       - "*.blogs.istic.network"
       - istic.systems
       - "*.istic.systems"
-  - { name: svc.istic.systems, challenge: route53, aws_profile: istic, domains: [svc.istic.systems, "*.svc.istic.systems"] }
-  - { name: carcosadreams.com, challenge: route53, aws_profile: istic, domains: [carcosadreams.com, "*.carcosadreams.com", "*.carcosadreams.co.uk"] }
-  - { name: ludoistic.com, challenge: route53, aws_profile: istic, domains: [ludoistic.com, "*.ludoistic.com"] }
-  - { name: nanocountdown.com, challenge: route53, aws_profile: istic, domains: [nanocountdown.com, "*.nanocountdown.com"] }
-  - { name: bloomfeed.app, challenge: route53, aws_profile: istic, domains: [bloomfeed.app, "*.bloomfeed.app"] }
+  - { name: svc.istic.systems, ssl_snippet: svc_istic_systems, challenge: route53, aws_profile: istic, domains: [svc.istic.systems, "*.svc.istic.systems"] }
+  - { name: carcosadreams.com, ssl_snippet: carcosadreams, challenge: route53, aws_profile: istic, domains: [carcosadreams.com, "*.carcosadreams.com", "*.carcosadreams.co.uk"] }
+  - { name: ludoistic.com, ssl_snippet: ludoistic, challenge: route53, aws_profile: istic, domains: [ludoistic.com, "*.ludoistic.com"] }
+  - { name: nanocountdown.com, ssl_snippet: nanocountdown.com, challenge: route53, aws_profile: istic, domains: [nanocountdown.com, "*.nanocountdown.com"] }
+  - { name: bloomfeed.app, ssl_snippet: bloomfeedapp, challenge: route53, aws_profile: istic, domains: [bloomfeed.app, "*.bloomfeed.app"] }
 
   # --- route53, aqcom account ---
   - name: nicholasavenell.com
+    ssl_snippet: nicholasavenell
     challenge: route53
     aws_profile: aqcom
     domains: [nicholasavenell.com, "*.nicholasavenell.com", "*.nicholasavenell.net", nicholasavenell.net]
-  - { name: bromioscreations.com, challenge: route53, aws_profile: aqcom, domains: [bromioscreations.com, "*.bromioscreations.com"] }
-  - { name: larp.me, challenge: route53, aws_profile: aqcom, domains: [larp.me, "*.larp.me", larp.me.uk, "*.larp.me.uk"] }
-  - { name: camlarp.co.uk, challenge: route53, aws_profile: aqcom, domains: [camlarp.co.uk, "*.camlarp.co.uk"] }
+  - { name: bromioscreations.com, ssl_snippet: bromioscreations, challenge: route53, aws_profile: aqcom, domains: [bromioscreations.com, "*.bromioscreations.com"] }
+  - { name: larp.me, ssl_snippet: larpme, challenge: route53, aws_profile: aqcom, domains: [larp.me, "*.larp.me", larp.me.uk, "*.larp.me.uk"] }
+  - { name: camlarp.co.uk, ssl_snippet: camlarp, challenge: route53, aws_profile: aqcom, domains: [camlarp.co.uk, "*.camlarp.co.uk"] }
   # DNS-01 on purpose (not nginx): the live cert includes *.hubris.house
-  - { name: hubris.house, challenge: route53, aws_profile: aqcom, domains: [hubris.house, "*.hubris.house"] }
-  - { name: kastark.co.uk, challenge: route53, aws_profile: aqcom, domains: [kastark.co.uk, www.kastark.co.uk, dhmstark.co.uk, www.dhmstark.co.uk] }
+  - { name: hubris.house, ssl_snippet: hubris, challenge: route53, aws_profile: aqcom, domains: [hubris.house, "*.hubris.house"] }
+  - { name: kastark.co.uk, ssl_snippet: kastark, challenge: route53, aws_profile: aqcom, domains: [kastark.co.uk, www.kastark.co.uk, dhmstark.co.uk, www.dhmstark.co.uk] }
 ```
 
 - [ ] **Step 2: Write atoll's data**
@@ -903,6 +918,7 @@ Create `host_vars/atoll.water.gkhs.net/certbot.yml`:
 ```yaml
 ---
 # Certificates on atoll. See docs/superpowers/specs/2026-10-11-ansible-certbot-design.md.
+# ssl_snippet: see host_vars/firth.water.gkhs.net/certbot.yml.
 certbot_deploy_commands:
   - service nginx reload
 
@@ -912,8 +928,8 @@ certbot_certs_archive: >-
      if (stream_delta_archive_public_domain | default('')) | length > 0 else [] }}
 
 certbot_certs_static:
-  - { name: voyeur.istic.net, challenge: route53, aws_profile: istic, domains: [voyeur.istic.net, "*.voyeur.istic.net", "*.ws.voyeur.istic.net"] }
-  - { name: voyeur.istic.dev, challenge: cloudflare, domains: [voyeur.istic.dev, "*.voyeur.istic.dev", "*.ws.voyeur.istic.dev"] }
+  - { name: voyeur.istic.net, ssl_snippet: delta, challenge: route53, aws_profile: istic, domains: [voyeur.istic.net, "*.voyeur.istic.net", "*.ws.voyeur.istic.net"] }
+  - { name: voyeur.istic.dev, ssl_snippet: delta_staging, challenge: cloudflare, domains: [voyeur.istic.dev, "*.voyeur.istic.dev", "*.ws.voyeur.istic.dev"] }
 
 certbot_certs: "{{ certbot_certs_static + certbot_certs_archive }}"
 ```
@@ -1210,7 +1226,279 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 12: Open the PR
+### Task 12: Generate the nginx SSL snippets from `certbot_certs`
+
+**Files:**
+- Create: `roles/certbot/templates/nginx-ssl-snippet.conf.j2`
+- Create: `roles/certbot/handlers/main.yml`
+- Create: `roles/certbot/tasks/nginx_snippets.yml`
+- Modify: `roles/certbot/tasks/main.yml`, `roles/certbot/defaults/main.yml` (already has `certbot_ssl_snippets_absent`), `roles/certbot/tests/render.yml`
+- Modify: `host_vars/atoll.water.gkhs.net/certbot.yml`
+- Modify: `roles/firth_nginx/tasks/main.yml`, `roles/atoll_nginx/tasks/main.yml`
+- Delete: 13 static snippets and `ssl.nginx.conf.j2` in `roles/firth_nginx/templates/`, and `roles/atoll_nginx/templates/ssl/`
+- Modify: `docs/adding-sftp-hosted-site.md`
+
+Do this only after Task 9 has passed on both hosts. Every `ssl_*` snippet in the repo (all 17, normalised for whitespace and cert name) is the same four directives, so the generated files are equivalent to what is deployed today. The existing file stems are kept (vhosts include them by name), via the `ssl_snippet` field added to the data in Task 7. `letsencrypt_ssl.conf` stays static: it points at `{{ letsencrypt_dir }}`, which exim and dovecot also use. `atoll_ssl.conf` is dead (no vhost includes it, and the host it names does not exist), so it is deleted from the host explicitly.
+
+- [ ] **Step 1: Extend the render test (it will fail until the template exists)**
+
+In `roles/certbot/tests/render.yml`, make three edits.
+
+(a) After the `Render a group timer` task (the one ending with `certbot_group_name: aws-istic`), add:
+
+```yaml
+    - name: Render an nginx SSL snippet
+      ansible.builtin.template:
+        src: "{{ certbot_templates }}/nginx-ssl-snippet.conf.j2"
+        dest: "{{ certbot_test_dir }}/nginx-snippet.conf"
+        mode: "0644"
+      vars:
+        certbot_cert:
+          name: istic.net
+```
+
+(b) Add the new file to the read loop. Change
+```yaml
+      loop: [reload-services.sh, aws-istic.service, default.service, aws-istic.timer]
+```
+to
+```yaml
+      loop: [reload-services.sh, aws-istic.service, default.service, aws-istic.timer, nginx-snippet.conf]
+```
+
+(c) Append these assertions to the `that:` list of `Check the rendered output`:
+
+```yaml
+          - "'ssl_certificate /etc/letsencrypt/live/istic.net/fullchain.pem;\n' in (certbot_rendered.results[4].content | b64decode)"
+          - "'ssl_certificate_key /etc/letsencrypt/live/istic.net/privkey.pem;\n' in (certbot_rendered.results[4].content | b64decode)"
+          - "'ssl_session_timeout 10m;\n' in (certbot_rendered.results[4].content | b64decode)"
+```
+
+- [ ] **Step 2: Run it to verify it fails**
+
+Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -8`
+Expected: FAIL on "Render an nginx SSL snippet" (the template does not exist yet).
+
+- [ ] **Step 3: Write the snippet template**
+
+Create `roles/certbot/templates/nginx-ssl-snippet.conf.j2`:
+
+```jinja
+# {{ ansible_managed }}
+ssl_certificate /etc/letsencrypt/live/{{ certbot_cert.name }}/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/{{ certbot_cert.name }}/privkey.pem;
+ssl_session_cache shared:SSL:1m;
+ssl_session_timeout 10m;
+```
+
+- [ ] **Step 4: Run the test to verify it passes**
+
+Run: `CERTBOT_TEST_DIR=$(mktemp -d) ansible-playbook roles/certbot/tests/render.yml 2>&1 | tail -4`
+Expected: `failed=0` (now `ok=8 changed=5`).
+
+- [ ] **Step 5: Write the handler**
+
+Create `roles/certbot/handlers/main.yml`. A handler can notify another handler, so the config is validated first and only then reloaded (the `Reload Nginx` handler comes from `roles/global_things/handlers/main.yml`, which the certbot play imports):
+
+```yaml
+---
+- name: Validate nginx for certbot snippets
+  ansible.builtin.command: nginx -t
+  changed_when: false
+  notify: Reload Nginx
+```
+
+- [ ] **Step 6: Write the snippet tasks**
+
+Create `roles/certbot/tasks/nginx_snippets.yml`:
+
+```yaml
+---
+- name: Ensure the nginx SSL snippet directory exists
+  ansible.builtin.file:
+    path: /etc/nginx/snippets/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: certbot
+
+- name: Generate nginx SSL snippets from certbot_certs
+  ansible.builtin.template:
+    src: nginx-ssl-snippet.conf.j2
+    dest: "/etc/nginx/snippets/ssl/{{ certbot_cert.ssl_snippet }}_ssl.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ certbot_certs | selectattr('ssl_snippet', 'defined') | list }}"
+  loop_control:
+    loop_var: certbot_cert
+    label: "{{ certbot_cert.ssl_snippet }}_ssl.conf"
+  notify: Validate nginx for certbot snippets
+  tags: certbot
+
+# Dropping an entry from certbot_certs does not delete its snippet from the host; list it here.
+- name: Remove nginx SSL snippets that no longer exist
+  ansible.builtin.file:
+    path: "/etc/nginx/snippets/ssl/{{ item }}_ssl.conf"
+    state: absent
+  loop: "{{ certbot_ssl_snippets_absent }}"
+  notify: Validate nginx for certbot snippets
+  tags: certbot
+```
+
+- [ ] **Step 7: Wire it into the role**
+
+Append to `roles/certbot/tasks/main.yml`:
+
+```yaml
+
+- name: Generate nginx SSL snippets
+  ansible.builtin.import_tasks: nginx_snippets.yml
+```
+
+- [ ] **Step 8: Delete the dead atoll snippet**
+
+Add to `host_vars/atoll.water.gkhs.net/certbot.yml`:
+
+```yaml
+
+# No vhost includes atoll_ssl.conf and the host it names does not exist.
+certbot_ssl_snippets_absent:
+  - atoll
+```
+
+- [ ] **Step 9: Lint**
+
+Run: `ansible-lint roles/certbot && ansible-playbook playbook.yml --syntax-check`
+Expected: no violations; the syntax check prints `playbook: playbook.yml`.
+
+- [ ] **Step 10: Commit the new generation (the old definitions are still in place)**
+
+```bash
+git branch --show-current   # expect: feature/ansible-certbot
+git add roles/certbot host_vars/atoll.water.gkhs.net/certbot.yml
+git commit -m "🎇 Generate nginx SSL snippets from certbot_certs
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+```
+
+- [ ] **Step 11: Snapshot the snippets on each host (manual, before)**
+
+On each host, record each snippet's directives, normalised for whitespace:
+
+```bash
+sudo sh -c 'cd /etc/nginx/snippets/ssl && for f in *_ssl.conf; do echo "== $f"; grep -E "^[[:space:]]*ssl_" "$f" | sed -E "s/^[[:space:]]+//" | tr -s " " | sort; done' > /tmp/ssl-before.txt
+wc -l /tmp/ssl-before.txt
+```
+Expected: a non-empty file with one `== <name>_ssl.conf` section per snippet.
+
+- [ ] **Step 12: Run the role and diff (manual)**
+
+```bash
+ansible-playbook playbook.yml --tags certbot --limit firth.water.gkhs.net 2>&1 | tee /tmp/snippets-firth.log
+```
+Then on firth, repeat the Step 11 command writing to `/tmp/ssl-after.txt`, and `sudo nginx -t`, then:
+
+```bash
+diff /tmp/ssl-before.txt /tmp/ssl-after.txt && echo IDENTICAL
+```
+Expected: `nginx: configuration file ... test is successful` and `IDENTICAL` on firth. On atoll the only difference should be the whole `== atoll_ssl.conf` section removed. Anything else means a snippet changed value: stop and compare that cert's `ssl_snippet` against the vhosts that include it.
+
+- [ ] **Step 13: Remove the old definitions**
+
+In `roles/firth_nginx/tasks/main.yml`, delete this whole task (the five-entry loop that generated snippets):
+
+```yaml
+- name: Configure SSL Config
+  ansible.builtin.template:
+    src: ssl.nginx.conf.j2
+    dest: /etc/nginx/snippets/ssl/{{ item.file_name }}_ssl.conf
+    mode: "0644"
+  vars:
+    cert_name: "{{ item.cert_name }}"
+  loop:
+    - { cert_name: "camlarp.co.uk", file_name: "camlarp" }
+    - { cert_name: "nanocountdown.com", file_name: "nanocountdown.com" }
+    - { cert_name: "novelathon.com", file_name: "novelathon.com" }
+    - { cert_name: "kastark.co.uk", file_name: "kastark" }
+    - { cert_name: "svc.istic.systems", file_name: "svc_istic_systems" }
+  notify:
+    - Validate nginx configuration
+    - Restart nginx
+  tags:
+    - nginx
+    - nginx_ssl
+```
+
+In `roles/atoll_nginx/tasks/main.yml`, delete both snippet tasks (`Delete old ssl config snippits` and `Configure ssl config snippits`), since `templates/ssl/` will be empty.
+
+Leave firth's `Delete old ssl config snippits` and `Configure ssl config snippits` tasks: they still deploy the static `letsencrypt_ssl.conf`.
+
+Then delete the static files:
+
+```bash
+git branch --show-current   # expect: feature/ansible-certbot
+git rm roles/firth_nginx/templates/ssl.nginx.conf.j2 \
+  roles/firth_nginx/templates/ssl/{aquarionics,bloomfeedapp,bromioscreations,carcosadreams,conterio,hubris,istic_dev,istic,larpme,ludoistic,nicholasavenell,pddiscourse,socksandpuppets}_ssl.conf \
+  roles/atoll_nginx/templates/ssl/{atoll,delta,delta_staging}_ssl.conf
+ls roles/firth_nginx/templates/ssl
+```
+Expected `ls` output: only `letsencrypt_ssl.conf`.
+
+- [ ] **Step 14: Run the nginx roles and confirm nothing changed (manual)**
+
+```bash
+ansible-playbook playbook.yml --tags nginx --limit 'firth.water.gkhs.net,atoll.water.gkhs.net' 2>&1 | tee /tmp/nginx-after.log
+```
+Then on each host rerun the Step 11 command into `/tmp/ssl-after2.txt` and `diff /tmp/ssl-after.txt /tmp/ssl-after2.txt && echo IDENTICAL`, and `sudo nginx -t`.
+Expected: `IDENTICAL` and a successful `nginx -t`. (On atoll `ssl-after.txt` is the post-Step-12 snapshot.)
+
+- [ ] **Step 15: Update the SFTP doc**
+
+In `docs/adding-sftp-hosted-site.md`, replace everything from the line `Add an entry to the \`Configure SSL Config\` loop in \`roles/firth_nginx/tasks/main.yml\`:` down to (but not including) the `---` line before `## 4. Add the nginx vhost` with:
+
+````markdown
+Add the cert to `certbot_certs` in `host_vars/firth.water.gkhs.net/certbot.yml`. Giving it an `ssl_snippet` also generates `/etc/nginx/snippets/ssl/<ssl_snippet>_ssl.conf`, which the vhost includes and which points at the Let's Encrypt cert. For Route53-managed domains:
+
+```yaml
+- { name: example.com, ssl_snippet: example, challenge: route53, aws_profile: aqcom, domains: [example.com, "*.example.com"] }
+```
+
+For Cloudflare-managed domains:
+
+```yaml
+- { name: example.com, ssl_snippet: example, challenge: cloudflare, domains: [example.com, "*.example.com"] }
+```
+
+For a plain nginx-validated cert (no wildcards): `challenge: nginx`.
+
+List every name the cert needs: if the list differs from the existing cert, certbot reissues it with exactly that set. `aws_profile` is `aqcom` or `istic`.
+````
+
+Then replace the "Generate the certificate" and "Deploy nginx config and SFTP containers" commands in section 5 with:
+
+```bash
+# Generate the certificate and its nginx SSL snippet, then deploy nginx config and SFTP containers
+ansible-playbook playbook.yml --tags certbot,nginx,sftp --limit firth.water.gkhs.net
+```
+
+Confirm nothing still describes the old loop: `grep -rn "Configure SSL Config\|ssl.nginx.conf.j2" . | grep -v '^./.git/\|docs/superpowers\|galaxy-roles\|\.direnv'`
+Expected: no output.
+
+- [ ] **Step 16: Commit**
+
+```bash
+git branch --show-current   # expect: feature/ansible-certbot
+git add -A roles/firth_nginx roles/atoll_nginx docs/adding-sftp-hosted-site.md
+git commit -m "❌ Remove static nginx SSL snippets now generated from certbot_certs
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+```
+
+---
+
+### Task 13: Open the PR
 
 **Files:** none
 
@@ -1235,6 +1523,7 @@ gh pr create --draft --base main --title "🎇 Manage certbot with Ansible (fix 
 - Renewal: one systemd service+timer per AWS profile (plus one for cloudflare/nginx certs), each with `AWS_PROFILE` set explicitly, replacing the packaged `certbot.timer`. Fixes route53 auto-renewals failing because the timer ran with no profile and fell back to root's `default` (the aqcom account).
 - Service reloads move to a single deploy hook in `/etc/letsencrypt/renewal-hooks/deploy/`; the per-cert hooks the old scripts saved are stripped.
 - `aws_profiles` now runs on all external hosts; certs use the profile names `aqcom` / `istic` (the hand-added `istic-r53` is removed).
+- nginx SSL snippets (`/etc/nginx/snippets/ssl/<stem>_ssl.conf`) are generated from the same `certbot_certs` data via an `ssl_snippet` field that keeps each existing filename; the 17 static copies and the `firth_nginx` loop are removed, and the dead `atoll_ssl.conf` is deleted from atoll.
 - Removes `bin/generate-*-certbot.sh` and `bin/update-all-certbots.sh`; docs point at `certbot.yml`.
 
 Spec: `docs/superpowers/specs/2026-10-11-ansible-certbot-design.md`
@@ -1256,7 +1545,7 @@ Expected: the command prints the new PR URL. Only tick the "Verified" boxes in t
 
 ## Self-Review Notes
 
-- **Spec coverage:** §1 data → Task 7; §1b profiles on all external hosts + `istic-r53` cleanup + profile assertion → Tasks 2, 8, 11; §2 role (issue, absent, permissions) → Task 4; §3 deploy-hook directory + legacy `renew_hook` cleanup → Tasks 1, 3; §4 per-group renewal and stock-timer disable → Tasks 1, 5; §5 script/doc removal → Task 10; Migration steps 0–4 → Task 9; Testing (lint, syntax-check, assertions, manual) → Tasks 1, 2, 8, 9.
+- **Spec coverage:** §1 data → Task 7; §1b profiles on all external hosts + `istic-r53` cleanup + profile assertion → Tasks 2, 8, 11; §2 role (issue, absent, permissions) → Task 4; §3 deploy-hook directory + legacy `renew_hook` cleanup → Tasks 1, 3; §4 per-group renewal and stock-timer disable → Tasks 1, 5; §5 script/doc removal → Task 10; §6 nginx SSL snippets → Task 12; Migration steps 0–4 → Task 9; Testing (lint, syntax-check, assertions, manual) → Tasks 1, 2, 8, 9.
 - **Names used consistently:** `certbot_certs`, `certbot_certs_absent`, `certbot_deploy_commands`, `certbot_legacy_deploy_hooks`, `certbot_plugin_args`, `certbot_group_name` / `certbot_group_profile` / `certbot_group_certs` (templates), `certbot_renew_profiles`, `certbot_default_certs`, `certbot_wanted_units`.
 - **Unit names:** `certbot-renew-aws-<profile>.service|timer` and `certbot-renew-default.service|timer`.
 - **Change detection:** `changed` is reported by comparing each cert's `fullchain.pem` checksum before and after `certbot certonly` (Task 4), not by parsing certbot's output, so it does not depend on certbot's wording. A failed `certbot` run fails the play at the command task before the comparison.
