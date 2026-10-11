@@ -18,11 +18,14 @@
          + (certbot_renew_profiles | map('regex_replace', '^', 'certbot-renew-aws-') | map('regex_replace', '$', '.timer') | list) }}
   tags: certbot
 
+# If certbot.timer does not exist (certbot not installed from apt) there is nothing to disable.
 - name: Disable the packaged certbot timer (it renews with no AWS_PROFILE)
   ansible.builtin.systemd:
     name: certbot.timer
     enabled: false
     state: stopped
+  register: certbot_stock_timer
+  failed_when: certbot_stock_timer is failed and 'Could not find' not in (certbot_stock_timer.msg | default(''))
   tags: certbot
 
 - name: Deploy the route53 renewal services (one per AWS profile)

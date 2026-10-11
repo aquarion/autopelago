@@ -507,6 +507,8 @@ Create `roles/certbot/tasks/issue_cert.yml`:
   register: certbot_before
   tags: certbot
 
+# A failing certbot run deliberately aborts the play for this host (fail fast): certs already
+# issued keep certbot's default permissions until the next successful run re-applies group access.
 - name: Issue or expand the certificate ({{ certbot_cert.name }})
   ansible.builtin.command:
     argv: >-
@@ -641,11 +643,14 @@ Create `roles/certbot/tasks/renewal.yml`:
          + (certbot_renew_profiles | map('regex_replace', '^', 'certbot-renew-aws-') | map('regex_replace', '$', '.timer') | list) }}
   tags: certbot
 
+# If certbot.timer does not exist (certbot not installed from apt) there is nothing to disable.
 - name: Disable the packaged certbot timer (it renews with no AWS_PROFILE)
   ansible.builtin.systemd:
     name: certbot.timer
     enabled: false
     state: stopped
+  register: certbot_stock_timer
+  failed_when: certbot_stock_timer is failed and 'Could not find' not in (certbot_stock_timer.msg | default(''))
   tags: certbot
 
 - name: Deploy the route53 renewal services (one per AWS profile)

@@ -13,6 +13,8 @@
   register: certbot_before
   tags: certbot
 
+# A failing certbot run deliberately aborts the play for this host (fail fast): certs already
+# issued keep certbot's default permissions until the next successful run re-applies group access.
 - name: Issue or expand the certificate ({{ certbot_cert.name }})
   ansible.builtin.command:
     argv: >-
