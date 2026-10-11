@@ -5,6 +5,23 @@ certbot_deploy_commands:
   - service nginx reload
   - service dovecot restart
 
+# Leftover certs found live on atoll during Task 9 Step 3 (certbot certificates). None of them
+# are used by anything atoll_nginx/dovecot/exim here reference; they're all expired (checked:
+# nothing newer than 2025-01), and every one also belongs to firth's own certbot_certs or
+# certbot_certs_absent -- most likely carried over when atoll was provisioned/cloned from firth.
+# certbot delete removes them instead of leaving them unmanaged.
+certbot_certs_absent:
+  - archipelago.water.gkhs.net
+  - bromioscreations.com
+  - carcosadreams.com
+  - firth.water.gkhs.net
+  - foip.me
+  - forums.profounddecisions.co.uk
+  - hubris.house
+  - istic.dev
+  - istic.net
+  - nicholasavenell.com
+
 # The archive site's public domain is an Ansible variable; the cert is only requested if it is set.
 certbot_certs_archive: >-
   {{ [{'name': stream_delta_archive_public_domain, 'challenge': 'nginx', 'domains': [stream_delta_archive_public_domain]}]
