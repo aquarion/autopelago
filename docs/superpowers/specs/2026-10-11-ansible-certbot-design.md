@@ -7,6 +7,8 @@ Date: 2026-10-11
 Certificates on firth and atoll are issued by `bin/generate-firth-certbot.sh` and `bin/generate-atoll-certbot.sh`, pushed over ssh by `bin/update-all-certbots.sh`. Three things are wrong with that:
 
 1. **Route53 auto-renewals fail.** The packaged `certbot.timer` runs `certbot renew` as root with no `AWS_PROFILE`. Certbot does not store the profile in a cert's renewal config, and the certs need different profiles (`aqcom`, `istic-r53`), so boto3 falls back to credentials for the wrong account. Observed: `Unable to find a Route53 hosted zone for _acme-challenge.nanocountdown.com`. Cloudflare certs renew fine because their credentials are a fixed file, `/root/.secrets/cloudflare.ini`.
+   - Confirmed on firth: root's `~/.aws/credentials` has `default`, `aqcom` and `istic-r53` profiles, and `default` uses the same key as `aqcom`. A renewal with no `AWS_PROFILE` therefore uses the aqcom account. aqcom certs renew by accident, and `istic-r53` certs (such as `nanocountdown.com`) fail.
+   - `istic-r53` and `default` are not created by the `aws_profiles` role, which defines only `aqcom` and `istic`. They were added by hand.
 2. **The scripts can't see Ansible state.** They run on the remote host via `ssh bash -s`, so anything needing inventory variables (the atoll archive domain) has to be resolved elsewhere and passed in.
 3. **The cert list lives outside Ansible.** nginx and dovecot templates already take a `cert_id` and point at `/etc/letsencrypt/live/<cert_id>/`, but which certs exist and which domains they cover is only in shell scripts. Adding a site needs two unrelated edits that people forget to do in order.
 
@@ -70,7 +72,7 @@ Cleanup: #341's `--deploy-hook` leaves a `renew_hook` line in the renewal config
 - It generates one oneshot service and one timer per renewal group:
   - one group per distinct `aws_profile` among the route53 certs,
   - one group for all cloudflare and nginx certs.
-- Each service runs `certbot renew --cert-name <a> --cert-name <b> ...` for only its group's certs, with `AWS_PROFILE` set in the unit for route53 groups. Timer cadence matches the stock timer (twice daily with a randomised delay).
+- Each service runs `certbot renew --cert-name <a> --cert-name <b> ...` for only its group's certs, with `AWS_PROFILE` set in the unit for route53 groups. This includes the `aqcom` group, so nothing depends on root's `default` profile any more. Timer cadence matches the stock timer (twice daily with a randomised delay).
 - Each group succeeds or fails independently under systemd, so one broken profile cannot hide another.
 
 ### 5. Cleanup
