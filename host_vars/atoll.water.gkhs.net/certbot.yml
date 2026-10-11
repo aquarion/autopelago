@@ -37,6 +37,19 @@ certbot_certs_static:
 
 certbot_certs: "{{ certbot_certs_static + certbot_certs_archive }}"
 
-# No vhost includes atoll_ssl.conf and the host it names does not exist.
+# atoll_nginx's only vhosts (delta, delta-staging) include delta_ssl.conf/delta_staging_ssl.conf
+# only. No vhost on atoll includes any of these, including letsencrypt (firth's vhosts use it,
+# atoll's don't) -- same clone-leftover pattern as the certs in certbot_certs_absent above.
 certbot_ssl_snippets_absent:
   - atoll
+  - bromioscreations
+  - carcosadreams
+  - foipme
+  - hubris
+  - istic
+  - istic_dev
+  - letsencrypt
+  - ludoistic
+  - nicholasavenell
+  - pddiscourse
+  - socksandpuppets
