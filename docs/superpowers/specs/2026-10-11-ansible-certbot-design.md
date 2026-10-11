@@ -32,7 +32,7 @@ Per host, in `host_vars/<host>/certbot.yml`:
 certbot_certs:
   - name: istic.net
     challenge: route53          # route53 | cloudflare | nginx
-    aws_profile: istic-r53      # required for route53
+    aws_profile: istic          # required for route53; must be a profile the aws_profiles role creates (aqcom | istic)
     domains: [istic.net, "*.istic.net", istic.network, "*.istic.network"]
   - name: hubris.house
     challenge: route53
@@ -47,6 +47,15 @@ certbot_certs_absent: []        # cert names to remove with `certbot delete`
 - Domains are listed in full. There are no implicit wildcard defaults, so the data states exactly what is requested.
 - `nginx` certs must not contain wildcards (http-01 cannot validate them). The role asserts this.
 - The atoll archive cert is an entry whose domain is `{{ stream_delta_archive_public_domain }}`, guarded by `when:` that it is defined. This replaces the ssh env-var workaround.
+
+### 1b. AWS profiles are managed by Ansible on every host that issues route53 certs
+
+Today `aws_profiles` runs on the workstation, on atoll (under `become`, so root's `~/.aws`), and in `deploy-stream-delta.yml`. It never runs on firth, so firth's root profiles (`default`, `aqcom`, `istic-r53`) are hand-maintained. The role also creates `istic`, not `istic-r53`, and `firth_dns` already uses `istic` throughout. The `istic-r53` key on firth was confirmed to be the same key as the vault's `istic_aws_key`.
+
+- Add `aws_profiles` (with `become`) to the Firth play, before the `certbot` role, so root's `~/.aws` on firth comes from the vault.
+- `certbot_certs` uses the role's names: `aqcom` and `istic`. Nothing uses `istic-r53` any more.
+- Cleanup (explicit, since removing config doesn't delete anything from the host): remove the `istic-r53` section from root's `~/.aws/credentials` and `config` on firth and, if present, atoll. Leave `default` alone: other root processes may rely on it, and the renewal units no longer do.
+- The `certbot` role asserts each `aws_profile` it needs exists in `/root/.aws/credentials` (section names only, no values), so a missing profile fails fast with a clear message instead of a Route53 "hosted zone not found" error at renewal time.
 
 ### 2. `certbot` role
 
@@ -84,7 +93,8 @@ Cleanup: #341's `--deploy-hook` leaves a `renew_hook` line in the renewal config
 
 The riskiest step is the first run, because `certbot certonly --expand --cert-name X` with a different domain set reissues the cert with exactly the requested set. A mistake in the data could drop domains from a live cert.
 
-1. Generate the initial `certbot_certs` data from the merged #341 scripts.
+0. Run `aws_profiles` on firth (`--tags aws`) so root has the `aqcom` and `istic` profiles, then check `AWS_PROFILE=istic certbot renew --dry-run --cert-name nanocountdown.com` succeeds before changing any cert data. The `istic-r53` cleanup waits until after the new renewal units have run successfully.
+1. Generate the initial `certbot_certs` data from the merged #341 scripts, translating `istic-r53` to `istic`.
 2. On each host, compare the data against `certbot certificates` and confirm every cert's domain set is identical.
 3. Only then run `--tags certbot`.
 4. Run `certbot renew --dry-run --cert-name ...` for each renewal group, with `AWS_PROFILE` set the way the unit sets it, to confirm renewal works under the new timers.
@@ -98,5 +108,5 @@ The riskiest step is the first run, because `certbot certonly --expand --cert-na
 ## Out of scope
 
 - Replacing certbot with ACME modules.
-- Changing how AWS profiles reach each host. The `aws_profiles` role is in the atoll play but not the firth play. The failing host was confirmed to have the profiles in root's `~/.aws`, and this design assumes they stay there. The role asserts that each `aws_profile` it needs exists in `/root/.aws/credentials` (section names only, never values).
+- Rotating the AWS keys, or removing the hand-added `default` profile.
 - Alerting on renewal failure beyond what systemd and certbot already email.
