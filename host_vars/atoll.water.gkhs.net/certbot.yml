@@ -1,0 +1,16 @@
+---
+# Certificates on atoll. See docs/superpowers/specs/2026-10-11-ansible-certbot-design.md.
+# ssl_snippet: see host_vars/firth.water.gkhs.net/certbot.yml.
+certbot_deploy_commands:
+  - service nginx reload
+
+# The archive site's public domain is an Ansible variable; the cert is only requested if it is set.
+certbot_certs_archive: >-
+  {{ [{'name': stream_delta_archive_public_domain, 'challenge': 'nginx', 'domains': [stream_delta_archive_public_domain]}]
+     if (stream_delta_archive_public_domain | default('')) | length > 0 else [] }}
+
+certbot_certs_static:
+  - { name: voyeur.istic.net, ssl_snippet: delta, challenge: route53, aws_profile: istic, domains: [voyeur.istic.net, "*.voyeur.istic.net", "*.ws.voyeur.istic.net"] }
+  - { name: voyeur.istic.dev, ssl_snippet: delta_staging, challenge: cloudflare, domains: [voyeur.istic.dev, "*.voyeur.istic.dev", "*.ws.voyeur.istic.dev"] }
+
+certbot_certs: "{{ certbot_certs_static + certbot_certs_archive }}"

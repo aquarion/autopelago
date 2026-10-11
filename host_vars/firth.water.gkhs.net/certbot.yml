@@ -1,0 +1,88 @@
+---
+# Certificates on firth. See docs/superpowers/specs/2026-10-11-ansible-certbot-design.md.
+# Domain lists must be complete: certbot reissues a cert with exactly the names listed here.
+# ssl_snippet is the file stem of /etc/nginx/snippets/ssl/<stem>_ssl.conf that vhosts include.
+# It keeps each snippet's existing filename; it is used from Task 12 onwards.
+certbot_deploy_commands:
+  - service nginx reload
+  - service dovecot restart
+
+certbot_certs:
+  # --- nginx (http-01; no wildcards) ---
+  - name: firth.water.gkhs.net
+    challenge: nginx
+    domains:
+      - firth.water.gkhs.net
+      - istic.net
+      - factionfiction.net
+      - www.factionfiction.net
+      - themonthlymoon.com
+      - ludo.istic.co
+      - imperial.istic.net
+      - altru.istic.net
+      - log.istic.net
+      - hol.istic.net
+      - live.art.istic.net
+      - material.istic.net
+      - istic.co
+      - warehousebasement.com
+      - www.warehousebasement.com
+      - dagon.church
+      - live.dagon.church
+      - wiki.dagon.church
+      - mechan.istic.net
+      - optim.istic.net
+      - www.larpfic.com
+      - larpfic.com
+      - www.lrpfic.com
+      - lrpfic.com
+      - www.deathuntodarkness.org
+      - deadbadgerdesigns.co.uk
+      - www.deadbadgerdesigns.co.uk
+      - live.dailyphoto.aquarionics.com
+  - name: forums.profounddecisions.co.uk
+    ssl_snippet: pddiscourse
+    challenge: nginx
+    domains: [forums.profounddecisions.co.uk]
+  - name: michael.conterio.co.uk
+    ssl_snippet: conterio
+    challenge: nginx
+    domains: [michael.conterio.co.uk, www.michael.conterio.co.uk, conterio.co.uk, www.conterio.co.uk]
+
+  # --- cloudflare ---
+  - { name: socksandpuppets.com, ssl_snippet: socksandpuppets, challenge: cloudflare, domains: [socksandpuppets.com, "*.socksandpuppets.com"] }
+  - { name: aquarionics.com, ssl_snippet: aquarionics, challenge: cloudflare, domains: [aquarionics.com, "*.aquarionics.com"] }
+  - { name: novelathon.com, ssl_snippet: novelathon.com, challenge: cloudflare, domains: [novelathon.com, "*.novelathon.com"] }
+  - { name: istic.dev, ssl_snippet: istic_dev, challenge: cloudflare, domains: [istic.dev, "*.istic.dev"] }
+
+  # --- route53, istic account ---
+  - name: istic.net
+    ssl_snippet: istic
+    challenge: route53
+    aws_profile: istic
+    domains:
+      - istic.net
+      - "*.istic.net"
+      - istic.network
+      - "*.istic.network"
+      - "*.blogs.istic.network"
+      - istic.systems
+      - "*.istic.systems"
+  - { name: svc.istic.systems, ssl_snippet: svc_istic_systems, challenge: route53, aws_profile: istic, domains: [svc.istic.systems, "*.svc.istic.systems"] }
+  - { name: carcosadreams.com, ssl_snippet: carcosadreams, challenge: route53, aws_profile: istic, domains: [carcosadreams.com, "*.carcosadreams.com", "*.carcosadreams.co.uk"] }
+  - { name: ludoistic.com, ssl_snippet: ludoistic, challenge: route53, aws_profile: istic, domains: [ludoistic.com, "*.ludoistic.com"] }
+  - { name: nanocountdown.com, ssl_snippet: nanocountdown.com, challenge: route53, aws_profile: istic, domains: [nanocountdown.com, "*.nanocountdown.com"] }
+  - { name: bloomfeed.app, ssl_snippet: bloomfeedapp, challenge: route53, aws_profile: istic, domains: [bloomfeed.app, "*.bloomfeed.app"] }
+
+  # --- route53, aqcom account ---
+  - name: nicholasavenell.com
+    ssl_snippet: nicholasavenell
+    challenge: route53
+    aws_profile: aqcom
+    domains: [nicholasavenell.com, "*.nicholasavenell.com", "*.nicholasavenell.net", nicholasavenell.net]
+  - { name: bromioscreations.com, ssl_snippet: bromioscreations, challenge: route53, aws_profile: aqcom, domains: [bromioscreations.com, "*.bromioscreations.com"] }
+  - { name: larp.me, ssl_snippet: larpme, challenge: route53, aws_profile: aqcom, domains: [larp.me, "*.larp.me", larp.me.uk, "*.larp.me.uk"] }
+  - { name: camlarp.co.uk, ssl_snippet: camlarp, challenge: route53, aws_profile: aqcom, domains: [camlarp.co.uk, "*.camlarp.co.uk"] }
+  # DNS-01 on purpose (not nginx): the live cert includes *.hubris.house
+  - { name: hubris.house, ssl_snippet: hubris, challenge: route53, aws_profile: aqcom, domains: [hubris.house, "*.hubris.house"] }
+  - { name: kastark.co.uk, ssl_snippet: kastark, challenge: route53, aws_profile: aqcom, domains: [kastark.co.uk, www.kastark.co.uk, dhmstark.co.uk, www.dhmstark.co.uk] }
