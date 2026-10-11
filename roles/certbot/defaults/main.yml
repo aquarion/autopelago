@@ -9,26 +9,17 @@ certbot_certs_absent: []
 certbot_ssl_snippets_absent: []
 # Commands the deploy hook runs after a renewal of an existing cert (set per host).
 certbot_deploy_commands: []
-# Per-cert `renew_hook` values saved by the old bin/generate-*-certbot.sh scripts (--deploy-hook).
-# The role strips these from renewal configs so services are not reloaded twice.
-certbot_legacy_deploy_hooks:
-  - service nginx reload; service dovecot restart
-  - service nginx reload
-
+# Each authenticator plugin supports exactly one challenge type, so --preferred-challenges
+# would be a no-op here (verified against certbot's auth_handler.py: it only filters within
+# what the plugin already offers).
 certbot_plugin_args:
   route53:
     - --dns-route53
-    - --preferred-challenges
-    - dns-01
   cloudflare:
     - --dns-cloudflare
     - --dns-cloudflare-credentials
     - /root/.secrets/cloudflare.ini
-    - --preferred-challenges
-    - dns-01
   nginx:
     - --nginx
-    - --preferred-challenges
-    - http-01
 
 certbot_aws_credentials_file: /root/.aws/credentials

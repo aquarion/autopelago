@@ -20,18 +20,3 @@
     group: certbot_access
     mode: "0755"
   tags: certbot
-
-# certbot_renewal_confs is registered in validate.yml (which always runs first).
-# The old scripts passed --deploy-hook, which certbot saves into each cert's renewal config.
-# Left in place, services would reload twice (once from the config, once from the hook directory).
-# Only strip the old per-cert hooks once the replacement hook actually has commands.
-- name: Remove per-cert deploy hooks saved by the old scripts
-  ansible.builtin.lineinfile:
-    path: "{{ item.path }}"
-    regexp: "^renew_hook = ({{ certbot_legacy_deploy_hooks | map('regex_escape') | join('|') }})$"
-    state: absent
-  loop: "{{ certbot_renewal_confs.files }}"
-  loop_control:
-    label: "{{ item.path | basename }}"
-  when: certbot_legacy_deploy_hooks | length > 0 and certbot_deploy_commands | length > 0
-  tags: certbot
