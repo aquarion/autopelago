@@ -70,3 +70,27 @@
   tags:
     - aws
     - aws_profiles
+
+# Legacy section created by hand on firth before this role managed istic/aqcom; same key as
+# istic. Delete, not just omit, so the leftover section doesn't linger on the host.
+- name: AWS Creds - remove legacy istic-r53 profile
+  community.general.ini_file:
+    path: ~/.aws/credentials
+    section: istic-r53
+    state: absent
+    mode: "0600"
+    backup: true
+  tags:
+    - aws
+    - aws_profiles
+
+- name: AWS Config - remove legacy istic-r53 profile
+  community.general.ini_file:
+    path: ~/.aws/config
+    section: profile istic-r53
+    state: absent
+    mode: "0600"
+    backup: true
+  tags:
+    - aws
+    - aws_profiles
