@@ -109,5 +109,5 @@ The riskiest step is the first run, because `certbot certonly --expand --cert-na
 
 - Replacing certbot with ACME modules.
 - Rotating the AWS keys, or removing the hand-added `default` profile.
-- Followup idea: once every external host has the profiles, the Route53 DNS tasks (`firth_dns`, `aws_pdforums`) could run on a host instead of the `localactions` workstation play, which would remove the need to run the AWS roles locally. That needs boto3 on the executing host and is a separate change.
+- Followup idea: once every external host has the profiles, the Route53 DNS tasks (`firth_dns`, `aws_pdforums`) could run on a host instead of the `localactions` workstation play, which would remove the need to run the AWS roles locally. boto3 is already installed on every host (`water_gkhs_common`, and certbot's route53 plugin needs it), so the remaining work is moving the plays and is a separate change.
 - Alerting on renewal failure beyond what systemd and certbot already email.
