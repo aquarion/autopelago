@@ -97,32 +97,21 @@ Then include it in `roles/firth_dns/tasks/main.yml`:
 
 ## 3. Add the SSL certificate
 
-Add an entry to the `Configure SSL Config` loop in `roles/firth_nginx/tasks/main.yml`:
+Add the cert to `certbot_certs` in `host_vars/firth.water.gkhs.net/certbot.yml`. Giving it an `ssl_snippet` also generates `/etc/nginx/snippets/ssl/<ssl_snippet>_ssl.conf`, which the vhost includes and which points at the Let's Encrypt cert. For Route53-managed domains:
 
 ```yaml
-loop:
-  # ... existing entries ...
-  - { cert_name: "example.com", file_name: "example" }
-```
-
-This generates `/etc/nginx/snippets/ssl/example_ssl.conf` from the `ssl.nginx.conf.j2` template, pointing at the Let's Encrypt cert for `example.com`.
-
-Then add the cert to `bin/generate-firth-certbot.sh`. For Route53-managed domains:
-
-```bash
-echo "Generating certificates for example.com"
-sudo --preserve-env=AWS_PROFILE certbot certonly -n --expand --dns-route53 \
-    --cert-name example.com -d example.com -d www.example.com
+- { name: example.com, ssl_snippet: example, challenge: route53, aws_profile: aqcom, domains: [example.com, "*.example.com"] }
 ```
 
 For Cloudflare-managed domains:
 
-```bash
-echo "Generating certificates for example.com"
-sudo certbot certonly --non-interactive --cert-name example.com \
-    --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini \
-    -d example.com,*.example.com --preferred-challenges dns-01
+```yaml
+- { name: example.com, ssl_snippet: example, challenge: cloudflare, domains: [example.com, "*.example.com"] }
 ```
+
+For a plain nginx-validated cert (no wildcards): `challenge: nginx`.
+
+List every name the cert needs: if the list differs from the existing cert, certbot reissues it with exactly that set. `aws_profile` is `aqcom` or `istic`.
 
 ---
 
@@ -192,9 +181,6 @@ location / {
 # Update DNS
 ansible-playbook playbook.yml --tags aws,example
 
-# Generate the certificate (run on firth)
-./bin/generate-firth-certbot.sh
-
-# Deploy nginx config and SFTP containers
-ansible-playbook playbook.yml --tags nginx,sftp
+# Generate the certificate and its nginx SSL snippet, then deploy nginx config and SFTP containers
+ansible-playbook playbook.yml --tags certbot,nginx,sftp --limit firth.water.gkhs.net
 ```

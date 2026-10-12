@@ -1,0 +1,36 @@
+---
+# Included once per entry in certbot_certs (loop variable: certbot_cert).
+#
+# `certbot certonly --expand` keeps a cert that is not due and already has exactly these names.
+# If the requested names differ from the existing cert, certbot reissues it with exactly the
+# requested set (non-interactive), so certbot_certs must list every name the cert needs.
+- name: Note the certificate before issuing ({{ certbot_cert.name }})
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ certbot_cert.name }}/fullchain.pem"
+    follow: true
+    get_checksum: true
+    checksum_algorithm: sha256
+  register: certbot_before
+  tags: certbot
+
+# A failing certbot run deliberately aborts the play for this host (fail fast): certs already
+# issued keep certbot's default permissions until the next successful run re-applies group access.
+- name: Issue or expand the certificate ({{ certbot_cert.name }})
+  ansible.builtin.command:
+    argv: >-
+      {{ ['certbot', 'certonly', '--non-interactive', '--expand', '--cert-name', certbot_cert.name]
+         + certbot_plugin_args[certbot_cert.challenge]
+         + (certbot_cert.domains | map('regex_replace', '^', '--domain=') | list) }}
+  environment: "{{ {'AWS_PROFILE': certbot_cert.aws_profile} if certbot_cert.challenge == 'route53' else {} }}"
+  changed_when: false # change is reported by the checksum comparison below
+  tags: certbot
+
+- name: Report changed only if the certificate file changed ({{ certbot_cert.name }})
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ certbot_cert.name }}/fullchain.pem"
+    follow: true
+    get_checksum: true
+    checksum_algorithm: sha256
+  register: certbot_after
+  changed_when: (certbot_before.stat.checksum | default('')) != (certbot_after.stat.checksum | default(''))
+  tags: certbot

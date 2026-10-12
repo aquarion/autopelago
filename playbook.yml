@@ -38,6 +38,7 @@
   become: true
   roles:
     - water_gkhs_users
+    - aws_profiles
     - water_gkhs_tailscale
     - water_gkhs_network
     - water_gkhs_php
@@ -62,6 +63,15 @@
   become: true
   roles:
     - { role: water_gkhs_nginx, tags: nginx }
+
+- name: Certbot certificates on all external hosts
+  hosts: external_hosts
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
+  become: true
+  roles:
+    - { role: certbot, tags: certbot }
 
 - name: Hello Firth
   hosts: firth
@@ -101,7 +111,6 @@
     - water_gkhs_nginx
     - atoll_nginx
     - water_gkhs_exim
-    - aws_profiles
     - geerlingguy.nodejs
     - firth_docker
     - otel_hostmetrics
