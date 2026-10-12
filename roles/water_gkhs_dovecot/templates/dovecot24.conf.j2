@@ -1,0 +1,23 @@
+# Dovecot 2.4 config (Ubuntu 26.04+). The 2.3 equivalent is dovecot.conf.j2.
+# dovecot_config_version / dovecot_storage_version are set by the packaged
+# /etc/dovecot/dovecot.conf, which includes this file last.
+
+instance_name = {{ ansible_fqdn }}
+
+mail_driver = mbox
+mail_path = ~/Mail
+mail_inbox_path = /var/spool/mail/%{user}
+
+# The packaged auth-system.conf.ext already defines "passdb pam" and
+# "userdb passwd"; this adds the passwd-file passdb and tweaks the userdb.
+passdb passwd-file {
+  passwd_file_path = /etc/dovecot/passwd
+}
+
+userdb passwd {
+  use_worker = no
+}
+
+ssl = required
+ssl_server_cert_file = /etc/letsencrypt/live/{{ letsencrypt_dir }}/fullchain.pem
+ssl_server_key_file = /etc/letsencrypt/live/{{ letsencrypt_dir }}/privkey.pem
