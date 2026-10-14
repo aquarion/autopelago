@@ -1,0 +1,6 @@
+---
+# ImprovMX email forwarding. Needs `improvmx_api_key` in the vault (50-integrations.vault.yml).
+# MX records for these domains live in roles/firth_dns/tasks/zones_*/<domain>.yml.
+improvmx_domains:
+  - name: deathuntodarkness.org
+    aliases: []
