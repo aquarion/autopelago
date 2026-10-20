@@ -1,9 +1,13 @@
 ---
-- name: Add Tailscale GPG key
-  ansible.builtin.apt_key:
+# apt_key needs apt-key, which APT 3 (Ubuntu 26.04) no longer has; this key is binary, so .gpg
+- name: Download Tailscale GPG key
+  ansible.builtin.get_url:
     url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
-    state: present
-    keyring: /etc/apt/keyrings/tailscale.gpg
+    dest: /etc/apt/keyrings/tailscale.gpg
+    force: true
+    owner: root
+    group: root
+    mode: "0644"
   tags:
     - tailscale
 
