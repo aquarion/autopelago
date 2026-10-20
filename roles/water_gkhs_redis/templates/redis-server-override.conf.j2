@@ -5,4 +5,7 @@ After=docker.service
 [Service]
 Restart=on-failure
 RestartSec=30s
-StartLimitIntervalSec=0
+# Not a valid [Service] key (systemd only accepts StartLimitIntervalSec in [Unit]),
+# so systemd has always ignored it. With RestartSec=30s the default start limit
+# (5 starts in 10s) is never reached anyway.
+# StartLimitIntervalSec=0

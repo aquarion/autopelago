@@ -1,9 +1,14 @@
 ---
-- name: Add GPG key
-  ansible.builtin.apt_key:
-    url: https://repo.jellyfin.org/{{ ansible_distribution | lower }}/jellyfin_team.gpg.key
-    state: present
-    keyring: /etc/apt/keyrings/jellyfin.gpg
+# Vendored rather than apt_key, which needs apt-key (removed in APT 3,
+# Ubuntu 25.04+). From https://repo.jellyfin.org/ubuntu/jellyfin_team.gpg.key,
+# fingerprint 4918 AABC 486C A052 358D 778D 4902 3CD0 1DE2 1A7B.
+- name: Upload Jellyfin GPG key
+  ansible.builtin.copy:
+    src: jellyfin.asc
+    dest: /etc/apt/keyrings/jellyfin.asc
+    owner: root
+    group: root
+    mode: "0644"
   tags:
     - jellyfin
 
@@ -20,10 +25,20 @@
     uris: https://repo.jellyfin.org/{{ ansible_distribution | lower }}
     suites: "{{ ansible_distribution_release }}"
     state: present
-    signed_by: /etc/apt/keyrings/jellyfin.gpg
+    signed_by: /etc/apt/keyrings/jellyfin.asc
     components: main
     architectures: "{{ jellyfin_deb_architecture.stdout }}"
 
+  tags:
+    - jellyfin
+
+- name: Remove old apt_key Jellyfin keyring
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/apt/keyrings/jellyfin.gpg
+    - /etc/apt/keyrings/jellyfin.gpg~
   tags:
     - jellyfin
 

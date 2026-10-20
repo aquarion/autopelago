@@ -39,5 +39,8 @@
   vars:
     # Strip the Debian epoch ("1:2.4.2+dfsg1-...") so the version test can compare it
     dovecot_version: "{{ ansible_facts.packages['dovecot-core'][0].version | regex_replace('^[0-9]+:', '') }}"
+  # Only absent in --check on a host without Dovecot yet, where Install Dovecot
+  # didn't really install it; a real run always has it by this point.
+  when: "'dovecot-core' in ansible_facts.packages"
   notify: Restart Dovecot
   tags: dovecot
