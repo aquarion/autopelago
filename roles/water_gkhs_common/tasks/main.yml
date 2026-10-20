@@ -169,6 +169,26 @@
       - moreutils
       - rzip
 
+# Ubuntu 26.04 uses chrony instead of systemd-timesyncd, but only on new
+# installs; upgraded hosts keep timesyncd. This is the migration from the
+# 26.04 release notes. Both packages provide and conflict on time-daemon,
+# so installing chrony removes timesyncd.
+- name: Switch time sync to chrony on Ubuntu 26.04+
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('26.04', '>=')
+  tags: chrony
+  block:
+    - name: Mark systemd-timesyncd as automatically installed
+      ansible.builtin.command: apt-mark auto systemd-timesyncd
+      register: water_gkhs_common_timesyncd_mark
+      # Prints "... was already set to ..." or "... can not be marked as it
+      # is not installed." when there is nothing to do
+      changed_when: water_gkhs_common_timesyncd_mark.stdout is search('^systemd-timesyncd set to automatically installed')
+
+    - name: Install chrony
+      ansible.builtin.apt:
+        name: chrony
+        state: present
+
 - name: Install certbot packages
   ansible.builtin.apt:
     state: present
