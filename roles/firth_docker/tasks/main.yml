@@ -3,12 +3,13 @@
   tags:
     - docker
   block:
-    # apt_key needs apt-key, which APT 3 (Ubuntu 26.04) no longer has; the key is ASCII-armored, so .asc
-    - name: Download Docker GPG key
-      ansible.builtin.get_url:
-        url: https://download.docker.com/linux/ubuntu/gpg
+    # Vendored rather than apt_key, which needs apt-key (removed in APT 3,
+    # Ubuntu 25.04+). From https://download.docker.com/linux/ubuntu/gpg,
+    # fingerprint 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88.
+    - name: Upload Docker GPG key
+      ansible.builtin.copy:
+        src: docker.asc
         dest: /etc/apt/keyrings/docker.asc
-        force: true
         owner: root
         group: root
         mode: "0644"
@@ -41,8 +42,11 @@
 
     - name: Remove old apt_key Docker keyring
       ansible.builtin.file:
-        path: /etc/apt/keyrings/docker.gpg
+        path: "{{ item }}"
         state: absent
+      loop:
+        - /etc/apt/keyrings/docker.gpg
+        - /etc/apt/keyrings/docker.gpg~
 
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers

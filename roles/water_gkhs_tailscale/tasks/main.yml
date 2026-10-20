@@ -1,13 +1,22 @@
 ---
-# apt_key needs apt-key, which APT 3 (Ubuntu 26.04) no longer has; this key is binary, so .gpg
-- name: Download Tailscale GPG key
-  ansible.builtin.get_url:
-    url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
+# Vendored rather than apt_key, which needs apt-key (removed in APT 3,
+# Ubuntu 25.04+). From https://pkgs.tailscale.com/stable/ubuntu/<release>.noarmor.gpg
+# (the same key for noble and resolute), fingerprint
+# 2596 A99E AAB3 3821 893C 0A79 458C A832 957F 5868.
+- name: Upload Tailscale GPG key
+  ansible.builtin.copy:
+    src: tailscale.gpg
     dest: /etc/apt/keyrings/tailscale.gpg
-    force: true
     owner: root
     group: root
     mode: "0644"
+  tags:
+    - tailscale
+
+- name: Remove apt_key keyring backup
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/tailscale.gpg~
+    state: absent
   tags:
     - tailscale
 

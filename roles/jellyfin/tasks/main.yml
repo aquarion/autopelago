@@ -1,10 +1,11 @@
 ---
-# apt_key needs apt-key, which APT 3 (Ubuntu 26.04) no longer has; the key is ASCII-armored, so .asc
-- name: Download Jellyfin GPG key
-  ansible.builtin.get_url:
-    url: https://repo.jellyfin.org/{{ ansible_distribution | lower }}/jellyfin_team.gpg.key
+# Vendored rather than apt_key, which needs apt-key (removed in APT 3,
+# Ubuntu 25.04+). From https://repo.jellyfin.org/ubuntu/jellyfin_team.gpg.key,
+# fingerprint 4918 AABC 486C A052 358D 778D 4902 3CD0 1DE2 1A7B.
+- name: Upload Jellyfin GPG key
+  ansible.builtin.copy:
+    src: jellyfin.asc
     dest: /etc/apt/keyrings/jellyfin.asc
-    force: true
     owner: root
     group: root
     mode: "0644"
@@ -33,8 +34,11 @@
 
 - name: Remove old apt_key Jellyfin keyring
   ansible.builtin.file:
-    path: /etc/apt/keyrings/jellyfin.gpg
+    path: "{{ item }}"
     state: absent
+  loop:
+    - /etc/apt/keyrings/jellyfin.gpg
+    - /etc/apt/keyrings/jellyfin.gpg~
   tags:
     - jellyfin
 
