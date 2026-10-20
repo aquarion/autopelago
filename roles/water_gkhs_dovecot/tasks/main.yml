@@ -26,11 +26,18 @@
     append: true
   tags: dovecot
 
+- name: Gather installed package versions
+  ansible.builtin.package_facts:
+  tags: dovecot
+
 - name: Configure Dovecot
   ansible.builtin.template:
-    # Dovecot 2.4 (Ubuntu 25.10+) uses an incompatible config format
-    src: "{{ 'dovecot24.conf.j2' if ansible_distribution_version is version('25.10', '>=') else 'dovecot.conf.j2' }}"
+    # Dovecot 2.4 uses an incompatible config format
+    src: "{{ 'dovecot24.conf.j2' if dovecot_version is version('2.4', '>=') else 'dovecot.conf.j2' }}"
     dest: /etc/dovecot/local.conf
     mode: "0644"
+  vars:
+    # Strip the Debian epoch ("1:2.4.2+dfsg1-...") so the version test can compare it
+    dovecot_version: "{{ ansible_facts.packages['dovecot-core'][0].version | regex_replace('^[0-9]+:', '') }}"
   notify: Restart Dovecot
   tags: dovecot
