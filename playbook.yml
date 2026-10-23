@@ -19,8 +19,8 @@
       become: false
       tags: aws
 
-- name: Actions on all hosts
-  hosts: all
+- name: Common packages and updates on all external hosts
+  hosts: external_hosts
   handlers:
     - name: Import global handlers
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
