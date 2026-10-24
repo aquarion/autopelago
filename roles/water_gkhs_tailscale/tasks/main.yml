@@ -31,7 +31,7 @@
   ansible.builtin.deb822_repository:
     name: tailscale
     uris: https://pkgs.tailscale.com/stable/ubuntu
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     state: present
     signed_by: /etc/apt/keyrings/tailscale.gpg
     components: main

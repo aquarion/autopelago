@@ -22,8 +22,8 @@
 - name: Jellyfin Repo
   ansible.builtin.deb822_repository:
     name: jellyfin
-    uris: https://repo.jellyfin.org/{{ ansible_distribution | lower }}
-    suites: "{{ ansible_distribution_release }}"
+    uris: https://repo.jellyfin.org/{{ ansible_facts['distribution'] | lower }}
+    suites: "{{ ansible_facts['distribution_release'] }}"
     state: present
     signed_by: /etc/apt/keyrings/jellyfin.asc
     components: main

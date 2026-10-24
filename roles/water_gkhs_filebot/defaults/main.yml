@@ -6,6 +6,6 @@ water_gkhs_filebot_filebot_mirror: https://get.filebot.net/filebot/FileBot_{{ wa
 water_gkhs_filebot_filebot_deb:
   i386: FileBot_{{ water_gkhs_filebot_filebot_version }}_i386.deb
   x86_64: FileBot_{{ water_gkhs_filebot_filebot_version }}_amd64.deb
-water_gkhs_filebot_filebot_deb_url: "{{ water_gkhs_filebot_filebot_mirror }}/{{ water_gkhs_filebot_filebot_deb[ansible_architecture] }}"
+water_gkhs_filebot_filebot_deb_url: "{{ water_gkhs_filebot_filebot_mirror }}/{{ water_gkhs_filebot_filebot_deb[ansible_facts['architecture']] }}"
 water_gkhs_filebot_filebot_deb_bin: /usr/bin/filebot
-water_gkhs_filebot_filebot_deb_tmp: /tmp/{{ water_gkhs_filebot_filebot_deb[ansible_architecture] }}
+water_gkhs_filebot_filebot_deb_tmp: /tmp/{{ water_gkhs_filebot_filebot_deb[ansible_facts['architecture']] }}
