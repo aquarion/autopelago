@@ -75,39 +75,17 @@
     - ubuntu_sources
     - archive_sources
 
+# Old apt_repository-style files superseded by ubuntu.sources / security.sources
+# above. Those tasks fail the play if they fail, so no existence guard is needed.
 - name: Remove old archive and security sources
+  when: ansible_distribution == 'Ubuntu'
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}"
+    state: absent
+  loop:
+    - archive_ubuntu_com_ubuntu.list
+    - security_ubuntu_com_ubuntu.list
   tags: ubuntu_sources
-
-  block:
-    - name: Check if archive source file exists
-      ansible.builtin.stat:
-        path: "/etc/apt/sources.list.d/archive_ubuntu_com_ubuntu.sources"
-      register: water_gkhs_common_archive_source_file
-
-    - name: Remove archive source file
-      ansible.builtin.file:
-        path: /etc/apt/sources.list.d/archive_ubuntu_com_ubuntu.list
-        state: absent
-      when: water_gkhs_common_archive_source_file.stat.exists
-
-    - name: Check if security source file exists
-      ansible.builtin.stat:
-        path: "/etc/apt/sources.list.d/security_ubuntu_com_ubuntu.sources"
-      register: water_gkhs_common_security_source_file
-
-    - name: Remove security source file
-      ansible.builtin.file:
-        path: /etc/apt/sources.list.d/security_ubuntu_com_ubuntu.list
-        state: absent
-      when: water_gkhs_common_security_source_file.stat.exists
-
-  rescue:
-    - name: "Failure warning"
-      ansible.builtin.debug:
-        msg: "Apt tasks failed"
-    - name: "Failure execution"
-      ansible.builtin.command:
-        cmd: "false"
 
 - name: Package list update
   ansible.builtin.apt:
