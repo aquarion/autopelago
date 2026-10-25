@@ -44,10 +44,19 @@
   tags: php
   register: water_gkhs_php_repo
 
+# The repo file is named per release, so a release upgrade leaves the old one behind.
+- name: Remove PHP repository files for previous releases
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/php-sury-{{ item }}.sources"
+    state: absent
+  loop: "{{ ['noble'] | reject('equalto', ansible_distribution_release) | list }}"
+  tags: php
+  register: water_gkhs_php_old_repo
+
 - name: Refresh packages if PHP PPA was changed
   ansible.builtin.apt:
     update_cache: true
-  when: water_gkhs_php_repo.changed
+  when: water_gkhs_php_repo.changed or water_gkhs_php_old_repo.changed
   tags: php
 
 - name: Remove old PHP Packages
