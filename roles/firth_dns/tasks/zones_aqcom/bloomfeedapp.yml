@@ -21,42 +21,19 @@
   tags:
     - bloomfeedapp
 
-- name: Bloomfeed.app. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: bloomfeed.app
-    record: bloomfeed.app.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: aqcom
-  tags:
-    - bloomfeedapp
-
-- name: Www.bloomfeed.app. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: bloomfeed.app
-    record: www.bloomfeed.app.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: aqcom
-  tags:
-    - bloomfeedapp
-
-- name: Beta.bloomfeed.app. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: bloomfeed.app
-    record: beta.bloomfeed.app.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: aqcom
+- name: "Bloomfeed.app Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+    apply:
+      tags:
+        - bloomfeedapp
+  vars:
+    _r53_zone: bloomfeed.app
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: beta, type: A, value: "{{ loadbalancer_ip }}" }
   tags:
     - bloomfeedapp
 

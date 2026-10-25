@@ -1,39 +1,16 @@
 ---
-- name: Dagon.church - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: dagon.church
-    record: dagon.church.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: istic
-  tags:
-    - dagon_church
-
-- name: Live.dagon.church - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: dagon.church
-    record: live.dagon.church.
-    type: CNAME
-    ttl: "300"
-    value: dagon.church
-    aws_profile: istic
-  tags:
-    - dagon_church
-
-- name: Wiki.dagon.church - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: dagon.church
-    record: wiki.dagon.church.
-    type: CNAME
-    ttl: "300"
-    value: dagon.church
-    aws_profile: istic
+- name: "Dagon.church Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+    apply:
+      tags:
+        - dagon_church
+  vars:
+    _r53_zone: dagon.church
+    _r53_aws_profile: istic
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: live, type: CNAME, value: dagon.church }
+      - { name: wiki, type: CNAME, value: dagon.church }
   tags:
     - dagon_church

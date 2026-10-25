@@ -1,36 +1,15 @@
 ---
-- name: Cleartextcontent.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: cleartextcontent.co.uk
-    record: cleartextcontent.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-
-- name: Cleartextcontent.co.uk. - MX
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: cleartextcontent.co.uk
-    record: cleartextcontent.co.uk.
-    aws_profile: aqcom
-    type: MX
-    ttl: "300"
-    value: 10 cenote.gkhs.net
-
-- name: Cleartextcontent.co.uk. - NS
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: cleartextcontent.co.uk
-    record: cleartextcontent.co.uk.
-    aws_profile: aqcom
-    type: NS
-    ttl: "172800"
-    value: ns-797.awsdns-35.net.,ns-39.awsdns-04.com.,ns-2024.awsdns-61.co.uk.,ns-1219.awsdns-24.org.
+- name: "Cleartextcontent.co.uk Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+  vars:
+    _r53_zone: cleartextcontent.co.uk
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: "@", type: MX, value: "10 cenote.gkhs.net" }
+      - { name: "@", type: NS, ttl: 172800, value: "ns-797.awsdns-35.net.,ns-39.awsdns-04.com.,ns-2024.awsdns-61.co.uk.,ns-1219.awsdns-24.org." }
+      - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
 
 # - name: Cleartextcontent.co.uk. - SOA
 #  amazon.aws.route53:
@@ -43,14 +22,3 @@
 #      type: "SOA"
 #      ttl: "900"
 #      value: 'ns-797.awsdns-35.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
-
-- name: Www.cleartextcontent.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: cleartextcontent.co.uk
-    record: www.cleartextcontent.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"

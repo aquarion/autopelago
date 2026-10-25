@@ -8,16 +8,20 @@
   tags:
     - conterio
 
-- name: Conterio.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: conterio.co.uk
-    record: conterio.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
+- name: "Conterio.co.uk Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+    apply:
+      tags:
+        - conterio
+  vars:
+    _r53_zone: conterio.co.uk
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: michael, type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: www.michael, type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
   tags:
     - conterio
 
@@ -44,42 +48,3 @@
 # type: "SOA"
 #      ttl: "900"
 #      value: 'ns-422.awsdns-52.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
-
-- name: Michael.conterio.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: conterio.co.uk
-    record: michael.conterio.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-  tags:
-    - conterio
-
-- name: Www.Michael.conterio.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: conterio.co.uk
-    record: www.michael.conterio.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-  tags:
-    - conterio
-
-- name: Www.conterio.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: conterio.co.uk
-    record: www.conterio.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-  tags:
-    - conterio

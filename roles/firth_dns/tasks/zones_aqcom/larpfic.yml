@@ -17,54 +17,32 @@
   tags:
     - larpfic
 
-- name: Larpfic.com. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: larpfic.com
-    record: larpfic.com.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: aqcom
+- name: "Larpfic.com Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+    apply:
+      tags:
+        - larpfic
+  vars:
+    _r53_zone: larpfic.com
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
   tags:
     - larpfic
 
-- name: Www.larpfic.com. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: larpfic.com
-    record: www.larpfic.com.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: aqcom
-  tags:
-    - larpfic
-
-- name: Lrpfic.com. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: lrpfic.com
-    record: lrpfic.com.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: aqcom
-  tags:
-    - larpfic
-
-- name: Www.lrpfic.com. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: lrpfic.com
-    record: www.lrpfic.com.
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-    aws_profile: aqcom
+- name: "Lrpfic.com Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+    apply:
+      tags:
+        - larpfic
+  vars:
+    _r53_zone: lrpfic.com
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
   tags:
     - larpfic

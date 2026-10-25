@@ -81,30 +81,18 @@
         - aquarionics
         - aquarionics_aws
       block:
-        - name: "Aquarionics.com Route53 {{ item.name ~ ' ' ~ item.type }}"
-          amazon.aws.route53:
-            overwrite: true
-            state: "{{ item.state }}"
-            zone: "{{ _zone }}"
-            record: "{{ (item.name == '@') | ternary(_zone + '.', item.name + '.' + _zone + '.') }}"
-            aws_profile: aqcom
-            type: "{{ item.type }}"
-            ttl: "{{ item.ttl | default('300') }}"
-            value: "{{ item.value }}"
-          loop: "{{ _records | rejectattr('cf_only', 'defined') | list }}"
-          loop_control:
-            label: "{{ item.name }} {{ item.type }}"
-
-        - name: Aquarionics.com Route53 MX
-          amazon.aws.route53:
-            overwrite: true
-            state: present
-            zone: "{{ _zone }}"
-            record: "{{ _zone }}."
-            aws_profile: aqcom
-            type: MX
-            ttl: "300"
-            value: "{{ _mx | map(attribute='r53') | join(',') }}"
+        - name: Aquarionics.com Route53 records
+          ansible.builtin.include_tasks:
+            file: ../../included_tasks/route53_records.yml
+            apply:
+              tags:
+                - aws
+                - aquarionics
+                - aquarionics_aws
+          vars:
+            _r53_zone: "{{ _zone }}"
+            _r53_aws_profile: aqcom
+            _r53_records: "{{ _records | rejectattr('cf_only', 'defined') | list + [{'name': '@', 'type': 'MX', 'value': _mx | map(attribute='r53') | join(',')}] }}"
 
       rescue:
         - name: Failure warning

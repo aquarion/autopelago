@@ -1,25 +1,20 @@
 ---
-- name: Aqxs.net. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: aqxs.net
-    record: aqxs.net.
-    aws_profile: aqcom
-    type: A
-    ttl: "3600"
-    value: "{{ loadbalancer_ip }}"
-
-- name: Aqxs.net. - NS
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: aqxs.net
-    record: aqxs.net.
-    aws_profile: aqcom
-    type: NS
-    ttl: "172800"
-    value: ns-1408.awsdns-48.org.,ns-685.awsdns-21.net.,ns-40.awsdns-05.com.,ns-1866.awsdns-41.co.uk.
+- name: "Aqxs.net Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+  vars:
+    _r53_zone: aqxs.net
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, ttl: 3600, value: "{{ loadbalancer_ip }}" }
+      - { name: "@", type: NS, ttl: 172800, value: "ns-1408.awsdns-48.org.,ns-685.awsdns-21.net.,ns-40.awsdns-05.com.,ns-1866.awsdns-41.co.uk." }
+      - { name: "@", type: TXT, value: ['"google-site-verification=SvTocYjKGCKTzN9BlJSdq0MVkEaFvEAum18VoLaKB5s"', '"v=spf1 a mx include:spf.mtasv.net ~all"'] }
+      - { name: "*", type: A, ttl: 3600, value: "{{ loadbalancer_ip }}" }
+      - { name: 20151026232244.pm._domainkey, type: TXT, value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGF2/JFx7pvFw7RU1wXzqtMohMaSZTEbeLscHSrvzrKKtH2M1zTY8YwIZpjFCjbCbQ2aW28bLzzhd2e1klZorwWV++CYoXnnGgVtz1241ToVPgKyKepmBn6E+3DaJZWsj17jINgEkxYoZ3hvp34y+NSFxlMR4bD9V3EetoxUAYgQIDAQAB"' }
+      - { name: "@", type: MX, value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM." }
+      - { name: lists, type: MX, state: absent, ttl: 3600, value: "10 aspmx2.googlemail.com.,10 aspmx3.googlemail.com.,5 alt1.aspmx.l.google.com.,5 alt2.aspmx.l.google.com.,1 aspmx.l.google.com." }
+      - { name: radiator.localdev, type: A, state: absent, value: 192.168.10.10 }
+      - { name: pmbounce, type: CNAME, value: pm.mtasv.net }
 
 # - name: Aqxs.net. - SOA
 #  amazon.aws.route53:
@@ -32,82 +27,3 @@
 # type: "SOA"
 #      ttl: "900"
 #      value: 'ns-1408.awsdns-48.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
-
-- name: Aqxs.net. - TXT Records
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: aqxs.net
-    record: aqxs.net.
-    aws_profile: aqcom
-    type: TXT
-    ttl: "300"
-    value:
-      - '"google-site-verification=SvTocYjKGCKTzN9BlJSdq0MVkEaFvEAum18VoLaKB5s"'
-      - '"v=spf1 a mx include:spf.mtasv.net ~all"'
-
-- name: Wildcard.aqxs.net. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: aqxs.net
-    record: "*.aqxs.net."
-    aws_profile: aqcom
-    type: A
-    ttl: "3600"
-    value: "{{ loadbalancer_ip }}"
-
-- name: 20151026232244.pm._domainkey.aqxs.net. - TXT
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: aqxs.net
-    record: 20151026232244.pm._domainkey.aqxs.net.
-    aws_profile: aqcom
-    type: TXT
-    ttl: "300"
-    value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGF2/JFx7pvFw7RU1wXzqtMohMaSZTEbeLscHSrvzrKKtH2M1zTY8YwIZpjFCjbCbQ2aW28bLzzhd2e1klZorwWV++CYoXnnGgVtz1241ToVPgKyKepmBn6E+3DaJZWsj17jINgEkxYoZ3hvp34y+NSFxlMR4bD9V3EetoxUAYgQIDAQAB"'
-
-- name: Aqxs.net. - MX
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: aqxs.net
-    record: aqxs.net.
-    aws_profile: aqcom
-    type: MX
-    ttl: "300"
-    value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM."
-
-- name: Lists.aqxs.net. - MX - remove
-  amazon.aws.route53:
-    overwrite: true
-    state: absent
-    zone: aqxs.net
-    record: lists.aqxs.net.
-    aws_profile: aqcom
-    type: MX
-    ttl: "3600"
-    value: 10 aspmx2.googlemail.com.,10 aspmx3.googlemail.com.,5 alt1.aspmx.l.google.com.,5 alt2.aspmx.l.google.com.,1 aspmx.l.google.com.
-
-- name: Radiator.localdev.aqxs.net. - A - remove
-  amazon.aws.route53:
-    overwrite: true
-    state: absent
-    zone: aqxs.net
-    record: radiator.localdev.aqxs.net.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: 192.168.10.10
-
-- name: Pmbounce.aqxs.net. - CNAME
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: aqxs.net
-    record: pmbounce.aqxs.net.
-    aws_profile: aqcom
-    type: CNAME
-    ttl: "300"
-    value: pm.mtasv.net
