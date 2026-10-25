@@ -1,0 +1,11 @@
+---
+# Record the removals in /etc's git history now rather than at the next
+# daily autocommit. Skipped if something else already committed them.
+- name: Commit apt cleanup to etckeeper
+  ansible.builtin.shell: |
+    if etckeeper unclean; then
+      etckeeper commit "Remove old *.distUpgrade apt source backups (ansible)"
+      echo committed
+    fi
+  register: water_gkhs_apt_cleanup_etckeeper
+  changed_when: "'committed' in water_gkhs_apt_cleanup_etckeeper.stdout"

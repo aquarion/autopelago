@@ -27,6 +27,7 @@
   become: true
   roles:
     - water_gkhs_common
+    - water_gkhs_apt_cleanup
     - water_gkhs_listchanges
     - water_gkhs_update
 
