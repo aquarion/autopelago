@@ -26,21 +26,14 @@
         stream_delta_gh_env_api: "https://api.github.com/repos/aquarion/stream-delta/environments/{{ stream_delta_github_environment }}"
 
     - name: Get list of production environment variables
-      ansible.builtin.uri:
-        # Single page only: add pagination if this list ever passes 100 entries.
-        url: "{{ stream_delta_gh_env_api }}/variables?per_page=100"
-        method: GET
-        headers:
-          Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ github_deploy_token }}"
-          X-GitHub-Api-Version: "2022-11-28"
-        return_content: true
-      register: stream_delta_github_production_variables_response
-      changed_when: false
+      ansible.builtin.import_tasks: github_list.yml
+      vars:
+        stream_delta_list_url: "{{ stream_delta_gh_env_api }}/variables"
+        stream_delta_list_key: variables
 
     - name: Set production variables list as fact for cleaner code
       ansible.builtin.set_fact:
-        stream_delta_production_vars: "{{ stream_delta_github_production_variables_response.json.variables | items2dict(key_name='name', value_name='value') }}"
+        stream_delta_production_vars: "{{ stream_delta_list_items | items2dict(key_name='name', value_name='value') }}"
 
     - name: Add variables to production environment
       ansible.builtin.uri:
