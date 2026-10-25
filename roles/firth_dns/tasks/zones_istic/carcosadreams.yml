@@ -69,7 +69,6 @@
           - { name: "@", type: TXT, value: '"v=spf1 include:spf.protection.outlook.com -all"' }
           - { name: k2._domainkey, type: CNAME, value: dkim2.mcsv.net }
           - { name: k3._domainkey, type: CNAME, value: dkim3.mcsv.net }
-          - { name: k3._domainkey, type: CNAME, value: dkim3.mcsv.net }
           - { name: zuda3._domainkey, type: CNAME, value: wl698619s1.domainkey.freshemail.io }
           - { name: zc1p2._domainkey, type: CNAME, value: wl698619s2.domainkey.freshemail.io }
           - { name: 1s3._domainkey, type: CNAME, value: wl698619s3.domainkey.freshemail.io }

@@ -128,9 +128,10 @@ class FilterModule(FilterModuleBase):
         current = {}
         for record_set in existing:
             record_set = dict(record_set)
-            # Route53 escapes "*" and other characters as \ooo octal.
-            record_set["name"] = record_set["name"].encode().decode("unicode_escape")
-            current.setdefault((record_set["name"].lower(), record_set["type"]), record_set)
+            # Route53 escapes "*" and other characters as \ooo octal. Names are
+            # case-insensitive; the wanted side is lower-cased too.
+            record_set["name"] = record_set["name"].encode().decode("unicode_escape").lower()
+            current.setdefault((record_set["name"], record_set["type"]), record_set)
 
         pending = []
         for item in records:

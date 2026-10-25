@@ -27,6 +27,7 @@
 
     - name: Get list of production environment variables
       ansible.builtin.uri:
+        # Single page only: add pagination if this list ever passes 100 entries.
         url: "{{ stream_delta_gh_env_api }}/variables?per_page=100"
         method: GET
         headers:
