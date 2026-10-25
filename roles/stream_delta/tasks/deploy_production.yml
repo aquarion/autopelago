@@ -3,6 +3,9 @@
   tags:
     - stream_delta
     - stream_delta_github
+  # API calls only: run them from the controller rather than over SSH per item.
+  delegate_to: localhost
+  become: false
   block:
     - name: Ensure production environment exists
       ansible.builtin.uri:
@@ -24,7 +27,7 @@
 
     - name: Get list of production environment variables
       ansible.builtin.uri:
-        url: "{{ stream_delta_gh_env_api }}/variables?per_page=30"
+        url: "{{ stream_delta_gh_env_api }}/variables?per_page=100"
         method: GET
         headers:
           Accept: "application/vnd.github.v3+json"
@@ -36,7 +39,7 @@
 
     - name: Set production variables list as fact for cleaner code
       ansible.builtin.set_fact:
-        stream_delta_production_vars: "{{ stream_delta_github_production_variables_response.json.variables | map(attribute='name') | list }}"
+        stream_delta_production_vars: "{{ stream_delta_github_production_variables_response.json.variables | items2dict(key_name='name', value_name='value') }}"
 
     - name: Add variables to production environment
       ansible.builtin.uri:
@@ -52,11 +55,13 @@
         body_format: json
         status_code: 200,201,204
       register: stream_delta_production_response
-      changed_when: stream_delta_production_response.status == 201
+      # Only reached for new or changed values: POST returns 201, PATCH 204.
+      changed_when: stream_delta_production_response.status in [201, 204]
       retries: 3
       delay: 5
       until: stream_delta_production_response is not failed
       loop: "{{ stream_delta_github_production_variables }}"
+      when: stream_delta_production_vars[item.name] | default(none) != item.value | string
 
     - name: Get github public key for production environment
       ansible.builtin.uri:
