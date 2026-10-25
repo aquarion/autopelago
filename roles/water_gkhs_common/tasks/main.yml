@@ -9,6 +9,14 @@
 #    id: 8B48AD6246925553
 #  when: ansible_facts['distribution'] == 'Debian'
 
+# Replaces the old apt_repository task that added this repo on Debian stretch.
+- name: Remove obsolete Debian stretch-backports repo
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/stretch-backports.list
+    state: absent
+  when: ansible_facts['distribution'] == 'Debian'
+  tags: ubuntu_sources
+
 # apt_repository is deprecated, so strip the old one-line entries with
 # lineinfile instead. These are the files apt_repository would have
 # written them to, plus the stock sources.list.
