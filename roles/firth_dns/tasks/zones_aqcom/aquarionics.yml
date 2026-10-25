@@ -92,7 +92,8 @@
           vars:
             _r53_zone: "{{ _zone }}"
             _r53_aws_profile: aqcom
-            _r53_records: "{{ _records | rejectattr('cf_only', 'defined') | list + [{'name': '@', 'type': 'MX', 'value': _mx | map(attribute='r53') | join(',')}] }}"
+            _r53_records: "{{ _records | rejectattr('cf_only', 'defined') | list + [_r53_mx] }}"
+            _r53_mx: { name: "@", type: MX, value: "{{ _mx | map(attribute='r53') | join(',') }}" }
 
       rescue:
         - name: Failure warning

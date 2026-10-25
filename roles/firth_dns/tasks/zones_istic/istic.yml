@@ -16,11 +16,15 @@
         _r53_aws_profile: istic
         _r53_records:
           - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
-          - { name: "@", type: MX, value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM." }
+          - name: "@"
+            type: MX
+            value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM."
           - { name: "@", type: TXT, value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"' }
           - { name: "*", type: A, value: "{{ loadbalancer_ip }}" }
           - { name: _0ed69ff5c31a07f040dcb35337eb4a66, type: CNAME, value: _9d6bae07c4db71b24db2d17cb58ea979.hkvuiqjoua.acm-validations.aws. }
-          - { name: 20131117185804.pm._domainkey, type: TXT, value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"' }
+          - name: 20131117185804.pm._domainkey
+            type: TXT
+            value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
           - { name: _f3745362c222f5b3b80d97e5e65e1e5d, type: CNAME, value: _d552617b8e3e9ba74015bf5b057a9992.hkvuiqjoua.acm-validations.aws. }
           - { name: art, type: CNAME, value: dh1k06lb8zbki.cloudfront.net }
           - { name: _e30ae5c849fa50c37f4ad7471b665d56.art, type: CNAME, value: _de5f022e01ad630db13679900d38e2f7.hkvuiqjoua.acm-validations.aws. }
@@ -32,7 +36,9 @@
           - { name: ludo, type: CNAME, state: absent, value: cenote.water.gkhs.net }
           - { name: mailgun, type: MX, value: "10 mxa.mailgun.org.,20 mxb.mailgun.org." }
           - { name: mailgun, type: TXT, value: '"v=spf1 include:mailgun.org ~all"' }
-          - { name: pic._domainkey.mailgun, type: TXT, value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOWpy/f9cllyHPGjHDivg4y9BVxHNZsiB147x4aL1G4ojfB9QY8XmM9AUUhcwuIG0U8Vb9y1kV3AMER4gb0jSWkjv0PQ4a5FXB5iuG8+OScJbLJkDyCK+IePZwwQ5HzH3ERCDN6uDfj14tprXA7wzYFtIvCpWgMqLmtFsrZ1x+iQIDAQAB"' }
+          - name: pic._domainkey.mailgun
+            type: TXT
+            value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOWpy/f9cllyHPGjHDivg4y9BVxHNZsiB147x4aL1G4ojfB9QY8XmM9AUUhcwuIG0U8Vb9y1kV3AMER4gb0jSWkjv0PQ4a5FXB5iuG8+OScJbLJkDyCK+IePZwwQ5HzH3ERCDN6uDfj14tprXA7wzYFtIvCpWgMqLmtFsrZ1x+iQIDAQAB"'
           - { name: email.mailgun, type: CNAME, value: mailgun.org }
           - { name: material, type: A, value: "{{ loadbalancer_ip }}" }
           - { name: "*.melior", type: A, value: 127.0.0.1 }
@@ -56,11 +62,15 @@
         _r53_aws_profile: istic
         _r53_records:
           - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
-          - { name: "@", type: MX, value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM." }
+          - name: "@"
+            type: MX
+            value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ASPMX2.GOOGLEMAIL.COM.,10 ASPMX3.GOOGLEMAIL.COM."
           - { name: "@", type: SPF, value: '"v=spf1 include:_spf.google.com include:spf.mtasv.net ~all"' }
           - { name: "@", type: TXT, value: '"google-site-verification=s0yW3bT4lr3noX5rosTZKsF02ETS8ny7OzLO2TBQck4"' }
           - { name: "*", type: A, value: "{{ loadbalancer_ip }}" }
-          - { name: 20131117185804.pm._domainkey, type: TXT, value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"' }
+          - name: 20131117185804.pm._domainkey
+            type: TXT
+            value: '"k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNc/CJeJG5N3saB5FNf1LpaGlRrlD/nZDdj4CkCMQgdkd9UCdS+5LHjJ26dRdNZe72fSZyGE6+WJ87JtCaemik/nDn5Ete4G0vnRJqGwbIqgPAVZ8bDLJ01qQOeMYXCpVrc6liRfIkVqMDl3IGyRsCRQ6bzfY4KVmSBh5y1RK+kwIDAQAB"'
           - { name: www, type: CNAME, value: istic.net }
           - { name: _539bdb6bdc13156018f1fa46f1b6e61d, type: CNAME, value: _01846086965f112ce47765432a4a5ec0.zrvsvrxrgs.acm-validations.aws. }
       tags:

@@ -38,7 +38,9 @@
     _r53_aws_profile: aqcom
     _r53_records:
       - { name: "@", type: TXT, value: '"google-site-verification=y3Y66Y4hWEyWQ3cm4WwsyH3Er9vEjzZxrKZAsNTXIE4"' }
-      - { name: "@", type: MX, value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM." }
+      - name: "@"
+        type: MX
+        value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM."
   tags:
     - hubris.house
     - hubris.house.google

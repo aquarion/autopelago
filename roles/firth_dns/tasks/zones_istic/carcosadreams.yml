@@ -75,7 +75,9 @@
           - { name: 1s3._domainkey, type: CNAME, value: wl698619s3.domainkey.freshemail.io }
           - { name: fwdkim1, type: CNAME, value: spfmx1.domainkey.freshemail.io }
           - { name: _atproto, type: TXT, value: '"did=did:plc:2ij27abhkpexsfql2xkhqtb4"' }
-          - { name: 20201030223637pm._domainkey, type: TXT, value: '"k=rsa;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2+ZEoXZHwuj2AeGT6bAU9VEnkDgKfueK8WfqH+WEw58ZP7WbWGT5x5BOpYrC1bR7byCkr3WUuilk/Bp8h6QX5GmRSktBLgNI3LtK+fGrFstsUuimNhLoJzeKFqCaW8F/Jdi/IfhGfnMyxHjFpbSxYilLVdlzefEI0cHCyP3bQYQIDAQAB"' }
+          - name: 20201030223637pm._domainkey
+            type: TXT
+            value: '"k=rsa;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2+ZEoXZHwuj2AeGT6bAU9VEnkDgKfueK8WfqH+WEw58ZP7WbWGT5x5BOpYrC1bR7byCkr3WUuilk/Bp8h6QX5GmRSktBLgNI3LtK+fGrFstsUuimNhLoJzeKFqCaW8F/Jdi/IfhGfnMyxHjFpbSxYilLVdlzefEI0cHCyP3bQYQIDAQAB"'
           - { name: pm-bounces, type: CNAME, value: pm.mtasv.net }
           - { name: gd-internal, type: A, state: absent, value: 78.46.38.44 }
           - { name: grand-designs, type: A, state: absent, value: 78.46.38.44 }

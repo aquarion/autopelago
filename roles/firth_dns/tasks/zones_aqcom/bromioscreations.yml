@@ -8,10 +8,14 @@
     _r53_records:
       - { name: "@", type: A, ttl: 86400, value: "{{ loadbalancer_ip }}" }
       - { name: "@", type: AAAA, value: "{{ loadbalancer_ipv6 }}" }
-      - { name: "@", type: MX, value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM." }
+      - name: "@"
+        type: MX
+        value: "1 ASPMX.L.GOOGLE.COM.,5 ALT1.ASPMX.L.GOOGLE.COM.,5 ALT2.ASPMX.L.GOOGLE.COM.,10 ALT3.ASPMX.L.GOOGLE.COM.,10 ALT4.ASPMX.L.GOOGLE.COM."
       - { name: "@", type: SPF, ttl: 86400, value: '"v=spf1 include:aspmx.googlemail.com ~all"' }
       - { name: "@", type: TXT, value: '"v=spf1 include:aspmx.googlemail.com ~all"' }
-      - { name: google._domainkey, type: TXT, value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"' }
+      - name: google._domainkey
+        type: TXT
+        value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeXipYp/HVbmCmGSDI5WKA6vB2679OoStEVKXePsMD0WfEOK+BqQv1lHBzjL2AlNvGmMPf2Ccd6cnk0HdsaQqpkbS1TyOWuZx7P191Q1bHhT5mxvZoAdYbv5XN+0j/SWsqhg/2zYmCQhB8ed499sX5esIUWYQK4djh+xV7GaYxCwIDAQAB"'
       - { name: cdn, type: CNAME, value: d2r0e8lumqw3g1.cloudfront.net }
       - { name: "*.cdn", type: CNAME, ttl: 3600, value: d2r0e8lumqw3g1.cloudfront.net }
       - { name: mail, type: CNAME, ttl: 86400, value: ghs.google.com }
