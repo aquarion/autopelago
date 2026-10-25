@@ -1,4 +1,4 @@
-letsencrypt_dir: "{{ ansible_fqdn }}"
+letsencrypt_dir: "{{ ansible_facts['fqdn'] }}"
 
 flexget_tasks:
   tasks:

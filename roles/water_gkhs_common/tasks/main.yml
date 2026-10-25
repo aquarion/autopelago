@@ -7,43 +7,49 @@
 #  apt_key:
 #    keyserver: keyserver.ubuntu.com
 #    id: 8B48AD6246925553
-#  when: ansible_distribution == 'Debian'
+#  when: ansible_facts['distribution'] == 'Debian'
 
-- name: Install Debian Backports
-  ansible.builtin.apt_repository:
-    repo: deb http://ftp.debian.org/debian stretch-backports main
-    state: present
-    filename: stretch-backports
-  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
+# Replaces the old apt_repository task that added this repo on Debian stretch.
+- name: Remove obsolete Debian stretch-backports repo
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/stretch-backports.list
+    state: absent
+  when: ansible_facts['distribution'] == 'Debian'
   tags: ubuntu_sources
 
-# - name: Install key
-#  apt_key:
-#    keyserver: keyserver.ubuntu.com
-#    id: 8B48AD6246925553
-#  when: ansible_distribution == 'Debian'
-
+# apt_repository is deprecated, so strip the old one-line entries with
+# lineinfile instead. These are the files apt_repository would have
+# written them to, plus the stock sources.list.
 - name: Remove lists files for Ubuntu universe repository
-  when: ansible_distribution == 'Ubuntu'
-  ansible.builtin.apt_repository:
-    repo: "{{ item }}"
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  ansible.builtin.lineinfile:
+    path: "{{ item.0 }}"
+    line: "{{ item.1 }}"
     state: absent
-  loop:
-    - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe
-    - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-updates universe
-    - deb http://security.ubuntu.com/ubuntu/ {{ ansible_distribution_release }}-security universe
+  loop: "{{ water_gkhs_common_old_list_files | product(water_gkhs_common_old_universe_lines) | list }}"
+  loop_control:
+    label: "{{ item.0 }}: {{ item.1 }}"
+  vars:
+    water_gkhs_common_old_list_files:
+      - /etc/apt/sources.list
+      - /etc/apt/sources.list.d/archive_ubuntu_com_ubuntu.list
+      - /etc/apt/sources.list.d/security_ubuntu_com_ubuntu.list
+    water_gkhs_common_old_universe_lines:
+      - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_facts['distribution_release'] }} universe
+      - deb http://archive.ubuntu.com/ubuntu/ {{ ansible_facts['distribution_release'] }}-updates universe
+      - deb http://security.ubuntu.com/ubuntu/ {{ ansible_facts['distribution_release'] }}-security universe
   tags:
     - certbot
     - ubuntu_sources
 
 - name: Add deb822-style Repositories for Ubuntu universe
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   ansible.builtin.deb822_repository:
     name: ubuntu
     uris: "{{ ubuntu_package_mirror | default('http://archive.ubuntu.com/ubuntu/') }}"
     suites:
-      - "{{ ansible_distribution_release }}"
-      - "{{ ansible_distribution_release }}-updates"
+      - "{{ ansible_facts['distribution_release'] }}"
+      - "{{ ansible_facts['distribution_release'] }}-updates"
     state: present
     components:
       - main
@@ -57,12 +63,12 @@
     - archive_sources
 
 - name: Add deb822-style Repositories for Ubuntu security
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   ansible.builtin.deb822_repository:
     name: security
     uris: "{{ ubuntu_security_mirror | default('http://security.ubuntu.com/ubuntu/') }}"
     suites:
-      - "{{ ansible_distribution_release }}-security"
+      - "{{ ansible_facts['distribution_release'] }}-security"
     state: present
     components:
       - main
@@ -132,14 +138,14 @@
       - unattended-upgrades
 
 - name: Install Debian System Packages
-  when: ansible_distribution == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
   ansible.builtin.apt:
     state: present
     pkg:
       - python3-cryptography
 
 - name: Install Ubuntu System packages
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   ansible.builtin.apt:
     state: present
     pkg:
@@ -174,7 +180,7 @@
 # 26.04 release notes. Both packages provide and conflict on time-daemon,
 # so installing chrony removes timesyncd.
 - name: Switch time sync to chrony on Ubuntu 26.04+
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('26.04', '>=')
+  when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] is version('26.04', '>=')
   tags: chrony
   block:
     - name: Mark systemd-timesyncd as automatically installed
@@ -246,7 +252,7 @@
 
 - name: Determine remote Python version.
   ansible.builtin.set_fact:
-    water_gkhs_common_python_version: "{% if ansible_python_version.split('.')[0] | int >= 3 %}python3{% else %}python{% endif %}"
+    water_gkhs_common_python_version: "{% if ansible_facts['python_version'].split('.')[0] | int >= 3 %}python3{% else %}python{% endif %}"
   tags: aws
 
 - name: Ensure Python libraries that ansible needs are installed.
