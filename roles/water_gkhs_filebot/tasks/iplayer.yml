@@ -1,8 +1,13 @@
 ---
+# Covers both apt_repository's (ppa_*) and add-apt-repository's naming.
 - name: Remove old iplayer repo
-  ansible.builtin.apt_repository:
-    repo: ppa:jon-hedgerows/get-iplayer
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}"
     state: absent
+  loop:
+    - "ppa_jon_hedgerows_get_iplayer_{{ ansible_facts['distribution_release'] }}.list"
+    - "jon-hedgerows-ubuntu-get-iplayer-{{ ansible_facts['distribution_release'] }}.list"
+    - "jon-hedgerows-ubuntu-get-iplayer-{{ ansible_facts['distribution_release'] }}.sources"
   notify:
     - Update APT
   tags:

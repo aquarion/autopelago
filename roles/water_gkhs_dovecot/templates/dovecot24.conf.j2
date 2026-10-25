@@ -2,7 +2,7 @@
 # dovecot_config_version / dovecot_storage_version are set by the packaged
 # /etc/dovecot/dovecot.conf, which includes this file last.
 
-instance_name = {{ ansible_fqdn }}
+instance_name = {{ ansible_facts['fqdn'] }}
 
 mail_driver = mbox
 mail_path = ~/Mail

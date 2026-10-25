@@ -17,7 +17,7 @@
         workdir: "{{ firth_laravel_app_remove_item.remove.workdir | default(false) }}"
         system_user: "{{ firth_laravel_app_remove_item.remove.system_user | default(false) }}"
       system_user: "{{ firth_laravel_app_remove_item.name }}"
-      archive_date: "{{ ansible_date_time.date }}"
+      archive_date: "{{ ansible_facts['date_time'].date }}"
   tags: [always, firth_laravel_app, firth_laravel_app_remove]
 
 - name: Archive {{ flr.name }}

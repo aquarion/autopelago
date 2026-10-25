@@ -154,7 +154,7 @@
   ansible.builtin.deb822_repository:
     name: ubuntuhandbook1-transmission
     uris: https://ppa.launchpadcontent.net/ubuntuhandbook1/transmission/ubuntu/
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components: main
     signed_by: /etc/apt/keyrings/ubuntuhandbook1-transmission.asc
     state: present
