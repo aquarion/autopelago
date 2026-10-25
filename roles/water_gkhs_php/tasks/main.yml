@@ -31,7 +31,7 @@
   become: true
   ansible.builtin.deb822_repository:
     state: present
-    name: "php-sury-{{ ansible_facts['distribution_release'] }}"
+    name: php-sury
     types: [deb]
     uris: [https://packages.sury.org/php/]
     suites: ["{{ ansible_facts['distribution_release'] }}"]
@@ -40,10 +40,21 @@
   tags: php
   register: water_gkhs_php_repo
 
+# Previously named php-sury-<release>, which left a stale file behind on each release upgrade.
+- name: Remove old per-release PHP repository files
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/php-sury-{{ item }}.sources"
+    state: absent
+  loop:
+    - noble
+    - resolute
+  tags: php
+  register: water_gkhs_php_old_repo
+
 - name: Refresh packages if PHP PPA was changed
   ansible.builtin.apt:
     update_cache: true
-  when: water_gkhs_php_repo.changed
+  when: water_gkhs_php_repo.changed or water_gkhs_php_old_repo.changed
   tags: php
 
 - name: Remove old PHP Packages

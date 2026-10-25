@@ -1,0 +1,25 @@
+---
+# do-release-upgrade leaves *.distUpgrade backups of every apt source it
+# rewrites. apt ignores them, so they only need clearing once the upgrade
+# has had time to settle.
+- name: Find old release-upgrade apt source backups
+  ansible.builtin.find:
+    paths:
+      - /etc/apt
+      - /etc/apt/sources.list.d
+    patterns: "*.distUpgrade"
+    age: 30d
+  register: water_gkhs_apt_cleanup_dist_upgrade_files
+  tags:
+    - apt_cleanup
+
+- name: Remove old release-upgrade apt source backups
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ water_gkhs_apt_cleanup_dist_upgrade_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  notify: Commit apt cleanup to etckeeper
+  tags:
+    - apt_cleanup

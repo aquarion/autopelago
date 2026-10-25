@@ -136,6 +136,51 @@
     - media
     - dlyoutube
 
+# Vendored rather than apt_key, which needs apt-key (removed in APT 3,
+# Ubuntu 25.04+). From keyserver.ubuntu.com, fingerprint
+# F4E4 8910 A020 E770 5674 8B74 5738 AE84 8044 7DDF (Launchpad PPA for Panda Jim).
+- name: Upload Transmission PPA GPG key
+  ansible.builtin.copy:
+    src: ubuntuhandbook1-transmission.asc
+    dest: /etc/apt/keyrings/ubuntuhandbook1-transmission.asc
+    owner: root
+    group: root
+    mode: "0644"
+  tags:
+    - media
+    - dlyoutube
+
+- name: Transmission PPA
+  ansible.builtin.deb822_repository:
+    name: ubuntuhandbook1-transmission
+    uris: https://ppa.launchpadcontent.net/ubuntuhandbook1/transmission/ubuntu/
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: main
+    signed_by: /etc/apt/keyrings/ubuntuhandbook1-transmission.asc
+    state: present
+  register: water_gkhs_filebot_transmission_repo
+  tags:
+    - media
+    - dlyoutube
+
+# Hand-added via add-apt-repository on jammy; superseded by the task above.
+- name: Remove old Transmission PPA sources file
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/ubuntuhandbook1-ubuntu-transmission-jammy.sources
+    state: absent
+  register: water_gkhs_filebot_transmission_old_repo
+  tags:
+    - media
+    - dlyoutube
+
+- name: Refresh packages if Transmission PPA was changed
+  ansible.builtin.apt:
+    update_cache: true
+  when: water_gkhs_filebot_transmission_repo.changed or water_gkhs_filebot_transmission_old_repo.changed
+  tags:
+    - media
+    - dlyoutube
+
 - name: Install Transmission & Aria
   ansible.builtin.apt:
     state: present
