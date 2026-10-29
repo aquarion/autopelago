@@ -92,13 +92,15 @@ In `host_vars/firth.water.gkhs.net/laravel_apps.yml`, add an entry to `firth_lar
 
 Ports currently in use:
 
-| App         | Port (prod) | Port (staging) |
-|-------------|-------------|----------------|
-| alchemistic | 9000        | —              |
-| novelathon  | 9001        | 9002           |
-| bloom       | 8000        | 8001           |
-| docket      | 9003        | 9004           |
-| wereabouts  | 9005        | 9006           |
+| App            | Port (prod) | Port (staging) |
+|----------------|-------------|----------------|
+| alchemistic    | 9000        | —              |
+| novelathon     | 9001        | 9002           |
+| bloom          | 8000        | 8001           |
+| docket         | 9003        | 9004           |
+| wereabouts     | 9005        | 9006           |
+| thalium        | 8002        | 8003           |
+| lifestream-web | 9007        | 9008           |
 
 Pick the next available port. FPM apps use 9xxx; octane apps use 8xxx by convention.
 
