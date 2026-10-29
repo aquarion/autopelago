@@ -386,7 +386,7 @@ firth_laravel_app_apps:
     app_url: https://nicholasavenell.com
     www_redirect: true
     app_key: "{{ vault_lifestream_web_app_key }}"
-    app_name: Lifestream
+    app_name: Panopticon
     ssl_snippet: nicholasavenell
     github_repo: aquarion/lifestream-web
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
