@@ -402,6 +402,8 @@ firth_laravel_app_apps:
       # Public URL of the Lifestream API (roles/firth_nginx/templates/vhosts/lifestream). The API only listens
       # on 127.0.0.1:2871 on the host, which containers can't reach via host.docker.internal.
       LIFESTREAM_API_URL: https://lifestream.aquarionics.com
+      # The starter kit's entrypoint runs `migrate --force` unless this is false; there's no DB to migrate.
+      RUN_MIGRATIONS: "false"
     staging:
       image_tag: staging
       port: 9008
