@@ -32,6 +32,30 @@
     ttl: "300"
     value: "{{ loadbalancer_ip }}"
 
+# Temporary hostname for the new Laravel lifestream-web app until it takes over nicholasavenell.com.
+# At cutover, flip these to state: absent (don't just delete the tasks - Route53 won't forget them).
+- name: New.nicholasavenell.com. - A
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.com
+    record: new.nicholasavenell.com.
+    aws_profile: aqcom
+    type: A
+    ttl: "300"
+    value: "{{ loadbalancer_ip }}"
+
+- name: New.nicholasavenell.com. - AAAA
+  amazon.aws.route53:
+    overwrite: true
+    state: present
+    zone: nicholasavenell.com
+    record: new.nicholasavenell.com.
+    aws_profile: aqcom
+    type: AAAA
+    ttl: "300"
+    value: "{{ loadbalancer_ipv6 }}"
+
 # ################################################################### .net
 
 - name: Nicholasavenell.net. - A
