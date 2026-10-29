@@ -5,27 +5,33 @@
   when: loadbalancer_ip is defined
 
   block:
-    - name: Camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        state: present
-        zone: camlarp.co.uk
-        record: camlarp.co.uk.
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Camlarp.co.uk. - NS
-      amazon.aws.route53:
-        overwrite: true
-        state: present
-        zone: camlarp.co.uk
-        record: camlarp.co.uk.
-        aws_profile: aqcom
-        type: NS
-        ttl: "172800"
-        value: ns-422.awsdns-52.com,ns-617.awsdns-13.net,ns-1181.awsdns-19.org,ns-1809.awsdns-34.co.uk
+    - name: "Camlarp.co.uk Route53 records"
+      ansible.builtin.include_tasks:
+        file: ../../included_tasks/route53_records.yml
+        apply:
+          tags:
+            - camlarp
+      vars:
+        _r53_zone: camlarp.co.uk
+        _r53_aws_profile: aqcom
+        _r53_records:
+          - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: "@", type: NS, ttl: 172800, value: "ns-422.awsdns-52.com,ns-617.awsdns-13.net,ns-1181.awsdns-19.org,ns-1809.awsdns-34.co.uk" }
+          - { name: bw, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: citadel, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: darkmoon, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: fallingsky, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: lovelace, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: nfnc, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: norseangels, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: obscura, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: refs.bw, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: refs.nfnc, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: uh, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: wiki, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: "*", type: A, value: "{{ loadbalancer_ip }}" }
+          - { name: "*.refs", type: A, value: "{{ loadbalancer_ip }}" }
 
     # - name: Camlarp.co.uk. - SOA
     #  amazon.aws.route53:
@@ -38,53 +44,6 @@
     # type: "SOA"
     #      ttl: "900"
     #      value: 'ns-422.awsdns-52.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400'
-
-    - name: "[event].camlarp.co.uk. - A"
-      amazon.aws.route53:
-        overwrite: true
-        state: present
-        zone: camlarp.co.uk
-        record: "{{ item }}"
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-      loop:
-        - bw.camlarp.co.uk.
-        - citadel.camlarp.co.uk.
-        - darkmoon.camlarp.co.uk.
-        - fallingsky.camlarp.co.uk.
-        - lovelace.camlarp.co.uk.
-        - nfnc.camlarp.co.uk.
-        - norseangels.camlarp.co.uk.
-        - obscura.camlarp.co.uk.
-        - refs.bw.camlarp.co.uk.
-        - refs.nfnc.camlarp.co.uk.
-        - uh.camlarp.co.uk.
-        - wiki.camlarp.co.uk.
-        - www.camlarp.co.uk.
-
-    - name: Wildcard.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        state: present
-        zone: camlarp.co.uk
-        record: "*.camlarp.co.uk."
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
-
-    - name: Wildcard.refs.camlarp.co.uk. - A
-      amazon.aws.route53:
-        overwrite: true
-        state: present
-        zone: camlarp.co.uk
-        record: "*.refs.camlarp.co.uk."
-        aws_profile: aqcom
-        type: A
-        ttl: "300"
-        value: "{{ loadbalancer_ip }}"
 
   rescue:
     - name: "Failure warning"
