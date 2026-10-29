@@ -138,7 +138,16 @@ server {
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
-  # nicholasavenell.com and www. are served by lifestream-web (roles/firth_laravel_app)
+  # nicholasavenell.com and www.nicholasavenell.com are served by lifestream-web (roles/firth_laravel_app)
+  server_name www.nicholasavenell.net;
+  include /etc/nginx/snippets/ssl/nicholasavenell_ssl.conf;
+  add_header X-WhyAmI "miscweb nacom www redirect";
+  return 301 https://nicholasavenell.com$request_uri;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
   server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.net;
   include /etc/nginx/snippets/ssl/nicholasavenell_ssl.conf;
 
