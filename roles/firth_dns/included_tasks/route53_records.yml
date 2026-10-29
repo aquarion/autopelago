@@ -1,0 +1,54 @@
+---
+# Manage a list of Route53 records in one zone, calling amazon.aws.route53
+# only for records that differ from what is already there. See
+# filter_plugins/route53_pending.py for the record format and comparison.
+#
+# Required vars: _r53_zone, _r53_records
+# Credentials:   _r53_aws_profile, or _r53_aws_access_key + _r53_aws_secret_key
+- name: "Look up hosted zone {{ _r53_zone }}"
+  amazon.aws.route53_info:
+    query: hosted_zone
+    hosted_zone_method: list_by_name
+    dns_name: "{{ _r53_zone }}"
+    max_items: 1
+    profile: "{{ _r53_aws_profile | default(omit) }}"
+    access_key: "{{ _r53_aws_access_key | default(omit) }}"
+    secret_key: "{{ _r53_aws_secret_key | default(omit) }}"
+  register: firth_dns_r53_hosted_zone
+
+# list_by_name starts at dns_name, so it returns the next zone if this one is missing.
+- name: "Check hosted zone exists: {{ _r53_zone }}"
+  ansible.builtin.assert:
+    that: firth_dns_r53_hosted_zone.hosted_zones | map(attribute='name') | first | default('') == (_r53_zone | lower | regex_replace('\.$', '')) + '.'
+    fail_msg: "Zone {{ _r53_zone }} does not exist in Route53"
+    quiet: true
+
+- name: "List records in {{ _r53_zone }}"
+  amazon.aws.route53_info:
+    query: record_sets
+    hosted_zone_id: "{{ firth_dns_r53_hosted_zone.hosted_zones[0].id | regex_replace('^/hostedzone/', '') }}"
+    profile: "{{ _r53_aws_profile | default(omit) }}"
+    access_key: "{{ _r53_aws_access_key | default(omit) }}"
+    secret_key: "{{ _r53_aws_secret_key | default(omit) }}"
+  register: firth_dns_r53_existing
+
+- name: "Route53 {{ _r53_zone }}"
+  amazon.aws.route53:
+    overwrite: true
+    state: "{{ item.state }}"
+    hosted_zone_id: "{{ firth_dns_r53_hosted_zone.hosted_zones[0].id | regex_replace('^/hostedzone/', '') }}"
+    record: "{{ item.record }}"
+    type: "{{ item.type }}"
+    value: "{{ item.value }}"
+    # The module rejects ttl alongside alias, and alias without its zone id,
+    # even when alias is false, so only pass whichever set applies.
+    ttl: "{{ omit if item.alias else item.ttl }}"
+    alias: "{{ item.alias or omit }}"
+    alias_hosted_zone_id: "{{ item.alias_hosted_zone_id if item.alias else omit }}"
+    alias_evaluate_target_health: "{{ item.alias_evaluate_target_health if item.alias else omit }}"
+    profile: "{{ _r53_aws_profile | default(omit) }}"
+    access_key: "{{ _r53_aws_access_key | default(omit) }}"
+    secret_key: "{{ _r53_aws_secret_key | default(omit) }}"
+  loop: "{{ _r53_records | route53_pending(firth_dns_r53_existing.resource_record_sets, _r53_zone) }}"
+  loop_control:
+    label: "{{ item.state }} {{ item.record }} {{ item.type }}"
