@@ -401,7 +401,8 @@ firth_laravel_app_apps:
     additional_env:
       # Public URL of the Lifestream API (roles/firth_nginx/templates/vhosts/lifestream). The API only listens
       # on 127.0.0.1:2871 on the host, which containers can't reach via host.docker.internal.
-      LIFESTREAM_API_URL: https://lifestream.aquarionics.com
+      # Includes the /v1 version prefix - the app appends paths like /entries to this.
+      LIFESTREAM_API_URL: https://lifestream.aquarionics.com/v1
       # The starter kit's entrypoint runs `migrate --force` unless this is false; there's no DB to migrate.
       RUN_MIGRATIONS: "false"
     staging:
