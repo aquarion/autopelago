@@ -375,19 +375,18 @@ firth_laravel_app_apps:
   #   vault_lifestream_web_redis_password
   #   vault_lifestream_web_staging_redis_password
   #
-  # NOT CUT OVER YET: production runs on new.nicholasavenell.com while the legacy PHP site keeps serving
-  # nicholasavenell.com via the miscweb vhost (roles/firth_nginx/templates/vhosts/miscweb). Cutover steps
-  # are in the PR that added this entry: switch server_name/app_url to nicholasavenell.com (www_redirect: true),
-  # drop nicholasavenell.com from miscweb, and remove the new.nicholasavenell.com DNS records with state: absent.
+  # Serves nicholasavenell.com (www redirects to the apex); panopticon.aquarionics.com redirects here from the
+  # miscweb vhost. Other *.nicholasavenell.com/.net hosts are still the legacy site in miscweb.
   - name: lifestream-web
     image: ghcr.io/aquarion/lifestream-web
     image_tag: latest
     backend: fpm
     port: 9007
-    server_name: new.nicholasavenell.com
-    app_url: https://new.nicholasavenell.com
+    server_name: nicholasavenell.com
+    app_url: https://nicholasavenell.com
+    www_redirect: true
     app_key: "{{ vault_lifestream_web_app_key }}"
-    app_name: Lifestream
+    app_name: Panopticon
     ssl_snippet: nicholasavenell
     github_repo: aquarion/lifestream-web
     github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
@@ -408,8 +407,8 @@ firth_laravel_app_apps:
     staging:
       image_tag: staging
       port: 9008
-      server_name: lifestream.istic.dev
-      app_url: https://lifestream.istic.dev
+      server_name: panopticon.istic.dev
+      app_url: https://panopticon.istic.dev
       app_key: "{{ vault_lifestream_web_staging_app_key }}"
       ssl_snippet: istic_dev
       redis:

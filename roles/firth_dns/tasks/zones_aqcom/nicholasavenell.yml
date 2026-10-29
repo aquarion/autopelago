@@ -10,12 +10,11 @@
       - { name: "@", type: AAAA, value: "{{ loadbalancer_ipv6 }}" }
       - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
 
-# Temporary hostname for the new Laravel lifestream-web app until it takes over nicholasavenell.com.
-# At cutover, flip these to state: absent (don't just delete the tasks - Route53 won't forget them).
+# Retired temporary hostname for lifestream-web, which now serves nicholasavenell.com directly.
 - name: New.nicholasavenell.com. - A
   amazon.aws.route53:
     overwrite: true
-    state: present
+    state: absent
     zone: nicholasavenell.com
     record: new.nicholasavenell.com.
     aws_profile: aqcom
@@ -26,7 +25,7 @@
 - name: New.nicholasavenell.com. - AAAA
   amazon.aws.route53:
     overwrite: true
-    state: present
+    state: absent
     zone: nicholasavenell.com
     record: new.nicholasavenell.com.
     aws_profile: aqcom
