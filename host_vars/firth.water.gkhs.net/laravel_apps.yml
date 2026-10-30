@@ -404,6 +404,8 @@ firth_laravel_app_apps:
       LIFESTREAM_API_URL: https://lifestream.aquarionics.com/v1
       # The starter kit's entrypoint runs `migrate --force` unless this is false; there's no DB to migrate.
       RUN_MIGRATIONS: "false"
+      # Matomo site IDs on stat.istic.net: 9 = Panopticon (prod), 8 = Panopticon Staging
+      MATOMO_SITE_ID: "9"
     staging:
       image_tag: staging
       port: 9008
@@ -414,3 +416,7 @@ firth_laravel_app_apps:
       redis:
         username: lifestream_web_staging
         password: "{{ vault_lifestream_web_staging_redis_password }}"
+      additional_env: # replaces prod additional_env entirely, so repeat every key
+        LIFESTREAM_API_URL: https://lifestream.aquarionics.com/v1
+        RUN_MIGRATIONS: "false"
+        MATOMO_SITE_ID: "8"
