@@ -4,14 +4,7 @@
 stream_delta_github_environment: production
 stream_delta_github_staging_environment: staging
 
-# FrankenPHP's Caddy admin API port. Octane's --admin-port option defaults to
-# 2019 for every instance (the port-offset fallback in Octane never applies
-# because the option always has a value), so production and staging on the
-# same host must each be given their own or whichever starts second fails
-# with "Port 2019 is already in use".
-stream_delta_octane_admin_port: 2019
 stream_delta_staging_octane_port: 8001
-stream_delta_staging_octane_admin_port: 2020
 stream_delta_staging_reverb_port: 8081
 stream_delta_staging_run_initial_deploy: false
 
