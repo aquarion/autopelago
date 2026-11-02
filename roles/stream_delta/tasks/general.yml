@@ -70,6 +70,11 @@
         - cloudflare_dns
         - istic_dev
 
+    # DNS-only, not proxied: Cloudflare's Universal SSL cert only covers
+    # istic.dev and *.istic.dev (one level), so its edge fails the TLS handshake
+    # for the second-level ws.voyeur.istic.dev and browsers can't open the Reverb
+    # websocket. atoll's own Let's Encrypt cert covers *.voyeur.istic.dev, so
+    # connect to it directly -- the same as production's ws.voyeur.istic.net.
     - name: "(CF) Ws.voyeur.istic.dev - A"
       community.general.cloudflare_dns:
         state: present
@@ -78,7 +83,7 @@
         api_token: "{{ cloudflare_api_key }}"
         type: A
         value: "{{ atoll_ip }}"
-        proxied: true
+        proxied: false
       tags:
         - cloudflare
         - cloudflare_dns
