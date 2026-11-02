@@ -384,6 +384,27 @@
         - supervisord
         - stream_delta_supervisord
 
+    # stream-delta's Envoy deploy restarts only the deployed environment's
+    # programs (production and staging share this supervisor). These must match
+    # the exact command Envoy.blade.php builds, program order included; Envoy
+    # falls back to `restart all` (allowed above) if they don't.
+    - name: Allow stream-delta deploys to restart only their own environment's programs
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/stream-delta
+        create: true
+        line: "stream-delta ALL=(ALL) NOPASSWD: /usr/bin/supervisorctl restart {{ item }}"
+        state: present
+        validate: "visudo -cf %s"
+        owner: root
+        group: root
+        mode: "0440"
+      loop:
+        - octane reverb scheduler horizon discord-monitor youtube-monitor
+        - octane_staging reverb_staging scheduler_staging horizon_staging discord-monitor_staging youtube-monitor_staging
+      tags:
+        - supervisord
+        - stream_delta_supervisord
+
     - name: Configure Redis streamdelta user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
