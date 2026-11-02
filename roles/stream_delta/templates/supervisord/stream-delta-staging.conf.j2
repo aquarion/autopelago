@@ -1,6 +1,6 @@
 
 [program:octane_staging]
-command=php {{ stream_delta_staging_install_dir }}/current/artisan octane:start --port={{ stream_delta_staging_octane_port }}
+command=php {{ stream_delta_staging_install_dir }}/current/artisan octane:start --port={{ stream_delta_staging_octane_port }} --admin-port={{ stream_delta_staging_octane_admin_port }}
 user=stream-delta
 autostart=true
 autorestart=true
