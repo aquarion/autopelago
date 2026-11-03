@@ -408,9 +408,12 @@
     - name: Configure Redis streamdelta user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
+        # Store the password's SHA-256 (`#<hex>`), not the plaintext (`>pass`): Redis
+        # hashes what clients send and compares. Quoted, because an unquoted ` #`
+        # starts a YAML comment and would silently drop the password entirely.
         line: >-
           user {{ stream_delta_redis_username }} on {{ stream_delta_redis_commands }}
-          {{ stream_delta_redis_key_patterns }} >{{ stream_delta_redis_password }}
+          {{ stream_delta_redis_key_patterns }} #{{ stream_delta_redis_password | hash('sha256') }}
         # Trailing space: without it this also matches a username that merely
         # starts with this one (e.g. the staging user), and lineinfile replaces
         # the last match -- overwriting that user's line instead of this one.
@@ -426,7 +429,7 @@
         path: /etc/redis/users.acl
         line: >-
           user {{ stream_delta_staging_redis_username }} on {{ stream_delta_staging_redis_commands }}
-          {{ stream_delta_staging_redis_key_patterns }} >{{ stream_delta_staging_redis_password }}
+          {{ stream_delta_staging_redis_key_patterns }} #{{ stream_delta_staging_redis_password | hash('sha256') }}
         regex: "^user {{ stream_delta_staging_redis_username | regex_escape }} "
       no_log: true
       notify:
