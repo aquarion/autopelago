@@ -1,5 +1,5 @@
 ---
-- name: Install Flexget Packages
+- name: Install Flexget Apt Packages
   ansible.builtin.apt:
     state: present
     pkg:
