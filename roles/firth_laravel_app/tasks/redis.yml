@@ -2,7 +2,10 @@
 - name: Configure Redis ACL user for {{ fla_ctx.name }}
   ansible.builtin.lineinfile:
     path: /etc/redis/users.acl
-    line: "user {{ fla_ctx.redis.username }} on +@all -DEBUG ~* >{{ fla_ctx.redis.password }}"
+    # Store the password's SHA-256 (`#<hex>`), not the plaintext (`>pass`): Redis
+    # hashes what clients send and compares. Quoted, because an unquoted ` #`
+    # starts a YAML comment and would silently drop the password entirely.
+    line: "user {{ fla_ctx.redis.username }} on +@all -DEBUG ~* #{{ fla_ctx.redis.password | hash('sha256') }}"
     regexp: "^user {{ fla_ctx.redis.username | regex_escape }} "
   notify: Reload Redis ACL
   tags: [firth_laravel_app, firth_laravel_app_install]

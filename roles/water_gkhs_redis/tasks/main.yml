@@ -12,8 +12,11 @@
     - name: Configure Redis default user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
-        line: user default on +@all -DEBUG ~* >{{ redis_password }}
-        regex: ^user default
+        # Store the password's SHA-256 (`#<hex>`), not the plaintext (`>pass`): Redis
+        # hashes what clients send and compares. Quoted, because an unquoted ` #`
+        # starts a YAML comment and would silently drop the password entirely.
+        line: "user default on +@all -DEBUG ~* #{{ redis_password | hash('sha256') }}"
+        regex: "^user default "
         create: true
         mode: "0600"
         owner: redis

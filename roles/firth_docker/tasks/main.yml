@@ -112,8 +112,11 @@
     - name: Configure Redis dockersites user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
-        line: user dockersites on +@all -DEBUG ~* >{{ dockersites_redis_password }}
-        regex: ^user dockersites
+        # Store the password's SHA-256 (`#<hex>`), not the plaintext (`>pass`): Redis
+        # hashes what clients send and compares. Quoted, because an unquoted ` #`
+        # starts a YAML comment and would silently drop the password entirely.
+        line: "user dockersites on +@all -DEBUG ~* #{{ dockersites_redis_password | hash('sha256') }}"
+        regex: "^user dockersites "
       notify:
         - Reload Redis ACL
       tags:
