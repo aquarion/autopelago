@@ -421,7 +421,9 @@
     - name: Configure Redis streamdelta-staging user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
-        line: user {{ stream_delta_staging_redis_username }} on +@all -DEBUG {{ stream_delta_staging_redis_key_patterns }} >{{ stream_delta_staging_redis_password }}
+        line: >-
+          user {{ stream_delta_staging_redis_username }} on +@all -DEBUG
+          {{ stream_delta_staging_redis_key_patterns }} >{{ stream_delta_staging_redis_password }}
         regex: "^user {{ stream_delta_staging_redis_username }} "
       notify:
         - Reload Redis ACL
