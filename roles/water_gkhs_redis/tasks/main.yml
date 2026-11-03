@@ -21,6 +21,8 @@
         mode: "0600"
         owner: redis
         group: redis
+      # The diff would show the old plaintext `>password` line being replaced.
+      no_log: true
       notify:
         - Reload Redis ACL
 

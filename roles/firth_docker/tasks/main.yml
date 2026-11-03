@@ -117,6 +117,8 @@
         # starts a YAML comment and would silently drop the password entirely.
         line: "user dockersites on +@all -DEBUG ~* #{{ dockersites_redis_password | hash('sha256') }}"
         regex: "^user dockersites "
+      # The diff would show the old plaintext `>password` line being replaced.
+      no_log: true
       notify:
         - Reload Redis ACL
       tags:

@@ -7,5 +7,7 @@
     # starts a YAML comment and would silently drop the password entirely.
     line: "user {{ fla_ctx.redis.username }} on +@all -DEBUG ~* #{{ fla_ctx.redis.password | hash('sha256') }}"
     regexp: "^user {{ fla_ctx.redis.username | regex_escape }} "
+  # The diff would show the old plaintext `>password` line being replaced.
+  no_log: true
   notify: Reload Redis ACL
   tags: [firth_laravel_app, firth_laravel_app_install]
