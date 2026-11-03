@@ -15,6 +15,14 @@ stream_delta_staging_reverb_port: 8081
 # cleanly with its restriction (check `redis-cli ACL LOG` for denials).
 stream_delta_redis_key_patterns: "~*"
 stream_delta_staging_redis_key_patterns: "~stream_delta_staging_database_* ~stream_delta_staging_horizon:*"
+
+# Redis ACL command rules per environment. Key patterns alone don't confine a
+# user that can run ACL SETUSER / CONFIG (it could grant itself ~* again), or
+# FLUSHALL / SWAPDB, which act on whole databases rather than keys. Staging
+# keeps everything Laravel and Horizon use (including FLUSHDB, which
+# optimize:clear needs) minus those. Production is unchanged until Stage 3.
+stream_delta_redis_commands: "+@all -DEBUG"
+stream_delta_staging_redis_commands: "+@all -@admin -DEBUG -flushall -swapdb"
 stream_delta_staging_run_initial_deploy: false
 
 # GitHub Actions repository-level variables (not environment-specific)
