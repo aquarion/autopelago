@@ -6,6 +6,23 @@ stream_delta_github_staging_environment: staging
 
 stream_delta_staging_octane_port: 8001
 stream_delta_staging_reverb_port: 8081
+
+# Redis ACL key patterns per environment. Both share atoll's Redis; Laravel
+# prefixes every key with REDIS_PREFIX (cache, queues, sessions, locks) or
+# HORIZON_PREFIX (Horizon), set per environment in stream-delta's .env
+# templates. Staging is restricted to its own prefixes so it can't read or
+# write production's keys. Production stays on ~* until staging has run
+# cleanly with its restriction (check `redis-cli ACL LOG` for denials).
+stream_delta_redis_key_patterns: "~*"
+stream_delta_staging_redis_key_patterns: "~stream_delta_staging_database_* ~stream_delta_staging_horizon:*"
+
+# Redis ACL command rules per environment. Key patterns alone don't confine a
+# user that can run ACL SETUSER / CONFIG (it could grant itself ~* again), or
+# FLUSHALL / SWAPDB, which act on whole databases rather than keys. Staging
+# keeps everything Laravel and Horizon use (including FLUSHDB, which
+# optimize:clear needs) minus those. Production is unchanged until Stage 3.
+stream_delta_redis_commands: "+@all -DEBUG"
+stream_delta_staging_redis_commands: "+@all -@admin -DEBUG -flushall -swapdb"
 stream_delta_staging_run_initial_deploy: false
 
 # GitHub Actions repository-level variables (not environment-specific)
