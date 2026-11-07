@@ -75,15 +75,29 @@ services:
       TZ: Europe/London
     restart: unless-stopped
 
-  jellyseerr:
-    image: fallenbagel/jellyseerr:latest
+  # Requests UI (Jellyseerr's successor; Jellyseerr is deprecated and unmaintained).
+  # Migrates a Jellyseerr config in /app/config automatically on first start.
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    user: "{{ firth_media_stack_puid }}:{{ firth_media_stack_pgid }}"
     environment:
       TZ: Europe/London
     ports:
       - "127.0.0.1:5055:5055"
     restart: unless-stopped
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    security_opt:
+      - no-new-privileges
+    cap_drop:
+      - ALL
     volumes:
-      - {{ firth_media_stack_dir }}/config/jellyseerr:/app/config
+      - {{ firth_media_stack_dir }}/config/seerr:/app/config
 {% endif %}
 networks:
   default:

@@ -13,12 +13,13 @@ server {
 
     include /etc/nginx/snippets/ssl/aqxs_ssl.conf;
 
-    add_header X-WhyAmI jellyseerr;
+    add_header X-WhyAmI seerr;
     add_header X-Content-Type-Options "nosniff";
     add_header Referrer-Policy "same-origin";
 
     location / {
-        # Jellyseerr runs in the vpn compose project, published on loopback only.
+        # Seerr (the requests UI; this vhost keeps its old name) runs in the vpn
+        # compose project, published on loopback only.
         proxy_pass http://127.0.0.1:5055;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
