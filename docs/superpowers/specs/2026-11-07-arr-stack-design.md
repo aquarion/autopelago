@@ -93,9 +93,12 @@ New role `firth_media_stack` (host-specific naming), after `firth_docker`:
   inotify watcher, so it never scans `arr/`.
 - Runs it with `community.docker.docker_compose_v2` (same module as
   `firth_elasticsearch` and `firth_laravel_app`).
-- All secrets (`OPENVPN_USERNAME` / `OPENVPN_PASSWORD` and any \*arr API keys
-  the templates need) go in the existing
-  `host_vars/firth.water.gkhs.net/media.vault.yml`.
+- The OpenVPN credentials reuse the existing `nordvpn_username` /
+  `nordvpn_password` (in `flexget.vault.yml`, identical to the container's
+  current values, also used by `iplayer.yml`). Any new secrets (e.g. \*arr API
+  keys the templates need) go in `host_vars/firth.water.gkhs.net/media.vault.yml`.
+  `flexget.vault.yml` is kept when FlexGet is retired: it also holds
+  `transmission_complete`, `download_playlists` and `nordvpn_*`.
 - Compose-file change must be applied with no behaviour change first.
 
 Removal tasks must be explicit (`state: absent`), per the repo rule that Ansible
