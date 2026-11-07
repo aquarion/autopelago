@@ -17,7 +17,8 @@
         state: directory
         owner: "{{ firth_media_stack_user }}"
         group: "{{ firth_media_stack_group }}"
-        mode: "0775"
+        # The containers reset their /config to 0755 on start; match it.
+        mode: "0755"
       loop: "{{ [''] + (['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/jellyseerr'] if firth_media_stack_arr_enabled else []) }}"
 
     # The compose file holds the OpenVPN credentials: 0640, and no --diff output.

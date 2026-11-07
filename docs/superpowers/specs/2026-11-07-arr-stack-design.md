@@ -17,7 +17,11 @@ here means the apps above.
   `torrential` -> `/data`, `config` -> `/config`.
 - Container runs as `PUID=114` (`jellyfin`) / `PGID=1004` (`medialibrary`).
 - Network `vpn_default` is `172.22.0.0/16`; `LOCAL_NETWORK` is
-  `172.16.0.0/16`, which does not cover it.
+  `172.16.0.0/16`. It must stay non-overlapping: setting it to the bridge's own
+  subnet makes the container route that subnet via the gateway and the VPN
+  tunnel then carries no traffic (tested). Peers on `vpn_default` reach
+  Transmission directly, so it does not need widening.
+- `/home/aquarion/docker` is a symlink to `/home/docker`.
 - `9091` is published on all interfaces.
 - Filebot (`fn:amc`) hardlinks `transmission_complete` into
   `/home/medialibrary/Media`, then `sync_or_swim.sh` moves new episodes from
@@ -48,7 +52,7 @@ library under one mount:
 
 | Service | Notes |
 |---|---|
-| `transmission-openvpn` | Existing. `LOCAL_NETWORK` -> `172.22.0.0/16`; publish `9091` on `127.0.0.1` only. |
+| `transmission-openvpn` | Existing. `LOCAL_NETWORK` unchanged; `NORDVPN_CATEGORY=legacy_p2p` (no country pin); publish `9091` on `127.0.0.1` only. |
 | `sonarr`, `radarr`, `prowlarr` | `PUID=114`, `PGID=1004`; config under `/home/docker/vpn/config/<app>`. |
 | `jellyseerr` | Talks to host Jellyfin, Sonarr, Radarr. Nginx vhost alongside the existing `jellyfin` one. |
 
@@ -124,7 +128,7 @@ cron/inotify/`organise_media_downloads` path for TV/movies, and
 - `docker compose config` diff before/after takeover.
 - Hardlink test: same inode between `/data/torrents/x` and `/data/Media/...`.
 - One Sonarr and one Radarr end-to-end grab, import, and appearance in Jellyfin.
-- Sonarr/Radarr can reach Transmission (confirms `LOCAL_NETWORK`).
+- Sonarr/Radarr can reach `transmission-openvpn:9091` over `vpn_default`.
 - `ansible-playbook --check --diff` clean on second run (idempotent).
 
 ## Open risks
