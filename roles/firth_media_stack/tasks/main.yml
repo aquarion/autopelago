@@ -54,6 +54,25 @@
         state: present
         recreate: auto
 
+    - name: Read tailscale serve status
+      ansible.builtin.command: tailscale serve status --json
+      register: firth_media_stack_serve_status
+      changed_when: false
+      check_mode: false
+      when: firth_media_stack_arr_enabled
+
+    # ponytail: only checks that the service exists, not that its port still
+    # matches; if a port changes, `tailscale serve clear svc:<name>` and re-run.
+    - name: Serve the *arr UIs as Tailscale Services
+      ansible.builtin.command: >-
+        tailscale serve --service=svc:{{ item.key }} --https=443 --bg
+        http://127.0.0.1:{{ item.value }}
+      loop: "{{ firth_media_stack_tailscale_services | dict2items }}"
+      when:
+        - firth_media_stack_arr_enabled
+        - "'svc:' ~ item.key not in (firth_media_stack_serve_status.stdout | from_json).get('Services', {})"
+      changed_when: true
+
   rescue:
     - name: Debug media stack failure
       ansible.builtin.debug:
