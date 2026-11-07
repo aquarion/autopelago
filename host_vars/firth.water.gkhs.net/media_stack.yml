@@ -1,3 +1,6 @@
 ---
 # Phase 1: takeover only. Flip to true in Task 4.
 firth_media_stack_arr_enabled: false
+
+# Mounted as Transmission's /data. Same filesystem as the library so the *arrs can hardlink.
+firth_media_stack_torrents_dir: /home/medialibrary/torrents
