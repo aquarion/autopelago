@@ -1,10 +1,5 @@
 ---
 # ####
-# Flexget configuration
-flexget_tasks:
-  - { name: an_rss_feed, rss: http://a_url }
-
-# ####
 # Transmission configuration
 transmission_user: something
 transmission_pass: redacted

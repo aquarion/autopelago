@@ -88,7 +88,6 @@
     - plexupdate_uninstall
     - { role: firth_nginx, tags: nginx }
     - water_gkhs_filebot
-    - water_gkhs_flexget
     - water_gkhs_exim
     - b2_backup
     - github_cli
