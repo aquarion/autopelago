@@ -56,10 +56,11 @@ several root folders and a path per series, so shows are imported straight to
 where they live and the script is no longer needed.
 
 - **Sonarr roots** (allowlist, `TV` default): `TV`, `Drag`, `Star-Trek`,
-  `Taskmaster`. These are the dirs `sync_or_swim` actually routes into.
+  `Star-Wars`, `Taskmaster`. These are the dirs `sync_or_swim` routes into,
+  plus `Star-Wars`, which holds shows but had no match in `TV/` at survey time.
 - **Radarr roots:** `Movies`.
 - **Out of scope, untouched:** `Anime`, `Music`, `Radio`, `idents`, `iPlayer`,
-  `Youtube`, `Bond`, `Disney`, `Kickstarted`, `Star-Wars`, `Tolkien`.
+  `Youtube`, `Bond`, `Disney`, `Kickstarted`, `Tolkien`.
   Filebot and `get_iplayer` keep handling Anime and iPlayer.
 - `Star-Trek.orig` is a stray temp dir; excluded.
 - Existing files are adopted via library import, not renamed. Sonarr's episode
