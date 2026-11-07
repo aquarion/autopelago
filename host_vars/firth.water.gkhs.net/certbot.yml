@@ -88,6 +88,8 @@ certbot_certs:
     domains: [nicholasavenell.com, "*.nicholasavenell.com", "*.nicholasavenell.net", nicholasavenell.net]
   - { name: bromioscreations.com, ssl_snippet: bromioscreations, challenge: route53, aws_profile: aqcom, domains: [bromioscreations.com, "*.bromioscreations.com"] }
   - { name: larp.me, ssl_snippet: larpme, challenge: route53, aws_profile: aqcom, domains: [larp.me, "*.larp.me", larp.me.uk, "*.larp.me.uk"] }
+  # Wildcard on purpose: keeps requests.aqxs.net (Jellyseerr) out of Certificate Transparency logs.
+  - { name: aqxs.net, ssl_snippet: aqxs, challenge: route53, aws_profile: aqcom, domains: [aqxs.net, "*.aqxs.net"] }
   - { name: camlarp.co.uk, ssl_snippet: camlarp, challenge: route53, aws_profile: aqcom, domains: [camlarp.co.uk, "*.camlarp.co.uk"] }
   # DNS-01 on purpose (not nginx): the live cert includes *.hubris.house
   - { name: hubris.house, ssl_snippet: hubris, challenge: route53, aws_profile: aqcom, domains: [hubris.house, "*.hubris.house"] }
