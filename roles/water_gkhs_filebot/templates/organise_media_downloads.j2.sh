@@ -4,7 +4,8 @@
 LOG_LOCATION="{{ media_home }}/Logs"
 
 if [ -z "$1" ]; then
-	FILEPATH="{{ transmission_complete }}"
+	# completed/ only (matches the inotify watcher): Sonarr/Radarr download into arr/ and import themselves.
+	FILEPATH="{{ transmission_complete }}/completed"
 else
 	FILEPATH=$1
 fi
@@ -27,5 +28,3 @@ filebot -script fn:amc \
 	"movieFormat=Movies/{n} {y}/{fn}" \
 	"musicFormat=Music/{n}/{fn}" \
 	"$FILEPATH"{% if verbose is not defined %} >"$LOG_LOCATION/amc.stdout.log"{% endif %}
-
-{{ media_home }}/bin/sync_or_swim.sh

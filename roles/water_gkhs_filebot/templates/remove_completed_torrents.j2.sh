@@ -46,6 +46,11 @@ AGE_OUT_CUTOFF=$((2 * 30 * 24 * 60 * 60)) # 60 days in seconds
 transmission-remote --json --list | jq -r '.arguments.torrents[].id' | while read -r TORRENTID; do
 	INFO=$(transmission-remote --torrent "$TORRENTID" --json --info)
 	NAME=$(echo "$INFO" | jq -r .arguments.torrents[0].name)
+	DOWNLOAD_DIR=$(echo "$INFO" | jq -r .arguments.torrents[0].downloadDir)
+	if [[ $DOWNLOAD_DIR == /data/arr/* ]]; then
+		echo "#$TORRENTID - $NAME - managed by Sonarr/Radarr. Ignoring."
+		continue
+	fi
 	FINISHED=$(echo "$INFO" | jq -r .arguments.torrents[0].isFinished)
 	RATIO=$(echo "$INFO" | jq -r .arguments.torrents[0].uploadRatio)
 	LAST_ACTIVITY=$(echo "$INFO" | jq -r .arguments.torrents[0].activityDate)

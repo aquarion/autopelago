@@ -28,21 +28,11 @@
   notify: Kick sysctl
   tags:
     - media
-# Sync non-TV shows to their own libraries
-
-- name: Add sync_or_swim script to bin
-  ansible.builtin.debug:
-    msg: "{{ media_home }}/bin/sync_or_swim.sh"
-  tags:
-    - media
-    - organise_media_downloads
-
-- name: Add sync_or_swim script to bin
-  ansible.builtin.template:
-    src: sync_or_swim.j2.sh
-    dest: "{{ media_home }}/bin/sync_or_swim.sh"
-    mode: "0755"
-    owner: "{{ media_user }}"
+# sync_or_swim is retired: Sonarr imports straight into per-show library folders.
+- name: Remove sync_or_swim script
+  ansible.builtin.file:
+    path: "{{ media_home }}/bin/sync_or_swim.sh"
+    state: absent
   tags:
     - media
     - organise_media_downloads

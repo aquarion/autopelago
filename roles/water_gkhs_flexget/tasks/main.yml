@@ -18,15 +18,15 @@
     - flexget
     - media
 
-- name: Setup flexget cron
+# FlexGet is retired in favour of Sonarr (both grabbing the same shows would double-download).
+# Only the cron is removed for now: the virtualenv and config stay for rollback until a Sonarr
+# grab has been seen end to end (then remove them with state: absent).
+- name: Remove flexget cron
   ansible.builtin.cron:
     name: flexget
-    minute: 16,46
     user: "{{ media_user }}"
-    job: "{{ water_gkhs_flexget_venv }}/bin/python {{ water_gkhs_flexget_venv }}/bin/flexget --cron execute"
     cron_file: flexget
-  vars:
-    water_gkhs_flexget_venv: "{{ media_home }}/.virtualenvs/flexget_{{ ansible_facts['python_version'] }}"
+    state: absent
   tags:
     - flexget
     - media
