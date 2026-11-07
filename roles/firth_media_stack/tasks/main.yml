@@ -45,8 +45,9 @@
         group: docker
         mode: "0640"
       diff: false
-      notify: Restart media stack
 
+    # recreate: auto only recreates services whose config changed, so adding a
+    # service does not bounce the VPN container (and its downloads).
     - name: Start media stack
       community.docker.docker_compose_v2:
         project_src: "{{ firth_media_stack_dir }}"

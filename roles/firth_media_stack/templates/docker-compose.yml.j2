@@ -54,6 +54,15 @@ services:
 {% endif %}
 {% endfor %}
 
+  # Cloudflare-challenge solver for Prowlarr's FlareSolverr indexer proxy
+  # (http://flaresolverr:8191/). Internal only; no published port.
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    environment:
+      LOG_LEVEL: info
+      TZ: Europe/London
+    restart: unless-stopped
+
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     environment:
