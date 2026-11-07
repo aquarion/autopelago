@@ -19,7 +19,7 @@
         group: "{{ firth_media_stack_group }}"
         # The containers reset their /config to 0755 on start; match it.
         mode: "0755"
-      loop: "{{ [''] + (['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/jellyseerr'] if firth_media_stack_arr_enabled else []) }}"
+      loop: "{{ [''] + (['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/jellyseerr'] if firth_media_stack_arr_enabled else []) }}"
 
     # Where the *arrs' Transmission clients download to. Outside completed/, so
     # Filebot's watcher and cron never see them.

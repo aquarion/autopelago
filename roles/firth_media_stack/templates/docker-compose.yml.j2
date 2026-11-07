@@ -54,6 +54,18 @@ services:
 {% endif %}
 {% endfor %}
 
+  # Announce-channel/RSS grabber; pushes releases to Sonarr/Radarr. Configured in its UI.
+  autobrr:
+    image: ghcr.io/autobrr/autobrr:latest
+    user: "{{ firth_media_stack_puid }}:{{ firth_media_stack_pgid }}"
+    environment:
+      TZ: Europe/London
+    ports:
+      - "127.0.0.1:7474:7474"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_dir }}/config/autobrr:/config
+
   # Cloudflare-challenge solver for Prowlarr's FlareSolverr indexer proxy
   # (http://flaresolverr:8191/). Internal only; no published port.
   flaresolverr:
