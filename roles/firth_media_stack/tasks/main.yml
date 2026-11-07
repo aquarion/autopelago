@@ -63,6 +63,10 @@
 
     # ponytail: only checks that the service exists, not that its port still
     # matches; if a port changes, `tailscale serve clear svc:<name>` and re-run.
+    # The Service must be defined (tcp:443) in the tailnet admin console BEFORE
+    # the node advertises it. If it was defined or corrected afterwards, the
+    # console shows "Advertising the service, but configuration is missing";
+    # fix with `tailscale serve --service=svc:<name> --https=443 off` and re-run.
     - name: Serve the *arr UIs as Tailscale Services
       ansible.builtin.command: >-
         tailscale serve --service=svc:{{ item.key }} --https=443 --bg
