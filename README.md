@@ -20,7 +20,8 @@ Host variables live in `host_vars/{hostname}/`, with vault-encrypted files using
 - **`firth_nginx`** — nginx vhosts and SSL config for services on firth
 - **`firth_sftp_docker`** — SFTP-hosted sites with PHP-FPM sidecars. See [`docs/adding-sftp-hosted-site.md`](docs/adding-sftp-hosted-site.md).
 - **`firth_dns`** — Route53 and Cloudflare DNS management
-- **`stream_delta`** — media automation (Flexget, Filebot, etc.)
+- **`firth_media_stack`** — the media server's Docker stack: Transmission behind a NordVPN tunnel, Sonarr, Radarr, Prowlarr (with FlareSolverr), Bazarr, autobrr and Seerr (requests), each admin UI served over Tailscale Services. Sonarr and Radarr hardlink downloads into the Jellyfin library. See [`docs/superpowers/specs/2026-11-07-arr-stack-design.md`](docs/superpowers/specs/2026-11-07-arr-stack-design.md).
+- **`stream_delta`** — deploys the stream-delta app (not part of the media stack)
 - **`water_gkhs_*`** — shared infrastructure across all servers
 
 ## Docs
