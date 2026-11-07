@@ -29,15 +29,20 @@ here means the apps above.
 
 ### 1. Storage layout (hardlinks)
 
-Hardlinks cannot cross mount points, so downloads must move under the media
-root and every container mounts the same parent:
+Hardlinks cannot cross mount points, so Sonarr/Radarr must see downloads and
+library under one mount:
 
-- Downloads: `/home/medialibrary/torrents` (was `/home/docker/vpn/torrential`).
-- Every container mounts `/home/medialibrary` as `/data`:
-  `/data/torrents`, `/data/Media/...`.
-- Transmission's download/incomplete/watch dirs are set under `/data/torrents`.
+- Downloads move (a same-filesystem `mv`, so inodes are preserved) from
+  `/home/docker/vpn/torrential` to `/home/medialibrary/torrents`.
+- Transmission mounts `/home/medialibrary/torrents` as `/data`, exactly as
+  before, so its container paths and bencoded resume state do not change.
+- Sonarr and Radarr mount `/home/medialibrary` as `/data` and get a Remote Path
+  Mapping (`transmission-openvpn`: `/data/` -> `/data/torrents/`) in their UI.
+- Sonarr/Radarr download into `/data/arr/{tv,movies}` (Transmission's view),
+  a sibling of `completed/`, so Filebot's `completed/` watcher never sees them.
 - Rejected: mounting `/home` (exposes other apps' secrets); copy-imports
-  (doubles disk for seeded files).
+  (doubles disk for seeded files); re-rooting Transmission under `/data/torrents`
+  (needs editing bencoded resume files).
 
 ### 2. Containers (project `vpn`)
 
@@ -73,7 +78,16 @@ where they live and the script is no longer needed.
 
 New role `firth_media_stack` (host-specific naming), after `firth_docker`:
 
-- Creates `/home/aquarion/docker/vpn` and templates `docker-compose.yml`.
+- The stack moves from `aquarion`'s home to `{{ docker_root }}/vpn` (the
+  `firth_elasticsearch` pattern), owned by `jellyfin:docker`. `jellyfin` is
+  already in the `docker` and `medialibrary` groups and matches `PUID=114`.
+  Container config dirs are `jellyfin:medialibrary`; `/home/medialibrary/torrents`
+  is `jellyfin:medialibrary` mode `2775` so `aquarion` and Filebot's
+  `media_user` can still read and write it.
+- Templates `docker-compose.yml` there.
+- Filebot's cron fallback path in `organise_media_downloads` changes from
+  `transmission_complete` to `transmission_complete/completed` to match its
+  inotify watcher, so it never scans `arr/`.
 - Runs it with `community.docker.docker_compose_v2` (same module as
   `firth_elasticsearch` and `firth_laravel_app`).
 - All secrets (`OPENVPN_USERNAME` / `OPENVPN_PASSWORD` and any \*arr API keys
@@ -91,10 +105,10 @@ cron/inotify/`organise_media_downloads` path for TV/movies, and
 1. Take over the compose file; `docker compose config` matches the running
    container; no restart needed beyond Ansible's own.
 2. The VPN container is shut down for the duration (downtime accepted, which
-   avoids inode/hardlink confusion mid-move). Move torrents to
-   `/home/medialibrary/torrents`, switch download dirs, bring the stack up.
-   Update `transmission_complete` so Filebot keeps working during the
-   transition.
+   avoids inode/hardlink confusion mid-move). `mv` the torrent tree to
+   `/home/medialibrary/torrents`, point the bind mount at it, bring the stack up.
+   Update `transmission_complete` to the new host path so Filebot keeps working
+   during the transition.
 3. Add Prowlarr, Sonarr, Radarr, Jellyseerr; add root folders; library import.
 4. Disable FlexGet and Filebot amc for TV/movies; remove `sync_or_swim`; add
    cleanup tasks.
@@ -109,9 +123,10 @@ cron/inotify/`organise_media_downloads` path for TV/movies, and
 
 ## Open risks
 
-- Torrents mid-seed when `torrential` moves: Transmission needs the new
-  locations set, not a plain restart. With the container stopped during the
-  move, resume state in `/config` must still be repointed.
+- Torrent cleanup: Sonarr and Radarr remove their own torrents ("Remove
+  Completed": only after import and once seed limits are met).
+  `remove_completed_torrents` is changed to skip anything under `/data/arr/` and
+  keeps handling manual torrents and Filebot's `completed/`.
 - Prowlarr indexer traffic: egress via VPN or directly is undecided; defaults
   to direct.
 - Port `9091` loopback-only breaks any remote use of the Transmission web UI;
