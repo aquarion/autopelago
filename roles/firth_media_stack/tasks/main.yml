@@ -21,6 +21,21 @@
         mode: "0755"
       loop: "{{ [''] + (['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/jellyseerr'] if firth_media_stack_arr_enabled else []) }}"
 
+    # Where the *arrs' Transmission clients download to. Outside completed/, so
+    # Filebot's watcher and cron never see them.
+    - name: Create the *arr download directories
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_torrents_dir }}/arr{{ item }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: "{{ firth_media_stack_group }}"
+        mode: "2775"
+      loop:
+        - ""
+        - /tv
+        - /movies
+      when: firth_media_stack_arr_enabled
+
     # The compose file holds the OpenVPN credentials: 0640, and no --diff output.
     - name: Template docker-compose.yml for the media stack
       ansible.builtin.template:
