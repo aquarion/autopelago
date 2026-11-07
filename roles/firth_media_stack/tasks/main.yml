@@ -1,0 +1,48 @@
+---
+- name: Configure media stack
+  tags:
+    - media_stack
+  block:
+    - name: Create media stack directory
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_dir }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: docker
+        mode: "0755"
+
+    - name: Create media stack config directories
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_dir }}/config{{ item }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: "{{ firth_media_stack_group }}"
+        mode: "0775"
+      loop: "{{ [''] + (['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/jellyseerr'] if firth_media_stack_arr_enabled else []) }}"
+
+    # The compose file holds the OpenVPN credentials: 0640, and no --diff output.
+    - name: Template docker-compose.yml for the media stack
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ firth_media_stack_dir }}/docker-compose.yml"
+        owner: "{{ firth_media_stack_user }}"
+        group: docker
+        mode: "0640"
+      diff: false
+      notify: Restart media stack
+
+    - name: Start media stack
+      community.docker.docker_compose_v2:
+        project_src: "{{ firth_media_stack_dir }}"
+        pull: always
+        state: present
+        recreate: auto
+
+  rescue:
+    - name: Debug media stack failure
+      ansible.builtin.debug:
+        var: ansible_failed_result
+
+    - name: Abort media stack failure
+      ansible.builtin.fail:
+        msg: "Cannot continue: media stack setup failed."

@@ -1,0 +1,68 @@
+# {{ ansible_managed }}
+name: vpn
+services:
+  transmission-openvpn:
+    image: haugene/transmission-openvpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - source: /dev/net/tun
+        target: /dev/net/tun
+        permissions: rwm
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      CREATE_TUN_DEVICE: "true"
+      ENABLE_UFW: "true"
+      LOCAL_NETWORK: {{ firth_media_stack_local_network }}
+      OPENVPN_PASSWORD: "{{ nordvpn_password }}"
+      OPENVPN_PROVIDER: NORDVPN
+      OPENVPN_USERNAME: "{{ nordvpn_username }}"
+      PGID: "{{ firth_media_stack_pgid }}"
+      PUID: "{{ firth_media_stack_puid }}"
+      UFW_ALLOW_GW_NET: "true"
+      WEBPROXY_ENABLED: "false"
+    logging:
+      driver: journald
+    ports:
+      - "127.0.0.1:9091:9091"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_torrents_dir }}:/data
+      - {{ firth_media_stack_dir }}/config:/config
+      - /etc/localtime:/etc/localtime:ro
+{% if firth_media_stack_arr_enabled %}
+{% set ports = {'sonarr': 8989, 'radarr': 7878, 'prowlarr': 9696, 'bazarr': 6767} %}
+{% for app in ports %}
+
+  {{ app }}:
+    image: lscr.io/linuxserver/{{ app }}:latest
+    environment:
+      PUID: "{{ firth_media_stack_puid }}"
+      PGID: "{{ firth_media_stack_pgid }}"
+      UMASK: "002"
+      TZ: Europe/London
+    ports:
+      - "127.0.0.1:{{ ports[app] }}:{{ ports[app] }}"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_dir }}/config/{{ app }}:/config
+{% if app != 'prowlarr' %}
+      - {{ firth_media_stack_library_root }}:/data
+{% endif %}
+{% endfor %}
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    environment:
+      TZ: Europe/London
+    ports:
+      - "127.0.0.1:5055:5055"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_dir }}/config/jellyseerr:/app/config
+{% endif %}
+networks:
+  default:
+    name: vpn_default

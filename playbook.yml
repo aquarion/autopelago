@@ -93,6 +93,7 @@
     - b2_backup
     - github_cli
     - jellyfin
+    - firth_media_stack
     - getmail
     - firth_sftp_docker
     - firth_elasticsearch

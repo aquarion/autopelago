@@ -1,0 +1,11 @@
+---
+firth_media_stack_dir: "{{ docker_root }}/vpn"
+firth_media_stack_user: jellyfin
+firth_media_stack_group: medialibrary
+firth_media_stack_puid: 114
+firth_media_stack_pgid: 1004
+# Host dir mounted as Transmission's /data. Moved in Task 3.
+firth_media_stack_torrents_dir: "{{ docker_root }}/vpn/torrential"
+firth_media_stack_library_root: /home/medialibrary
+firth_media_stack_local_network: 172.22.0.0/16
+firth_media_stack_arr_enabled: false

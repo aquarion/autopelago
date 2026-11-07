@@ -1,0 +1,6 @@
+---
+- name: Restart media stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ firth_media_stack_dir }}"
+    state: present
+    recreate: always
