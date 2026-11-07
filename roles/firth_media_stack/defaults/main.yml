@@ -23,3 +23,4 @@ firth_media_stack_tailscale_services:
   radarr: 7878
   prowlarr: 9696
   bazarr: 6767
+  transmission: 9091
