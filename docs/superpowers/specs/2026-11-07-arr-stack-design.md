@@ -76,8 +76,9 @@ New role `firth_media_stack` (host-specific naming), after `firth_docker`:
 - Creates `/home/aquarion/docker/vpn` and templates `docker-compose.yml`.
 - Runs it with `community.docker.docker_compose_v2` (same module as
   `firth_elasticsearch` and `firth_laravel_app`).
-- `OPENVPN_USERNAME` / `OPENVPN_PASSWORD` come from vault in
-  `host_vars/firth.water.gkhs.net/` (alongside `media.vault.yml`).
+- All secrets (`OPENVPN_USERNAME` / `OPENVPN_PASSWORD` and any \*arr API keys
+  the templates need) go in the existing
+  `host_vars/firth.water.gkhs.net/media.vault.yml`.
 - Compose-file change must be applied with no behaviour change first.
 
 Removal tasks must be explicit (`state: absent`), per the repo rule that Ansible
@@ -89,9 +90,11 @@ cron/inotify/`organise_media_downloads` path for TV/movies, and
 
 1. Take over the compose file; `docker compose config` matches the running
    container; no restart needed beyond Ansible's own.
-2. Stop Transmission, move torrents to `/home/medialibrary/torrents`, switch
-   download dirs, restart. Update `transmission_complete` so Filebot keeps
-   working during the transition.
+2. The VPN container is shut down for the duration (downtime accepted, which
+   avoids inode/hardlink confusion mid-move). Move torrents to
+   `/home/medialibrary/torrents`, switch download dirs, bring the stack up.
+   Update `transmission_complete` so Filebot keeps working during the
+   transition.
 3. Add Prowlarr, Sonarr, Radarr, Jellyseerr; add root folders; library import.
 4. Disable FlexGet and Filebot amc for TV/movies; remove `sync_or_swim`; add
    cleanup tasks.
@@ -107,7 +110,8 @@ cron/inotify/`organise_media_downloads` path for TV/movies, and
 ## Open risks
 
 - Torrents mid-seed when `torrential` moves: Transmission needs the new
-  locations set, not a plain restart.
+  locations set, not a plain restart. With the container stopped during the
+  move, resume state in `/config` must still be repointed.
 - Prowlarr indexer traffic: egress via VPN or directly is undecided; defaults
   to direct.
 - Port `9091` loopback-only breaks any remote use of the Transmission web UI;
