@@ -8,12 +8,6 @@ transmission_pass: redacted
 # nginx config
 letsencrypt_dir: /etc/letsencrypt/live/[certname]
 
-# ####
-# Filebot install version
-# Currently there's no update detection, so if you change this
-#     delete /usr/bin/filebot on the servers to force the upgrade.
-filebot_version: 4.7.8
-
 backblaze_b2_app: XXX
 backblaze_b2_key: XXX
 # When this changes, the job will reauth with the above credentials
