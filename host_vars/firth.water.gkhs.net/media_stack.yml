@@ -1,5 +1,3 @@
 ---
-firth_media_stack_arr_enabled: true
-
 # Mounted as Transmission's /data. Same filesystem as the library so the *arrs can hardlink.
 firth_media_stack_torrents_dir: /home/medialibrary/torrents

@@ -19,10 +19,9 @@
         group: "{{ firth_media_stack_group }}"
         # The containers reset their /config to 0755 on start; match it.
         mode: "0755"
-      loop: "{{ [''] + (['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/seerr'] if firth_media_stack_arr_enabled else []) }}"
+      loop: "{{ [''] + ['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/seerr'] }}"
 
-    # Where the *arrs' Transmission clients download to. Outside completed/, so
-    # Filebot's watcher and cron never see them.
+    # Where the *arrs' Transmission clients download to.
     - name: Create the *arr download directories
       ansible.builtin.file:
         path: "{{ firth_media_stack_torrents_dir }}/arr{{ item }}"
@@ -34,7 +33,6 @@
         - ""
         - /tv
         - /movies
-      when: firth_media_stack_arr_enabled
 
     # The compose file holds the OpenVPN credentials: 0640, and no --diff output.
     - name: Template docker-compose.yml for the media stack
@@ -63,7 +61,6 @@
       register: firth_media_stack_serve_status
       changed_when: false
       check_mode: false
-      when: firth_media_stack_arr_enabled
 
     # ponytail: only checks that the service exists, not that its port still
     # matches; if a port changes, `tailscale serve clear svc:<name>` and re-run.
@@ -76,9 +73,7 @@
         tailscale serve --service=svc:{{ item.key }} --https=443 --bg
         http://127.0.0.1:{{ item.value }}
       loop: "{{ firth_media_stack_tailscale_services | dict2items }}"
-      when:
-        - firth_media_stack_arr_enabled
-        - "'svc:' ~ item.key not in (firth_media_stack_serve_status.stdout | from_json).get('Services', {})"
+      when: "'svc:' ~ item.key not in (firth_media_stack_serve_status.stdout | from_json).get('Services', {})"
       changed_when: true
 
   rescue:

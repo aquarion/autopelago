@@ -4,7 +4,7 @@ firth_media_stack_user: jellyfin
 firth_media_stack_group: medialibrary
 firth_media_stack_puid: 114
 firth_media_stack_pgid: 1004
-# Host dir mounted as Transmission's /data. Moved in Task 3.
+# Host dir mounted as Transmission's /data.
 firth_media_stack_torrents_dir: "{{ docker_root }}/vpn/torrential"
 firth_media_stack_library_root: /home/medialibrary
 # Must NOT overlap the vpn_default bridge (172.22.0.0/16): the container then
@@ -14,7 +14,6 @@ firth_media_stack_local_network: 172.16.0.0/16
 # Without a category the "best server" pick can settle on a dead server (de1570
 # reported load: null and passed no traffic) and never leave it.
 firth_media_stack_nordvpn_category: legacy_p2p
-firth_media_stack_arr_enabled: false
 
 # Tailscale Services (svc:<name> -> loopback port) for the admin UIs. Needs firth
 # tagged and each service defined and approved in the tailnet admin console.

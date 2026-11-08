@@ -27,15 +27,14 @@ services:
     logging:
       driver: journald
     ports:
-      - "127.0.0.1:9091:9091"
+      - "127.0.0.1:{{ firth_media_stack_tailscale_services.transmission }}:{{ firth_media_stack_tailscale_services.transmission }}"
     restart: unless-stopped
     volumes:
       - {{ firth_media_stack_torrents_dir }}:/data
       - {{ firth_media_stack_dir }}/config:/config
       - /etc/localtime:/etc/localtime:ro
-{% if firth_media_stack_arr_enabled %}
-{% set ports = {'sonarr': 8989, 'radarr': 7878, 'prowlarr': 9696, 'bazarr': 6767} %}
-{% for app in ports %}
+{% for app in ['sonarr', 'radarr', 'prowlarr', 'bazarr'] %}
+{% set port = firth_media_stack_tailscale_services[app] %}
 
   {{ app }}:
     image: lscr.io/linuxserver/{{ app }}:latest
@@ -45,7 +44,7 @@ services:
       UMASK: "002"
       TZ: Europe/London
     ports:
-      - "127.0.0.1:{{ ports[app] }}:{{ ports[app] }}"
+      - "127.0.0.1:{{ port }}:{{ port }}"
     restart: unless-stopped
     volumes:
       - {{ firth_media_stack_dir }}/config/{{ app }}:/config
@@ -61,7 +60,7 @@ services:
     environment:
       TZ: Europe/London
     ports:
-      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:{{ firth_media_stack_tailscale_services.autobrr }}:{{ firth_media_stack_tailscale_services.autobrr }}"
     restart: unless-stopped
     volumes:
       - {{ firth_media_stack_dir }}/config/autobrr:/config
@@ -98,7 +97,6 @@ services:
       - ALL
     volumes:
       - {{ firth_media_stack_dir }}/config/seerr:/app/config
-{% endif %}
 networks:
   default:
     name: vpn_default
