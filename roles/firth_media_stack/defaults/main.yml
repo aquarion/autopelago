@@ -4,19 +4,26 @@ firth_media_stack_user: jellyfin
 firth_media_stack_group: medialibrary
 firth_media_stack_puid: 114
 firth_media_stack_pgid: 1004
-# Host dir mounted as Transmission's /data.
-firth_media_stack_torrents_dir: "{{ docker_root }}/vpn/torrential"
 firth_media_stack_library_root: /home/medialibrary
-# Must NOT overlap the vpn_default bridge (172.22.0.0/16): the container then
-# routes its own subnet via the gateway and the tunnel passes no traffic. Other
-# containers on vpn_default reach Transmission directly, so nothing needs widening.
+# Host dir mounted as Transmission's /data. It must be on the same filesystem as the library
+# root so Sonarr/Radarr can hardlink into it (the role asserts this).
+firth_media_stack_torrents_dir: "{{ firth_media_stack_library_root }}/torrents"
+# Must NOT overlap the vpn_default bridge (172.22.0.0/16 when this was written; check
+# `docker network inspect vpn_default`): the container then routes its own subnet via the
+# gateway and the tunnel passes no traffic. Other containers on vpn_default reach Transmission
+# directly, so nothing needs widening.
 firth_media_stack_local_network: 172.16.0.0/16
 # Without a category the "best server" pick can settle on a dead server (de1570
 # reported load: null and passed no traffic) and never leave it.
 firth_media_stack_nordvpn_category: legacy_p2p
+# `missing` pulls only images that are absent, so a routine run never recreates the VPN container
+# for a new :latest. Pass -e firth_media_stack_pull_policy=always to upgrade on purpose.
+firth_media_stack_pull_policy: missing
 
-# Tailscale Services (svc:<name> -> loopback port) for the admin UIs. Needs firth
-# tagged and each service defined and approved in the tailnet admin console.
+# Tailscale Services (svc:<name> -> loopback port) for the admin UIs, also the source of the
+# published port numbers in the compose file. The Service definitions (tcp:443) and the
+# autoApprovers/grant policy are managed in the tailnet admin console, not in this repo: define
+# each Service there BEFORE first applying (see the task for why) and tag this node.
 firth_media_stack_tailscale_services:
   sonarr: 8989
   radarr: 7878

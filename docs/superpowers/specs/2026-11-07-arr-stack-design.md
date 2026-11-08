@@ -1,9 +1,15 @@
 # \*arr stack on firth — design
 
+> **Historical design, written before implementation.** The `firth_media_stack` role and the PR that
+> added it are authoritative. Several decisions changed afterwards: FlexGet, Filebot, `get_iplayer`,
+> the YouTube downloader and `sync_or_swim` were all removed (not just FlexGet/Filebot for TV and
+> movies); the stack also gained Bazarr, autobrr and FlareSolverr; every UI is served over Tailscale
+> Services; `flexget.vault.yml` became `vpn.vault.yml`; and there is no restart handler.
+
 ## Goal
 
 Replace FlexGet + Filebot (TV and movies only) with Sonarr, Radarr, Prowlarr and
-Jellyseerr for requests-driven media management. Keep the existing
+Seerr for requests-driven media management. Keep the existing
 `haugene/transmission-openvpn` container and Jellyfin. Bring the currently
 hand-managed VPN compose file under Ansible.
 
@@ -54,7 +60,7 @@ library under one mount:
 |---|---|
 | `transmission-openvpn` | Existing. `LOCAL_NETWORK` unchanged; `NORDVPN_CATEGORY=legacy_p2p` (no country pin); publish `9091` on `127.0.0.1` only. |
 | `sonarr`, `radarr`, `prowlarr` | `PUID=114`, `PGID=1004`; config under `/home/docker/vpn/config/<app>`. |
-| `jellyseerr` | Talks to host Jellyfin, Sonarr, Radarr. Nginx vhost alongside the existing `jellyfin` one. |
+| `seerr` | Talks to host Jellyfin, Sonarr, Radarr. Nginx vhost alongside the existing `jellyfin` one. |
 
 The \*arrs reach Transmission at `transmission-openvpn:9091` over `vpn_default`.
 
@@ -119,7 +125,7 @@ cron/inotify/`organise_media_downloads` path for TV/movies, and
    `/home/medialibrary/torrents`, point the bind mount at it, bring the stack up.
    Update `transmission_complete` to the new host path so Filebot keeps working
    during the transition.
-3. Add Prowlarr, Sonarr, Radarr, Jellyseerr; add root folders; library import.
+3. Add Prowlarr, Sonarr, Radarr, Seerr; add root folders; library import.
 4. Disable FlexGet and Filebot amc for TV/movies; remove `sync_or_swim`; add
    cleanup tasks.
 

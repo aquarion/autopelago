@@ -1,10 +1,5 @@
 ---
 # ####
-# Transmission configuration
-transmission_user: something
-transmission_pass: redacted
-
-# ####
 # nginx config
 letsencrypt_dir: /etc/letsencrypt/live/[certname]
 
