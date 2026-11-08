@@ -1,9 +1,5 @@
 letsencrypt_dir: "{{ ansible_facts['fqdn'] }}"
 
-flexget_tasks:
-  tasks:
-    - none
-
 apt_cache_time: 21600
 
 mysql_host: 127.0.0.1

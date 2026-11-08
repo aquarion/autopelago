@@ -1,23 +1,7 @@
 ---
 # ####
-# Flexget configuration
-flexget_tasks:
-  - { name: an_rss_feed, rss: http://a_url }
-
-# ####
-# Transmission configuration
-transmission_user: something
-transmission_pass: redacted
-
-# ####
 # nginx config
 letsencrypt_dir: /etc/letsencrypt/live/[certname]
-
-# ####
-# Filebot install version
-# Currently there's no update detection, so if you change this
-#     delete /usr/bin/filebot on the servers to force the upgrade.
-filebot_version: 4.7.8
 
 backblaze_b2_app: XXX
 backblaze_b2_key: XXX

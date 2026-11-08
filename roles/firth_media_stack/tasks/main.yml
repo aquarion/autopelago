@@ -1,0 +1,135 @@
+---
+# Settings made in the apps' own UIs/APIs, not here (so a rebuild must redo them): Sonarr/Radarr
+# root folders, their Transmission download clients (directory /data/arr/{tv,movies}) and Remote
+# Path Mapping (/data/ -> /data/torrents/), naming, the Prowlarr apps and its `cloudflare` tag on
+# the FlareSolverr proxy and the indexers behind Cloudflare, and Seerr's first-run setup.
+- name: Configure media stack
+  tags:
+    - media_stack
+  block:
+    - name: Create media stack directory
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_dir }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: docker
+        mode: "0755"
+
+    - name: Create media stack config directories
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_dir }}/config{{ item }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: "{{ firth_media_stack_group }}"
+        # The haugene and linuxserver images reset their /config to 0755 on start; match it
+        # so runs stay idempotent. Only the container user writes there, so no group write.
+        mode: "0755"
+      loop: "{{ [''] + ['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/seerr'] }}"
+
+    # setgid, group-writable: Transmission, the *arrs and anyone in the media group share it.
+    - name: Create the torrents directory
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_torrents_dir }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: "{{ firth_media_stack_group }}"
+        mode: "2775"
+
+    # Where the *arrs' Transmission clients download to.
+    - name: Create the *arr download directories
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_torrents_dir }}/arr{{ item }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: "{{ firth_media_stack_group }}"
+        mode: "2775"
+      loop:
+        - ""
+        - /tv
+        - /movies
+
+    # Hardlinks cannot cross filesystems; without this the *arrs silently fall back to copying
+    # (double the disk use for every seeded file).
+    - name: Check the torrents directory and the library are on one filesystem
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ firth_media_stack_torrents_dir }}"
+        - "{{ firth_media_stack_library_root }}"
+      register: firth_media_stack_fs
+
+    - name: Assert hardlinks between downloads and library are possible
+      ansible.builtin.assert:
+        that:
+          - firth_media_stack_fs.results[0].stat.dev == firth_media_stack_fs.results[1].stat.dev
+        fail_msg: >-
+          {{ firth_media_stack_torrents_dir }} and {{ firth_media_stack_library_root }} are on
+          different filesystems, so Sonarr/Radarr would copy instead of hardlinking.
+        quiet: true
+
+    # Holds the NordVPN service credentials: readable by group docker only. diff: false keeps
+    # them out of --diff output and run logs.
+    - name: Template docker-compose.yml for the media stack
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ firth_media_stack_dir }}/docker-compose.yml"
+        owner: "{{ firth_media_stack_user }}"
+        group: docker
+        mode: "0640"
+      diff: false
+
+    # Image policy: `missing` so a routine run never pulls a newer :latest and recreates the VPN
+    # container (cutting downloads, rebuilding the tunnel). Upgrade on purpose with
+    # `-e firth_media_stack_pull_policy=always`. recreate: auto then only recreates services whose
+    # config (or image) changed. wait: fail the run if the stack does not come up healthy, so a
+    # crash-looping container or a tunnel that never connects is not reported as success.
+    # remove_orphans drops any container of the `vpn` project that is not in the compose file
+    # (the cleanup for a retired service); anything hand-added to this project would go too.
+    - name: Start media stack
+      community.docker.docker_compose_v2:
+        project_src: "{{ firth_media_stack_dir }}"
+        pull: "{{ firth_media_stack_pull_policy }}"
+        state: present
+        recreate: auto
+        remove_orphans: true
+        wait: true
+        wait_timeout: 180
+
+    - name: Read tailscale serve status
+      ansible.builtin.command: tailscale serve status --json
+      register: firth_media_stack_serve_status
+      changed_when: false
+      check_mode: false
+
+    # A Tailscale Service must be defined (tcp:443) in the tailnet admin console BEFORE this node
+    # advertises it. If it was defined or corrected afterwards, the console shows "Advertising the
+    # service, but configuration is missing"; fix with
+    # `tailscale serve --service=svc:<name> --https=443 off` and re-run.
+    # Seerr is not served here: nginx publishes it.
+    #
+    # Idempotence: this only checks that svc:<name> is present, not that its target port still
+    # matches. If a port changes, `tailscale serve clear svc:<name>` on firth and re-run.
+    - name: Serve the *arr UIs as Tailscale Services
+      ansible.builtin.command: >-
+        tailscale serve --service=svc:{{ item.key }} --https=443 --bg
+        http://127.0.0.1:{{ item.value }}
+      loop: "{{ firth_media_stack_tailscale_services | dict2items }}"
+      when: "'svc:' ~ item.key not in ((firth_media_stack_serve_status.stdout or '{}') | from_json).get('Services', {})"
+      register: firth_media_stack_serve_result
+      changed_when: true
+
+    # `tailscale serve` exits 0 even when the tailnet has not approved the host yet, so surface it.
+    - name: Warn about Tailscale Services that still need approval in the admin console
+      ansible.builtin.debug:
+        msg: "svc:{{ item.item.key }}: {{ item.stdout_lines | first | default('') }}"
+      loop: "{{ firth_media_stack_serve_result.results | default([]) }}"
+      loop_control:
+        label: "svc:{{ item.item.key }}"
+      when: item.stdout is defined and item.stdout is search('approval')
+
+  rescue:
+    # The failed task's own output is already above; do not dump ansible_failed_result, which for a
+    # compose failure can echo lines of the rendered file (it contains credentials).
+    - name: Abort media stack failure
+      ansible.builtin.fail:
+        msg: "Media stack setup failed at '{{ ansible_failed_task.name }}': {{ ansible_failed_result.msg | default('see the task output above') }}"

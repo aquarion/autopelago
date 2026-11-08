@@ -1,0 +1,109 @@
+# {{ ansible_managed }}
+name: vpn
+services:
+  transmission-openvpn:
+    image: haugene/transmission-openvpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - source: /dev/net/tun
+        target: /dev/net/tun
+        permissions: rwm
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      CREATE_TUN_DEVICE: "true"
+      ENABLE_UFW: "true"
+      # See defaults: must not overlap the vpn_default bridge subnet.
+      LOCAL_NETWORK: {{ firth_media_stack_local_network }}
+      NORDVPN_CATEGORY: "{{ firth_media_stack_nordvpn_category }}"
+      # to_json quotes/escapes for YAML; $$ stops compose treating a $ as variable interpolation.
+      OPENVPN_PASSWORD: {{ nordvpn_password | replace('$', '$$') | to_json }}
+      OPENVPN_PROVIDER: NORDVPN
+      OPENVPN_USERNAME: {{ nordvpn_username | replace('$', '$$') | to_json }}
+      PGID: "{{ firth_media_stack_pgid }}"
+      PUID: "{{ firth_media_stack_puid }}"
+      UFW_ALLOW_GW_NET: "true"
+      WEBPROXY_ENABLED: "false"
+    logging:
+      driver: journald
+    # Loopback only: the web UI is reached through the Tailscale Service svc:transmission, which
+    # proxies to this port. The *arrs use transmission-openvpn:9091 over vpn_default instead.
+    ports:
+      - "127.0.0.1:{{ firth_media_stack_tailscale_services.transmission }}:{{ firth_media_stack_tailscale_services.transmission }}"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_torrents_dir }}:/data
+      - {{ firth_media_stack_dir }}/config:/config
+      - /etc/localtime:/etc/localtime:ro
+{# Every UI binds to loopback; Tailscale Services (and nginx for Seerr) are the only way in. The
+   *arrs reach each other and Transmission over vpn_default by service name. #}
+{% for app in ['sonarr', 'radarr', 'prowlarr', 'bazarr'] %}
+{% set port = firth_media_stack_tailscale_services[app] %}
+
+  {{ app }}:
+    image: lscr.io/linuxserver/{{ app }}:latest
+    environment:
+      PUID: "{{ firth_media_stack_puid }}"
+      PGID: "{{ firth_media_stack_pgid }}"
+      UMASK: "002"
+      TZ: Europe/London
+    ports:
+      - "127.0.0.1:{{ port }}:{{ port }}"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_dir }}/config/{{ app }}:/config
+{% if app != 'prowlarr' %}
+      - {{ firth_media_stack_library_root }}:/data
+{% endif %}
+{% endfor %}
+
+  # Announce-channel/RSS grabber; pushes releases to Sonarr/Radarr. Configured in its UI.
+  # Does not read PUID/PGID, so it runs as the media user directly.
+  autobrr:
+    image: ghcr.io/autobrr/autobrr:latest
+    user: "{{ firth_media_stack_puid }}:{{ firth_media_stack_pgid }}"
+    environment:
+      TZ: Europe/London
+    ports:
+      - "127.0.0.1:{{ firth_media_stack_tailscale_services.autobrr }}:{{ firth_media_stack_tailscale_services.autobrr }}"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_dir }}/config/autobrr:/config
+
+  # Cloudflare-challenge solver for Prowlarr's FlareSolverr indexer proxy
+  # (http://flaresolverr:8191/). Internal only; no published port.
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    environment:
+      LOG_LEVEL: info
+      TZ: Europe/London
+    restart: unless-stopped
+
+  # Requests UI (Seerr). Runs as the media user directly (no PUID/PGID support). It is the one
+  # service published publicly (nginx vhost requests.aqxs.net), hence the extra hardening below.
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    user: "{{ firth_media_stack_puid }}:{{ firth_media_stack_pgid }}"
+    environment:
+      TZ: Europe/London
+    ports:
+      - "127.0.0.1:5055:5055"
+    restart: unless-stopped
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    security_opt:
+      - no-new-privileges
+    cap_drop:
+      - ALL
+    volumes:
+      - {{ firth_media_stack_dir }}/config/seerr:/app/config
+networks:
+  default:
+    name: vpn_default
