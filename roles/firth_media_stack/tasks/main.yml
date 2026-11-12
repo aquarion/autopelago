@@ -4,8 +4,10 @@
 # Path Mapping (/data/ -> /data/torrents/), naming, the Prowlarr apps and its `cloudflare` tag on
 # the FlareSolverr proxy and the indexers behind Cloudflare, and Seerr's first-run setup. SABnzbd:
 # the Usenet provider, folders (/data/usenet/incomplete, /data/usenet/complete), categories
-# tv/movies, the API key the *arrs use, and the Tailscale hostname under Config > General >
-# Hostname verification (host_whitelist). In Sonarr/Radarr add a SABnzbd client (host `sabnzbd`,
+# tv/movies, the API key the *arrs use, a login, External internet access = Full web interface
+# (tailnet clients are 100.x CGNAT addresses, which it otherwise rejects as external; set it over
+# `ssh -L 8942:127.0.0.1:8942`), and the Tailscale hostname under Config > General > Hostname
+# verification (host_whitelist). In Sonarr/Radarr add a SABnzbd client (host `sabnzbd`,
 # port 8080, category tv/movies); no Remote Path Mapping is needed.
 - name: Configure media stack
   tags:
