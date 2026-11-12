@@ -34,4 +34,4 @@ firth_media_stack_tailscale_services:
   bazarr: 6767
   transmission: 9091
   autobrr: 7474
-  sabnzbd: 8942
+  sabnzbd: 8942 # host loopback port only; the container, and so the *arrs, use 8080
