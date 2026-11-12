@@ -81,7 +81,8 @@
       ansible.builtin.assert:
         that:
           - firth_media_stack_fs.results[0].stat.dev == firth_media_stack_fs.results[1].stat.dev
-          - firth_media_stack_fs.results[2].stat.dev == firth_media_stack_fs.results[1].stat.dev
+          # default(): under --check the usenet dir above was not created, so it has no dev yet.
+          - firth_media_stack_fs.results[2].stat.dev | default(firth_media_stack_fs.results[1].stat.dev) == firth_media_stack_fs.results[1].stat.dev
         fail_msg: >-
           {{ firth_media_stack_torrents_dir }} or {{ firth_media_stack_usenet_dir }} is on a
           different filesystem from {{ firth_media_stack_library_root }}, so Sonarr/Radarr would
