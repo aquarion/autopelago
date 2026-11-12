@@ -2,7 +2,11 @@
 # Settings made in the apps' own UIs/APIs, not here (so a rebuild must redo them): Sonarr/Radarr
 # root folders, their Transmission download clients (directory /data/arr/{tv,movies}) and Remote
 # Path Mapping (/data/ -> /data/torrents/), naming, the Prowlarr apps and its `cloudflare` tag on
-# the FlareSolverr proxy and the indexers behind Cloudflare, and Seerr's first-run setup.
+# the FlareSolverr proxy and the indexers behind Cloudflare, and Seerr's first-run setup. SABnzbd:
+# the Usenet provider, folders (/data/usenet/incomplete, /data/usenet/complete), categories
+# tv/movies, the API key the *arrs use, and the Tailscale hostname under Config > General >
+# Hostname verification (host_whitelist). In Sonarr/Radarr add a SABnzbd client (host `sabnzbd`,
+# port 8080, category tv/movies); no Remote Path Mapping is needed.
 - name: Configure media stack
   tags:
     - media_stack
@@ -24,7 +28,7 @@
         # The haugene and linuxserver images reset their /config to 0755 on start; match it
         # so runs stay idempotent. Only the container user writes there, so no group write.
         mode: "0755"
-      loop: "{{ [''] + ['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/seerr'] }}"
+      loop: "{{ [''] + ['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/seerr', '/sabnzbd'] }}"
 
     # setgid, group-writable: Transmission, the *arrs and anyone in the media group share it.
     - name: Create the torrents directory
@@ -47,6 +51,20 @@
         - ""
         - /tv
         - /movies
+
+    - name: Create the Usenet download directories
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_usenet_dir }}{{ item }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: "{{ firth_media_stack_group }}"
+        mode: "2775"
+      loop:
+        - ""
+        - /incomplete
+        - /complete
+        - /complete/tv
+        - /complete/movies
 
     # Hardlinks cannot cross filesystems; without this the *arrs silently fall back to copying
     # (double the disk use for every seeded file).
