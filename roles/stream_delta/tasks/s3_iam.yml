@@ -20,6 +20,19 @@
           Action: "s3:GetObject"
           Resource: "arn:aws:s3:::{{ stream_delta_aws_bucket }}/*"
 
+# The Pick a Game dice load box art as WebGL textures with crossOrigin, which the browser rejects
+# without an Access-Control-Allow-Origin header. The objects are already public-read.
+- name: Allow cross-origin reads of the stream-delta bucket
+  community.aws.s3_cors:
+    name: "{{ stream_delta_aws_bucket }}"
+    region: "{{ stream_delta_aws_region }}"
+    aws_profile: istic
+    state: present
+    rules:
+      - allowed_origins: ["*"]
+        allowed_methods: ["GET", "HEAD"]
+        max_age_seconds: 86400
+
 - name: Create IAM user for stream-delta logo uploads
   amazon.aws.iam_user:
     name: "{{ stream_delta_aws_iam_user }}"
