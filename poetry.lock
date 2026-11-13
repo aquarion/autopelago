@@ -56,15 +56,15 @@ resolvelib = ">=0.8.0,<2.0.0"
 
 [[package]]
 name = "ansible-lint"
-version = "26.10.1"
+version = "26.11.0"
 description = "Checks playbooks for practices and behavior that could potentially be improved"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 markers = "platform_system != \"Windows\""
 files = [
-    {file = "ansible_lint-26.10.1-py3-none-any.whl", hash = "sha256:cc26d405ee38c3390e80ec18c4137b5685c36d03ce7d4d8233b0470d9a0e21e9"},
-    {file = "ansible_lint-26.10.1.tar.gz", hash = "sha256:a746c6f3cb5719d1c202bc14e956ef3b0eca704025d1aa92707a27fc73ed73ea"},
+    {file = "ansible_lint-26.11.0-py3-none-any.whl", hash = "sha256:b778ea87fa873384b373e8c3fe53a06b3acc7b72ac283e2d2070f76fdf9f8358"},
+    {file = "ansible_lint-26.11.0.tar.gz", hash = "sha256:74813203aa5450d720c3d86b9d0d4ddc51d30e36ac69e1f0d9f7650f5a3b5dd3"},
 ]
 
 [package.dependencies]
@@ -74,7 +74,7 @@ black = ">=25.2.0"
 cffi = ">=1.15.1"
 cryptography = ">=46.0.7"
 distro = ">=1.9.0"
-filelock = ">=3.8.2"
+filelock = {version = ">=3.20.3", markers = "python_version >= \"3.11\""}
 jsonschema = ">=4.10.0"
 packaging = ">=22.0"
 pathspec = ">=1.0.3,<1.2.0"
