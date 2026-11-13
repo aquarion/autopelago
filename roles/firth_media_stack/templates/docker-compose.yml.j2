@@ -72,6 +72,22 @@ services:
     volumes:
       - {{ firth_media_stack_dir }}/config/autobrr:/config
 
+  # Usenet downloader. Outside the VPN: Usenet providers are reached over TLS directly. Mounts the
+  # whole library root as /data (same paths as the *arrs), downloading into /data/usenet.
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    environment:
+      PUID: "{{ firth_media_stack_puid }}"
+      PGID: "{{ firth_media_stack_pgid }}"
+      UMASK: "002"
+      TZ: Europe/London
+    ports:
+      - "127.0.0.1:{{ firth_media_stack_tailscale_services.sabnzbd }}:8080"
+    restart: unless-stopped
+    volumes:
+      - {{ firth_media_stack_dir }}/config/sabnzbd:/config
+      - {{ firth_media_stack_library_root }}:/data
+
   # Cloudflare-challenge solver for Prowlarr's FlareSolverr indexer proxy
   # (http://flaresolverr:8191/). Internal only; no published port.
   flaresolverr:

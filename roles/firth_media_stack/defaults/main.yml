@@ -8,6 +8,9 @@ firth_media_stack_library_root: /home/medialibrary
 # Host dir mounted as Transmission's /data. It must be on the same filesystem as the library
 # root so Sonarr/Radarr can hardlink into it (the role asserts this).
 firth_media_stack_torrents_dir: "{{ firth_media_stack_library_root }}/torrents"
+# SABnzbd's download tree (incomplete/ and complete/{tv,movies}). Under the library root, so it is
+# on the same filesystem by construction and the *arrs import from it without a path mapping.
+firth_media_stack_usenet_dir: "{{ firth_media_stack_library_root }}/usenet"
 # Must NOT overlap the vpn_default bridge (172.22.0.0/16 when this was written; check
 # `docker network inspect vpn_default`): the container then routes its own subnet via the
 # gateway and the tunnel passes no traffic. Other containers on vpn_default reach Transmission
@@ -31,3 +34,4 @@ firth_media_stack_tailscale_services:
   bazarr: 6767
   transmission: 9091
   autobrr: 7474
+  sabnzbd: 8942 # host loopback port only; the container, and so the *arrs, use 8080

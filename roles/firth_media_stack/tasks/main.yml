@@ -2,7 +2,13 @@
 # Settings made in the apps' own UIs/APIs, not here (so a rebuild must redo them): Sonarr/Radarr
 # root folders, their Transmission download clients (directory /data/arr/{tv,movies}) and Remote
 # Path Mapping (/data/ -> /data/torrents/), naming, the Prowlarr apps and its `cloudflare` tag on
-# the FlareSolverr proxy and the indexers behind Cloudflare, and Seerr's first-run setup.
+# the FlareSolverr proxy and the indexers behind Cloudflare, and Seerr's first-run setup. SABnzbd:
+# the Usenet provider, folders (/data/usenet/incomplete, /data/usenet/complete), categories
+# tv/movies, the API key the *arrs use, a login, External internet access = Full web interface
+# (tailnet clients are 100.x CGNAT addresses, which it otherwise rejects as external; set it over
+# `ssh -L 8942:127.0.0.1:8942`), and the Tailscale hostname under Config > General > Hostname
+# verification (host_whitelist). In Sonarr/Radarr add a SABnzbd client (host `sabnzbd`,
+# port 8080, category tv/movies); no Remote Path Mapping is needed.
 - name: Configure media stack
   tags:
     - media_stack
@@ -24,7 +30,7 @@
         # The haugene and linuxserver images reset their /config to 0755 on start; match it
         # so runs stay idempotent. Only the container user writes there, so no group write.
         mode: "0755"
-      loop: "{{ [''] + ['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/seerr'] }}"
+      loop: "{{ [''] + ['/sonarr', '/radarr', '/prowlarr', '/bazarr', '/autobrr', '/seerr', '/sabnzbd'] }}"
 
     # setgid, group-writable: Transmission, the *arrs and anyone in the media group share it.
     - name: Create the torrents directory
@@ -48,6 +54,20 @@
         - /tv
         - /movies
 
+    - name: Create the Usenet download directories
+      ansible.builtin.file:
+        path: "{{ firth_media_stack_usenet_dir }}{{ item }}"
+        state: directory
+        owner: "{{ firth_media_stack_user }}"
+        group: "{{ firth_media_stack_group }}"
+        mode: "2775"
+      loop:
+        - ""
+        - /incomplete
+        - /complete
+        - /complete/tv
+        - /complete/movies
+
     # Hardlinks cannot cross filesystems; without this the *arrs silently fall back to copying
     # (double the disk use for every seeded file).
     - name: Check the torrents directory and the library are on one filesystem
@@ -56,15 +76,19 @@
       loop:
         - "{{ firth_media_stack_torrents_dir }}"
         - "{{ firth_media_stack_library_root }}"
+        - "{{ firth_media_stack_usenet_dir }}"
       register: firth_media_stack_fs
 
     - name: Assert hardlinks between downloads and library are possible
       ansible.builtin.assert:
         that:
           - firth_media_stack_fs.results[0].stat.dev == firth_media_stack_fs.results[1].stat.dev
+          # default(): under --check the usenet dir above was not created, so it has no dev yet.
+          - firth_media_stack_fs.results[2].stat.dev | default(firth_media_stack_fs.results[1].stat.dev) == firth_media_stack_fs.results[1].stat.dev
         fail_msg: >-
-          {{ firth_media_stack_torrents_dir }} and {{ firth_media_stack_library_root }} are on
-          different filesystems, so Sonarr/Radarr would copy instead of hardlinking.
+          {{ firth_media_stack_torrents_dir }} or {{ firth_media_stack_usenet_dir }} is on a
+          different filesystem from {{ firth_media_stack_library_root }}, so Sonarr/Radarr would
+          copy instead of hardlinking.
         quiet: true
 
     # Holds the NordVPN service credentials: readable by group docker only. diff: false keeps
