@@ -13,6 +13,7 @@ server {
     server_name voyeur.istic.dev;
     server_tokens off;
     root {{ stream_delta_staging_install_dir }}/current/public;
+    client_max_body_size 32M;
 
     index index.php;
 
