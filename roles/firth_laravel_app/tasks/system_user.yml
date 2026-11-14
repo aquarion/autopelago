@@ -13,6 +13,17 @@
         append: true
         state: present
 
+    # nginx serves some apps' files (nginx_snippet) directly off the host. The app's storage dir is owned by the
+    # container user (uid 82) with group {{ fla.name }} and mode 0750, so nginx can only read it as a group member.
+    # Group membership is only picked up when nginx workers start, hence the restart (not reload).
+    - name: Let nginx read files served directly from {{ fla.name }}'s storage
+      ansible.builtin.user:
+        name: "{{ firth_laravel_app_nginx_user }}"
+        groups: "{{ fla.name }}"
+        append: true
+      when: fla.nginx_snippet is defined
+      notify: Restart nginx
+
     - name: Ensure .ssh directory exists for {{ fla.name }}
       ansible.builtin.file:
         path: "/var/lib/{{ fla.name }}/.ssh"
