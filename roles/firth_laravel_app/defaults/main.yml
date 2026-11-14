@@ -10,3 +10,7 @@ firth_laravel_app_elasticsearch_host: localhost
 firth_laravel_app_elasticsearch_port: 9200
 firth_laravel_app_elasticsearch_password: "{{ firth_elasticsearch_elastic_password }}"
 firth_laravel_app_elasticsearch_ca_cert: /var/lib/docker/volumes/elasticsearch_certs/_data/ca/ca.crt
+
+# Host user that nginx workers run as. Apps that have an nginx_snippet serving files straight out of
+# their storage directory (e.g. thalium's /_thumbnails/) add this user to the app's system group.
+firth_laravel_app_nginx_user: www-data
