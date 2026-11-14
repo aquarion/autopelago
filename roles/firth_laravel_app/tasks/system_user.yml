@@ -16,7 +16,7 @@
     # nginx serves some apps' files (nginx_snippet) directly off the host. The app's storage dir is owned by the
     # container user (uid 82) with group {{ fla.name }} and mode 0750, so nginx can only read it as a group member.
     # Group membership is only picked up when nginx workers start, hence the restart (not reload).
-    - name: Let nginx read files served directly from {{ fla.name }}'s storage
+    - name: Let nginx read files served directly from storage for {{ fla.name }}
       ansible.builtin.user:
         name: "{{ firth_laravel_app_nginx_user }}"
         groups: "{{ fla.name }}"
