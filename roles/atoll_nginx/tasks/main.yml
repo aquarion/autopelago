@@ -8,30 +8,6 @@
     - python3-passlib
     - libnginx-mod-http-fancyindex
 
-- name: Delete old ssl config snippits
-  ansible.builtin.file:
-    path: /etc/nginx/snippets/{{ item | basename }}
-    state: absent
-  with_fileglob:
-    - templates/ssl/*
-  notify:
-    - Reload nginx
-  tags:
-    - streamsite
-    - nginx
-
-- name: Configure ssl config snippits
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: /etc/nginx/snippets/ssl/{{ item | basename }}
-    mode: "0644"
-  with_fileglob:
-    - templates/ssl/*
-  notify:
-    - Restart nginx
-  tags:
-    - nginx
-
 - name: Configure config overrides
   ansible.builtin.template:
     src: "{{ item }}"

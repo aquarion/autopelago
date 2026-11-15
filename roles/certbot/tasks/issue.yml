@@ -1,0 +1,25 @@
+---
+- name: Issue or expand certificates
+  ansible.builtin.include_tasks: issue_cert.yml
+  loop: "{{ certbot_certs }}"
+  loop_control:
+    loop_var: certbot_cert
+    label: "{{ certbot_cert.name }}"
+  tags: certbot
+
+- name: Remove certificates that are no longer wanted
+  ansible.builtin.command:
+    argv: [certbot, delete, --non-interactive, --cert-name, "{{ item }}"]
+    removes: "/etc/letsencrypt/renewal/{{ item }}.conf"
+  loop: "{{ certbot_certs_absent }}"
+  tags: certbot
+
+- name: Let the certbot_access group read Let's Encrypt files (nginx, dovecot, exim)
+  ansible.builtin.file:
+    path: /etc/letsencrypt
+    state: directory
+    owner: root
+    group: certbot_access
+    mode: g+rX
+    recurse: true
+  tags: certbot

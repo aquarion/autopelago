@@ -1,2 +1,8 @@
+## Custom diff values are in .gitconfig, you'll find config examples for these
+## in my dotfiles repo, https://github.com/aquarion/dotfiles/blob/main/gitconfig
+
+## ansible-vault diffing.
 group_vars/all.yml diff=ansible-vault merge=binary
 **.vault.??? diff=ansible-vault merge=binary
+## GPG diffing
+**.gpg diff=gnupg-view merge=text

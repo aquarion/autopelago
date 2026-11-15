@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+server {
+    listen 80;
+    listen [::]:80;
+    server_name pdforums.larp.me;
+    return 301 https://forums.profounddecisions.co.uk$request_uri;
+}
+
+server {
+    listen 443 ssl proxy_protocol;
+    listen [::]:443 ssl proxy_protocol;
+    server_name pdforums.larp.me;
+
+    include /etc/nginx/snippets/ssl/larpme_ssl.conf;
+
+    return 301 https://forums.profounddecisions.co.uk$request_uri;
+}

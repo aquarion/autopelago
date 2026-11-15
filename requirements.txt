@@ -1,8 +1,8 @@
-ansible>=13.5,<14.3
+ansible>=13.5,<14.7
 ansible-lint==26.*
 boto==2.*
 boto3==1.*
 poetry==2.*
 poetry-plugin-export==1.*
 virtualenv>=20,<22
-PyMySQL==1.2.0
+PyMySQL==1.2.3

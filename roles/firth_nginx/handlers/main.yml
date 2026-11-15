@@ -1,4 +1,8 @@
 ---
+- name: Validate nginx configuration
+  ansible.builtin.command: nginx -t
+  changed_when: false
+
 - name: Restart nginx
   ansible.builtin.service:
     name: nginx

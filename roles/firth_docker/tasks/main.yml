@@ -3,21 +3,31 @@
   tags:
     - docker
   block:
-    - name: Add GPG key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-        keyring: /etc/apt/keyrings/docker.gpg
+    # Vendored rather than apt_key, which needs apt-key (removed in APT 3,
+    # Ubuntu 25.04+). From https://download.docker.com/linux/ubuntu/gpg,
+    # fingerprint 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88.
+    - name: Upload Docker GPG key
+      ansible.builtin.copy:
+        src: docker.asc
+        dest: /etc/apt/keyrings/docker.asc
+        owner: root
+        group: root
+        mode: "0644"
 
     - name: Get DEB architecture
       ansible.builtin.shell: dpkg --print-architecture
       register: firth_docker_deb_architecture
       changed_when: false
 
+    # download_docker_com_linux_ubuntu.list is what apt_repository wrote;
+    # docker.list is the name Docker's install docs use.
     - name: Remove old docker repository from apt
-      ansible.builtin.apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+      ansible.builtin.file:
+        path: "/etc/apt/sources.list.d/{{ item }}"
         state: absent
+      loop:
+        - download_docker_com_linux_ubuntu.list
+        - docker.list
       notify:
         - Apt Cache Update
       tags:
@@ -27,13 +37,21 @@
       ansible.builtin.deb822_repository:
         name: docker
         uris: https://download.docker.com/linux/ubuntu
-        suites: "{{ ansible_distribution_release }}"
+        suites: "{{ ansible_facts['distribution_release'] }}"
         state: present
-        signed_by: /etc/apt/keyrings/docker.gpg
+        signed_by: /etc/apt/keyrings/docker.asc
         components: stable
         architectures: "{{ firth_docker_deb_architecture.stdout }}"
       notify:
         - Apt Cache Update
+
+    - name: Remove old apt_key Docker keyring
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/keyrings/docker.gpg
+        - /etc/apt/keyrings/docker.gpg~
 
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers
@@ -94,8 +112,13 @@
     - name: Configure Redis dockersites user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
-        line: user dockersites on +@all -DEBUG ~* >{{ dockersites_redis_password }}
-        regex: ^user dockersites
+        # Store the password's SHA-256 (`#<hex>`), not the plaintext (`>pass`): Redis
+        # hashes what clients send and compares. Quoted, because an unquoted ` #`
+        # starts a YAML comment and would silently drop the password entirely.
+        line: "user dockersites on +@all -DEBUG ~* #{{ dockersites_redis_password | hash('sha256') }}"
+        regex: "^user dockersites "
+      # The diff would show the old plaintext `>password` line being replaced.
+      no_log: true
       notify:
         - Reload Redis ACL
       tags:

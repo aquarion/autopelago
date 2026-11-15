@@ -8,42 +8,19 @@
   tags:
     - kastark
 
-- name: Kastark.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: kastark.co.uk
-    record: kastark.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-  tags:
-    - kastark
-
-- name: Www.kastark.co.uk. - CNAME - Delete (replace with A record)
-  amazon.aws.route53:
-    overwrite: true
-    state: absent
-    zone: kastark.co.uk
-    record: www.kastark.co.uk.
-    aws_profile: aqcom
-    type: CNAME
-    ttl: "300"
-    value: "kastark.co.uk."
-  tags:
-    - kastark
-
-- name: Www.kastark.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: kastark.co.uk
-    record: www.kastark.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
+- name: "Kastark.co.uk Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+    apply:
+      tags:
+        - kastark
+  vars:
+    _r53_zone: kastark.co.uk
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: www, type: CNAME, state: absent, value: kastark.co.uk. }
+      - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
   tags:
     - kastark
 
@@ -56,28 +33,17 @@
   tags:
     - kastark
 
-- name: Dhmstark.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: dhmstark.co.uk
-    record: dhmstark.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
-  tags:
-    - kastark
-
-- name: Www.dhmstark.co.uk. - A
-  amazon.aws.route53:
-    overwrite: true
-    state: present
-    zone: dhmstark.co.uk
-    record: www.dhmstark.co.uk.
-    aws_profile: aqcom
-    type: A
-    ttl: "300"
-    value: "{{ loadbalancer_ip }}"
+- name: "Dhmstark.co.uk Route53 records"
+  ansible.builtin.include_tasks:
+    file: ../../included_tasks/route53_records.yml
+    apply:
+      tags:
+        - kastark
+  vars:
+    _r53_zone: dhmstark.co.uk
+    _r53_aws_profile: aqcom
+    _r53_records:
+      - { name: "@", type: A, value: "{{ loadbalancer_ip }}" }
+      - { name: www, type: A, value: "{{ loadbalancer_ip }}" }
   tags:
     - kastark

@@ -14,23 +14,18 @@ server {
   server_name socksandpuppets.com *.socksandpuppets.com;
   include /etc/nginx/snippets/ssl/socksandpuppets_ssl.conf;
 
-  root /home/docker/miscweb/hosts/socksandpuppets.com/htdocs;
-
   error_log /var/log/nginx/socksandpuppets.error.log;
   access_log /var/log/nginx/socksandpuppets.access.log;
 
   add_header X-WhyAmI socksandpuppets;
 
+  # Static content, proxied to the dedicated web_ahdok Apache sidecar
+  # (mod_autoindex + AllowOverride Indexes) rather than served via nginx's
+  # own "root" - the site's .htaccess relies on Apache-specific fancy
+  # directory listing that nginx has no equivalent for.
   location / {
-    try_files $uri $uri/ /index.php?$query_string;
-  }
-
-  location ~ \.php$ {
-    try_files $uri =404;
-    fastcgi_pass unix:{{ docker_root }}/sftp/run/ahdok.sock;
-    fastcgi_param SCRIPT_FILENAME /var/www/html/htdocs$fastcgi_script_name;
-    fastcgi_param QUERY_STRING $query_string;
-    include fastcgi_params;
+    proxy_pass http://127.0.0.1:4081;
+    include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
 
   include /etc/nginx/snippets/errors.conf;

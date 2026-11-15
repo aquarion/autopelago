@@ -1,0 +1,38 @@
+---
+# Fetch every page of a GitHub list endpoint (actions variables or secrets).
+# The API returns at most 100 entries per page, plus total_count, so fetch
+# the first page and then any remaining ones.
+#
+# Required vars: stream_delta_list_url (no query string),
+#                stream_delta_list_key ("variables" or "secrets")
+# Sets: stream_delta_list_items
+- name: "Get first page of GitHub {{ stream_delta_list_key }}"
+  ansible.builtin.uri:
+    url: "{{ stream_delta_list_url }}?per_page=100&page=1"
+    method: GET
+    headers:
+      Accept: "application/vnd.github.v3+json"
+      Authorization: "Bearer {{ github_deploy_token }}"
+      X-GitHub-Api-Version: "2022-11-28"
+    return_content: true
+  register: stream_delta_list_first
+  changed_when: false
+
+- name: "Get remaining pages of GitHub {{ stream_delta_list_key }}"
+  ansible.builtin.uri:
+    url: "{{ stream_delta_list_url }}?per_page=100&page={{ item }}"
+    method: GET
+    headers:
+      Accept: "application/vnd.github.v3+json"
+      Authorization: "Bearer {{ github_deploy_token }}"
+      X-GitHub-Api-Version: "2022-11-28"
+    return_content: true
+  register: stream_delta_list_rest
+  changed_when: false
+  loop: "{{ range(2, (stream_delta_list_first.json.total_count / 100) | round(0, 'ceil') | int + 1) | list }}"
+
+- name: "Combine pages of GitHub {{ stream_delta_list_key }}"
+  ansible.builtin.set_fact:
+    stream_delta_list_items: "{{ stream_delta_list_first.json[stream_delta_list_key] + stream_delta_list_more }}"
+  vars:
+    stream_delta_list_more: "{{ stream_delta_list_rest.results | default([]) | map(attribute='json') | map(attribute=stream_delta_list_key) | flatten }}"

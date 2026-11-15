@@ -1,5 +1,5 @@
 
-instance_name = {{ ansible_fqdn }}
+instance_name = {{ ansible_facts['fqdn'] }}
 
 mail_home=~/Mail
 mail_location=mbox:~/Mail:INBOX=/var/spool/mail/%u

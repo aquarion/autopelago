@@ -261,9 +261,10 @@ firth_laravel_app_apps:
       APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
       APP_GOOGLE_CREDENTIALS_FILENAME: google/credentials.json
       DB_DATABASE: /var/www/html/storage/database/production.sqlite
+      GOOGLE_MAPS_API_KEY: "{{ vault_wereabouts_google_maps_api_key }}"
     additional_files:
       - src: files/laravel/wereabouts/google_credentials.vault.json
-        dest: google/credentials.json
+        dest: credentials/google/credentials.json
     additional_volumes:
       - src: /home/docker/wereabouts/storage/database
         dest: /var/www/html/storage/database
@@ -281,9 +282,10 @@ firth_laravel_app_apps:
         APP_VENUE_SHEET_ID: "1p2CS7rxPWyMs7g4OHH287j6iIPGkZb3VA7VRLBr0okA"
         APP_GOOGLE_CREDENTIALS_FILENAME: google/credentials.json
         DB_DATABASE: /var/www/html/storage/database/staging.sqlite
+        GOOGLE_MAPS_API_KEY: "{{ vault_wereabouts_google_maps_api_key }}"
       additional_files:
         - src: files/laravel/wereabouts/google_credentials.vault.json
-          dest: google/credentials.json
+          dest: credentials/google/credentials.json
       additional_volumes:
         - src: /home/docker/wereabouts-staging/storage/database
           dest: /var/www/html/storage/database
@@ -334,6 +336,10 @@ firth_laravel_app_apps:
       - src: /home/library/RPG/Systems
         dest: /mnt/rpg
         manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
+      # nginx serves /_thumbnails/ straight from this host path (nginx_snippet: thalium), so the container must
+      # write thumbnails here rather than into the storage named volume. nginx reads it via the thalium group.
+      - src: "{{ docker_root }}/thalium/storage/app/thumbnails"
+        dest: /var/www/html/storage/app/thumbnails
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
@@ -359,6 +365,58 @@ firth_laravel_app_apps:
         - src: /home/library/RPG/Systems
           dest: /mnt/rpg
           manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
+        - src: "{{ docker_root }}/thalium-staging/storage/app/thumbnails"
+          dest: /var/www/html/storage/app/thumbnails
         - name: elasticsearch_certs
           dest: /usr/share/elasticsearch/config/certs
           external: true
+
+  # lifestream-web: Laravel front end for the Lifestream API (aquarion/lifestream-web).
+  # No database of its own (no mysql: block, so migrations are skipped) - Redis is for sessions/cache only.
+  #
+  # Vault variables required - create host_vars/firth.water.gkhs.net/laravel/lifestream-web.vault.yml
+  # and `ansible-vault encrypt` it BEFORE running the playbook, or the role fails templating this app:
+  #   vault_lifestream_web_app_key
+  #   vault_lifestream_web_staging_app_key
+  #   vault_lifestream_web_redis_password
+  #   vault_lifestream_web_staging_redis_password
+  #
+  # Serves nicholasavenell.com (www redirects to the apex); panopticon.aquarionics.com redirects here from the
+  # miscweb vhost. Other *.nicholasavenell.com/.net hosts are still the legacy site in miscweb.
+  - name: lifestream-web
+    image: ghcr.io/aquarion/lifestream-web
+    image_tag: latest
+    backend: fpm
+    port: 9007
+    server_name: nicholasavenell.com
+    app_url: https://nicholasavenell.com
+    www_redirect: true
+    app_key: "{{ vault_lifestream_web_app_key }}"
+    app_name: Panopticon
+    ssl_snippet: nicholasavenell
+    github_repo: aquarion/lifestream-web
+    github_deploy_token: "{{ laravel_apps_deploy_token_aquarion }}"
+    ghcr_username: "{{ ghcr_username }}"
+    ghcr_token: "{{ ghcr_token }}"
+    browser_otel: true # starter-kit template ships browser OTel error reporting
+    redis:
+      # Not "lifestream" - that ACL user belongs to the Lifestream API (roles/lifestream) and would be overwritten
+      username: lifestream_web
+      password: "{{ vault_lifestream_web_redis_password }}"
+    additional_env:
+      # Public URL of the Lifestream API (roles/firth_nginx/templates/vhosts/lifestream). The API only listens
+      # on 127.0.0.1:2871 on the host, which containers can't reach via host.docker.internal.
+      # Includes the /v1 version prefix - the app appends paths like /entries to this.
+      LIFESTREAM_API_URL: https://lifestream.aquarionics.com/v1
+      # The starter kit's entrypoint runs `migrate --force` unless this is false; there's no DB to migrate.
+      RUN_MIGRATIONS: "false"
+    staging:
+      image_tag: staging
+      port: 9008
+      server_name: panopticon.istic.dev
+      app_url: https://panopticon.istic.dev
+      app_key: "{{ vault_lifestream_web_staging_app_key }}"
+      ssl_snippet: istic_dev
+      redis:
+        username: lifestream_web_staging
+        password: "{{ vault_lifestream_web_staging_redis_password }}"

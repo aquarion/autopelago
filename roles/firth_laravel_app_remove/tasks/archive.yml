@@ -16,7 +16,19 @@
 - name: Archive {{ flr_ctx.name }}
   tags: [firth_laravel_app, firth_laravel_app_remove]
   when: not firth_laravel_app_remove_archive_stat.stat.exists
+  vars:
+    # Staged on disk next to the final archive, not in /tmp: /tmp is a RAM-backed
+    # tmpfs from Ubuntu 24.10, and the dump and storage tar are uncompressed.
+    firth_laravel_app_remove_staging_dir: "{{ docker_root }}/.{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}"
   block:
+    - name: Create archive staging directory for {{ flr_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ firth_laravel_app_remove_staging_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
     - name: Check if database exists for {{ flr_ctx.name }}
       ansible.mysql.mysql_info:
         login_host: "{{ firth_laravel_app_remove_mysql_login_host }}"
@@ -37,7 +49,7 @@
           -u {{ firth_laravel_app_remove_mysql_login_user }}
           -p'{{ mysql_root_password }}'
           {{ flr_ctx.mysql.db_name }}
-          > /tmp/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql
+          > {{ firth_laravel_app_remove_staging_dir }}/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql
       when:
         - flr_ctx.mysql | length > 0
         - flr_ctx.mysql.db_name in (firth_laravel_app_remove_mysql_info.databases | default({}))
@@ -47,7 +59,7 @@
     - name: Copy docker-compose.yml for {{ flr_ctx.name }}
       ansible.builtin.copy:
         src: "{{ docker_root }}/{{ flr_ctx.name }}/docker-compose.yml"
-        dest: "/tmp/{{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml"
+        dest: "{{ firth_laravel_app_remove_staging_dir }}/{{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml"
         remote_src: true
         owner: root
         group: root
@@ -60,7 +72,7 @@
           -v {{ flr_ctx.name }}_storage:/storage
           alpine
           tar -C /storage -cf - .
-          > /tmp/{{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar
+          > {{ firth_laravel_app_remove_staging_dir }}/{{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar
       changed_when: true
 
     - name: Set archive file list for {{ flr_ctx.name }}
@@ -81,7 +93,7 @@
         cmd: >
           tar -cjf
           {{ docker_root }}/{{ flr_ctx.name }}-archive-{{ flr_ctx.archive_date }}.tar.bz2
-          -C /tmp {{ firth_laravel_app_remove_archive_files }}
+          -C {{ firth_laravel_app_remove_staging_dir }} {{ firth_laravel_app_remove_archive_files }}
       changed_when: true
 
     - name: Set ownership on archive for {{ flr_ctx.name }}
@@ -105,11 +117,7 @@
         msg: "Cannot continue: archive of {{ flr_ctx.name }} failed."
 
   always:
-    - name: Remove temp files for {{ flr_ctx.name }}
+    - name: Remove archive staging directory for {{ flr_ctx.name }}
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: "{{ firth_laravel_app_remove_staging_dir }}"
         state: absent
-      loop:
-        - "/tmp/{{ flr_ctx.name }}-docker-compose-{{ flr_ctx.archive_date }}.yml"
-        - "/tmp/{{ flr_ctx.name }}-storage-{{ flr_ctx.archive_date }}.tar"
-        - "/tmp/{{ flr_ctx.name }}-{{ flr_ctx.archive_date }}.sql"

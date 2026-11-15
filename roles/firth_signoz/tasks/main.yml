@@ -23,7 +23,7 @@
     - name: Install foundryctl
       when: not firth_signoz_foundryctl_stat.stat.exists
       vars:
-        firth_signoz_foundry_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+        firth_signoz_foundry_arch: "{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
         firth_signoz_foundry_extracted_dir: "/tmp/foundry_linux_{{ firth_signoz_foundry_arch }}"
       block:
         - name: Ensure foundryctl install directory exists

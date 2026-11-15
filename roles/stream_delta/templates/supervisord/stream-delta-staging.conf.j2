@@ -6,6 +6,16 @@ autostart=true
 autorestart=true
 stdout_logfile={{ stream_delta_staging_install_dir }}/current/storage/logs/octane_stdout.log
 stderr_logfile={{ stream_delta_staging_install_dir }}/current/storage/logs/octane_stderr.log
+; Octane runs FrankenPHP as a child of `php artisan octane:start`. Without
+; stopasgroup/killasgroup, supervisor treats the program as stopped once the
+; php parent exits, while frankenphp can still be shutting down and holding
+; its ports, so an immediate restart fails its port check ("Port 2019 is
+; already in use"). Signal the whole group and wait for it to exit, and allow
+; more start retries so a briefly busy port can't leave the site down.
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=30
+startretries=10
 
 
 [program:reverb_staging]

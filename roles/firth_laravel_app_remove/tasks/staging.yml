@@ -8,7 +8,7 @@
       server_name: "{{ flr.staging.server_name | default('') }}"
       remove: "{{ flr.staging.remove | default(flr.remove) }}"
       system_user: "{{ flr.name }}"
-      archive_date: "{{ ansible_date_time.date }}"
+      archive_date: "{{ ansible_facts['date_time'].date }}"
   tags: [always, firth_laravel_app, firth_laravel_app_remove]
 
 - name: Archive {{ flr_ctx.name }}

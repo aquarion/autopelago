@@ -1,5 +1,5 @@
 ---
 - name: Renew dhcp
   ansible.builtin.shell: |-
-    dhclient -v -r {{ ansible_default_ipv4.interface }}
-    dhclient -v {{ ansible_default_ipv4.interface }}
+    dhclient -v -r {{ ansible_facts['default_ipv4'].interface }}
+    dhclient -v {{ ansible_facts['default_ipv4'].interface }}

@@ -1,0 +1,22 @@
+---
+# group: certbot_access (not root) matches what issue.yml's recursive permissions task sets on
+# all of /etc/letsencrypt, including this directory. A root group here would fight that task:
+# each would flip the group back every run, both reporting changed forever. The hook has no
+# secret in it, so group-read for certbot_access is harmless.
+- name: Ensure the certbot deploy hook directory exists
+  ansible.builtin.file:
+    path: /etc/letsencrypt/renewal-hooks/deploy
+    state: directory
+    owner: root
+    group: certbot_access
+    mode: "0755"
+  tags: certbot
+
+- name: Install the deploy hook that reloads services after a renewal
+  ansible.builtin.template:
+    src: reload-services.j2.sh
+    dest: /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
+    owner: root
+    group: certbot_access
+    mode: "0755"
+  tags: certbot

@@ -28,9 +28,9 @@ User accounts (username, password, uid/gid, SSH public key) are **not** managed 
 - `firth_sftp_docker_www_data_gid`: Override GID used for `www-data` in containers that share website files (default: host `www-data` GID, fallback `33`)
 - `firth_sftp_docker_db_host` / `firth_sftp_docker_db_port`: default to `localhost` / `3306`
 - `firth_sftp_docker_bind_mounts`: extra host-path bind mounts per username (see below)
-- `firth_sftp_docker_php_sites`: PHP-FPM sidecar wiring per username (see below)
+- `firth_sftp_docker_web_sites`: web-serving sidecar wiring per username (see below)
 
-### Bind mounts and PHP sidecars
+### Bind mounts and web-site sidecars
 
 Both are keyed by plain username string — they only take effect once a matching row exists in Alchemistic's `sftp_users` table (that's where the account/uid/gid actually comes from).
 
@@ -41,12 +41,19 @@ firth_sftp_docker_bind_mounts:
       target: files
       read_only: false
 
-firth_sftp_docker_php_sites:
+firth_sftp_docker_web_sites:
   someuser:
-    php_web_domain: someuser.example.com  # subdirectory under sftp/home/<user>/ to serve as webroot;
-                                           # creates a phpfpm_<user> container with a Unix socket at
-                                           # docker_root/sftp/run/<user>.sock
-    php_image: php:8.3-fpm-alpine         # optional override, defaults to php:8.3-fpm-alpine
+    web_domain: someuser.example.com  # subdirectory under sftp/home/<user>/ to serve as webroot
+    backend: fpm                      # "fpm" (default) or "apache"
+    # backend: fpm - creates a phpfpm_<user> container with a Unix socket at
+    #   docker_root/sftp/run/<user>.sock
+    php_image: php:8.3-fpm-alpine     # fpm only, optional override
+    # backend: apache - static content + mod_autoindex, AllowOverride Indexes
+    #   (so a site's own .htaccess IndexOptions/HeaderName/ReadmeName work);
+    #   no PHP involved. Creates a web_<user> container published on
+    #   127.0.0.1:<port> for nginx to proxy_pass to.
+    apache_image: httpd:2.4-alpine    # apache only, optional override
+    port: 4081                        # apache only, required, must be unique across sites
 ```
 
 SSH public keys are managed per-account through Alchemistic (the `sftp_users.public_key` column) rather than through this role.

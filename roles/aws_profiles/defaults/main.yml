@@ -1,0 +1,6 @@
+---
+# Which AWS profiles to write to this host's ~/.aws. Each name needs <name>_aws_key and
+# <name>_aws_secret vars (vaulted) to exist. Override per-host for a host that doesn't use one.
+aws_profiles_managed:
+  - aqcom
+  - istic

@@ -1,8 +1,4 @@
-letsencrypt_dir: "{{ ansible_fqdn }}"
-
-flexget_tasks:
-  tasks:
-    - none
+letsencrypt_dir: "{{ ansible_facts['fqdn'] }}"
 
 apt_cache_time: 21600
 

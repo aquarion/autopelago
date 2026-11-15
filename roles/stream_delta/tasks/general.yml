@@ -70,6 +70,11 @@
         - cloudflare_dns
         - istic_dev
 
+    # DNS-only, not proxied: Cloudflare's Universal SSL cert only covers
+    # istic.dev and *.istic.dev (one level), so its edge fails the TLS handshake
+    # for the second-level ws.voyeur.istic.dev and browsers can't open the Reverb
+    # websocket. atoll's own Let's Encrypt cert covers *.voyeur.istic.dev, so
+    # connect to it directly -- the same as production's ws.voyeur.istic.net.
     - name: "(CF) Ws.voyeur.istic.dev - A"
       community.general.cloudflare_dns:
         state: present
@@ -78,7 +83,7 @@
         api_token: "{{ cloudflare_api_key }}"
         type: A
         value: "{{ atoll_ip }}"
-        proxied: true
+        proxied: false
       tags:
         - cloudflare
         - cloudflare_dns
@@ -379,11 +384,41 @@
         - supervisord
         - stream_delta_supervisord
 
+    # stream-delta's Envoy deploy restarts only the deployed environment's
+    # programs (production and staging share this supervisor). These must match
+    # the exact command Envoy.blade.php builds, program order included; Envoy
+    # falls back to `restart all` (allowed above) if they don't.
+    - name: Allow stream-delta deploys to restart only their own environment's programs
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/stream-delta
+        create: true
+        line: "stream-delta ALL=(ALL) NOPASSWD: /usr/bin/supervisorctl restart {{ item }}"
+        state: present
+        validate: "visudo -cf %s"
+        owner: root
+        group: root
+        mode: "0440"
+      loop:
+        - octane reverb scheduler horizon discord-monitor youtube-monitor
+        - octane_staging reverb_staging scheduler_staging horizon_staging discord-monitor_staging youtube-monitor_staging
+      tags:
+        - supervisord
+        - stream_delta_supervisord
+
     - name: Configure Redis streamdelta user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
-        line: user {{ stream_delta_redis_username }} on +@all -DEBUG ~* >{{ stream_delta_redis_password }}
-        regex: ^user {{ stream_delta_redis_username }}
+        # Store the password's SHA-256 (`#<hex>`), not the plaintext (`>pass`): Redis
+        # hashes what clients send and compares. Quoted, because an unquoted ` #`
+        # starts a YAML comment and would silently drop the password entirely.
+        line: >-
+          user {{ stream_delta_redis_username }} on {{ stream_delta_redis_commands }}
+          {{ stream_delta_redis_key_patterns }} #{{ stream_delta_redis_password | hash('sha256') }}
+        # Trailing space: without it this also matches a username that merely
+        # starts with this one (e.g. the staging user), and lineinfile replaces
+        # the last match -- overwriting that user's line instead of this one.
+        regex: "^user {{ stream_delta_redis_username | regex_escape }} "
+      no_log: true
       notify:
         - Reload Redis ACL
       tags:
@@ -392,8 +427,11 @@
     - name: Configure Redis streamdelta-staging user password
       ansible.builtin.lineinfile:
         path: /etc/redis/users.acl
-        line: user {{ stream_delta_staging_redis_username }} on +@all -DEBUG ~* >{{ stream_delta_staging_redis_password }}
-        regex: ^user {{ stream_delta_staging_redis_username }}
+        line: >-
+          user {{ stream_delta_staging_redis_username }} on {{ stream_delta_staging_redis_commands }}
+          {{ stream_delta_staging_redis_key_patterns }} #{{ stream_delta_staging_redis_password | hash('sha256') }}
+        regex: "^user {{ stream_delta_staging_redis_username | regex_escape }} "
+      no_log: true
       notify:
         - Reload Redis ACL
       tags:
@@ -432,22 +470,19 @@
   tags:
     - stream_delta
     - stream_delta_github
+  # API calls only: run them from the controller rather than over SSH per item.
+  delegate_to: localhost
+  become: false
   block:
     - name: Get list of repository variables
-      ansible.builtin.uri:
-        url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables?per_page=30"
-        method: GET
-        headers:
-          Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ github_deploy_token }}"
-          X-GitHub-Api-Version: "2022-11-28"
-        return_content: true
-      register: stream_delta_github_variables_response
-      changed_when: false
+      ansible.builtin.import_tasks: github_list.yml
+      vars:
+        stream_delta_list_url: "https://api.github.com/repos/aquarion/stream-delta/actions/variables"
+        stream_delta_list_key: variables
 
     - name: Set variables list as fact for cleaner code
       ansible.builtin.set_fact:
-        stream_delta_vars: "{{ stream_delta_github_variables_response.json.variables | map(attribute='name') | list }}"
+        stream_delta_vars: "{{ stream_delta_list_items | items2dict(key_name='name', value_name='value') }}"
 
     - name: Add variables to github actions workflow
       ansible.builtin.uri:
@@ -463,8 +498,10 @@
         body_format: json
         status_code: 200,201,204
       register: stream_delta_response
-      changed_when: stream_delta_response.status == 201
+      # Only reached for new or changed values: POST returns 201, PATCH 204.
+      changed_when: stream_delta_response.status in [201, 204]
       loop: "{{ stream_delta_github_variables }}"
+      when: stream_delta_vars[item.name] | default(none) != item.value | string
 
     - name: Remove production-scoped variables from repository scope
       ansible.builtin.uri:
@@ -506,21 +543,18 @@
         body_format: json
         status_code: 200,201,204
       register: stream_delta_secrets_response
+      # GitHub returns 201 only when the secret is created and 204 on every
+      # subsequent overwrite, whether or not the plaintext actually changed
+      # So this doesn't indicate a change, annoyingly.
       changed_when: stream_delta_secrets_response.status == 201
       no_log: true
       loop: "{{ stream_delta_github_secrets }}"
 
     - name: Get list of repository secrets
-      ansible.builtin.uri:
-        url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets?per_page=30"
-        method: GET
-        headers:
-          Accept: "application/vnd.github.v3+json"
-          Authorization: "Bearer {{ github_deploy_token }}"
-          X-GitHub-Api-Version: "2022-11-28"
-        return_content: true
-      register: stream_delta_github_secrets_response
-      changed_when: false
+      ansible.builtin.import_tasks: github_list.yml
+      vars:
+        stream_delta_list_url: "https://api.github.com/repos/aquarion/stream-delta/actions/secrets"
+        stream_delta_list_key: secrets
 
     - name: Remove production-scoped secrets from repository scope
       ansible.builtin.uri:
@@ -534,7 +568,7 @@
       register: stream_delta_delete_secret_response
       changed_when: stream_delta_delete_secret_response.status == 204
       no_log: true
-      when: item.name in (stream_delta_github_secrets_response.json.secrets | map(attribute='name') | list)
+      when: item.name in (stream_delta_list_items | map(attribute='name') | list)
       loop: "{{ stream_delta_github_production_secrets }}"
 
   rescue:

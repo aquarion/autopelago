@@ -19,14 +19,15 @@
       become: false
       tags: aws
 
-- name: Actions on all hosts
-  hosts: all
+- name: Common packages and updates on all external hosts
+  hosts: external_hosts
   handlers:
     - name: Import global handlers
       ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
   become: true
   roles:
     - water_gkhs_common
+    - water_gkhs_apt_cleanup
     - water_gkhs_listchanges
     - water_gkhs_update
 
@@ -38,6 +39,8 @@
   become: true
   roles:
     - water_gkhs_users
+    - aws_profiles
+    - water_gkhs_tailscale
     - water_gkhs_network
     - water_gkhs_php
     - water_gkhs_dovecot
@@ -62,6 +65,15 @@
   roles:
     - { role: water_gkhs_nginx, tags: nginx }
 
+- name: Certbot certificates on all external hosts
+  hosts: external_hosts
+  handlers:
+    - name: Import global handlers
+      ansible.builtin.import_tasks: roles/global_things/handlers/main.yml
+  become: true
+  roles:
+    - { role: certbot, tags: certbot }
+
 - name: Hello Firth
   hosts: firth
   handlers:
@@ -72,14 +84,14 @@
     - firth_packages
     - firth_users
     - firth_docker
+    - lifestream
     - plexupdate_uninstall
     - { role: firth_nginx, tags: nginx }
-    - water_gkhs_filebot
-    - water_gkhs_flexget
     - water_gkhs_exim
     - b2_backup
     - github_cli
     - jellyfin
+    - firth_media_stack
     - getmail
     - firth_sftp_docker
     - firth_elasticsearch
@@ -99,7 +111,6 @@
     - water_gkhs_nginx
     - atoll_nginx
     - water_gkhs_exim
-    - aws_profiles
     - geerlingguy.nodejs
     - firth_docker
     - otel_hostmetrics

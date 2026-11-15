@@ -28,11 +28,17 @@ firth_sftp_docker_www_data_gid:
 #       target: docs
 #       read_only: true
 #
-# firth_sftp_docker_php_sites:
+# firth_sftp_docker_web_sites:
 #   user1:
-#     php_web_domain: user1.example.com  # subdirectory under sftp/home/<user>/ to serve as webroot;
-#                                        # creates a phpfpm_<user> container with a Unix socket at
-#                                        # docker_root/sftp/run/<user>.sock
-#     php_image: php:8.3-fpm-alpine      # optional override, defaults to php:8.3-fpm-alpine
+#     web_domain: user1.example.com   # subdirectory under sftp/home/<user>/ to serve as webroot
+#     backend: fpm                    # "fpm" (default) or "apache"
+#     # backend: fpm - creates a phpfpm_<user> container with a Unix socket at
+#     #   docker_root/sftp/run/<user>.sock
+#     php_image: php:8.3-fpm-alpine   # fpm only, optional override, defaults to php:8.3-fpm-alpine
+#     # backend: apache - creates a web_<user> container (plain static + mod_autoindex,
+#     #   AllowOverride Indexes so the site's own .htaccess IndexOptions/HeaderName/ReadmeName
+#     #   work) published on 127.0.0.1:<port> for nginx to proxy_pass to; no PHP involved
+#     apache_image: httpd:2.4-alpine  # apache only, optional override
+#     port: 4081                      # apache only, required, must be unique across sites
 firth_sftp_docker_bind_mounts: {}
-firth_sftp_docker_php_sites: {}
+firth_sftp_docker_web_sites: {}

@@ -80,7 +80,7 @@ server {
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
-  server_name old.aquarionics.com panopticon.aquarionics.com wiki.aquarionics.com dailyphoto.aquarionics.com;
+  server_name old.aquarionics.com wiki.aquarionics.com dailyphoto.aquarionics.com;
   include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
 
   error_log /var/log/nginx/miscweb.error.log;
@@ -92,6 +92,16 @@ server {
     include /etc/nginx/snippets/proxy_params.nginx.conf;
   }
   include /etc/nginx/snippets/errors.conf;
+}
+
+# Panopticon has been replaced by lifestream-web on nicholasavenell.com (roles/firth_laravel_app)
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name panopticon.aquarionics.com;
+  include /etc/nginx/snippets/ssl/aquarionics_ssl.conf;
+  add_header X-WhyAmI "miscweb panopticon redirect";
+  return 301 https://nicholasavenell.com$request_uri;
 }
 
 #        _                   _
@@ -128,7 +138,17 @@ server {
 server {
   listen 443 ssl proxy_protocol;
   listen [::]:443 ssl proxy_protocol;
-  server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.com nicholasavenell.net;
+  # nicholasavenell.com and www.nicholasavenell.com are served by lifestream-web (roles/firth_laravel_app)
+  server_name www.nicholasavenell.net;
+  include /etc/nginx/snippets/ssl/nicholasavenell_ssl.conf;
+  add_header X-WhyAmI "miscweb nacom www redirect";
+  return 301 https://nicholasavenell.com$request_uri;
+}
+
+server {
+  listen 443 ssl proxy_protocol;
+  listen [::]:443 ssl proxy_protocol;
+  server_name *.nicholasavenell.com *.nicholasavenell.net nicholasavenell.net;
   include /etc/nginx/snippets/ssl/nicholasavenell_ssl.conf;
 
   add_header X-WhyAmI "miscweb nacom";

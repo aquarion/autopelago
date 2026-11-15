@@ -17,10 +17,10 @@
 - name: Hostfile for ipv4
   ansible.builtin.lineinfile:
     dest: /etc/hosts
-    line: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
+    line: "{{ ansible_facts['default_ipv4'].address }} {{ ansible_facts['hostname'] }} {{ ansible_facts['fqdn'] }}"
 
 - name: Hostfile for ipv6
-  when: ansible_default_ipv6.address is not undefined
+  when: ansible_facts['default_ipv6'].address is not undefined
   ansible.builtin.lineinfile:
     dest: /etc/hosts
-    line: "{{ ansible_default_ipv6.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
+    line: "{{ ansible_facts['default_ipv6'].address }} {{ ansible_facts['hostname'] }} {{ ansible_facts['fqdn'] }}"

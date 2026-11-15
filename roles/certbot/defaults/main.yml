@@ -1,0 +1,25 @@
+---
+# Certificates to issue on this host. See docs/superpowers/specs/2026-10-11-ansible-certbot-design.md.
+# Each entry: name, challenge (route53 | cloudflare | nginx), domains, and aws_profile (route53 only).
+certbot_certs: []
+# Cert names to remove with `certbot delete`. Removing an entry from certbot_certs does NOT
+# delete the cert from the host, so list removals here.
+certbot_certs_absent: []
+# nginx SSL snippet stems (file /etc/nginx/snippets/ssl/<stem>_ssl.conf) to delete from the host.
+certbot_ssl_snippets_absent: []
+# Commands the deploy hook runs after a renewal of an existing cert (set per host).
+certbot_deploy_commands: []
+# Each authenticator plugin supports exactly one challenge type, so --preferred-challenges
+# would be a no-op here (verified against certbot's auth_handler.py: it only filters within
+# what the plugin already offers).
+certbot_plugin_args:
+  route53:
+    - --dns-route53
+  cloudflare:
+    - --dns-cloudflare
+    - --dns-cloudflare-credentials
+    - /root/.secrets/cloudflare.ini
+  nginx:
+    - --nginx
+
+certbot_aws_credentials_file: /root/.aws/credentials

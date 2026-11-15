@@ -15,19 +15,18 @@
         - istic_dev
         - istic_dev_aws
       block:
-        - name: "Istic.dev Route53 {{ item.name ~ ' ' ~ item.type }}"
-          amazon.aws.route53:
-            overwrite: true
-            state: "{{ item.state }}"
-            zone: "{{ _zone }}"
-            record: "{{ (item.name == '@') | ternary(_zone + '.', item.name + '.' + _zone + '.') }}"
-            aws_profile: istic
-            type: "{{ item.type }}"
-            ttl: "{{ item.ttl | default('300') }}"
-            value: "{{ item.value }}"
-          loop: "{{ _records | rejectattr('cf_only', 'defined') | list }}"
-          loop_control:
-            label: "{{ item.name }} {{ item.type }}"
+        - name: Istic.dev Route53 records
+          ansible.builtin.include_tasks:
+            file: ../../included_tasks/route53_records.yml
+            apply:
+              tags:
+                - aws
+                - istic_dev
+                - istic_dev_aws
+          vars:
+            _r53_zone: "{{ _zone }}"
+            _r53_aws_profile: istic
+            _r53_records: "{{ _records | rejectattr('cf_only', 'defined') | list }}"
 
       rescue:
         - name: Failure warning

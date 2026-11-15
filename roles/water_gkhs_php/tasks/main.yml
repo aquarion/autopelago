@@ -1,23 +1,19 @@
 ---
-- name: Remove old PHP PPA
-  ansible.builtin.apt_repository:
-    repo: ppa:ondrej/php
+# Covers both apt_repository's (ppa_*) and add-apt-repository's naming.
+- name: Remove old ondrej Ubuntu PHP PPA sources files
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}"
     state: absent
+  loop:
+    - "ppa_ondrej_php_{{ ansible_facts['distribution_release'] }}.list"
+    - "ondrej-ubuntu-php-{{ ansible_facts['distribution_release'] }}.list"
+    - "ondrej-ubuntu-php-{{ ansible_facts['distribution_release'] }}.sources"
   notify:
     - Apt Cache Update
   tags:
     - php
     - package_sources
-  when: ansible_distribution == "Ubuntu"
-
-- name: Remove old ondrej Ubuntu PHP PPA sources file
-  ansible.builtin.file:
-    path: "/etc/apt/sources.list.d/ondrej-ubuntu-php-{{ ansible_distribution_release }}.sources"
-    state: absent
-  tags:
-    - php
-    - package_sources
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: Upload PHP sury.org GPG key
   become: true
@@ -35,7 +31,7 @@
   become: true
   ansible.builtin.deb822_repository:
     state: present
-    name: "php-sury-{{ ansible_distribution_release }}"
+    name: php-sury
     types: [deb]
     uris: [https://packages.sury.org/php/]
     suites: ["{{ ansible_facts['distribution_release'] }}"]
@@ -44,10 +40,21 @@
   tags: php
   register: water_gkhs_php_repo
 
+# Previously named php-sury-<release>, which left a stale file behind on each release upgrade.
+- name: Remove old per-release PHP repository files
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/php-sury-{{ item }}.sources"
+    state: absent
+  loop:
+    - noble
+    - resolute
+  tags: php
+  register: water_gkhs_php_old_repo
+
 - name: Refresh packages if PHP PPA was changed
   ansible.builtin.apt:
     update_cache: true
-  when: water_gkhs_php_repo.changed
+  when: water_gkhs_php_repo.changed or water_gkhs_php_old_repo.changed
   tags: php
 
 - name: Remove old PHP Packages

@@ -18,6 +18,7 @@ server {
     server_name voyeur.istic.net;
     server_tokens off;
     root {{ stream_delta_web_root }};
+    client_max_body_size 32M;
 
     index index.php;
 
