@@ -336,6 +336,10 @@ firth_laravel_app_apps:
       - src: /home/library/RPG/Systems
         dest: /mnt/rpg
         manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
+      # nginx serves /_thumbnails/ straight from this host path (nginx_snippet: thalium), so the container must
+      # write thumbnails here rather than into the storage named volume. nginx reads it via the thalium group.
+      - src: "{{ docker_root }}/thalium/storage/app/thumbnails"
+        dest: /var/www/html/storage/app/thumbnails
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
@@ -361,6 +365,8 @@ firth_laravel_app_apps:
         - src: /home/library/RPG/Systems
           dest: /mnt/rpg
           manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
+        - src: "{{ docker_root }}/thalium-staging/storage/app/thumbnails"
+          dest: /var/www/html/storage/app/thumbnails
         - name: elasticsearch_certs
           dest: /usr/share/elasticsearch/config/certs
           external: true
