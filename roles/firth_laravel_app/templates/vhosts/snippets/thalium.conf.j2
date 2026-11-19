@@ -6,6 +6,12 @@ location /_libris/ {
     auth_request /_authcheck;
 }
 
+location /_maps/ {
+    alias /home/library/RPG/Maps/;
+    gzip_static on;
+    auth_request /_authcheck;
+}
+
 location /_thumbnails/ {
     alias {{ docker_root }}/{{ fla_ctx.name }}/storage/app/thumbnails/;
     gzip_static on;
