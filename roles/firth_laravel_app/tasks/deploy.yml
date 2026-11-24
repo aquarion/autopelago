@@ -25,12 +25,39 @@
         state: directory
         owner: "{{ (fla_ctx.container_uid | default('82')) if (vol.manage_owner | default(true)) else omit }}"
         group: "{{ fla_ctx.system_user if (vol.manage_owner | default(true)) else omit }}"
-        mode: "{{ '0750' if (vol.manage_owner | default(true)) else omit }}"
+        # vol.mode overrides the default, e.g. '2750' (setgid) so new files inherit the app group
+        mode: "{{ (vol.mode | default('0750')) if (vol.manage_owner | default(true)) else omit }}"
       loop: "{{ fla_ctx.additional_volumes | selectattr('src', 'defined') | list }}"
       loop_control:
         loop_var: vol
       when: fla_ctx.additional_volumes | selectattr('src', 'defined') | list | length > 0
       register: firth_laravel_app_bind_mount_dirs
+
+    # Volumes with an explicit mode (setgid dirs) are read by nginx via the app group. setgid only affects
+    # files created from now on, so give existing contents the group too. Group only: no 'mode', so file
+    # modes are left alone (a regenerated file is chmodded 0640 by the app and must already be in the group).
+    - name: Ensure existing contents of setgid bind-mount directories have the app group for {{ fla_ctx.name }}
+      ansible.builtin.file:
+        path: "{{ vol.src }}"
+        state: directory
+        recurse: true
+        group: "{{ fla_ctx.system_user }}"
+      loop: "{{ fla_ctx.additional_volumes | selectattr('src', 'defined') | selectattr('mode', 'defined') | list }}"
+      loop_control:
+        loop_var: vol
+      when: vol.manage_owner | default(true)
+
+    # The recurse above can't set setgid on directories only (a mode would hit files too), so subdirectories
+    # that predate the setgid parent get it here; ones created later inherit it from their parent.
+    - name: Ensure existing subdirectories of setgid bind-mount directories are setgid for {{ fla_ctx.name }}
+      ansible.builtin.command:
+        argv: [find, "{{ vol.src }}", -mindepth, "1", -type, d, "!", -perm, "-2000", -print, -exec, chmod, "g+s", "{}", "+"]
+      loop: "{{ fla_ctx.additional_volumes | selectattr('src', 'defined') | selectattr('mode', 'defined') | list }}"
+      loop_control:
+        loop_var: vol
+      when: vol.manage_owner | default(true)
+      register: firth_laravel_app_setgid_subdirs
+      changed_when: firth_laravel_app_setgid_subdirs.stdout | length > 0
 
     - name: Force container recreation if bind-mount directories were created for {{ fla_ctx.name }}
       ansible.builtin.set_fact:

@@ -111,6 +111,18 @@ services:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
     command: ["php", "artisan", "{{ fla_ctx.worker_command }}"]
+{% if fla_ctx.worker_command == 'horizon' %}
+    # Override the image's Octane/Caddy healthcheck (:2019), which doesn't exist here.
+    healthcheck:
+      test: ["CMD", "php", "artisan", "horizon:status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+{% else %}
+    healthcheck:
+      disable: true
+{% endif %}
     depends_on:
       - app
     environment:
@@ -133,6 +145,12 @@ services:
     image: "{{ fla_ctx.image }}:{{ fla_ctx.image_tag }}"
     restart: unless-stopped
     command: ["php", "artisan", "schedule:work"]
+    # Override the image's Octane/Caddy healthcheck (:2019); check the process is alive instead.
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "schedule:work"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     depends_on:
       - app
     environment:
