@@ -15,6 +15,7 @@ location /_maps/ {
 location /_thumbnails/ {
     alias {{ docker_root }}/{{ fla_ctx.name }}/storage/app/thumbnails/;
     gzip_static on;
+    auth_request /_authcheck;
 }
 
 location /_authcheck {

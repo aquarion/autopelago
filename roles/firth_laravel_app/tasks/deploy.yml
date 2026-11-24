@@ -25,7 +25,8 @@
         state: directory
         owner: "{{ (fla_ctx.container_uid | default('82')) if (vol.manage_owner | default(true)) else omit }}"
         group: "{{ fla_ctx.system_user if (vol.manage_owner | default(true)) else omit }}"
-        mode: "{{ '0750' if (vol.manage_owner | default(true)) else omit }}"
+        # vol.mode overrides the default, e.g. '2750' (setgid) so new files inherit the app group
+        mode: "{{ (vol.mode | default('0750')) if (vol.manage_owner | default(true)) else omit }}"
       loop: "{{ fla_ctx.additional_volumes | selectattr('src', 'defined') | list }}"
       loop_control:
         loop_var: vol

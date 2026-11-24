@@ -344,6 +344,7 @@ firth_laravel_app_apps:
       # write thumbnails here rather than into the storage named volume. nginx reads it via the thalium group.
       - src: "{{ docker_root }}/thalium/storage/app/thumbnails"
         dest: /var/www/html/storage/app/thumbnails
+        mode: "2750" # setgid: new thumbnails inherit the thalium group so nginx can read them (0640)
       - name: elasticsearch_certs
         dest: /usr/share/elasticsearch/config/certs
         external: true
@@ -375,6 +376,7 @@ firth_laravel_app_apps:
           manage_owner: false # same shared library, sitting beside Systems
         - src: "{{ docker_root }}/thalium-staging/storage/app/thumbnails"
           dest: /var/www/html/storage/app/thumbnails
+          mode: "2750"
         - name: elasticsearch_certs
           dest: /usr/share/elasticsearch/config/certs
           external: true
