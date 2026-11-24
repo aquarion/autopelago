@@ -1,6 +1,9 @@
 ---
 laravel_apps_matomo_url: "https://stat.istic.net"
 
+# Shared RPG library on the host: bind-mounted into thalium and served by nginx (thalium snippet)
+laravel_apps_rpg_library_root: /home/library/RPG
+
 firth_laravel_app_apps:
   # - name: example
   #   image: ghcr.io/istic/example
@@ -334,10 +337,10 @@ firth_laravel_app_apps:
       MAPS_LIBRARY: /mnt/maps
       LIBRARY_URL: https://thalium.aquarionics.com/_libris/
     additional_volumes:
-      - src: /home/library/RPG/Systems
+      - src: "{{ laravel_apps_rpg_library_root }}/Systems"
         dest: /mnt/rpg
         manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
-      - src: /home/library/RPG/Maps
+      - src: "{{ laravel_apps_rpg_library_root }}/Maps"
         dest: /mnt/maps
         manage_owner: false # same shared library, sitting beside Systems
       # nginx serves /_thumbnails/ straight from this host path (nginx_snippet: thalium), so the container must
@@ -368,15 +371,15 @@ firth_laravel_app_apps:
         MAPS_LIBRARY: /mnt/maps
         LIBRARY_URL: https://thalium.istic.dev/_libris/
       additional_volumes:
-        - src: /home/library/RPG/Systems
+        - src: "{{ laravel_apps_rpg_library_root }}/Systems"
           dest: /mnt/rpg
           manage_owner: false # shared media library, not thalium-owned - don't clobber its existing ownership/mode
-        - src: /home/library/RPG/Maps
+        - src: "{{ laravel_apps_rpg_library_root }}/Maps"
           dest: /mnt/maps
           manage_owner: false # same shared library, sitting beside Systems
         - src: "{{ docker_root }}/thalium-staging/storage/app/thumbnails"
           dest: /var/www/html/storage/app/thumbnails
-          mode: "2750"
+          mode: "2750" # setgid, as for production above
         - name: elasticsearch_certs
           dest: /usr/share/elasticsearch/config/certs
           external: true

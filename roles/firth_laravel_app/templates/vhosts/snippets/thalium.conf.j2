@@ -1,13 +1,13 @@
 # {{ ansible_managed }}
 
 location /_libris/ {
-    alias /home/library/RPG/Systems/;
+    alias {{ laravel_apps_rpg_library_root }}/Systems/;
     gzip_static on;
     auth_request /_authcheck;
 }
 
 location /_maps/ {
-    alias /home/library/RPG/Maps/;
+    alias {{ laravel_apps_rpg_library_root }}/Maps/;
     gzip_static on;
     auth_request /_authcheck;
 }
